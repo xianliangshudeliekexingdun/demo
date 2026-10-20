@@ -1,0 +1,43 @@
+{
+  "version": "combat-foundation-discussion-1-20261018",
+  "status": "formula_discussion_only_not_runtime",
+  "base_source": "data/balance_candidates/first_run_v1.json",
+  "approved_item_budget_source": "tools/balance/generic_items/proposal.json",
+  "source_files": [
+    "data/balance_candidates/first_run_v1.json",
+    "data/balance_candidates/fire_artifacts_v1.json",
+    "data/route_enemy_runtime.json",
+    "scripts/core/first_room_run.gd",
+    "scripts/core/courtyard_route_run.gd",
+    "scripts/core/route_spell_combat.gd",
+    "scripts/core/route_artifacts.gd"
+  ],
+  "example": {
+    "attack_flat": 15,
+    "attack_percent": 0,
+    "temporary_attack_bonus": 0.2,
+    "spell_id": "F01",
+    "spell_level": 3,
+    "cast_scale": 1,
+    "generic_bonus": 0.36,
+    "element_bonus": 0.5,
+    "target_vulnerability": 0.2,
+    "crit_rate": 0.13,
+    "crit_multiplier": 1.75,
+    "cooldown_reduction": 0.16
+  },
+  "diagnostic_targets": {
+    "health": [1000, 5000],
+    "defense": [0, 20, 40],
+    "not_authored_enemy_or_boss_values": true
+  },
+  "fixed_derived_damage_probe": 200,
+  "attack_percent_probes": [0, 0.2, 0.5],
+  "element_and_generic_probes": [0, 0.18, 0.36, 0.5],
+  "experience_target": {
+    "final_rooms": 60,
+    "includes_bosses": true,
+    "approximate_minutes": 30,
+    "validated_by_this_tool": false
+  }
+}

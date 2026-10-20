@@ -1,0 +1,36 @@
+{
+  "model_version": "formal-spell-framework-proposal-v1",
+  "scope": "Design-only draw and growth model; no new school, catalyst or draw rule is implemented in runtime.",
+  "active_school_counts": [2, 3, 6],
+  "spells_per_school": 10,
+  "starter_school": 0,
+  "starter_spell_index": 0,
+  "starter_comparison": "Same primary-school level1 starter in every arm. Actual no-catalyst random starting choice and spell-role utility are not modeled.",
+  "fixed_primary_probabilities": [0.3, 0.4, 0.5, 0.6, 0.7],
+  "adaptive_strengths": [0.28, 0.3, 0.4, 0.5, 0.52],
+  "recommended_level_strengths": [0.28, 0.4, 0.52],
+  "simplified_level_strengths": [0.3, 0.4, 0.5],
+  "adaptive_formula": "q + (1-q)*strength, q=currently legal primary IDs/currently legal total IDs; recomputed after every card is removed",
+  "seed_batches": [20261017, 20261023, 20261031, 20261107],
+  "sweep_trials_per_seed": 250,
+  "accepted_trials_per_seed": 1250,
+  "offer_validation_trials": 50000,
+  "runtime_fidelity_trials_per_nonempty_case": 10000,
+  "policies": ["primary_first", "learn_first", "upgrade_first", "mixed_four_four"],
+  "policy_contract": {
+    "primary_first": "Choose a primary-school card if offered, otherwise any card; uniform tie break. A stated preference, not a measured ordinary-player behavior model.",
+    "learn_first": "Prefer any newly learnable spell, then primary school, then uniform tie break.",
+    "upgrade_first": "Prefer an owned spell, then primary school, then higher current level, then uniform tie break.",
+    "mixed_four_four": "Try to learn four primary and four other spells: prefer new spells below the relevant four-slot target, larger deficit first; otherwise upgrade owned spells before exceeding the target. Every offer must still select one legal card; no skips or rerolls."
+  },
+  "source_files": {
+    "base": "data/balance_candidates/first_run_v1.json",
+    "meta": "data/balance_candidates/meta_growth_v1.json",
+    "route": "data/courtyard_route.json",
+    "core": "scripts/core/first_room_run.gd",
+    "route_core": "scripts/core/courtyard_route_run.gd",
+    "meta_core": "scripts/core/meta_progression.gd"
+  },
+  "omissions": ["combat, damage, cooldown, summon attack intervals, encounters, player skill, final60/Boss session time", "spell utility differences, tags, synergy eligibility and new-school artifact catalogs", "catalyst prices, income, unlock time, payback; current45 route has no meta settlement", "UI starting choice and save migration; synthetic school IDs are never runtime assets"],
+  "guardrails": {"no_runtime_writes": true, "no_forced_primary_offer_slot": true, "no_pity": true, "no_locked_other_school_pool": true, "reopen_rerolls": false, "maximum_sampling_error": 0.012}
+}

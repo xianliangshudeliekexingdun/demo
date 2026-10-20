@@ -1,0 +1,32 @@
+{
+  "frequency": [
+    "quick_chant",
+    "efficient_cast",
+    "wide_blast",
+    "lamp_sync",
+    "lamp_duration",
+    "lamp_damage",
+    "frost_efficient",
+    "heal_efficient"
+  ],
+  "control": [
+    "frost_duration",
+    "frost_freeze",
+    "frost_exposure",
+    "meteor_quick",
+    "meteor_wide",
+    "meteor_efficient",
+    "meteor_fragments",
+    "molten"
+  ],
+  "sustain": [
+    "embers",
+    "meteor_burn",
+    "lamp_duration",
+    "lamp_guard",
+    "lamp_damage",
+    "frost_field",
+    "heal_amount",
+    "heal_efficient"
+  ]
+}

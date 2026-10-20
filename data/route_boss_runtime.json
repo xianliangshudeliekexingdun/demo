@@ -1,0 +1,551 @@
+{
+  "global": {
+    "spawn": [
+      0,
+      6
+    ],
+    "spawn_preview": 1.5,
+    "initial_attack_lock": 0.8,
+    "approach_stop_distance": 5.5,
+    "projectile_lifetime": 5.0,
+    "projectile_range": 15.0,
+    "whole_volley_reservation": true,
+    "retry_delay": 0.25,
+    "body_interval": 0.8,
+    "hurt_invulnerability_reference": "base.player.hurt_invulnerability",
+    "control_class": "fixed_strong",
+    "push_resistance": 1.0,
+    "control_coeff": 0.0,
+    "slow_cap": 0.15,
+    "health_refill_or_invulnerability_on_transition": false,
+    "transitions_clear_hostile_only": true,
+    "player_keeps_damage_during_transition": true,
+    "death_before_phase_transition": true,
+    "reaction_allowance": 0.25,
+    "minimum_melee_safety_margin": 0.15,
+    "capacity_horizon_seconds": 90
+  },
+  "bosses": [
+    {
+      "room": 15,
+      "id": "BOSS01",
+      "name": "岩冠守卫",
+      "health": 24000,
+      "radius": 1.0,
+      "move_speed": 1.65,
+      "body_damage": 30,
+      "projectile_cap": 48,
+      "transition_seconds": 0,
+      "phases": [
+        {
+          "id": "main",
+          "health_at_most": 1.0,
+          "sequence": [
+            "charge",
+            "fan"
+          ],
+          "patterns": {
+            "charge": {
+              "kind": "charge",
+              "warning": 1.2,
+              "distance": 7,
+              "duration": 0.7,
+              "half_width": 1.0,
+              "damage": 60,
+              "recovery": 1.8
+            },
+            "fan": {
+              "kind": "fan",
+              "count": 7,
+              "step_degrees": 22,
+              "speed": 3.6,
+              "damage": 24,
+              "radius": 0.16,
+              "warning": 1.2,
+              "recovery": 1.8
+            }
+          }
+        }
+      ]
+    },
+    {
+      "room": 30,
+      "id": "BOSS04",
+      "name": "千瓣花母",
+      "health": 48000,
+      "radius": 1.0,
+      "move_speed": 1.2,
+      "body_damage": 36,
+      "projectile_cap": 96,
+      "transition_seconds": 1.5,
+      "phases": [
+        {
+          "id": "bloom",
+          "health_at_most": 1.0,
+          "sequence": [
+            "fan",
+            "ring",
+            "marks",
+            "ring"
+          ],
+          "patterns": {
+            "fan": {
+              "kind": "fan",
+              "count": 7,
+              "step_degrees": 22,
+              "speed": 4,
+              "damage": 24,
+              "radius": 0.16,
+              "warning": 1.1,
+              "recovery": 1.6
+            },
+            "ring": {
+              "kind": "ring",
+              "count": 16,
+              "omitted_adjacent_spokes": 3,
+              "gap_rotation_degrees": 30,
+              "volleys": 1,
+              "release_interval": 0,
+              "followup_warning": 1.2,
+              "speed": 3,
+              "damage": 20,
+              "radius": 0.16,
+              "warning": 1.2,
+              "recovery": 2
+            },
+            "marks": {
+              "kind": "marks",
+              "count": 2,
+              "radius": 1.2,
+              "damage": 48,
+              "warning": 1.2,
+              "mark_interval": 0.7,
+              "active": 0.15,
+              "recovery": 1.6,
+              "per_mark_max_hits": 1
+            }
+          }
+        },
+        {
+          "id": "full_bloom",
+          "health_at_most": 0.5,
+          "sequence": [
+            "fan",
+            "double_ring",
+            "marks",
+            "double_ring"
+          ],
+          "patterns": {
+            "fan": {
+              "kind": "fan",
+              "count": 9,
+              "step_degrees": 22,
+              "speed": 4,
+              "damage": 24,
+              "radius": 0.16,
+              "warning": 1.1,
+              "recovery": 1.6
+            },
+            "double_ring": {
+              "kind": "ring",
+              "count": 20,
+              "omitted_adjacent_spokes": 3,
+              "gap_rotation_degrees": 30,
+              "volleys": 2,
+              "release_interval": 1.7,
+              "followup_warning": 1.2,
+              "speed": 3,
+              "damage": 20,
+              "radius": 0.16,
+              "warning": 1.2,
+              "recovery": 2
+            },
+            "marks": {
+              "kind": "marks",
+              "count": 3,
+              "radius": 1.2,
+              "damage": 48,
+              "warning": 1.2,
+              "mark_interval": 0.7,
+              "active": 0.15,
+              "recovery": 1.6,
+              "per_mark_max_hits": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "room": 45,
+      "id": "BOSS02",
+      "name": "符阵监守",
+      "health": 80000,
+      "radius": 0.9,
+      "move_speed": 1.5,
+      "body_damage": 42,
+      "projectile_cap": 144,
+      "transition_seconds": 1.5,
+      "phases": [
+        {
+          "id": "inscription",
+          "health_at_most": 1.0,
+          "sequence": [
+            "sweep",
+            "marks",
+            "line"
+          ],
+          "patterns": {
+            "sweep": {
+              "kind": "sweep",
+              "count": 9,
+              "arc_degrees": 120,
+              "shot_interval": 0.18,
+              "alternate_direction": true,
+              "speed": 4,
+              "damage": 26,
+              "radius": 0.16,
+              "warning": 1.2,
+              "recovery": 1.6
+            },
+            "marks": {
+              "kind": "marks",
+              "count": 3,
+              "radius": 1.3,
+              "damage": 60,
+              "warning": 1.3,
+              "mark_interval": 0.7,
+              "active": 0.15,
+              "recovery": 1.6,
+              "per_mark_max_hits": 1
+            },
+            "line": {
+              "kind": "lines",
+              "count": 1,
+              "length": 12,
+              "width": 1.2,
+              "damage": 60,
+              "warning": 1.4,
+              "active": 1.2,
+              "recovery": 1.6,
+              "group_max_hits": 1
+            }
+          }
+        },
+        {
+          "id": "crossing",
+          "health_at_most": 0.5,
+          "sequence": [
+            "sweep",
+            "marks",
+            "sweep",
+            "cross_line"
+          ],
+          "patterns": {
+            "sweep": {
+              "kind": "sweep",
+              "count": 9,
+              "arc_degrees": 120,
+              "shot_interval": 0.18,
+              "alternate_direction": true,
+              "speed": 4,
+              "damage": 26,
+              "radius": 0.16,
+              "warning": 1.2,
+              "recovery": 1.6
+            },
+            "marks": {
+              "kind": "marks",
+              "count": 4,
+              "radius": 1.3,
+              "damage": 60,
+              "warning": 1.3,
+              "mark_interval": 0.7,
+              "active": 0.15,
+              "recovery": 1.6,
+              "per_mark_max_hits": 1
+            },
+            "cross_line": {
+              "kind": "lines",
+              "count": 2,
+              "length": 12,
+              "width": 1.2,
+              "damage": 60,
+              "warning": 1.4,
+              "active": 1.2,
+              "recovery": 1.6,
+              "group_max_hits": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "room": 60,
+      "id": "BOSS03",
+      "name": "遗迹之心",
+      "health": 130000,
+      "radius": 1.1,
+      "move_speed": 1.4,
+      "body_damage": 48,
+      "projectile_cap": 192,
+      "transition_seconds": 2,
+      "phases": [
+        {
+          "id": "awakening",
+          "health_at_most": 1.0,
+          "sequence": [
+            "fan",
+            "ring",
+            "marks",
+            "ring"
+          ],
+          "patterns": {
+            "fan": {
+              "kind": "fan",
+              "count": 9,
+              "step_degrees": 22,
+              "speed": 4.6,
+              "damage": 28,
+              "radius": 0.16,
+              "warning": 1.2,
+              "recovery": 1.6
+            },
+            "ring": {
+              "kind": "ring",
+              "count": 20,
+              "omitted_adjacent_spokes": 3,
+              "gap_rotation_degrees": 30,
+              "volleys": 1,
+              "release_interval": 0,
+              "followup_warning": 1.2,
+              "speed": 3.2,
+              "damage": 24,
+              "radius": 0.16,
+              "warning": 1.3,
+              "recovery": 1.8
+            },
+            "marks": {
+              "kind": "marks",
+              "count": 3,
+              "radius": 1.4,
+              "damage": 70,
+              "warning": 1.3,
+              "mark_interval": 0.75,
+              "active": 0.15,
+              "recovery": 1.6,
+              "per_mark_max_hits": 1
+            }
+          }
+        },
+        {
+          "id": "resonance",
+          "health_at_most": 0.65,
+          "sequence": [
+            "sweep",
+            "marks",
+            "ring",
+            "fan"
+          ],
+          "patterns": {
+            "fan": {
+              "kind": "fan",
+              "count": 9,
+              "step_degrees": 22,
+              "speed": 4.6,
+              "damage": 28,
+              "radius": 0.16,
+              "warning": 1.2,
+              "recovery": 1.6
+            },
+            "ring": {
+              "kind": "ring",
+              "count": 20,
+              "omitted_adjacent_spokes": 3,
+              "gap_rotation_degrees": 30,
+              "volleys": 1,
+              "release_interval": 0,
+              "followup_warning": 1.2,
+              "speed": 3.2,
+              "damage": 24,
+              "radius": 0.16,
+              "warning": 1.3,
+              "recovery": 1.8
+            },
+            "marks": {
+              "kind": "marks",
+              "count": 3,
+              "radius": 1.4,
+              "damage": 70,
+              "warning": 1.3,
+              "mark_interval": 0.75,
+              "active": 0.15,
+              "recovery": 1.6,
+              "per_mark_max_hits": 1
+            },
+            "sweep": {
+              "kind": "sweep",
+              "count": 11,
+              "arc_degrees": 120,
+              "shot_interval": 0.16,
+              "alternate_direction": true,
+              "speed": 4.2,
+              "damage": 26,
+              "radius": 0.16,
+              "warning": 1.2,
+              "recovery": 1.6
+            }
+          }
+        },
+        {
+          "id": "heartstorm",
+          "health_at_most": 0.3,
+          "sequence": [
+            "double_ring",
+            "marks",
+            "sweep",
+            "cross_line"
+          ],
+          "patterns": {
+            "double_ring": {
+              "kind": "ring",
+              "count": 24,
+              "omitted_adjacent_spokes": 3,
+              "gap_rotation_degrees": 30,
+              "volleys": 2,
+              "release_interval": 1.8,
+              "followup_warning": 1.2,
+              "speed": 3.6,
+              "damage": 24,
+              "radius": 0.16,
+              "warning": 1.3,
+              "recovery": 1.8
+            },
+            "marks": {
+              "kind": "marks",
+              "count": 3,
+              "radius": 1.4,
+              "damage": 70,
+              "warning": 1.3,
+              "mark_interval": 0.75,
+              "active": 0.15,
+              "recovery": 1.6,
+              "per_mark_max_hits": 1
+            },
+            "sweep": {
+              "kind": "sweep",
+              "count": 11,
+              "arc_degrees": 120,
+              "shot_interval": 0.16,
+              "alternate_direction": true,
+              "speed": 4.2,
+              "damage": 26,
+              "radius": 0.16,
+              "warning": 1.2,
+              "recovery": 1.6
+            },
+            "cross_line": {
+              "kind": "lines",
+              "count": 2,
+              "length": 12,
+              "width": 1.2,
+              "damage": 70,
+              "warning": 1.4,
+              "active": 1.2,
+              "recovery": 1.6,
+              "group_max_hits": 1
+            }
+          }
+        }
+      ],
+      "summons": {
+        "groups_per_fight": 2,
+        "groups": [
+          {
+            "phase": "resonance",
+            "types": {
+              "M01": 1,
+              "M02": 1
+            }
+          },
+          {
+            "phase": "heartstorm",
+            "types": {
+              "M01": 1,
+              "M02": 1
+            }
+          }
+        ],
+        "alive_cap": 2,
+        "must_clear_previous_group": true,
+        "stat_room": 59,
+        "preview": 1.0,
+        "attack_lock": 0.5,
+        "safe_player_distance": 3.0,
+        "projectile_emitter_cap": 1,
+        "arrival_on_recovery_only": true,
+        "boss_death_clears_adds": true
+      }
+    }
+  ],
+  "version": "boss-runtime-1-20261020",
+  "source_design": "docs/游戏设计/22-四个Boss与必金双奖励方案.md",
+  "reward": {
+    "pickup_x_offsets": [
+      -1.2,
+      1.2
+    ],
+    "chest_choices": 3,
+    "fallback_damage_bonus": 0.15,
+    "fallback_health_max_add": 50
+  },
+  "fallback_items": {
+    "BGT15": {
+      "name": "岩冠金庭印",
+      "rarity": "gold",
+      "category": "generic",
+      "active": true,
+      "boss_only": true,
+      "boss_room": 15,
+      "damage_bonus": 0.15,
+      "health_max_add": 50,
+      "description": "常规伤害提高15%，最大生命增加50。获得时不恢复生命。仅在本关合资格金色宝物已取尽时出现。",
+      "scope": "generic"
+    },
+    "BGT30": {
+      "name": "千瓣金庭印",
+      "rarity": "gold",
+      "category": "generic",
+      "active": true,
+      "boss_only": true,
+      "boss_room": 30,
+      "damage_bonus": 0.15,
+      "health_max_add": 50,
+      "description": "常规伤害提高15%，最大生命增加50。获得时不恢复生命。仅在本关合资格金色宝物已取尽时出现。",
+      "scope": "generic"
+    },
+    "BGT45": {
+      "name": "符阵金庭印",
+      "rarity": "gold",
+      "category": "generic",
+      "active": true,
+      "boss_only": true,
+      "boss_room": 45,
+      "damage_bonus": 0.15,
+      "health_max_add": 50,
+      "description": "常规伤害提高15%，最大生命增加50。获得时不恢复生命。仅在本关合资格金色宝物已取尽时出现。",
+      "scope": "generic"
+    },
+    "BGT60": {
+      "name": "心核金庭印",
+      "rarity": "gold",
+      "category": "generic",
+      "active": true,
+      "boss_only": true,
+      "boss_room": 60,
+      "damage_bonus": 0.15,
+      "health_max_add": 50,
+      "description": "常规伤害提高15%，最大生命增加50。获得时不恢复生命。仅在本关合资格金色宝物已取尽时出现。",
+      "scope": "generic"
+    }
+  }
+}

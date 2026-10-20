@@ -1,0 +1,19 @@
+{
+  "version": "route-shop-runtime-1-20261019",
+  "name": "旅途商店",
+  "geometry": {
+    "floor": {"width": 18, "depth": 18},
+    "entry_player_center": [0, -6.8],
+    "portal_center": [0, 6.8],
+    "blocks": [{"center": [-3.5, 1.5], "size": [4.0, 1.2]}],
+    "spawn": {"side_x": [-7, 7], "anchor_z": [-4, 0, 4], "north_band": []}
+  },
+  "counter_center": [-3.5, 1.5],
+  "interaction_center": [-3.5, 0.1],
+  "interaction_radius": 1.0,
+  "rearm_clearance": 0.15,
+  "sources": {
+    "nodes_and_recovery": "res://data/balance_candidates/first_run_v1.json#recovery",
+    "income_prices_and_offers": "res://data/balance_candidates/run_economy_v1.json"
+  }
+}

@@ -1,0 +1,292 @@
+{
+  "version": "formal-fire-artifacts-20261018",
+  "status": "runtime_fire_16_generic_5_spirit_3_archived",
+  "base_parameters": "first_run_v1.json",
+  "rules": {
+    "unique_per_run": true,
+    "spell_slots_used": 0,
+    "generic_effects_last_for_run": true,
+    "health_cap_gain_also_heals": false,
+    "extra_effects_trigger_event_items": false,
+    "slow_stacking": "strongest_only",
+    "speed_stacking": "refresh_only"
+  },
+  "items": {
+    "B01": {
+      "name": "扩焰指环",
+      "rarity": "blue",
+      "scope": "fire",
+      "required_spell": "F01",
+      "radius_multiplier": 1.3,
+      "active": false,
+      "retired_to_spell_growth": true,
+      "growth_spells": [
+        "F01"
+      ]
+    },
+    "B02": {
+      "name": "火焰魔法书",
+      "rarity": "blue",
+      "scope": "fire",
+      "required_spell": "F02",
+      "fire_crit_rate_add": 0.15,
+      "active": false,
+      "retired_to_spell_growth": true,
+      "growth_spells": [
+        "F02"
+      ]
+    },
+    "B03": {
+      "name": "落火星盘",
+      "rarity": "blue",
+      "scope": "fire",
+      "required_spell": "F03",
+      "fixed_center_drops": 2,
+      "first_drop_damage_multiplier": 1.5,
+      "active": false,
+      "retired_to_spell_growth": true,
+      "growth_spells": [
+        "F03"
+      ]
+    },
+    "B04": {
+      "name": "赤灵灯芯",
+      "rarity": "blue",
+      "scope": "spirit",
+      "active": false,
+      "required_spell": "F04",
+      "duration_add": 4.0,
+      "normal_laser_damage_multiplier": 1.1
+    },
+    "B05": {
+      "name": "烬羽护符",
+      "rarity": "blue",
+      "scope": "fire",
+      "required_spell": "F05",
+      "slow": 0.25,
+      "duration": 2.0,
+      "active": false,
+      "retired_to_spell_growth": true,
+      "growth_spells": [
+        "F05"
+      ]
+    },
+    "B06": {
+      "name": "拓阵符盘",
+      "rarity": "blue",
+      "scope": "fire",
+      "required_spell": "F06",
+      "radius_multiplier": 1.3,
+      "active": false,
+      "retired_to_spell_growth": true,
+      "growth_spells": [
+        "F06"
+      ]
+    },
+    "B07": {
+      "name": "裂核指环",
+      "rarity": "blue",
+      "scope": "fire",
+      "required_spell": "F07",
+      "main_center_damage_multiplier": 1.15,
+      "main_center_crit_multiplier_add": 0.5,
+      "active": false,
+      "retired_to_spell_growth": true,
+      "growth_spells": [
+        "F07"
+      ]
+    },
+    "B08": {
+      "name": "聚焰棱镜",
+      "rarity": "blue",
+      "scope": "fire",
+      "required_spell": "F08",
+      "width_multiplier": 1.4,
+      "active": false,
+      "retired_to_spell_growth": true,
+      "growth_spells": [
+        "F08"
+      ]
+    },
+    "B09": {
+      "name": "鼓风符",
+      "rarity": "blue",
+      "scope": "fire",
+      "required_spell": "F09",
+      "move_speed_bonus": 0.15,
+      "duration": 2.0,
+      "active": false,
+      "retired_to_spell_growth": true,
+      "growth_spells": [
+        "F09"
+      ]
+    },
+    "B10": {
+      "name": "护焰玉符",
+      "rarity": "blue",
+      "scope": "fire",
+      "required_spell": "F10",
+      "shield_restore_add": 15,
+      "active": false,
+      "retired_to_spell_growth": true,
+      "growth_spells": [
+        "F10"
+      ]
+    },
+    "B11": {
+      "name": "传薪指环",
+      "rarity": "blue",
+      "scope": "fire",
+      "required_spell": "F11",
+      "spread_targets_add": 2,
+      "active": false,
+      "retired_to_spell_growth": true,
+      "growth_spells": [
+        "F11"
+      ]
+    },
+    "P01": {
+      "name": "火焰宝石",
+      "rarity": "purple",
+      "scope": "spirit",
+      "active": false,
+      "required_spell": "F04",
+      "spirit_count_add": 1
+    },
+    "P02": {
+      "name": "熔火刻印",
+      "rarity": "purple",
+      "scope": "fire",
+      "requirement": "natural_direct_fire",
+      "coefficient": 0.4,
+      "interval": 0.5,
+      "duration": 3.0,
+      "radius": 1.6,
+      "patches_per_natural_cast": 1,
+      "active": false,
+      "retired_to_spell_growth": true,
+      "growth_spells": [
+        "F01"
+      ]
+    },
+    "P03": {
+      "name": "炽焰共鸣石",
+      "rarity": "purple",
+      "scope": "fire",
+      "requirement": "two_area_spells",
+      "required_distinct_areas": 2,
+      "fire_vulnerability": 0.2,
+      "active": false,
+      "retired_to_spell_growth": true,
+      "growth_spells": [
+        "F06"
+      ]
+    },
+    "P04": {
+      "name": "序列之书",
+      "rarity": "purple",
+      "scope": "generic",
+      "requirement": "any_active_spell",
+      "natural_casts_per_extra": 3,
+      "damage_multiplier": 1.0
+    },
+    "P05": {
+      "name": "魔力源泉",
+      "rarity": "purple",
+      "scope": "generic",
+      "requirement": "any_cooldown_spell",
+      "interval": 8.0,
+      "remaining_cooldown_multiplier": 0.5
+    },
+    "G01": {
+      "name": "炎冠圣契",
+      "rarity": "gold",
+      "scope": "fire",
+      "requirement": "synergy_and_player_offense",
+      "fire_bonus_add": 0.15,
+      "offensive_casts_per_echo": 3,
+      "echo_damage_multiplier": 0.7,
+      "active": false,
+      "retired_to_spell_growth": true,
+      "growth_spells": [
+        "F02",
+        "F08"
+      ]
+    },
+    "P06": {
+      "name": "长燃余烬",
+      "rarity": "purple",
+      "scope": "fire",
+      "requirement": "any_igniter",
+      "burn_duration": 6.0,
+      "maximum_ticks": 12,
+      "active": false,
+      "retired_to_spell_growth": true,
+      "growth_spells": [
+        "F11"
+      ]
+    },
+    "G02": {
+      "name": "赤灵王印",
+      "rarity": "gold",
+      "scope": "spirit",
+      "active": false,
+      "requirement": "spirit_and_player_offense",
+      "coefficient": 2.5,
+      "shared_cooldown": 2.0
+    },
+    "G03": {
+      "name": "焚界之核",
+      "rarity": "gold",
+      "scope": "fire",
+      "requirement": "persistent_area_spell",
+      "coefficient": 4.0,
+      "radius": 2.4,
+      "trigger_age": 2.0,
+      "explosions_per_natural_cast": 1,
+      "active": false,
+      "retired_to_spell_growth": true,
+      "growth_spells": [
+        "F06"
+      ]
+    },
+    "G04": {
+      "name": "复燃圣印",
+      "rarity": "gold",
+      "scope": "fire",
+      "requirement": "bomb_and_igniter",
+      "detonation_multiplier_add": 2.0,
+      "reapply_delay": 0.5,
+      "reapply_shared_cooldown": 2.0,
+      "active": false,
+      "retired_to_spell_growth": true,
+      "growth_spells": [
+        "F07"
+      ]
+    },
+    "U01": {
+      "name": "生命琥珀",
+      "rarity": "blue",
+      "scope": "generic",
+      "health_max_add": {
+        "base_ref": "attribute_artifact_candidates.health_max_flat"
+      }
+    },
+    "U02": {
+      "name": "护壁晶核",
+      "rarity": "blue",
+      "scope": "generic",
+      "shield_max_add": {
+        "base_ref": "attribute_artifact_candidates.shield_max_flat"
+      }
+    },
+    "U03": {
+      "name": "增幅棱晶",
+      "rarity": "purple",
+      "scope": "generic",
+      "attack_add": {
+        "base_ref": "attribute_artifact_candidates.attack_flat"
+      }
+    }
+  }
+}

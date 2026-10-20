@@ -1,0 +1,28 @@
+{
+  "version": "artifact-scenarios-1.0",
+  "seed": 20261018,
+  "trials": 64,
+  "output_horizon": 120.0,
+  "ttk_horizon": 180.0,
+  "assumptions": {
+    "ordinary": {"geometry_benefit_capture": 0.5, "rain_stay_probability": 0.8, "overlap_observed_fraction": 0.6},
+    "weak": {"geometry_benefit_capture": 0.25, "rain_stay_probability": 0.65, "overlap_observed_fraction": 0.35},
+    "optimized": {"geometry_benefit_capture": 0.75, "rain_stay_probability": 0.95, "overlap_observed_fraction": 0.8},
+    "perfect": {"geometry_benefit_capture": 0.0, "rain_stay_probability": 1.0, "overlap_observed_fraction": 1.0}
+  },
+  "routes": {
+    "burst": {"path": "burst", "items": ["B01","B02","B03","B07","P02","P04","P05","G01","U03"]},
+    "spirit": {"path": "spirit", "items": ["B02","B04","B08","B10","P01","P04","P05","G02","U02"]},
+    "area": {"path": "area", "items": ["B02","B03","B05","B06","P02","P03","P05","G03","U03"]},
+    "event_stack": {"path": "optimized", "build": {"F01":3,"F02":3,"F03":3,"F04":3,"F05":3,"F06":2,"F08":3,"F10":1}, "items": ["B02","B04","B10","P01","P04","P05","G01","G02","G03"]}
+  },
+  "targets": {
+    "nine_item_final_boss_median_s": [18.0,55.0],
+    "single_blue_damage_ratio_watch": [1.0,1.3],
+    "finite_event_count_per_natural_cast_max": 30.0,
+    "heavy_pressure_survival_max_s": 120.0
+  },
+  "pressure": {"horizon": 120.0, "interval": 1.5, "light_damage": 48, "heavy_damage": 75, "items": ["B10","P04","P05","U01","U02"]},
+  "sweeps": {"fountain_interval": [6.0,8.0,10.0,12.0], "echo_multiplier": [0.5,0.7,1.0], "synced_laser_coefficient": [1.5,2.0,2.5], "terminal_coefficient": [3.0,4.0,5.0]},
+  "generic_gain_room": 6
+}

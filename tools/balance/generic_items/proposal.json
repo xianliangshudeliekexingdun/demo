@@ -1,0 +1,69 @@
+{
+  "proposal_version": "generic-items-review-v2-20261018-user-direction",
+  "status": "proposal_only_not_runtime",
+  "model_version": "generic-budget-1.2",
+  "scope": "Static first-pass item budget; not a combat, reward, route-time or win-rate simulation",
+  "source_files": [
+    "data/balance_candidates/first_run_v1.json",
+    "data/balance_candidates/fire_artifacts_v1.json",
+    "data/courtyard_route.json",
+    "scripts/core/first_room_run.gd",
+    "scripts/core/courtyard_route_run.gd",
+    "scripts/core/route_spell_combat.gd",
+    "scripts/core/route_artifacts.gd"
+  ],
+  "offense": {
+    "cooldown_reduction_add": 0.06,
+    "crit_rate_add": 0.08,
+    "crit_multiplier_add": 0.25,
+    "crit_multiplier_offer_requires_permanent_crit_rate": 0.10,
+    "flawless": {"bonus": 0.18, "seconds_without_effective_hit": 6},
+    "hunt": {"bonus_per_stack": 0.06, "max_stacks": 3, "duration_seconds": 6, "minimum_stack_interval_seconds": 1},
+    "elite_bonus": 0.20,
+    "half_health_bonus": 0.25,
+    "generic_damage_bucket": "additive_within_new_generic_bucket"
+  },
+  "defense": {
+    "armor_denominator": 100,
+    "armor_table": [0, 15, 30, 45, 65, 85],
+    "armor_items": [15, 30],
+    "projectile_damage_reduction": 0.18,
+    "final_damage_reduction_cap": 0.45,
+    "broken_shield_restore_once_per_room": 35,
+    "health_max_gain_heals": false,
+    "shield_max_gain_restores": false,
+    "clear_health_restore": 3,
+    "recovery_acquired_after_room": 6
+  },
+  "scenarios": {
+    "spell_ids": ["F01", "F07", "F10"],
+    "spell_levels": [1, 3],
+    "baseline_has_three_fire_synergy": true,
+    "baseline_crit_rates": [0.05, 0.20],
+    "baseline_crit_multipliers": [1.5, 1.75],
+    "conditional_uptime": [0, 0.5, 1],
+    "uptime_interpretation": "Damage-weighted joint average uptime for flawless and full-three-stack hunt; not measured elapsed-time uptime",
+    "builds": {
+      "baseline": [],
+      "mixed_four": ["U03_attack", "cooldown_6pp", "armor_15", "U02_shield"],
+      "offense_six": ["U03_attack", "cooldown_6pp", "crit_8pp", "crit_multiplier_0.25", "flawless_18pct", "hunt_full_18pct"]
+    }
+  },
+  "design_references": {
+    "mixed_four_damage_uplift_reference": [0.10, 0.30],
+    "offense_six_full_uptime_damage_uplift_reference_line": 0.90,
+    "references_are_hard_caps_or_acceptance_gates": false,
+    "user_accepts_strong_build_power_jumps": true,
+    "user_direction": "输出明显跃升问题不大，后续尚有15房和Boss待设计；最终60房含Boss通关约30分钟。"
+  },
+  "experience_target": {
+    "final_route_room_count": 60,
+    "includes_formal_bosses": true,
+    "approximate_completion_minutes": 30,
+    "validated_by_this_static_model": false
+  },
+  "sensitivity": {
+    "cooldown_reduction_add": [0.04, 0.06, 0.08],
+    "armor_single_item": [10, 15, 20]
+  }
+}

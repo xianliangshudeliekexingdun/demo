@@ -1,0 +1,404 @@
+{
+  "scope": "Regression expectation captured from approved first-fifteen route before expansion; tests only, never runtime defaults.",
+  "encounters": {
+    "1": {
+      "kind": "normal",
+      "packs": [
+        {
+          "M01": 3
+        }
+      ]
+    },
+    "2": {
+      "kind": "normal",
+      "packs": [
+        {
+          "M01": 3,
+          "M02": 1
+        }
+      ]
+    },
+    "3": {
+      "kind": "normal",
+      "packs": [
+        {
+          "M01": 3,
+          "M02": 2
+        }
+      ]
+    },
+    "4": {
+      "kind": "normal",
+      "packs": [
+        {
+          "M01": 2,
+          "M03": 1
+        },
+        {
+          "M01": 2,
+          "M02": 1
+        }
+      ]
+    },
+    "5": {
+      "kind": "normal",
+      "packs": [
+        {
+          "M01": 2,
+          "M02": 2,
+          "M03": 1
+        }
+      ]
+    },
+    "6": {
+      "kind": "elite",
+      "packs": [
+        {
+          "EL01": 1
+        }
+      ]
+    },
+    "7": {
+      "kind": "normal",
+      "packs": [
+        {
+          "M01": 3,
+          "M02": 2
+        },
+        {
+          "M01": 2,
+          "M03": 1
+        }
+      ]
+    },
+    "8": {
+      "kind": "normal",
+      "packs": [
+        {
+          "M01": 2,
+          "M04": 1
+        },
+        {
+          "M01": 1,
+          "M02": 1,
+          "M03": 1
+        }
+      ]
+    },
+    "9": {
+      "kind": "normal",
+      "packs": [
+        {
+          "EL01": 1,
+          "M02": 2
+        },
+        {
+          "M01": 2,
+          "M03": 1
+        }
+      ]
+    },
+    "10": {
+      "kind": "normal",
+      "packs": [
+        {
+          "M01": 2,
+          "M02": 1,
+          "M03": 1
+        }
+      ]
+    },
+    "11": {
+      "kind": "normal",
+      "packs": [
+        {
+          "M01": 1,
+          "M02": 2,
+          "M03": 1,
+          "M04": 1
+        },
+        {
+          "M01": 2,
+          "M02": 1
+        }
+      ]
+    },
+    "12": {
+      "kind": "elite",
+      "packs": [
+        {
+          "EL02": 1
+        }
+      ]
+    },
+    "13": {
+      "kind": "normal",
+      "packs": [
+        {
+          "M01": 2,
+          "M02": 1,
+          "M03": 1,
+          "M04": 1
+        }
+      ]
+    },
+    "14": {
+      "kind": "normal",
+      "packs": [
+        {
+          "M01": 2,
+          "M02": 1,
+          "M04": 1
+        },
+        {
+          "M01": 2,
+          "M02": 1,
+          "M03": 1
+        }
+      ]
+    },
+    "15": {
+      "kind": "elite_guard",
+      "packs": [
+        {
+          "EL02_GUARD": 1,
+          "M03": 1,
+          "M04": 1
+        },
+        {
+          "M01": 2,
+          "M02": 2
+        }
+      ]
+    }
+  },
+  "spell_rooms": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    7,
+    8,
+    9,
+    10,
+    11,
+    13,
+    14
+  ],
+  "treasure_rooms": [
+    6,
+    12,
+    15
+  ],
+  "enemy_runtime": {
+    "version": "route-enemy-runtime-2-pressure-20261017",
+    "scope": "Early-route room stages. Rooms 1-3 preserve the teaching baseline; later normal enemies gain health and attack pressure rather than only increasing elite health. Shared candidate sources remain immutable. No boss is implemented.",
+    "heavy_warning_spacing": 0.6,
+    "projectile_lifetime": 5.0,
+    "early_stats": {
+      "M03": {
+        "health": 320,
+        "damage": 38
+      },
+      "M04": {
+        "health": 220,
+        "damage": 32
+      }
+    },
+    "north_spawn": {
+      "x_fractions": [
+        -0.58,
+        -0.29,
+        0.0,
+        0.29,
+        0.58
+      ],
+      "portal_z_offsets": [
+        -2.2,
+        -4.4
+      ],
+      "description": "Only the north portal forecourt; locked exit illumination is decorative, not an active spawn hazard."
+    },
+    "types": {
+      "M01": {
+        "behavior": "lunge",
+        "base_type": "M01",
+        "runtime_ref": "M01",
+        "elite": false
+      },
+      "M02": {
+        "behavior": "shooter",
+        "base_type": "M02",
+        "elite": false,
+        "move_speed": 1.35,
+        "radius": 0.48,
+        "attack_trigger_range": 8.0,
+        "stop_range": 5.8,
+        "recovery": 0.8,
+        "projectile_range": 15.0,
+        "spread_degrees": [
+          0.0
+        ]
+      },
+      "M03": {
+        "behavior": "lunge",
+        "base_type": "M03",
+        "elite": false,
+        "heavy": true,
+        "move_speed": 1.75,
+        "radius": 0.62,
+        "attack_trigger_range": 6.5,
+        "lunge_distance": 7.0,
+        "lunge_duration": 0.7,
+        "recovery": 1.25
+      },
+      "M04": {
+        "behavior": "mark",
+        "base_type": "M04",
+        "elite": false,
+        "heavy": true,
+        "move_speed": 1.55,
+        "radius": 0.45,
+        "attack_trigger_range": 8.0,
+        "stop_range": 6.8,
+        "active_duration": 0.15,
+        "recovery": 0.85
+      },
+      "EL01": {
+        "name": "冠纹史莱姆",
+        "behavior": "lunge",
+        "elite": true,
+        "base_elite": "EL01",
+        "warning": 0.85,
+        "second_warning": 0.75,
+        "attack_cycle": 5.2,
+        "move_speed": 2.1,
+        "radius": 0.78,
+        "attack_trigger_range": 3.3,
+        "lunge_distance": 3.6,
+        "lunge_duration": 0.36,
+        "recovery": 1.4,
+        "danger_radius": 0.78,
+        "lunges": 2
+      },
+      "EL02": {
+        "name": "裂籽花妖",
+        "behavior": "shooter",
+        "elite": true,
+        "base_elite": "EL02",
+        "warning": 0.95,
+        "attack_cycle": 4.5,
+        "move_speed": 1.1,
+        "radius": 0.78,
+        "attack_trigger_range": 9.0,
+        "stop_range": 6.8,
+        "recovery": 1.35,
+        "projectile_range": 15.0,
+        "projectile_speed": 3.2,
+        "projectile_radius": 0.18,
+        "spread_degrees": [
+          -32.0,
+          -16.0,
+          0.0,
+          16.0,
+          32.0
+        ]
+      },
+      "EL02_GUARD": {
+        "name": "裂籽守门精英",
+        "variant_of": "EL02",
+        "health_multiplier": 1.3,
+        "damage_multiplier": 1.1
+      }
+    },
+    "stat_stages": [
+      {
+        "id": "teaching",
+        "from": 1,
+        "to": 3,
+        "normal": {
+          "health": 1.0,
+          "move_speed": 1.0,
+          "projectile_speed": 1.0,
+          "attack_cycle": 1.0
+        },
+        "elite": {
+          "health": 1.0,
+          "move_speed": 1.0,
+          "projectile_speed": 1.0,
+          "attack_cycle": 1.0
+        }
+      },
+      {
+        "id": "first_pressure",
+        "from": 4,
+        "to": 5,
+        "normal": {
+          "health": 3.5,
+          "move_speed": 1.16,
+          "projectile_speed": 1.25,
+          "attack_cycle": 0.85
+        },
+        "elite": {
+          "health": 1.2,
+          "move_speed": 1.16,
+          "projectile_speed": 1.25,
+          "attack_cycle": 0.9
+        }
+      },
+      {
+        "id": "mixed_pressure",
+        "from": 6,
+        "to": 8,
+        "normal": {
+          "health": 6.0,
+          "move_speed": 1.28,
+          "projectile_speed": 1.5,
+          "attack_cycle": 0.72
+        },
+        "elite": {
+          "health": 1.5,
+          "move_speed": 1.22,
+          "projectile_speed": 1.5,
+          "attack_cycle": 0.85
+        }
+      },
+      {
+        "id": "inner_pressure",
+        "from": 9,
+        "to": 11,
+        "normal": {
+          "health": 10.0,
+          "move_speed": 1.43,
+          "projectile_speed": 1.85,
+          "attack_cycle": 0.62
+        },
+        "elite": {
+          "health": 2.0,
+          "move_speed": 1.35,
+          "projectile_speed": 1.85,
+          "attack_cycle": 0.78
+        }
+      },
+      {
+        "id": "gate_pressure",
+        "from": 12,
+        "to": 15,
+        "normal": {
+          "health": 15.0,
+          "move_speed": 1.55,
+          "projectile_speed": 2.2,
+          "attack_cycle": 0.55
+        },
+        "elite": {
+          "health": 2.6,
+          "move_speed": 1.45,
+          "projectile_speed": 2.2,
+          "attack_cycle": 0.72
+        }
+      }
+    ],
+    "stage_rules": "Only health, walking speed, projectile speed and attack-cycle start intervals change by room. Damage, footprints, attack shapes, direction locking and warnings stay fixed. Minimum cycle includes the full readable attack and recovery."
+  }
+}

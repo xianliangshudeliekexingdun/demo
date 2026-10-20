@@ -1,0 +1,501 @@
+{
+  "version": "formal-ice-runtime-20261018",
+  "status": "approved_implementation",
+  "design_source": "docs/游戏设计/14-正式冰系法术与职业宝物.md",
+  "school": "ice",
+  "mechanics": {
+    "damage_unit": "1=100%攻击",
+    "max_slots": 8,
+    "max_level": 3,
+    "crit_attribute_cap": null,
+    "crit_probability_cap": 1,
+    "cdr_cap": 0.6,
+    "minimum_cooldown": 0.2,
+    "initial_ids": [
+      "I01",
+      "I02",
+      "I03"
+    ],
+    "resonance": {
+      "distinct_spells": 3,
+      "school_damage_bonus": 0.1,
+      "school_cdr": 0.1
+    },
+    "frost": {
+      "max_stacks": 3,
+      "expiry": 4,
+      "slow_per_stack": {
+        "normal": 0.08,
+        "elite": 0.06,
+        "fixed_strong": 0.04
+      },
+      "ready_window": 2.5,
+      "base_freeze": 1.2,
+      "control_duration_coefficients": {
+        "normal": 1,
+        "elite": 0.35,
+        "fixed_strong": 0
+      },
+      "post_freeze_immunity": 3,
+      "window_refresh": false,
+      "stacks_during_window": false,
+      "immunity_allows_brittle_window": true,
+      "default_chill_applications_per_cast_per_actor": 1,
+      "freeze_behavior": "挂起敌移动/AI/未释放攻击倒计时/本体接触冲锋伤害，预警保留；原剩余时序恢复不重瞄；离体弹/玩家伤害/燃烧/世界战斗时间继续"
+    },
+    "shatter": {
+      "new_global_bucket": false,
+      "can_crit": false,
+      "ordinary_formula": "当前攻击*(系数)*(1+通用增伤)*(1+冰伤)*(1+目标冰易伤)",
+      "triggers_direct_hit_items": false,
+      "consumes_unique_pre_hit_token": true
+    },
+    "snapshot_policy": "等级/几何/系数/追加倍率释放时固定；进攻属性及目标状态命中时读取；不迁移现行火/F04",
+    "control_note": "硬控系数只乘硬冻结时长；减速独立配置不乘此系数",
+    "event_priority": "先到期清理；既有主伤/GT01/死亡；存活施霜及明示职业层；窗口生成；赢得旧token的碎冰；明示碎片/留层；新自然释放",
+    "shared_slow_caps": {
+      "normal": 0.45,
+      "elite": 0.25,
+      "fixed_strong": 0.15
+    },
+    "player_manual_shatter": false,
+    "control_class_by_type": {
+      "M01": "normal",
+      "M02": "normal",
+      "M03": "normal",
+      "M04": "normal",
+      "EL01": "elite",
+      "EL02": "elite",
+      "EL02_GUARD": "fixed_strong",
+      "BOSS01": "fixed_strong",
+      "BOSS04": "fixed_strong",
+      "BOSS02": "fixed_strong",
+      "BOSS03": "fixed_strong"
+    }
+  },
+  "spells": {
+    "I01": {
+      "name": "霜弹术",
+      "windup": 0.15,
+      "levels": [
+        {
+          "coefficient": 1.2,
+          "range": 8,
+          "speed": 14,
+          "projectile_radius": 0.18,
+          "chill_stacks": 1,
+          "cooldown": 1.3
+        },
+        {
+          "coefficient": 1.6,
+          "range": 8,
+          "speed": 14,
+          "projectile_radius": 0.22,
+          "chill_stacks": 1,
+          "cooldown": 1.3
+        },
+        {
+          "coefficient": 1.9,
+          "range": 8,
+          "speed": 14,
+          "projectile_radius": 0.22,
+          "chill_stacks": 1,
+          "chill_stacks_if_pre_frost_1_or_2": 2,
+          "cooldown": 1.3
+        }
+      ],
+      "targeting": "最近可直射活敌；发射后不追踪，首敌/障碍销毁；无寒霜正常基础伤",
+      "school": "ice",
+      "active": true,
+      "kind": "ice_bolt",
+      "cooldown": 1.3
+    },
+    "I02": {
+      "name": "冰锥穿刺",
+      "windup": 0.25,
+      "levels": [
+        {
+          "coefficient": 1.6,
+          "following_coefficient": 1.6,
+          "length": 8,
+          "width": 0.45,
+          "target_cap": 3,
+          "chill_stacks": 1,
+          "cooldown": 2.3,
+          "range": 8
+        },
+        {
+          "coefficient": 2,
+          "following_coefficient": 2,
+          "length": 9,
+          "width": 0.6,
+          "target_cap": 4,
+          "chill_stacks": 1,
+          "cooldown": 2.3,
+          "range": 9
+        },
+        {
+          "coefficient": 2,
+          "following_coefficient": 2.4,
+          "length": 9,
+          "width": 0.6,
+          "target_cap": 4,
+          "chill_stacks": 1,
+          "cooldown": 2.3,
+          "range": 9
+        }
+      ],
+      "targeting": "最近可视方向，按沿线前后取独立目标；障碍截断，空名额不返主目标",
+      "school": "ice",
+      "active": true,
+      "kind": "ice_beam",
+      "cooldown": 2.3
+    },
+    "I03": {
+      "name": "寒星落击",
+      "windup": 0.35,
+      "levels": [
+        {
+          "coefficient": 1.8,
+          "range": 8,
+          "radius": 1.6,
+          "impact_delay": 0.35,
+          "chill_stacks": 1,
+          "followup_coefficient": 0,
+          "followup_delay": 0.4,
+          "cooldown": 3.8
+        },
+        {
+          "coefficient": 2.4,
+          "range": 8,
+          "radius": 2,
+          "impact_delay": 0.35,
+          "chill_stacks": 1,
+          "followup_coefficient": 0,
+          "followup_delay": 0.4,
+          "cooldown": 3.8
+        },
+        {
+          "coefficient": 2.4,
+          "range": 8,
+          "radius": 2,
+          "impact_delay": 0.35,
+          "chill_stacks": 1,
+          "followup_coefficient": 0.8,
+          "followup_delay": 0.4,
+          "cooldown": 3.8
+        }
+      ],
+      "targeting": "起吟锁最近可视目标旧位置；释放后落点不追踪，区域中心逐敌LOS；后冰屑不施霜",
+      "school": "ice",
+      "active": true,
+      "kind": "ice_impact",
+      "cooldown": 3.8
+    },
+    "I04": {
+      "name": "霜环",
+      "windup": 0.2,
+      "levels": [
+        {
+          "coefficient": 0.8,
+          "radius": 2.2,
+          "chill_stacks": 1,
+          "slow_duration": 1.5,
+          "slow_normal": 0.3,
+          "slow_elite": 0.2,
+          "slow_fixed_strong": 0.12,
+          "cooldown": 5
+        },
+        {
+          "coefficient": 1,
+          "radius": 2.8,
+          "chill_stacks": 1,
+          "slow_duration": 1.5,
+          "slow_normal": 0.3,
+          "slow_elite": 0.2,
+          "slow_fixed_strong": 0.12,
+          "cooldown": 5
+        },
+        {
+          "coefficient": 1,
+          "radius": 2.8,
+          "chill_stacks": 2,
+          "slow_duration": 1.5,
+          "slow_normal": 0.3,
+          "slow_elite": 0.2,
+          "slow_fixed_strong": 0.12,
+          "cooldown": 5
+        }
+      ],
+      "targeting": "本级半径内可视活敌才起吟；释放玩家当下中心，不击退；完成失效取消",
+      "school": "ice",
+      "active": true,
+      "kind": "ice_ring",
+      "cooldown": 5
+    },
+    "I05": {
+      "name": "极寒领域",
+      "windup": 0.4,
+      "levels": [
+        {
+          "coefficient": 0.45,
+          "range": 8,
+          "radius": 2.4,
+          "duration": 4,
+          "first_tick": 0.5,
+          "interval": 1,
+          "ticks": 4,
+          "chill_stacks": 1,
+          "first_valid_chill_stacks": 1,
+          "cooldown": 7
+        },
+        {
+          "coefficient": 0.6,
+          "range": 8,
+          "radius": 3,
+          "duration": 5,
+          "first_tick": 0.5,
+          "interval": 1,
+          "ticks": 5,
+          "chill_stacks": 1,
+          "first_valid_chill_stacks": 1,
+          "cooldown": 7
+        },
+        {
+          "coefficient": 0.6,
+          "range": 8,
+          "radius": 3,
+          "duration": 5,
+          "first_tick": 0.5,
+          "interval": 1,
+          "ticks": 5,
+          "chill_stacks": 1,
+          "first_valid_chill_stacks": 2,
+          "cooldown": 7
+        }
+      ],
+      "targeting": "锁最近可视旧点；唯一领域重放替换；区域逐敌LOS",
+      "shared_hit_gate": 1,
+      "shared_chill_gate": 1,
+      "extra_cast_resets_shared_gate": false,
+      "school": "ice",
+      "active": true,
+      "kind": "ice_field",
+      "cooldown": 7
+    },
+    "I06": {
+      "name": "冰晶风暴",
+      "windup": 0.45,
+      "levels": [
+        {
+          "coefficient": 0.45,
+          "range": 8,
+          "length": 8,
+          "width": 3,
+          "waves": 4,
+          "first_wave": 0.3,
+          "wave_interval": 0.6,
+          "chill_effective_waves": [
+            1,
+            3
+          ],
+          "chill_cap": 2,
+          "final_ready_coefficient": 0.45,
+          "cooldown": 7.5
+        },
+        {
+          "coefficient": 0.6,
+          "range": 8,
+          "length": 8,
+          "width": 3.5,
+          "waves": 5,
+          "first_wave": 0.3,
+          "wave_interval": 0.6,
+          "chill_effective_waves": [
+            1,
+            3
+          ],
+          "chill_cap": 2,
+          "final_ready_coefficient": 0.6,
+          "cooldown": 7.5
+        },
+        {
+          "coefficient": 0.6,
+          "range": 8,
+          "length": 8,
+          "width": 3.5,
+          "waves": 6,
+          "first_wave": 0.3,
+          "wave_interval": 0.6,
+          "chill_effective_waves": [
+            1,
+            3
+          ],
+          "chill_cap": 2,
+          "final_ready_coefficient": 0.9,
+          "cooldown": 7.5
+        }
+      ],
+      "targeting": "起吟锁可视方向的固定条带，障碍截断；第1/3次实际有效波施霜，非空波序号",
+      "shared_hit_gate": 0.6,
+      "shared_chill_gate": 0.6,
+      "school": "ice",
+      "active": true,
+      "kind": "ice_storm",
+      "cooldown": 7.5
+    },
+    "I07": {
+      "name": "碎冰术",
+      "windup": 0.3,
+      "levels": [
+        {
+          "coefficient": 1,
+          "range": 8,
+          "shatter_coefficient": 2,
+          "shard_coefficient": 0,
+          "shard_radius": 0,
+          "shard_target_cap": 0,
+          "cooldown": 4
+        },
+        {
+          "coefficient": 1.4,
+          "range": 8,
+          "shatter_coefficient": 2.6,
+          "shard_coefficient": 0.8,
+          "shard_radius": 1.6,
+          "shard_target_cap": 3,
+          "cooldown": 4
+        },
+        {
+          "coefficient": 1.8,
+          "range": 8,
+          "shatter_coefficient": 3.2,
+          "shard_coefficient": 1,
+          "shard_radius": 2.2,
+          "shard_target_cap": 4,
+          "cooldown": 4
+        }
+      ],
+      "targeting": "优先最近可视就绪者，否则最近可视活敌；无窗口仍基础伤",
+      "derived": "旧窗口唯一token消费；主击/GT01杀死旧就绪者可一次邻片但不补尸体主伤；邻片逐边LOS、不施霜/递归",
+      "extra_cast_scales_all_damage": true,
+      "school": "ice",
+      "active": true,
+      "kind": "ice_shatter",
+      "cooldown": 4
+    },
+    "I08": {
+      "name": "冰封棺",
+      "windup": 0.55,
+      "levels": [
+        {
+          "coefficient": 2,
+          "range": 8,
+          "impact_delay": 0.25,
+          "radius": 0.65,
+          "ready_window": 2.5,
+          "freeze_base": 1.5,
+          "cooldown": 8
+        },
+        {
+          "coefficient": 2.6,
+          "range": 8,
+          "impact_delay": 0.25,
+          "radius": 0.65,
+          "ready_window": 2.5,
+          "freeze_base": 1.75,
+          "cooldown": 8
+        },
+        {
+          "coefficient": 3.2,
+          "range": 8,
+          "impact_delay": 0.25,
+          "radius": 0.65,
+          "ready_window": 2.5,
+          "freeze_base": 2,
+          "cooldown": 8
+        }
+      ],
+      "targeting": "当前生命最高可视活敌，同分取近；释放锁当前位置，单体落点不追踪；无寒霜可直接建窗，已有窗不续，免控只冰裂",
+      "school": "ice",
+      "active": true,
+      "kind": "ice_prison",
+      "cooldown": 8
+    },
+    "I09": {
+      "name": "凝霜护体",
+      "windup": 0.25,
+      "levels": [
+        {
+          "defense_add": 20,
+          "duration": 3,
+          "radius": 1.8,
+          "chill_stacks": 1,
+          "followup_delay": 0,
+          "followup_chill_stacks": 0,
+          "cooldown": 10
+        },
+        {
+          "defense_add": 30,
+          "duration": 3,
+          "radius": 2.2,
+          "chill_stacks": 1,
+          "followup_delay": 0,
+          "followup_chill_stacks": 0,
+          "cooldown": 10
+        },
+        {
+          "defense_add": 30,
+          "duration": 4,
+          "radius": 2.2,
+          "chill_stacks": 1,
+          "followup_delay": 2,
+          "followup_chill_stacks": 1,
+          "cooldown": 10
+        }
+      ],
+      "combat_enemy_range": 6,
+      "recast_remaining_gate": 0.25,
+      "targeting": "6m可视活敌且本增益剩余<=.25s；无近敌仍获防御；追加唯一刷新，无回复/伤害/GT01",
+      "school": "ice",
+      "active": true,
+      "kind": "ice_armor",
+      "cooldown": 10,
+      "range": 6
+    },
+    "I10": {
+      "name": "冰法研习",
+      "windup": 0,
+      "levels": [
+        {
+          "school_damage_bonus": 0.1,
+          "ready_window_add": 0,
+          "cooldown": 0
+        },
+        {
+          "school_damage_bonus": 0.18,
+          "ready_window_add": 0,
+          "cooldown": 0
+        },
+        {
+          "school_damage_bonus": 0.25,
+          "ready_window_add": 0.5,
+          "cooldown": 0
+        }
+      ],
+      "natural_cast_count": false,
+      "freeze_duration_add": 0,
+      "school": "ice",
+      "active": true,
+      "kind": "passive",
+      "cooldown": 0
+    }
+  },
+  "effects": {
+    "hit": 0.3,
+    "ring": 0.45,
+    "impact": 0.55,
+    "shatter": 0.6,
+    "armor": 0.5
+  }
+}

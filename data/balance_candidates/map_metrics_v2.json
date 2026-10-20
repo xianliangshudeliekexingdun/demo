@@ -1,0 +1,53 @@
+{
+  "version": "map-metrics-v2-composition-candidate-20261017",
+  "status": "composition_and_dimensions_proposal_not_loaded_by_game",
+  "base_parameters": "first_run_v1.json",
+  "ordinary_room_parameters": "normal_rooms_v1.json",
+  "previous_dimensions": "map_metrics_v1.json",
+  "viewport_reference": "project.godot",
+  "visual_reference": {"actor_call": "scripts/presentation/trial_view.gd", "actor_kind": "LINA"},
+  "floor": {"width": 12.0, "depth": 14.0, "tile_size": 1.0, "same_dimensions_for_normal_elite_boss": true, "dimensions_exclude_walls_and_hud": true},
+  "zones_bottom_to_top": [
+    {"id": "entry", "name": "入口与开场区", "depth": 2.0},
+    {"id": "combat", "name": "中部战斗区", "depth": 10.0},
+    {"id": "portal", "name": "清场传送区", "depth": 2.0}
+  ],
+  "presentation": {
+    "pixels_per_meter_x": 56.0,
+    "pixels_per_meter_depth": 34.0,
+    "floor_center_canvas_y": 392.0,
+    "horizontal_alignment": "center",
+    "hud_top_reserved": 64.0,
+    "hud_bottom_reserved": 84.0,
+    "ground_projection": "fixed_2d_oblique",
+    "actor_canvas_height": 96.0,
+    "scale_actor_texture_with_ground_projection": false,
+    "portal_max_canvas_width": 156.0,
+    "portal_max_canvas_height": 120.0,
+    "side_wall_outer_margin": 28.0,
+    "rear_wall_canvas_height": 52.0,
+    "front_wall_canvas_overhang": 6.0
+  },
+  "flow": {
+    "entry_side": "bottom",
+    "exit_side": "top",
+    "portal_visible_in_combat": false,
+    "clear_disables_spikes_before_rewards": true,
+    "portal_appears_after_clear": true,
+    "portal_usable_after_rewards": true,
+    "exit_after_rewards": "walk_into_portal",
+    "terminal_room_uses_final_settlement": true,
+    "zones_are_visual_bands_not_sealed_rooms": true,
+    "entry_safety_is_opening_only": true,
+    "fixed_spikes_and_spawn_areas_only_in_combat_band": true,
+    "enemies_can_chase_into_entry_and_portal_bands": true
+  },
+  "diagram": {
+    "reference": "docs/游戏设计/参考图/06-整房构图-v2.png",
+    "prompt": "docs/游戏设计/参考图/06-整房构图-v2-prompt.txt",
+    "state": "after_clear_spikes_retracted_no_live_enemies",
+    "metric_accuracy": "illustrative_not_measured_blueprint",
+    "diagram_arrows_are_not_gameplay_rails": true,
+    "asset_approval": "concept_reference_only"
+  }
+}

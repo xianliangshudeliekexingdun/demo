@@ -1,0 +1,517 @@
+{
+  "version": "room-spatial-v1-candidate-20261017",
+  "status": "authored_design_not_loaded_by_game",
+  "metrics_parameters": "map_metrics_v2.json",
+  "base_parameters": "first_run_v1.json",
+  "ordinary_room_parameters": "normal_rooms_v1.json",
+  "economy_parameters": "run_economy_v1.json",
+  "meta_parameters": "meta_growth_v1.json",
+  "coordinates": "meters; x right; z toward upper portal; origin at room center",
+  "layout_rules": {
+    "minimum_solid_wall_gap": 2.0,
+    "central_clear_width": 4.0,
+    "walk_validation_margin": 0.05,
+    "agent_probe_radius": 0.5
+  },
+  "layouts": {
+    "open": {
+      "name": "边侧掩体",
+      "blocks": [
+        {
+          "center": [
+            -3.5,
+            0
+          ],
+          "size": [
+            1,
+            1
+          ]
+        },
+        {
+          "center": [
+            3.5,
+            0
+          ],
+          "size": [
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    "pillars": {
+      "name": "四柱绕行",
+      "blocks": [
+        {
+          "center": [
+            -3.5,
+            -1.5
+          ],
+          "size": [
+            1,
+            1
+          ]
+        },
+        {
+          "center": [
+            -3.5,
+            1.5
+          ],
+          "size": [
+            1,
+            1
+          ]
+        },
+        {
+          "center": [
+            3.5,
+            -1.5
+          ],
+          "size": [
+            1,
+            1
+          ]
+        },
+        {
+          "center": [
+            3.5,
+            1.5
+          ],
+          "size": [
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    "cover": {
+      "name": "错列短墙",
+      "blocks": [
+        {
+          "center": [
+            -3,
+            1
+          ],
+          "size": [
+            2,
+            1
+          ]
+        },
+        {
+          "center": [
+            3,
+            -1
+          ],
+          "size": [
+            2,
+            1
+          ]
+        }
+      ]
+    }
+  },
+  "spikes": {
+    "plate_size": 1.0,
+    "plates": {
+      "SW": [
+        -3,
+        -3.5
+      ],
+      "SE": [
+        3,
+        -3.5
+      ],
+      "NW": [
+        -3,
+        3.5
+      ],
+      "NE": [
+        3,
+        3.5
+      ]
+    },
+    "profiles": {
+      "off": [],
+      "teach": [
+        [
+          "SW"
+        ]
+      ],
+      "sparse": [
+        [
+          "SW",
+          "NE"
+        ]
+      ],
+      "standard": [
+        [
+          "SW",
+          "NE"
+        ],
+        [
+          "NW",
+          "SE"
+        ]
+      ]
+    },
+    "first_warning_after_room_start": 2.0,
+    "warning": 1.2,
+    "active": 0.8,
+    "rest_after_retract": 4.0,
+    "damage_by_economy_stage": {
+      "early": 18,
+      "middle": 24,
+      "late": 30
+    },
+    "damage_target": "player_only",
+    "max_damage_attempts_per_activation": 1,
+    "invulnerable_contact_consumes_activation_attempt": true,
+    "heavy_attack_coordination": "one exclusive main-threat window; finish current heavy warning/main damage, gap, overdue spikes before next heavy; new heavy waits until spike retract plus gap; lingering projectiles do not hold window",
+    "gap_reference": "ordinary.spawn.minimum_heavy_warning_start_gap",
+    "no_catch_up_cycles": true,
+    "stop_on_clear_or_death": true
+  },
+  "spawn": {
+    "entry_player_center": [
+      0,
+      -6
+    ],
+    "major_enemy_center": [
+      0,
+      1.5
+    ],
+    "major_initial_preview": 1.2,
+    "normal_footprint_radius": 0.5,
+    "major_footprint_radius": 1.0,
+    "static_clearance": 0.1,
+    "existing_enemy_clearance": 0.1,
+    "minimum_slot_spacing": 1.2,
+    "attack_lock_after_appearance": 0.5,
+    "side_x": [
+      -5.1,
+      5.1
+    ],
+    "anchor_z": [
+      -3.75,
+      -1.25,
+      1.25,
+      3.75
+    ],
+    "slot_offsets_z": [
+      -0.6,
+      0.6
+    ],
+    "normal_preview_reference": "ordinary.spawn.preview_seconds",
+    "player_distance_reference": "ordinary.spawn.safe_player_distance",
+    "trigger_and_cap_reference": "ordinary.spawn.next_batch_when_alive_at_most + alive_cap_by_normal_stat_stage",
+    "whole_batch_reserved": true,
+    "recheck_at_activation": true,
+    "invalid_reservation": "cancel batch preview; reselect and give full preview; if no complete set, queue without dropping enemies",
+    "selection": "seeded order, without replacement; balance sides when possible; validate whole batch",
+    "clear_requires_all_configured_batches": true,
+    "major_companions_share_initial_preview": true,
+    "final_boss_core_death_cancels_pending_summons": true
+  },
+  "rooms": [
+    {
+      "room": 1,
+      "layout": "open",
+      "spikes": "off"
+    },
+    {
+      "room": 2,
+      "layout": "open",
+      "spikes": "off"
+    },
+    {
+      "room": 3,
+      "layout": "open",
+      "spikes": "off"
+    },
+    {
+      "room": 4,
+      "layout": "open",
+      "spikes": "off"
+    },
+    {
+      "room": 5,
+      "layout": "open",
+      "spikes": "teach"
+    },
+    {
+      "room": 6,
+      "layout": "open",
+      "spikes": "sparse"
+    },
+    {
+      "room": 7,
+      "layout": "pillars",
+      "spikes": "sparse"
+    },
+    {
+      "room": 8,
+      "layout": "pillars",
+      "spikes": "sparse"
+    },
+    {
+      "room": 9,
+      "layout": "cover",
+      "spikes": "sparse"
+    },
+    {
+      "room": 10,
+      "layout": "open",
+      "spikes": "sparse"
+    },
+    {
+      "room": 11,
+      "layout": "cover",
+      "spikes": "sparse"
+    },
+    {
+      "room": 12,
+      "layout": "cover",
+      "spikes": "sparse"
+    },
+    {
+      "room": 13,
+      "layout": "open",
+      "spikes": "off"
+    },
+    {
+      "room": 14,
+      "layout": "open",
+      "spikes": "off"
+    },
+    {
+      "room": 15,
+      "layout": "open",
+      "spikes": "sparse"
+    },
+    {
+      "room": 16,
+      "layout": "open",
+      "spikes": "off"
+    },
+    {
+      "room": 17,
+      "layout": "open",
+      "spikes": "sparse"
+    },
+    {
+      "room": 18,
+      "layout": "pillars",
+      "spikes": "standard"
+    },
+    {
+      "room": 19,
+      "layout": "cover",
+      "spikes": "standard"
+    },
+    {
+      "room": 20,
+      "layout": "open",
+      "spikes": "sparse"
+    },
+    {
+      "room": 21,
+      "layout": "open",
+      "spikes": "standard"
+    },
+    {
+      "room": 22,
+      "layout": "pillars",
+      "spikes": "standard"
+    },
+    {
+      "room": 23,
+      "layout": "cover",
+      "spikes": "standard"
+    },
+    {
+      "room": 24,
+      "layout": "open",
+      "spikes": "sparse"
+    },
+    {
+      "room": 25,
+      "layout": "open",
+      "spikes": "off"
+    },
+    {
+      "room": 26,
+      "layout": "pillars",
+      "spikes": "sparse"
+    },
+    {
+      "room": 27,
+      "layout": "cover",
+      "spikes": "standard"
+    },
+    {
+      "room": 28,
+      "layout": "open",
+      "spikes": "off"
+    },
+    {
+      "room": 29,
+      "layout": "open",
+      "spikes": "sparse"
+    },
+    {
+      "room": 30,
+      "layout": "pillars",
+      "spikes": "standard"
+    },
+    {
+      "room": 31,
+      "layout": "open",
+      "spikes": "off"
+    },
+    {
+      "room": 32,
+      "layout": "pillars",
+      "spikes": "standard"
+    },
+    {
+      "room": 33,
+      "layout": "cover",
+      "spikes": "standard"
+    },
+    {
+      "room": 34,
+      "layout": "open",
+      "spikes": "sparse"
+    },
+    {
+      "room": 35,
+      "layout": "cover",
+      "spikes": "standard"
+    },
+    {
+      "room": 36,
+      "layout": "pillars",
+      "spikes": "standard"
+    },
+    {
+      "room": 37,
+      "layout": "open",
+      "spikes": "standard"
+    },
+    {
+      "room": 38,
+      "layout": "open",
+      "spikes": "sparse"
+    },
+    {
+      "room": 39,
+      "layout": "cover",
+      "spikes": "standard"
+    },
+    {
+      "room": 40,
+      "layout": "cover",
+      "spikes": "sparse"
+    },
+    {
+      "room": 41,
+      "layout": "open",
+      "spikes": "standard"
+    },
+    {
+      "room": 42,
+      "layout": "pillars",
+      "spikes": "standard"
+    },
+    {
+      "room": 43,
+      "layout": "open",
+      "spikes": "off"
+    },
+    {
+      "room": 44,
+      "layout": "open",
+      "spikes": "off"
+    },
+    {
+      "room": 45,
+      "layout": "open",
+      "spikes": "standard"
+    },
+    {
+      "room": 46,
+      "layout": "open",
+      "spikes": "off"
+    },
+    {
+      "room": 47,
+      "layout": "pillars",
+      "spikes": "standard"
+    },
+    {
+      "room": 48,
+      "layout": "cover",
+      "spikes": "standard"
+    },
+    {
+      "room": 49,
+      "layout": "pillars",
+      "spikes": "standard"
+    },
+    {
+      "room": 50,
+      "layout": "open",
+      "spikes": "sparse"
+    },
+    {
+      "room": 51,
+      "layout": "open",
+      "spikes": "standard"
+    },
+    {
+      "room": 52,
+      "layout": "cover",
+      "spikes": "standard"
+    },
+    {
+      "room": 53,
+      "layout": "pillars",
+      "spikes": "standard"
+    },
+    {
+      "room": 54,
+      "layout": "open",
+      "spikes": "standard"
+    },
+    {
+      "room": 55,
+      "layout": "pillars",
+      "spikes": "standard"
+    },
+    {
+      "room": 56,
+      "layout": "open",
+      "spikes": "standard"
+    },
+    {
+      "room": 57,
+      "layout": "pillars",
+      "spikes": "standard"
+    },
+    {
+      "room": 58,
+      "layout": "open",
+      "spikes": "off"
+    },
+    {
+      "room": 59,
+      "layout": "open",
+      "spikes": "off"
+    },
+    {
+      "room": 60,
+      "layout": "open",
+      "spikes": "standard"
+    }
+  ]
+}

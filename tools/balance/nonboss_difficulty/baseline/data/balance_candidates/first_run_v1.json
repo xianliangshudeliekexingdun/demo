@@ -1,0 +1,93 @@
+{
+  "version": "first-run-v1-formal-fire-20261018",
+  "status": "runtime_shared_baseline_with_future_encounter_reference",
+  "units": {"time": "s", "distance": "m", "damage": "HP", "coefficient": "x_attack", "rate": "0_to_1"},
+  "player": {"health": 300, "shield": 100, "attack": 100, "crit_rate": 0.05, "crit_multiplier": 1.5, "fire_bonus": 0.0, "move_speed": 5.0, "radius": 0.3, "hurt_invulnerability": 0.6},
+  "limits": {"slots": 8, "spell_level": 3, "crit_rate": null, "cooldown_reduction": 0.6, "minimum_cooldown": 0.2},
+  "fire_synergy": {"distinct_spells": 3, "fire_bonus": 0.15, "cooldown_reduction": 0.1},
+  "recovery": {"shop_fraction": 0.2, "shop_max_health_gain": 20, "boss_fraction": 0.25, "shop_after": [9,24,33,42,54], "boss_after": [15,45], "health_gain_also_heals": false},
+  "attribute_artifact_candidates": {"health_max_flat": 80, "shield_max_flat": 25, "attack_flat": 15, "health_gain_also_heals": false, "status": "amounts_only_no_new_item_ids_or_rarity"},
+  "spells": {
+    "F01": {"school": "fire", "active": true, "name": "焰弹术", "kind": "bolt", "windup": 0.15, "cooldown": 1.2, "range": 8.0, "travel_delay": 0.15, "secondary_delay": 0.18, "levels": [
+      {"coefficient": 1.0, "secondary": 0.0, "radius": 0.8},
+      {"coefficient": 1.35, "secondary": 0.0, "radius": 1.0},
+      {"coefficient": 1.35, "secondary": 0.75, "radius": 1.0}
+    ]},
+    "F02": {"school": "fire", "active": true, "name": "炎法精通", "kind": "passive", "levels": [
+      {"fire_bonus": 0.15, "crit_bonus": 0.0},
+      {"fire_bonus": 0.25, "crit_bonus": 0.0},
+      {"fire_bonus": 0.35, "crit_bonus": 0.25}
+    ]},
+    "F03": {"school": "fire", "active": true, "name": "流火之雨", "kind": "rain", "windup": 0.4, "cooldown": 6.5, "range": 8.0, "impact_delay": 0.3, "interval": 0.4, "radius": 2.2, "ground_interval": 0.5, "first_drop_coefficient": 1.0, "fixed_center_drops": 1, "levels": [
+      {"coefficient": 0.6, "drops": 6, "ground_coefficient": 0.0, "ground_duration": 0.0},
+      {"coefficient": 0.6, "drops": 8, "ground_coefficient": 0.0, "ground_duration": 0.0},
+      {"coefficient": 0.6, "drops": 8, "ground_coefficient": 0.4, "ground_duration": 3.0}
+    ]},
+    "F04": {"name": "契灵召唤", "school": "spirit", "active": false, "kind": "spirit", "windup": 0.35, "cooldown": 12.0, "range": 8.0, "duration": 12.0, "count": 1, "levels": [
+      {"coefficient": 1.0, "interval": 1.25, "pierce": false},
+      {"coefficient": 1.45, "interval": 1.1, "pierce": false},
+      {"coefficient": 1.45, "interval": 1.1, "pierce": true}
+    ]},
+    "F05": {"school": "fire", "active": true, "name": "焰流旋涡", "kind": "vortex", "windup": 0.4, "cooldown": 6.0, "range": 7.0, "interval": 0.5, "duration": 4.0, "speed": 1.75, "levels": [
+      {"coefficient": 0.4, "radius": 1.2, "end_duration": 0.0},
+      {"coefficient": 0.6, "radius": 1.5, "end_duration": 0.0},
+      {"coefficient": 0.6, "radius": 1.5, "end_duration": 2.0}
+    ]},
+    "F06": {"school": "fire", "active": true, "name": "炽焰法阵", "kind": "field", "windup": 0.3, "cooldown": 8.0, "range": 8.0, "interval": 0.5, "attack_bonus": 0.2, "levels": [
+      {"coefficient": 0.4, "radius": 2.2, "duration": 4.0, "grace": 0.0},
+      {"coefficient": 0.4, "radius": 2.8, "duration": 6.0, "grace": 0.0},
+      {"coefficient": 0.4, "radius": 2.8, "duration": 6.0, "grace": 1.5}
+    ]},
+    "F07": {"school": "fire", "active": true, "name": "熔核爆弹", "kind": "bomb", "windup": 0.65, "cooldown": 6.0, "range": 9.0, "travel_delay": 0.45, "radius": 2.4, "aftershock_delay": 0.6, "levels": [
+      {"coefficient": 5.0, "outer": 2.5, "center_radius": 0.9, "aftershock": 0.0, "detonation_multiplier": 1.0},
+      {"coefficient": 6.5, "outer": 3.25, "center_radius": 1.2, "aftershock": 0.0, "detonation_multiplier": 1.25},
+      {"coefficient": 6.5, "outer": 3.25, "center_radius": 1.2, "aftershock": 1.5, "detonation_multiplier": 1.5}
+    ]},
+    "F08": {"school": "fire", "active": true, "name": "贯焰光束", "kind": "beam", "windup": 0.2, "cooldown": 2.0, "range": 8.0, "width": 0.5, "secondary_delay": 0.2, "levels": [
+      {"coefficient": 1.6, "secondary": 0.0, "range": 8.0},
+      {"coefficient": 2.2, "secondary": 0.0, "range": 9.5},
+      {"coefficient": 2.2, "secondary": 1.1, "range": 9.5}
+    ]},
+    "F09": {"school": "fire", "active": true, "name": "灼浪冲击", "kind": "wave", "windup": 0.2, "cooldown": 5.0, "range": 2.6, "levels": [
+      {"coefficient": 0.6, "radius": 2.0, "push": 1.5, "slow": 0.0, "slow_duration": 0.0},
+      {"coefficient": 0.6, "radius": 2.6, "push": 2.2, "slow": 0.0, "slow_duration": 0.0},
+      {"coefficient": 0.6, "radius": 2.6, "push": 2.2, "slow": 0.3, "slow_duration": 2.0}
+    ]},
+    "F10": {"school": "fire", "active": true, "name": "暖焰护持", "kind": "shield", "windup": 0.35, "cooldown": 12.0, "levels": [
+      {"shield": 30, "cooldown": 12.0},
+      {"shield": 45, "cooldown": 12.0},
+      {"shield": 45, "cooldown": 9.0}
+    ]},
+    "F11": {"name": "引燃之印", "school": "fire", "kind": "brand", "windup": 0.25, "cooldown": 6.0, "range": 8.0, "levels": [
+      {"coefficient": 0.8, "spread_radius": 3.0, "spread_targets": 2},
+      {"coefficient": 1.0, "spread_radius": 3.5, "spread_targets": 3},
+      {"coefficient": 1.0, "spread_radius": 4.0, "spread_targets": 4}
+    ]}
+  },
+  "normal_stages": [
+    {"from": 1, "to": 15, "stats": {"M01": {"health": 180, "damage": 30}, "M02": {"health": 160, "damage": 28}}},
+    {"from": 16, "to": 30, "stats": {"M01": {"health": 360, "damage": 36}, "M02": {"health": 300, "damage": 34}, "M03": {"health": 630, "damage": 55}, "M04": {"health": 360, "damage": 42}}},
+    {"from": 31, "to": 45, "stats": {"M01": {"health": 620, "damage": 42}, "M02": {"health": 520, "damage": 40}, "M03": {"health": 950, "damage": 65}, "M04": {"health": 600, "damage": 50}}},
+    {"from": 46, "to": 60, "stats": {"M01": {"health": 860, "damage": 48}, "M02": {"health": 720, "damage": 46}, "M03": {"health": 1300, "damage": 75}, "M04": {"health": 820, "damage": 58}}}
+  ],
+  "normal_types": {
+    "M01": {"name": "跃袭史莱姆", "introduced": 1, "warning": 0.65, "danger_radius": 0.55, "attack_cycle": 3.2},
+    "M02": {"name": "孢弹花妖", "introduced": 4, "warning": 0.8, "projectile_speed": 3.2, "projectile_radius": 0.18, "attack_cycle": 3.5},
+    "M03": {"name": "岩甲冲锋兽", "introduced": 16, "warning": 1.0, "danger_half_width": 0.6, "attack_cycle": 5.0},
+    "M04": {"name": "刻印术士", "introduced": 25, "warning": 1.1, "danger_radius": 1.2, "attack_cycle": 4.5}
+  },
+  "elites": [
+    {"room": 6, "id": "EL01", "name": "冠纹史莱姆", "health": 2400, "attacks": {"扑击每次": 40}, "adds": []},
+    {"room": 12, "id": "EL02", "name": "裂籽花妖", "health": 4000, "attacks": {"孢弹每枚": 38}, "adds": []},
+    {"room": 21, "id": "EL03", "name": "破阵岩甲兽", "health": 6000, "attacks": {"冲锋": 65, "碎石每枚": 42}, "adds": [ ]},
+    {"room": 30, "id": "EL04", "name": "双印术士", "health": 7800, "attacks": {"印记每次": 60}, "adds": []},
+    {"room": 39, "id": "EL02", "name": "裂籽花妖", "health": 10000, "attacks": {"孢弹每枚": 50}, "adds": ["M03"]},
+    {"room": 51, "id": "EL03", "name": "破阵岩甲兽", "health": 13000, "attacks": {"冲锋": 85, "碎石每枚": 58}, "adds": ["M02"]},
+    {"room": 57, "id": "EL04", "name": "双印术士", "health": 15000, "attacks": {"印记每次": 75}, "adds": ["M01"]}
+  ],
+  "bosses": [
+    {"room": 15, "id": "BOSS01", "name": "岩冠守卫", "health": 9000, "attacks": {"蓄力冲撞": 60, "岩屑每枚": 35}, "minimum_warning": 1.1},
+    {"room": 45, "id": "BOSS02", "name": "符阵监守", "health": 36000, "attacks": {"符光每枚": 50, "落印每次": 65, "符线每次": 60}, "minimum_warning": 1.1},
+    {"room": 60, "id": "BOSS03", "name": "遗迹之心", "health": 52000, "attacks": {"脉冲每枚": 60, "落印每次": 80}, "minimum_warning": 1.1, "phase_fraction": 0.5, "transition": 2.0, "summon_interval": 18.0, "adds": ["M01", "M02"]}
+  ]
+}

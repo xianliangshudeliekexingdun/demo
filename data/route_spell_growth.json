@@ -1,0 +1,865 @@
+{
+  "version": "route_spell_growth_v1_20261020",
+  "scope": "正式连续路线火冰二十术原有三级成长；未来强力特定法术效果由专属道具提供；没有独立法术专属升级系统。",
+  "spells": {
+    "F01": {
+      "levels": [
+        {
+          "coefficient": 1,
+          "secondary": 0,
+          "radius": 0.8,
+          "crit_patch_radius": 0,
+          "crit_patch_duration": 0,
+          "crit_patch_coefficient": 0,
+          "crit_patch_interval": 0.5
+        },
+        {
+          "coefficient": 1.45,
+          "secondary": 0,
+          "radius": 1.15,
+          "crit_patch_radius": 1.2,
+          "crit_patch_duration": 2,
+          "crit_patch_coefficient": 0.25,
+          "crit_patch_interval": 0.5
+        },
+        {
+          "coefficient": 1.65,
+          "secondary": 0.85,
+          "radius": 1.3,
+          "crit_patch_radius": 1.6,
+          "crit_patch_duration": 3,
+          "crit_patch_coefficient": 0.4,
+          "crit_patch_interval": 0.5
+        }
+      ]
+    },
+    "F02": {
+      "levels": [
+        {
+          "fire_bonus": 0.15,
+          "crit_bonus": 0,
+          "fire_crit_rate_add": 0
+        },
+        {
+          "fire_bonus": 0.3,
+          "crit_bonus": 0.1,
+          "fire_crit_rate_add": 0.08
+        },
+        {
+          "fire_bonus": 0.5,
+          "crit_bonus": 0.25,
+          "fire_crit_rate_add": 0.15
+        }
+      ]
+    },
+    "F03": {
+      "levels": [
+        {
+          "coefficient": 0.6,
+          "drops": 6,
+          "ground_coefficient": 0,
+          "ground_duration": 0,
+          "first_drop_coefficient": 1,
+          "fixed_center_drops": 1
+        },
+        {
+          "coefficient": 0.7,
+          "drops": 8,
+          "ground_coefficient": 0,
+          "ground_duration": 0,
+          "first_drop_coefficient": 1.25,
+          "fixed_center_drops": 2
+        },
+        {
+          "coefficient": 0.8,
+          "drops": 8,
+          "ground_coefficient": 0.5,
+          "ground_duration": 3,
+          "first_drop_coefficient": 1.5,
+          "fixed_center_drops": 2
+        }
+      ]
+    },
+    "F05": {
+      "levels": [
+        {
+          "coefficient": 0.4,
+          "radius": 1.2,
+          "end_duration": 0,
+          "first_hit_slow": 0,
+          "first_hit_slow_duration": 0
+        },
+        {
+          "coefficient": 0.65,
+          "radius": 1.6,
+          "end_duration": 0,
+          "first_hit_slow": 0.15,
+          "first_hit_slow_duration": 1.5
+        },
+        {
+          "coefficient": 0.75,
+          "radius": 1.8,
+          "end_duration": 2,
+          "first_hit_slow": 0.25,
+          "first_hit_slow_duration": 2
+        }
+      ]
+    },
+    "F06": {
+      "levels": [
+        {
+          "coefficient": 0.4,
+          "radius": 2.2,
+          "duration": 4,
+          "grace": 0,
+          "overlap_fire_vulnerability": 0,
+          "mature_after": 0,
+          "mature_coefficient": 0,
+          "mature_radius": 0
+        },
+        {
+          "coefficient": 0.5,
+          "radius": 3.1,
+          "duration": 6,
+          "grace": 0,
+          "overlap_fire_vulnerability": 0.1,
+          "mature_after": 0,
+          "mature_coefficient": 0,
+          "mature_radius": 0
+        },
+        {
+          "coefficient": 0.6,
+          "radius": 3.6,
+          "duration": 6,
+          "grace": 1.5,
+          "overlap_fire_vulnerability": 0.2,
+          "mature_after": 2,
+          "mature_coefficient": 4,
+          "mature_radius": 2.4
+        }
+      ]
+    },
+    "F07": {
+      "levels": [
+        {
+          "coefficient": 5,
+          "outer": 2.5,
+          "center_radius": 0.9,
+          "aftershock": 0,
+          "detonation_multiplier": 1,
+          "main_center_damage_multiplier": 1,
+          "main_center_crit_multiplier_add": 0,
+          "reapply_delay": 0,
+          "reapply_shared_cooldown": 0,
+          "natural_detonation_multiplier_add": 0
+        },
+        {
+          "coefficient": 7,
+          "outer": 3.5,
+          "center_radius": 1.2,
+          "aftershock": 0,
+          "detonation_multiplier": 1.5,
+          "main_center_damage_multiplier": 1.08,
+          "main_center_crit_multiplier_add": 0.25,
+          "reapply_delay": 0,
+          "reapply_shared_cooldown": 0,
+          "natural_detonation_multiplier_add": 0
+        },
+        {
+          "coefficient": 8,
+          "outer": 4,
+          "center_radius": 1.3,
+          "aftershock": 1.8,
+          "detonation_multiplier": 1.5,
+          "main_center_damage_multiplier": 1.15,
+          "main_center_crit_multiplier_add": 0.5,
+          "reapply_delay": 0.5,
+          "reapply_shared_cooldown": 2,
+          "natural_detonation_multiplier_add": 2
+        }
+      ]
+    },
+    "F08": {
+      "levels": [
+        {
+          "coefficient": 1.6,
+          "secondary": 0,
+          "range": 8,
+          "width": 0.5,
+          "echo_every": 0,
+          "echo_scale": 0
+        },
+        {
+          "coefficient": 2.4,
+          "secondary": 0,
+          "range": 9.5,
+          "width": 0.6,
+          "echo_every": 0,
+          "echo_scale": 0
+        },
+        {
+          "coefficient": 2.8,
+          "secondary": 1.4,
+          "range": 9.5,
+          "width": 0.7,
+          "echo_every": 3,
+          "echo_scale": 0.7
+        }
+      ]
+    },
+    "F09": {
+      "levels": [
+        {
+          "coefficient": 0.6,
+          "radius": 2,
+          "push": 1.5,
+          "slow": 0,
+          "slow_duration": 0,
+          "hit_move_speed_bonus": 0,
+          "hit_move_speed_duration": 0
+        },
+        {
+          "coefficient": 0.9,
+          "radius": 2.8,
+          "push": 2.2,
+          "slow": 0,
+          "slow_duration": 0,
+          "hit_move_speed_bonus": 0.08,
+          "hit_move_speed_duration": 2
+        },
+        {
+          "coefficient": 1.2,
+          "radius": 3.1,
+          "push": 2.5,
+          "slow": 0.3,
+          "slow_duration": 2,
+          "hit_move_speed_bonus": 0.15,
+          "hit_move_speed_duration": 2
+        }
+      ]
+    },
+    "F10": {
+      "levels": [
+        {
+          "shield": 30,
+          "cooldown": 12
+        },
+        {
+          "shield": 55,
+          "cooldown": 12
+        },
+        {
+          "shield": 70,
+          "cooldown": 9
+        }
+      ]
+    },
+    "F11": {
+      "levels": [
+        {
+          "coefficient": 0.8,
+          "spread_radius": 3,
+          "spread_targets": 2,
+          "burn_duration": 4,
+          "burn_maximum_ticks": 8
+        },
+        {
+          "coefficient": 1.1,
+          "spread_radius": 3.5,
+          "spread_targets": 4,
+          "burn_duration": 5,
+          "burn_maximum_ticks": 10
+        },
+        {
+          "coefficient": 1.4,
+          "spread_radius": 4,
+          "spread_targets": 6,
+          "burn_duration": 6,
+          "burn_maximum_ticks": 12
+        }
+      ]
+    },
+    "I01": {
+      "levels": [
+        {
+          "coefficient": 1.2,
+          "range": 8,
+          "speed": 14,
+          "projectile_radius": 0.18,
+          "chill_stacks": 1,
+          "cooldown": 1.3,
+          "frosted_coefficient_add": 0
+        },
+        {
+          "coefficient": 1.7,
+          "range": 8,
+          "speed": 14,
+          "projectile_radius": 0.22,
+          "chill_stacks": 1,
+          "cooldown": 1.3,
+          "frosted_coefficient_add": 0.25
+        },
+        {
+          "coefficient": 2.1,
+          "range": 8,
+          "speed": 14,
+          "projectile_radius": 0.22,
+          "chill_stacks": 1,
+          "chill_stacks_if_pre_frost_1_or_2": 2,
+          "cooldown": 1.3,
+          "frosted_coefficient_add": 0.5
+        }
+      ]
+    },
+    "I02": {
+      "levels": [
+        {
+          "coefficient": 1.6,
+          "following_coefficient": 1.6,
+          "length": 8,
+          "width": 0.45,
+          "target_cap": 3,
+          "chill_stacks": 1,
+          "cooldown": 2.3,
+          "range": 8,
+          "first_direct_extra_frost": 0
+        },
+        {
+          "coefficient": 2.2,
+          "following_coefficient": 2.2,
+          "length": 9,
+          "width": 0.7,
+          "target_cap": 5,
+          "chill_stacks": 1,
+          "cooldown": 2.3,
+          "range": 9,
+          "first_direct_extra_frost": 0
+        },
+        {
+          "coefficient": 2.4,
+          "following_coefficient": 2.8,
+          "length": 10,
+          "width": 0.8,
+          "target_cap": 6,
+          "chill_stacks": 1,
+          "cooldown": 2.3,
+          "range": 10,
+          "first_direct_extra_frost": 1
+        }
+      ]
+    },
+    "I03": {
+      "levels": [
+        {
+          "coefficient": 1.8,
+          "range": 8,
+          "radius": 1.6,
+          "impact_delay": 0.35,
+          "chill_stacks": 1,
+          "followup_coefficient": 0,
+          "followup_delay": 0.4,
+          "cooldown": 3.8,
+          "first_direct_extra_frost": 0
+        },
+        {
+          "coefficient": 2.6,
+          "range": 8,
+          "radius": 2.2,
+          "impact_delay": 0.2,
+          "chill_stacks": 1,
+          "followup_coefficient": 0,
+          "followup_delay": 0.4,
+          "cooldown": 3.8,
+          "first_direct_extra_frost": 0
+        },
+        {
+          "coefficient": 3,
+          "range": 8,
+          "radius": 2.4,
+          "impact_delay": 0.15,
+          "chill_stacks": 1,
+          "followup_coefficient": 1,
+          "followup_delay": 0.4,
+          "cooldown": 3.8,
+          "first_direct_extra_frost": 1
+        }
+      ]
+    },
+    "I04": {
+      "levels": [
+        {
+          "coefficient": 0.8,
+          "radius": 2.2,
+          "chill_stacks": 1,
+          "slow_duration": 1.5,
+          "slow_normal": 0.3,
+          "slow_elite": 0.2,
+          "slow_fixed_strong": 0.12,
+          "cooldown": 5
+        },
+        {
+          "coefficient": 1.2,
+          "radius": 3,
+          "chill_stacks": 1,
+          "slow_duration": 1.5,
+          "slow_normal": 0.35,
+          "slow_elite": 0.25,
+          "slow_fixed_strong": 0.12,
+          "cooldown": 5
+        },
+        {
+          "coefficient": 1.5,
+          "radius": 3.3,
+          "chill_stacks": 2,
+          "slow_duration": 1.5,
+          "slow_normal": 0.4,
+          "slow_elite": 0.25,
+          "slow_fixed_strong": 0.12,
+          "cooldown": 5
+        }
+      ]
+    },
+    "I05": {
+      "levels": [
+        {
+          "coefficient": 0.45,
+          "range": 8,
+          "radius": 2.4,
+          "duration": 4,
+          "first_tick": 0.5,
+          "interval": 1,
+          "ticks": 4,
+          "chill_stacks": 1,
+          "first_valid_chill_stacks": 1,
+          "cooldown": 7
+        },
+        {
+          "coefficient": 0.65,
+          "range": 8,
+          "radius": 3.2,
+          "duration": 6,
+          "first_tick": 0.5,
+          "interval": 1,
+          "ticks": 6,
+          "chill_stacks": 1,
+          "first_valid_chill_stacks": 1,
+          "cooldown": 7
+        },
+        {
+          "coefficient": 0.75,
+          "range": 8,
+          "radius": 3.4,
+          "duration": 7,
+          "first_tick": 0.5,
+          "interval": 1,
+          "ticks": 7,
+          "chill_stacks": 1,
+          "first_valid_chill_stacks": 2,
+          "cooldown": 7
+        }
+      ]
+    },
+    "I06": {
+      "levels": [
+        {
+          "coefficient": 0.45,
+          "range": 8,
+          "length": 8,
+          "width": 3,
+          "waves": 4,
+          "first_wave": 0.3,
+          "wave_interval": 0.6,
+          "chill_effective_waves": [
+            1,
+            3
+          ],
+          "chill_cap": 2,
+          "final_ready_coefficient": 0.45,
+          "cooldown": 7.5,
+          "final_wave_multiplier": 1,
+          "second_area_extra_frost": 0
+        },
+        {
+          "coefficient": 0.65,
+          "range": 8,
+          "length": 8,
+          "width": 3.8,
+          "waves": 5,
+          "first_wave": 0.3,
+          "wave_interval": 0.6,
+          "chill_effective_waves": [
+            1,
+            3
+          ],
+          "chill_cap": 2,
+          "final_ready_coefficient": 0.65,
+          "cooldown": 7.5,
+          "final_wave_multiplier": 1.3,
+          "second_area_extra_frost": 0
+        },
+        {
+          "coefficient": 0.8,
+          "range": 8,
+          "length": 8,
+          "width": 4.2,
+          "waves": 6,
+          "first_wave": 0.3,
+          "wave_interval": 0.6,
+          "chill_effective_waves": [
+            1,
+            3
+          ],
+          "chill_cap": 2,
+          "final_ready_coefficient": 1.2,
+          "cooldown": 7.5,
+          "final_wave_multiplier": 1.6,
+          "second_area_extra_frost": 1
+        }
+      ]
+    },
+    "I07": {
+      "levels": [
+        {
+          "coefficient": 1,
+          "range": 8,
+          "shatter_coefficient": 2,
+          "shard_coefficient": 0,
+          "shard_radius": 0,
+          "shard_target_cap": 0,
+          "cooldown": 4,
+          "fragment_frost_targets": 0,
+          "fragment_frost_stacks": 0,
+          "natural_shatter_multiplier": 1,
+          "retained_frost": 0,
+          "shatter_per_actor_cooldown": 2
+        },
+        {
+          "coefficient": 1.5,
+          "range": 8,
+          "shatter_coefficient": 3,
+          "shard_coefficient": 1.2,
+          "shard_radius": 2.2,
+          "shard_target_cap": 3,
+          "cooldown": 4,
+          "fragment_frost_targets": 1,
+          "fragment_frost_stacks": 1,
+          "natural_shatter_multiplier": 1,
+          "retained_frost": 0,
+          "shatter_per_actor_cooldown": 2
+        },
+        {
+          "coefficient": 2,
+          "range": 8,
+          "shatter_coefficient": 3.6,
+          "shard_coefficient": 1.4,
+          "shard_radius": 2.8,
+          "shard_target_cap": 4,
+          "cooldown": 4,
+          "fragment_frost_targets": 2,
+          "fragment_frost_stacks": 1,
+          "natural_shatter_multiplier": 1.6,
+          "retained_frost": 1,
+          "shatter_per_actor_cooldown": 2
+        }
+      ]
+    },
+    "I08": {
+      "levels": [
+        {
+          "coefficient": 2,
+          "range": 8,
+          "impact_delay": 0.25,
+          "radius": 0.65,
+          "ready_window": 2.5,
+          "freeze_base": 1.5,
+          "cooldown": 8,
+          "immune_coefficient_add": 0,
+          "window_restore": 0,
+          "window_restore_cooldown": 4
+        },
+        {
+          "coefficient": 2.9,
+          "range": 8,
+          "impact_delay": 0.25,
+          "radius": 0.65,
+          "ready_window": 2.5,
+          "freeze_base": 1.75,
+          "cooldown": 8,
+          "immune_coefficient_add": 0.5,
+          "window_restore": 15,
+          "window_restore_cooldown": 4
+        },
+        {
+          "coefficient": 3.8,
+          "range": 8,
+          "impact_delay": 0.25,
+          "radius": 0.65,
+          "ready_window": 2.5,
+          "freeze_base": 2,
+          "cooldown": 8,
+          "immune_coefficient_add": 1,
+          "window_restore": 25,
+          "window_restore_cooldown": 4
+        }
+      ]
+    },
+    "I09": {
+      "levels": [
+        {
+          "defense_add": 20,
+          "duration": 3,
+          "radius": 1.8,
+          "chill_stacks": 1,
+          "followup_delay": 0,
+          "followup_chill_stacks": 0,
+          "cooldown": 10,
+          "retaliate_range": 0,
+          "retaliate_frost": 0,
+          "retaliate_cooldown": 1.5
+        },
+        {
+          "defense_add": 35,
+          "duration": 3.5,
+          "radius": 2.8,
+          "chill_stacks": 1,
+          "followup_delay": 0,
+          "followup_chill_stacks": 0,
+          "cooldown": 10,
+          "retaliate_range": 2.5,
+          "retaliate_frost": 1,
+          "retaliate_cooldown": 1.5
+        },
+        {
+          "defense_add": 45,
+          "duration": 4,
+          "radius": 3,
+          "chill_stacks": 1,
+          "followup_delay": 2,
+          "followup_chill_stacks": 1,
+          "cooldown": 10,
+          "retaliate_range": 3,
+          "retaliate_frost": 1,
+          "retaliate_cooldown": 1.5
+        }
+      ]
+    },
+    "I10": {
+      "levels": [
+        {
+          "school_damage_bonus": 0.1,
+          "ready_window_add": 0,
+          "cooldown": 0,
+          "frost_expiry": 4
+        },
+        {
+          "school_damage_bonus": 0.22,
+          "ready_window_add": 0,
+          "cooldown": 0,
+          "frost_expiry": 5
+        },
+        {
+          "school_damage_bonus": 0.35,
+          "ready_window_add": 0.5,
+          "cooldown": 0,
+          "frost_expiry": 6
+        }
+      ]
+    }
+  },
+  "retired_items": {
+    "B01": {
+      "spells": [
+        "F01"
+      ],
+      "allocation": "二／三级爆炸半径"
+    },
+    "B02": {
+      "spells": [
+        "F02"
+      ],
+      "allocation": "二／三级火系暴击率"
+    },
+    "B03": {
+      "spells": [
+        "F03"
+      ],
+      "allocation": "二／三级首滴倍率与前两滴锁点"
+    },
+    "B05": {
+      "spells": [
+        "F05"
+      ],
+      "allocation": "二／三级旋涡逐敌首次命中减速"
+    },
+    "B06": {
+      "spells": [
+        "F06"
+      ],
+      "allocation": "二／三级法阵半径"
+    },
+    "B07": {
+      "spells": [
+        "F07"
+      ],
+      "allocation": "二／三级主爆中心伤害与暴伤"
+    },
+    "B08": {
+      "spells": [
+        "F08"
+      ],
+      "allocation": "二／三级光束宽度"
+    },
+    "B09": {
+      "spells": [
+        "F09"
+      ],
+      "allocation": "二／三级自然释放命中后移速"
+    },
+    "B10": {
+      "spells": [
+        "F10"
+      ],
+      "allocation": "二／三级回盾量"
+    },
+    "B11": {
+      "spells": [
+        "F11"
+      ],
+      "allocation": "二／三级传播人数"
+    },
+    "P02": {
+      "spells": [
+        "F01"
+      ],
+      "allocation": "二／三级自然焰弹暴击留火区，每次释放最多一次"
+    },
+    "P03": {
+      "spells": [
+        "F06"
+      ],
+      "allocation": "二／三级法阵与另一种自然火区域重叠的火易伤"
+    },
+    "P06": {
+      "spells": [
+        "F11"
+      ],
+      "allocation": "二／三级持有时全局燃烧延长"
+    },
+    "G01": {
+      "spells": [
+        "F02",
+        "F08"
+      ],
+      "allocation": "火增伤并入精通；三级贯焰每三次自然释放70%追加"
+    },
+    "G03": {
+      "spells": [
+        "F06"
+      ],
+      "allocation": "三级自然法阵持续满2秒一次爆发"
+    },
+    "G04": {
+      "spells": [
+        "F07"
+      ],
+      "allocation": "三级引爆倍率与消耗旧燃烧后的延迟复燃"
+    },
+    "IB01": {
+      "spells": [
+        "I01"
+      ],
+      "allocation": "二／三级对命中前1至2层寒霜增伤"
+    },
+    "IB02": {
+      "spells": [
+        "I02"
+      ],
+      "allocation": "二／三级宽度与人数"
+    },
+    "IB03": {
+      "spells": [
+        "I03"
+      ],
+      "allocation": "二／三级半径与落下延迟"
+    },
+    "IB04": {
+      "spells": [
+        "I04"
+      ],
+      "allocation": "二／三级范围与分类减速"
+    },
+    "IB05": {
+      "spells": [
+        "I05"
+      ],
+      "allocation": "二／三级领域持续与跳数"
+    },
+    "IB06": {
+      "spells": [
+        "I06"
+      ],
+      "allocation": "二／三级末波增幅"
+    },
+    "IB07": {
+      "spells": [
+        "I07"
+      ],
+      "allocation": "二／三级冰裂与邻片伤害／范围；一级保留原基线"
+    },
+    "IB08": {
+      "spells": [
+        "I08"
+      ],
+      "allocation": "二／三级免控目标加伤"
+    },
+    "IB09": {
+      "spells": [
+        "I09"
+      ],
+      "allocation": "二／三级护体施霜范围"
+    },
+    "IB10": {
+      "spells": [
+        "I10"
+      ],
+      "allocation": "二／三级持有时普通寒霜有效期"
+    },
+    "IP01": {
+      "spells": [
+        "I02",
+        "I03"
+      ],
+      "allocation": "三级首次有效主段命中前1至2层者额外施霜"
+    },
+    "IP02": {
+      "spells": [
+        "I07"
+      ],
+      "allocation": "二／三级自然碎冰邻片给1／2名存活邻敌施霜"
+    },
+    "IP03": {
+      "spells": [
+        "I09"
+      ],
+      "allocation": "二／三级护体存续受伤反霜"
+    },
+    "IG01": {
+      "spells": [
+        "I06"
+      ],
+      "allocation": "三级第二次合资格施霜额外1层"
+    },
+    "IG02": {
+      "spells": [
+        "I07"
+      ],
+      "allocation": "三级自然主冰裂增幅与留1层，逐敌2秒门槛"
+    },
+    "IG03": {
+      "spells": [
+        "I08"
+      ],
+      "allocation": "二／三级自然新建冰裂窗口回盾，共享4秒"
+    }
+  }
+}

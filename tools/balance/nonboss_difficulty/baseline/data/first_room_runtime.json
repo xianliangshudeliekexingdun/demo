@@ -1,0 +1,28 @@
+{
+  "version": "first-room-runtime-2",
+  "scope": "current first playable room geometry plus missing movement and collision rules; historical shared layout candidates remain unchanged, as do approved base, spell, economy and meta values",
+  "room": {
+    "floor": {"width": 18.0, "depth": 28.0},
+    "entry_player_center": [0.0, -12.5],
+    "portal_center": [0.0, 13.0],
+    "blocks": [
+      {"center": [-5.25, 0.0], "size": [1.0, 1.0]},
+      {"center": [5.25, 0.0], "size": [1.0, 1.0]}
+    ],
+    "spawn": {
+      "side_x": [-7.3, 7.3],
+      "anchor_z": [-9.5, -8.0, -6.5]
+    }
+  },
+  "M01": {
+    "move_speed": 2.35,
+    "radius": 0.45,
+    "attack_trigger_range": 2.5,
+    "lunge_distance": 2.4,
+    "lunge_duration": 0.28,
+    "recovery": 0.7
+  },
+  "bolt_collision_radius": 0.15,
+  "spirit_offset": [0.65, 0.4],
+  "portal_trigger_radius": 0.9
+}

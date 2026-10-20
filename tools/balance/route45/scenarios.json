@@ -1,0 +1,17 @@
+{
+  "version": "route45-native-scenarios-1",
+  "model_contract": "Original console engine and real 120 Hz Route.step. Eight-direction movement, only actual cached offered spell/treasure choices, real pickup and portal contact. No health, phase, damage, cooldown, position or drop edits. Automated stress policies are not human win-rate estimates.",
+  "max_active_seconds": 3600,
+  "max_room_combat_seconds": 240,
+  "seeds": [20261017, 20261023],
+  "starters": ["F01", "F04", "F08"],
+  "profiles": {
+    "precise": {"decision_seconds": 0.0833333333, "projectile_vision_m": 30.0},
+    "ordinary": {"decision_seconds": 0.25, "projectile_vision_m": 4.5},
+    "short_view": {"decision_seconds": 0.4, "projectile_vision_m": 3.0}
+  },
+  "growth": {
+    "offense": ["F01", "F08", "F07", "F03", "F04", "F02", "F10", "F06", "F05", "F09"],
+    "defense": ["F10", "F02", "F06", "F09", "F05", "F04", "F03", "F08", "F01", "F07"]
+  }
+}

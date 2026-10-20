@@ -1,0 +1,29 @@
+{
+  "version": "magic-gem-affix-tiers-discussion-20261020-v1",
+  "status": "discussion_only_not_runtime",
+  "runtime_source": "data/magic_gems_v1.json",
+  "tier_anchor_rarities": ["green", "blue", "purple"],
+  "tier_probabilities": [0.25, 0.5, 0.25],
+  "reforge": {
+    "selected_line_only": true,
+    "reroll_type_and_tier": true,
+    "exclude_types_on_other_lines": true,
+    "allow_current_type_and_identical_result": true,
+    "keep_old_or_adopt_candidate": true,
+    "material_cost": null
+  },
+  "targets": {
+    "maximum_value_relative_to_current_purple": 1.0,
+    "desired_top_final_line_mean_rolls": [12, 30],
+    "desired_top_final_line_p90_rolls": [25, 60]
+  },
+  "tier_probability_sweeps": [[0.4, 0.4, 0.2], [0.25, 0.5, 0.25], [0.25, 0.35, 0.4]],
+  "monte_carlo": {"seeds": [20261020, 20261021, 20261022], "trials_per_seed": 5000},
+  "omissions": [
+    "No material prices or salvage yields are approved or modeled.",
+    "No full-build DPS, enemy combat, item utility or completion-time prediction.",
+    "No saving, migration, game RNG or UI implementation.",
+    "Independent rolls have no target or tier pity. Identical candidates remain possible.",
+    "Reforging another line preserves all other lines and the gold core. Legacy gems excluded."
+  ]
+}

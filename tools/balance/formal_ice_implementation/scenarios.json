@@ -1,0 +1,72 @@
+{
+  "version": "formal-ice-native-1",
+  "model_contract": "Actual Route.step 120Hz, source-bound seed and real offers. Ice-start/mixed growth preference, eight-direction ordinary movement at .25s decisions/4.5m projectile perception. No health, phase, position, damage, cooldown, inventory or reward mutations. Not player win rate, AI fairness, Boss or final 30-minute timing evidence.",
+  "max_active_seconds": 3600,
+  "max_room_combat_seconds": 240,
+  "seeds": [
+    20261017
+  ],
+  "starters": [
+    "I03"
+  ],
+  "profiles": {
+    "ordinary": {
+      "decision_seconds": 0.25,
+      "projectile_vision_m": 4.5
+    }
+  },
+  "growth": {
+    "offense": [
+      "I07",
+      "I10",
+      "F06",
+      "I05",
+      "I08",
+      "I09",
+      "I01",
+      "I02",
+      "I03",
+      "I04",
+      "I06",
+      "F01",
+      "F02",
+      "F03",
+      "F05",
+      "F07",
+      "F08",
+      "F09",
+      "F10",
+      "F11"
+    ]
+  },
+  "item_preferences": {
+    "ice_first": [
+      "IG02",
+      "IG03",
+      "IG01",
+      "IP01",
+      "IP02",
+      "IP03",
+      "IB07",
+      "IB05",
+      "IB08",
+      "IB09",
+      "IB01",
+      "IB02",
+      "IB03",
+      "IB04",
+      "IB06",
+      "IB10",
+      "P04",
+      "P05",
+      "U03",
+      "GU11",
+      "GT01",
+      "GU05",
+      "GU06",
+      "GU07",
+      "U02",
+      "U01"
+    ]
+  }
+}

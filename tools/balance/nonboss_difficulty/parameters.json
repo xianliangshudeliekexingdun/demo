@@ -1,0 +1,1671 @@
+{
+  "version": "nonboss-difficulty-proposal-1-20261020",
+  "status": "proposal_not_approved_not_loaded_by_game",
+  "scope": "56 non-Boss rooms only; no Boss behavior/reward implementation; no native playtest",
+  "runtime_sources": [
+    "data/courtyard_route.json",
+    "data/route_enemy_runtime.json",
+    "data/first_room_runtime.json",
+    "data/balance_candidates/first_run_v1.json",
+    "data/balance_candidates/normal_rooms_v1.json",
+    "data/balance_candidates/room_spatial_v1.json"
+  ],
+  "boss_rooms": [
+    15,
+    30,
+    45,
+    60
+  ],
+  "shops_after": [
+    9,
+    24,
+    33,
+    42,
+    54
+  ],
+  "roster": {
+    "S": {
+      "id": "M01",
+      "name": "跃袭史莱姆",
+      "role": "追击与扑击",
+      "health_reference": "M01",
+      "health_factor": 0.7,
+      "body_group": "small",
+      "radius": 0.45,
+      "introduced": 1,
+      "elite": false
+    },
+    "A": {
+      "id": "M02",
+      "name": "孢弹花妖",
+      "role": "瞄准连射",
+      "health_reference": "M02",
+      "health_factor": 0.8,
+      "body_group": "small",
+      "radius": 0.48,
+      "introduced": 2,
+      "elite": false
+    },
+    "C": {
+      "id": "M03",
+      "name": "岩甲冲锋兽",
+      "role": "预警冲锋切线",
+      "health_reference": "M03",
+      "health_factor": 1.0,
+      "body_group": "heavy",
+      "radius": 0.62,
+      "introduced": 8,
+      "elite": false
+    },
+    "Z": {
+      "id": "M04",
+      "name": "刻印术士",
+      "role": "锁点落印占位",
+      "health_reference": "M04",
+      "health_factor": 1.0,
+      "body_group": "small",
+      "radius": 0.45,
+      "introduced": 25,
+      "elite": false
+    },
+    "F": {
+      "id": "M05",
+      "name": "散华花妖",
+      "role": "固定间隙扇射",
+      "health_reference": "M02",
+      "health_factor": 0.7,
+      "body_group": "small",
+      "radius": 0.5,
+      "introduced": 5,
+      "elite": false
+    },
+    "R": {
+      "id": "M06",
+      "name": "环纹花妖",
+      "role": "缺口环形弹",
+      "health_reference": "M04",
+      "health_factor": 0.7,
+      "body_group": "small",
+      "radius": 0.5,
+      "introduced": 18,
+      "elite": false
+    },
+    "W": {
+      "id": "M07",
+      "name": "巡光花妖",
+      "role": "旋转扫射",
+      "health_reference": "M04",
+      "health_factor": 0.7,
+      "body_group": "small",
+      "radius": 0.5,
+      "introduced": 32,
+      "elite": false
+    },
+    "ES": {
+      "id": "EL01",
+      "name": "冠纹史莱姆",
+      "role": "既有追击精英",
+      "health_reference": "EL01",
+      "health_factor": 1.0,
+      "body_group": "elite",
+      "radius": 0.78,
+      "introduced": 6,
+      "elite": true
+    },
+    "EF": {
+      "id": "EL02",
+      "name": "裂籽花妖",
+      "role": "既有扇射精英",
+      "health_reference": "EL02",
+      "health_factor": 1.0,
+      "body_group": "elite",
+      "radius": 0.78,
+      "introduced": 12,
+      "elite": true
+    }
+  },
+  "stages": [
+    {
+      "id": "early",
+      "name": "前期",
+      "from": 1,
+      "to": 14,
+      "alive_cap": 6,
+      "ranged_alive_cap": 3,
+      "ring_alive_cap": 0,
+      "sweep_alive_cap": 0,
+      "heavy_alive_cap": 2,
+      "max_waves": 2,
+      "projectile_cap": 48
+    },
+    {
+      "id": "middle",
+      "name": "中期",
+      "from": 16,
+      "to": 29,
+      "alive_cap": 8,
+      "ranged_alive_cap": 4,
+      "ring_alive_cap": 1,
+      "sweep_alive_cap": 0,
+      "heavy_alive_cap": 2,
+      "max_waves": 3,
+      "projectile_cap": 96
+    },
+    {
+      "id": "late",
+      "name": "后期",
+      "from": 31,
+      "to": 44,
+      "alive_cap": 10,
+      "ranged_alive_cap": 5,
+      "ring_alive_cap": 2,
+      "sweep_alive_cap": 1,
+      "heavy_alive_cap": 3,
+      "max_waves": 3,
+      "projectile_cap": 144
+    },
+    {
+      "id": "extreme",
+      "name": "超高难度",
+      "from": 46,
+      "to": 59,
+      "alive_cap": 12,
+      "ranged_alive_cap": 6,
+      "ring_alive_cap": 2,
+      "sweep_alive_cap": 2,
+      "heavy_alive_cap": 3,
+      "max_waves": 4,
+      "projectile_cap": 192
+    }
+  ],
+  "patterns": {
+    "A": {
+      "warning": 0.8,
+      "damage": 28,
+      "radius": 0.18,
+      "counts": [
+        1,
+        2,
+        3,
+        3
+      ],
+      "shot_interval": 0.28,
+      "cycle": [
+        3.6,
+        3.4,
+        3.2,
+        3.0
+      ],
+      "speed": [
+        3.2,
+        4.8,
+        6.0,
+        6.8
+      ],
+      "aim": "relock before each shot; straight after release",
+      "followup_warning": 0.2
+    },
+    "F": {
+      "warning": 0.9,
+      "damage": 18,
+      "radius": 0.16,
+      "counts": [
+        3,
+        5,
+        7,
+        9
+      ],
+      "step_degrees": 22,
+      "cycle": [
+        4.4,
+        4.0,
+        3.8,
+        3.6
+      ],
+      "speed": [
+        3.0,
+        3.8,
+        4.4,
+        4.8
+      ],
+      "aim": "lock fan center at warning start"
+    },
+    "R": {
+      "warning": 1.0,
+      "damage": 16,
+      "radius": 0.16,
+      "counts": [
+        0,
+        12,
+        16,
+        20
+      ],
+      "omitted_adjacent_spokes": 3,
+      "gap_rotation_degrees": 30,
+      "cycle": [
+        0,
+        6.0,
+        5.6,
+        5.2
+      ],
+      "speed": [
+        0,
+        2.8,
+        3.2,
+        3.6
+      ],
+      "aim": "first gap faces locked player; following gaps turn 30 degrees, shown before release"
+    },
+    "W": {
+      "warning": 1.0,
+      "damage": 16,
+      "radius": 0.16,
+      "counts": [
+        0,
+        0,
+        7,
+        9
+      ],
+      "sweep_arc_degrees": 120,
+      "shot_interval": [
+        0,
+        0,
+        0.18,
+        0.16
+      ],
+      "cycle": [
+        0,
+        0,
+        5.2,
+        4.8
+      ],
+      "speed": [
+        0,
+        0,
+        3.6,
+        4.0
+      ],
+      "aim": "lock sweep center; alternate fixed left-to-right and right-to-left; no tracking"
+    },
+    "EF": {
+      "warning": 0.95,
+      "damage_reference": "EL02",
+      "radius": 0.18,
+      "counts": [
+        5,
+        5,
+        5,
+        5
+      ],
+      "step_degrees": 16,
+      "cycle_reference": "current runtime EL02",
+      "speed_reference": "current runtime EL02"
+    }
+  },
+  "body_contact": {
+    "damage_by_group": {
+      "small": [
+        12,
+        16,
+        20,
+        24
+      ],
+      "heavy": [
+        18,
+        24,
+        30,
+        36
+      ],
+      "elite": [
+        24,
+        30,
+        36,
+        42
+      ]
+    },
+    "player_contact_interval": 0.8,
+    "hurt_invulnerability_reference": "base.player.hurt_invulnerability",
+    "per_frame_max_hits": 1,
+    "priority": [
+      "active_attack",
+      "projectile",
+      "body_contact"
+    ],
+    "multiple_bodies": "highest final eligible damage wins; stable actor id breaks ties",
+    "damage_bucket": "direct; normal defense/shield; no projectile-only reduction",
+    "swept_relative_circles": true,
+    "contact_during_active_lunge": false,
+    "contact_during_frozen_dead_spawn_preview": false,
+    "contact_grace_after_spawn": 0.5,
+    "solid_body_blocking": false,
+    "forced_knockback": false,
+    "timer_uses_combat_time": true,
+    "exit_reentry_resets_interval": false
+  },
+  "spawn": {
+    "preserve_room_geometry": true,
+    "north_x_fractions": [
+      -0.58,
+      -0.29,
+      0,
+      0.29,
+      0.58
+    ],
+    "north_portal_z_offsets": [
+      -2.2,
+      -4.4,
+      -6.6
+    ],
+    "preview_seconds": 0.8,
+    "safe_player_distance": 3.0,
+    "max_survivors_before_next_wave": 2,
+    "whole_pack_and_role_caps_required": true,
+    "shield_or_cooldown_reset_between_waves": false
+  },
+  "projectiles": {
+    "lifetime": 5.0,
+    "range": 15.0,
+    "new_pattern_min_start_distance": 3.0,
+    "whole_volley_capacity_reservation": true,
+    "retry_delay": 0.25,
+    "curtain_start_spacing": 0.25,
+    "clear_on_emitter_death": false,
+    "warnings_pause_with_frozen_actor": true,
+    "released_shots_continue_while_emitter_frozen": true
+  },
+  "health_budget": {
+    "teaching_rooms_preserved": [
+      1,
+      2,
+      3
+    ],
+    "existing_role_reference": "actual current room health before proposed multiplier, including current stage; never multiply twice",
+    "new_roles_reference": "M05 reads same-room M02; M06/M07 read same-room M04",
+    "elite_health_unchanged": true,
+    "ratios_are_design_compensation_not_runtime_changes": true
+  },
+  "sensitivity_light_health_factors": [
+    0.6,
+    0.7,
+    0.8
+  ],
+  "rooms": [
+    {
+      "room": 1,
+      "beat": "移动与接触教学",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 3
+        }
+      ]
+    },
+    {
+      "room": 2,
+      "beat": "单发直射教学",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 3,
+          "A": 1
+        }
+      ]
+    },
+    {
+      "room": 3,
+      "beat": "追击与直射组合",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 3,
+          "A": 2
+        }
+      ]
+    },
+    {
+      "room": 4,
+      "beat": "首次分批",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 3,
+          "A": 1
+        },
+        {
+          "S": 3,
+          "A": 1
+        }
+      ]
+    },
+    {
+      "room": 5,
+      "beat": "扇射教学",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 2,
+          "F": 1
+        },
+        {
+          "S": 2,
+          "A": 2
+        }
+      ]
+    },
+    {
+      "room": 6,
+      "beat": "追击精英检验",
+      "kind": "elite",
+      "waves": [
+        {
+          "ES": 1,
+          "S": 3
+        },
+        {
+          "A": 2,
+          "S": 2
+        }
+      ]
+    },
+    {
+      "room": 7,
+      "beat": "双路扇射",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 3,
+          "A": 1,
+          "F": 1
+        },
+        {
+          "S": 3,
+          "A": 1
+        }
+      ]
+    },
+    {
+      "room": 8,
+      "beat": "冲锋教学",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 2,
+          "C": 1
+        },
+        {
+          "S": 3,
+          "F": 1
+        }
+      ]
+    },
+    {
+      "room": 9,
+      "beat": "首店前交叉",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 3,
+          "A": 1,
+          "F": 1
+        },
+        {
+          "S": 3,
+          "A": 1,
+          "F": 1
+        }
+      ]
+    },
+    {
+      "room": 10,
+      "beat": "补给后回落",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 3,
+          "A": 1
+        },
+        {
+          "S": 2,
+          "F": 1
+        }
+      ]
+    },
+    {
+      "room": 11,
+      "beat": "冲锋与扇射",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 3,
+          "C": 1,
+          "F": 1
+        },
+        {
+          "S": 3,
+          "A": 1,
+          "F": 1
+        }
+      ]
+    },
+    {
+      "room": 12,
+      "beat": "弹幕精英检验",
+      "kind": "elite",
+      "waves": [
+        {
+          "EF": 1,
+          "S": 2,
+          "A": 1
+        },
+        {
+          "S": 3,
+          "C": 1,
+          "F": 1
+        }
+      ]
+    },
+    {
+      "room": 13,
+      "beat": "已知威胁组合",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 3,
+          "A": 1,
+          "F": 1
+        },
+        {
+          "S": 3,
+          "C": 1,
+          "A": 1
+        }
+      ]
+    },
+    {
+      "room": 14,
+      "beat": "Boss前减压",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 3,
+          "A": 1
+        },
+        {
+          "S": 2,
+          "F": 1
+        }
+      ]
+    },
+    {
+      "room": 16,
+      "beat": "中期基础衔接",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 3,
+          "A": 2,
+          "F": 1
+        },
+        {
+          "S": 3,
+          "C": 1,
+          "A": 1
+        }
+      ]
+    },
+    {
+      "room": 17,
+      "beat": "双扇与冲锋",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 3,
+          "C": 1,
+          "F": 2
+        },
+        {
+          "S": 3,
+          "A": 2,
+          "F": 1
+        }
+      ]
+    },
+    {
+      "room": 18,
+      "beat": "缺口环弹教学",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 3,
+          "R": 1
+        },
+        {
+          "S": 3,
+          "F": 2,
+          "A": 1
+        }
+      ]
+    },
+    {
+      "room": 19,
+      "beat": "环弹与直射",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 2,
+          "A": 2,
+          "F": 1,
+          "R": 1
+        },
+        {
+          "S": 3,
+          "C": 1,
+          "F": 1
+        },
+        {
+          "A": 2,
+          "S": 2
+        }
+      ]
+    },
+    {
+      "room": 20,
+      "beat": "精英前回落",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 3,
+          "F": 1,
+          "R": 1
+        },
+        {
+          "S": 3,
+          "A": 2
+        }
+      ]
+    },
+    {
+      "room": 21,
+      "beat": "追击精英与环弹",
+      "kind": "elite",
+      "waves": [
+        {
+          "ES": 1,
+          "S": 2,
+          "F": 2,
+          "R": 1
+        },
+        {
+          "S": 3,
+          "A": 2,
+          "C": 1
+        },
+        {
+          "S": 2,
+          "F": 1
+        }
+      ]
+    },
+    {
+      "room": 22,
+      "beat": "环弹换位",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 3,
+          "A": 1,
+          "F": 2,
+          "R": 1
+        },
+        {
+          "S": 3,
+          "C": 1,
+          "F": 1,
+          "R": 1
+        }
+      ]
+    },
+    {
+      "room": 23,
+      "beat": "弹幕分批接力",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 3,
+          "F": 2,
+          "R": 1
+        },
+        {
+          "S": 3,
+          "A": 2,
+          "C": 1
+        },
+        {
+          "S": 2,
+          "F": 1,
+          "R": 1
+        }
+      ]
+    },
+    {
+      "room": 24,
+      "beat": "商店前混编",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 3,
+          "A": 1,
+          "F": 2,
+          "R": 1
+        },
+        {
+          "S": 3,
+          "C": 1,
+          "F": 2
+        },
+        {
+          "S": 2,
+          "A": 1,
+          "R": 1
+        }
+      ]
+    },
+    {
+      "room": 25,
+      "beat": "落印教学",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 3,
+          "Z": 1
+        },
+        {
+          "S": 3,
+          "F": 2,
+          "R": 1
+        },
+        {
+          "S": 2,
+          "A": 2
+        }
+      ]
+    },
+    {
+      "room": 26,
+      "beat": "落印与环弹",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 2,
+          "A": 1,
+          "C": 1,
+          "F": 2,
+          "R": 1
+        },
+        {
+          "S": 3,
+          "Z": 1,
+          "F": 1,
+          "R": 1
+        },
+        {
+          "S": 2,
+          "A": 1,
+          "F": 1
+        }
+      ]
+    },
+    {
+      "room": 27,
+      "beat": "弹幕精英与封位",
+      "kind": "elite",
+      "waves": [
+        {
+          "EF": 1,
+          "S": 2,
+          "C": 1,
+          "F": 1,
+          "R": 1
+        },
+        {
+          "S": 3,
+          "Z": 1,
+          "A": 1,
+          "F": 1
+        },
+        {
+          "S": 2,
+          "F": 1,
+          "R": 1
+        }
+      ]
+    },
+    {
+      "room": 28,
+      "beat": "中期普通房峰值",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 3,
+          "C": 1,
+          "A": 1,
+          "F": 1,
+          "R": 1
+        },
+        {
+          "S": 3,
+          "Z": 1,
+          "F": 2,
+          "R": 1
+        },
+        {
+          "S": 2,
+          "A": 2,
+          "F": 1
+        }
+      ]
+    },
+    {
+      "room": 29,
+      "beat": "Boss前减压",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 3,
+          "A": 1,
+          "F": 1
+        },
+        {
+          "S": 3,
+          "C": 1,
+          "R": 1
+        }
+      ]
+    },
+    {
+      "room": 31,
+      "beat": "后期基础衔接",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 3,
+          "A": 1,
+          "F": 2,
+          "R": 1
+        },
+        {
+          "S": 3,
+          "C": 1,
+          "F": 1,
+          "R": 1
+        },
+        {
+          "S": 2,
+          "Z": 1,
+          "A": 1
+        }
+      ]
+    },
+    {
+      "room": 32,
+      "beat": "旋转扫射教学",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 3,
+          "W": 1,
+          "F": 1
+        },
+        {
+          "S": 3,
+          "A": 1,
+          "R": 1,
+          "C": 1
+        },
+        {
+          "S": 3,
+          "F": 2,
+          "Z": 1
+        }
+      ]
+    },
+    {
+      "room": 33,
+      "beat": "首轮扫射混编",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 3,
+          "C": 1,
+          "A": 1,
+          "F": 1,
+          "R": 1,
+          "W": 1
+        },
+        {
+          "S": 3,
+          "Z": 1,
+          "F": 2,
+          "R": 1
+        },
+        {
+          "S": 2,
+          "A": 2,
+          "F": 1
+        }
+      ]
+    },
+    {
+      "room": 34,
+      "beat": "补给后回落",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 3,
+          "A": 1,
+          "F": 1,
+          "R": 1
+        },
+        {
+          "S": 3,
+          "C": 1,
+          "F": 1
+        },
+        {
+          "S": 2,
+          "Z": 1,
+          "W": 1
+        }
+      ]
+    },
+    {
+      "room": 35,
+      "beat": "扫射与缺口换位",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 3,
+          "C": 1,
+          "F": 2,
+          "R": 1,
+          "W": 1
+        },
+        {
+          "S": 3,
+          "Z": 1,
+          "A": 1,
+          "F": 1,
+          "R": 1
+        },
+        {
+          "S": 2,
+          "F": 1,
+          "R": 1,
+          "W": 1
+        }
+      ]
+    },
+    {
+      "room": 36,
+      "beat": "双精英接力",
+      "kind": "elite",
+      "waves": [
+        {
+          "ES": 1,
+          "S": 3,
+          "F": 1,
+          "R": 1,
+          "W": 1
+        },
+        {
+          "EF": 1,
+          "S": 2,
+          "C": 1,
+          "A": 1,
+          "F": 1
+        },
+        {
+          "S": 3,
+          "Z": 1,
+          "F": 1,
+          "R": 1
+        }
+      ]
+    },
+    {
+      "room": 37,
+      "beat": "多型交叉",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 3,
+          "C": 1,
+          "A": 1,
+          "F": 2,
+          "R": 1,
+          "W": 1
+        },
+        {
+          "S": 3,
+          "Z": 1,
+          "F": 2,
+          "R": 1
+        },
+        {
+          "S": 3,
+          "A": 1,
+          "W": 1
+        }
+      ]
+    },
+    {
+      "room": 38,
+      "beat": "精英前回落",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 3,
+          "A": 1,
+          "F": 1,
+          "R": 1
+        },
+        {
+          "S": 3,
+          "C": 1,
+          "F": 1,
+          "W": 1
+        },
+        {
+          "S": 2,
+          "Z": 1
+        }
+      ]
+    },
+    {
+      "room": 39,
+      "beat": "精英封路接力",
+      "kind": "elite",
+      "waves": [
+        {
+          "EF": 1,
+          "S": 2,
+          "C": 1,
+          "F": 2,
+          "R": 1,
+          "W": 1
+        },
+        {
+          "ES": 1,
+          "S": 3,
+          "Z": 1,
+          "A": 1,
+          "F": 1
+        },
+        {
+          "S": 3,
+          "F": 1,
+          "R": 1,
+          "W": 1
+        }
+      ]
+    },
+    {
+      "room": 40,
+      "beat": "持续换位",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 3,
+          "A": 1,
+          "F": 2,
+          "R": 1,
+          "W": 1
+        },
+        {
+          "S": 3,
+          "C": 1,
+          "Z": 1,
+          "F": 1,
+          "R": 1
+        },
+        {
+          "S": 3,
+          "A": 1,
+          "F": 1,
+          "W": 1
+        }
+      ]
+    },
+    {
+      "room": 41,
+      "beat": "高密度混编",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 4,
+          "C": 1,
+          "A": 1,
+          "F": 2,
+          "R": 1,
+          "W": 1
+        },
+        {
+          "S": 3,
+          "Z": 1,
+          "F": 2,
+          "R": 1,
+          "W": 1
+        },
+        {
+          "S": 3,
+          "C": 1,
+          "A": 1,
+          "F": 1
+        }
+      ]
+    },
+    {
+      "room": 42,
+      "beat": "后期普通房峰值",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 3,
+          "C": 1,
+          "A": 1,
+          "F": 1,
+          "R": 2,
+          "W": 1
+        },
+        {
+          "S": 3,
+          "Z": 1,
+          "F": 2,
+          "R": 1,
+          "W": 1
+        },
+        {
+          "S": 3,
+          "A": 2,
+          "F": 1,
+          "W": 1
+        }
+      ]
+    },
+    {
+      "room": 43,
+      "beat": "补给后收束",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 3,
+          "A": 1,
+          "F": 1,
+          "R": 1,
+          "W": 1
+        },
+        {
+          "S": 3,
+          "C": 1,
+          "F": 1,
+          "R": 1
+        },
+        {
+          "S": 3,
+          "Z": 1,
+          "A": 1
+        }
+      ]
+    },
+    {
+      "room": 44,
+      "beat": "Boss前减压",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 3,
+          "A": 1,
+          "F": 1,
+          "R": 1
+        },
+        {
+          "S": 3,
+          "C": 1,
+          "F": 1
+        },
+        {
+          "S": 2,
+          "W": 1
+        }
+      ]
+    },
+    {
+      "room": 46,
+      "beat": "超高难度衔接",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 4,
+          "C": 1,
+          "A": 1,
+          "F": 2,
+          "R": 1,
+          "W": 1
+        },
+        {
+          "S": 3,
+          "Z": 1,
+          "F": 2,
+          "R": 1,
+          "W": 1
+        },
+        {
+          "S": 3,
+          "A": 1,
+          "F": 1,
+          "R": 1
+        }
+      ]
+    },
+    {
+      "room": 47,
+      "beat": "双扫射交替",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 4,
+          "C": 1,
+          "F": 2,
+          "R": 1,
+          "W": 2
+        },
+        {
+          "S": 3,
+          "A": 1,
+          "Z": 1,
+          "F": 2,
+          "R": 1,
+          "W": 1
+        },
+        {
+          "S": 3,
+          "C": 1,
+          "A": 1,
+          "F": 1,
+          "W": 1
+        }
+      ]
+    },
+    {
+      "room": 48,
+      "beat": "双环弹交替",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 3,
+          "C": 1,
+          "A": 1,
+          "F": 2,
+          "R": 2,
+          "W": 1
+        },
+        {
+          "S": 4,
+          "Z": 1,
+          "F": 2,
+          "R": 1,
+          "W": 1
+        },
+        {
+          "S": 3,
+          "C": 1,
+          "F": 1,
+          "R": 1,
+          "W": 1
+        }
+      ]
+    },
+    {
+      "room": 49,
+      "beat": "交叉路线压缩",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 4,
+          "C": 1,
+          "A": 1,
+          "F": 2,
+          "R": 1,
+          "W": 1
+        },
+        {
+          "S": 3,
+          "C": 1,
+          "Z": 1,
+          "F": 2,
+          "R": 1,
+          "W": 1
+        },
+        {
+          "S": 3,
+          "A": 2,
+          "F": 1,
+          "R": 1,
+          "W": 1
+        }
+      ]
+    },
+    {
+      "room": 50,
+      "beat": "精英前回落",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 4,
+          "A": 1,
+          "F": 1,
+          "R": 1,
+          "W": 1
+        },
+        {
+          "S": 3,
+          "C": 1,
+          "F": 2,
+          "R": 1
+        },
+        {
+          "S": 3,
+          "Z": 1,
+          "A": 1,
+          "F": 1
+        }
+      ]
+    },
+    {
+      "room": 51,
+      "beat": "双精英综合检验",
+      "kind": "elite",
+      "waves": [
+        {
+          "ES": 1,
+          "S": 3,
+          "C": 1,
+          "F": 2,
+          "R": 1,
+          "W": 1
+        },
+        {
+          "EF": 1,
+          "S": 3,
+          "Z": 1,
+          "A": 1,
+          "F": 1,
+          "R": 1,
+          "W": 1
+        },
+        {
+          "S": 3,
+          "C": 1,
+          "F": 2,
+          "R": 1,
+          "W": 1
+        }
+      ]
+    },
+    {
+      "room": 52,
+      "beat": "精英后回落",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 4,
+          "A": 1,
+          "F": 2,
+          "R": 1,
+          "W": 1
+        },
+        {
+          "S": 3,
+          "C": 1,
+          "Z": 1,
+          "F": 1,
+          "R": 1
+        },
+        {
+          "S": 3,
+          "A": 1,
+          "F": 1,
+          "W": 1
+        }
+      ]
+    },
+    {
+      "room": 53,
+      "beat": "末段混编抬升",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 4,
+          "C": 1,
+          "F": 2,
+          "R": 1,
+          "W": 2
+        },
+        {
+          "S": 4,
+          "Z": 1,
+          "A": 1,
+          "F": 2,
+          "R": 1,
+          "W": 1
+        },
+        {
+          "S": 3,
+          "C": 1,
+          "A": 1,
+          "F": 1,
+          "R": 1,
+          "W": 1
+        }
+      ]
+    },
+    {
+      "room": 54,
+      "beat": "最后补给前检验",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 4,
+          "C": 1,
+          "A": 1,
+          "F": 1,
+          "R": 2,
+          "W": 1
+        },
+        {
+          "S": 3,
+          "C": 1,
+          "Z": 1,
+          "F": 2,
+          "R": 1,
+          "W": 1
+        },
+        {
+          "S": 4,
+          "A": 1,
+          "F": 1,
+          "R": 1,
+          "W": 1
+        }
+      ]
+    },
+    {
+      "room": 55,
+      "beat": "四批持续压力",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 4,
+          "C": 1,
+          "F": 2,
+          "R": 1,
+          "W": 2
+        },
+        {
+          "S": 4,
+          "Z": 1,
+          "A": 1,
+          "F": 2,
+          "R": 1,
+          "W": 1
+        },
+        {
+          "S": 4,
+          "C": 1,
+          "F": 1,
+          "R": 1,
+          "W": 1
+        },
+        {
+          "S": 2,
+          "A": 1,
+          "F": 1
+        }
+      ]
+    },
+    {
+      "room": 56,
+      "beat": "非Boss普通房峰值",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 4,
+          "C": 1,
+          "A": 1,
+          "F": 1,
+          "R": 2,
+          "W": 1
+        },
+        {
+          "S": 4,
+          "C": 1,
+          "Z": 1,
+          "F": 1,
+          "R": 1,
+          "W": 2
+        },
+        {
+          "S": 4,
+          "A": 1,
+          "F": 2,
+          "R": 1,
+          "W": 1
+        },
+        {
+          "S": 3,
+          "C": 1,
+          "F": 1,
+          "R": 1
+        }
+      ]
+    },
+    {
+      "room": 57,
+      "beat": "末段双精英接力",
+      "kind": "elite",
+      "waves": [
+        {
+          "EF": 1,
+          "S": 3,
+          "C": 1,
+          "F": 2,
+          "R": 1,
+          "W": 1
+        },
+        {
+          "ES": 1,
+          "S": 3,
+          "Z": 1,
+          "A": 1,
+          "F": 1,
+          "R": 1,
+          "W": 1
+        },
+        {
+          "S": 4,
+          "C": 1,
+          "F": 1,
+          "R": 1,
+          "W": 1
+        },
+        {
+          "S": 2,
+          "A": 1,
+          "F": 1
+        }
+      ]
+    },
+    {
+      "room": 58,
+      "beat": "最终Boss前降压",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 4,
+          "A": 1,
+          "F": 1,
+          "R": 1,
+          "W": 1
+        },
+        {
+          "S": 3,
+          "C": 1,
+          "F": 2,
+          "R": 1
+        },
+        {
+          "S": 3,
+          "Z": 1,
+          "A": 1,
+          "F": 1,
+          "W": 1
+        }
+      ]
+    },
+    {
+      "room": 59,
+      "beat": "最终Boss前缓冲",
+      "kind": "normal",
+      "waves": [
+        {
+          "S": 4,
+          "A": 1,
+          "F": 1,
+          "R": 1
+        },
+        {
+          "S": 3,
+          "C": 1,
+          "F": 1,
+          "W": 1
+        },
+        {
+          "S": 3,
+          "A": 1,
+          "F": 1
+        }
+      ]
+    }
+  ],
+  "targets": {
+    "health_proxy_ratio_band": [
+      0.9,
+      1.15
+    ],
+    "player_diameter_reference": "base.player.radius*2",
+    "minimum_single_source_gap_margin": 0.2,
+    "ordinary_room_lull_before_boss": true,
+    "total_run_minutes_reference": 30,
+    "total_run_time_is_not_validated_by_this_tool": true
+  }
+}

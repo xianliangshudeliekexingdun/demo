@@ -1,0 +1,3974 @@
+{
+  "data/route_enemy_runtime.json": {
+    "version": "route-enemy-runtime-5-nonboss-20261020",
+    "scope": "Existing stage factors and Boss-placeholder attacks preserved; approved non-Boss health/pattern/body overrides live in route_nonboss_runtime.json.",
+    "heavy_warning_spacing": 0.6,
+    "projectile_lifetime": 5.0,
+    "early_stats": {
+      "M03": {
+        "health": 320,
+        "damage": 38
+      },
+      "M04": {
+        "health": 220,
+        "damage": 32
+      }
+    },
+    "north_spawn": {
+      "x_fractions": [
+        -0.58,
+        -0.29,
+        0.0,
+        0.29,
+        0.58
+      ],
+      "portal_z_offsets": [
+        -2.2,
+        -4.4
+      ],
+      "description": "Only the north portal forecourt; locked exit illumination is decorative, not an active spawn hazard."
+    },
+    "types": {
+      "M01": {
+        "behavior": "lunge",
+        "base_type": "M01",
+        "runtime_ref": "M01",
+        "elite": false
+      },
+      "M02": {
+        "behavior": "shooter",
+        "base_type": "M02",
+        "elite": false,
+        "move_speed": 1.35,
+        "radius": 0.48,
+        "attack_trigger_range": 8.0,
+        "stop_range": 5.8,
+        "recovery": 0.8,
+        "projectile_range": 15.0,
+        "spread_degrees": [
+          0.0
+        ]
+      },
+      "M03": {
+        "behavior": "lunge",
+        "base_type": "M03",
+        "elite": false,
+        "heavy": true,
+        "move_speed": 1.75,
+        "radius": 0.62,
+        "attack_trigger_range": 6.5,
+        "lunge_distance": 7.0,
+        "lunge_duration": 0.7,
+        "recovery": 1.25
+      },
+      "M04": {
+        "behavior": "mark",
+        "base_type": "M04",
+        "elite": false,
+        "heavy": true,
+        "move_speed": 1.55,
+        "radius": 0.45,
+        "attack_trigger_range": 8.0,
+        "stop_range": 6.8,
+        "active_duration": 0.15,
+        "recovery": 0.85
+      },
+      "EL01": {
+        "name": "冠纹史莱姆",
+        "behavior": "lunge",
+        "elite": true,
+        "base_elite": "EL01",
+        "warning": 0.85,
+        "second_warning": 0.75,
+        "attack_cycle": 5.2,
+        "move_speed": 2.1,
+        "radius": 0.78,
+        "attack_trigger_range": 3.3,
+        "lunge_distance": 3.6,
+        "lunge_duration": 0.36,
+        "recovery": 1.4,
+        "danger_radius": 0.78,
+        "lunges": 2
+      },
+      "EL02": {
+        "name": "裂籽花妖",
+        "behavior": "shooter",
+        "elite": true,
+        "base_elite": "EL02",
+        "warning": 0.95,
+        "attack_cycle": 4.5,
+        "move_speed": 1.1,
+        "radius": 0.78,
+        "attack_trigger_range": 9.0,
+        "stop_range": 6.8,
+        "recovery": 1.35,
+        "projectile_range": 15.0,
+        "projectile_speed": 3.2,
+        "projectile_radius": 0.18,
+        "spread_degrees": [
+          -32.0,
+          -16.0,
+          0.0,
+          16.0,
+          32.0
+        ]
+      },
+      "EL02_GUARD": {
+        "name": "裂籽守门精英",
+        "variant_of": "EL02",
+        "health_multiplier": 1.3,
+        "damage_multiplier": 1.1
+      },
+      "M05": {
+        "behavior": "shooter",
+        "base_type": "M02",
+        "elite": false,
+        "move_speed": 1.35,
+        "radius": 0.5,
+        "attack_trigger_range": 9.0,
+        "stop_range": 6.5,
+        "recovery": 0.8,
+        "projectile_range": 15.0,
+        "spread_degrees": [
+          0.0
+        ],
+        "name": "散华花妖"
+      },
+      "M06": {
+        "behavior": "shooter",
+        "base_type": "M02",
+        "elite": false,
+        "move_speed": 1.35,
+        "radius": 0.5,
+        "attack_trigger_range": 9.0,
+        "stop_range": 6.5,
+        "recovery": 0.8,
+        "projectile_range": 15.0,
+        "spread_degrees": [
+          0.0
+        ],
+        "name": "环纹花妖"
+      },
+      "M07": {
+        "behavior": "shooter",
+        "base_type": "M02",
+        "elite": false,
+        "move_speed": 1.35,
+        "radius": 0.5,
+        "attack_trigger_range": 9.0,
+        "stop_range": 6.5,
+        "recovery": 0.8,
+        "projectile_range": 15.0,
+        "spread_degrees": [
+          0.0
+        ],
+        "name": "巡光花妖"
+      }
+    },
+    "stat_stages": [
+      {
+        "id": "teaching",
+        "from": 1,
+        "to": 3,
+        "normal": {
+          "health": 1.0,
+          "move_speed": 1.0,
+          "projectile_speed": 1.0,
+          "attack_cycle": 1.0
+        },
+        "elite": {
+          "health": 1.0,
+          "move_speed": 1.0,
+          "projectile_speed": 1.0,
+          "attack_cycle": 1.0
+        }
+      },
+      {
+        "id": "first_pressure",
+        "from": 4,
+        "to": 5,
+        "normal": {
+          "health": 3.5,
+          "move_speed": 1.16,
+          "projectile_speed": 1.25,
+          "attack_cycle": 0.85
+        },
+        "elite": {
+          "health": 1.2,
+          "move_speed": 1.16,
+          "projectile_speed": 1.25,
+          "attack_cycle": 0.9
+        }
+      },
+      {
+        "id": "mixed_pressure",
+        "from": 6,
+        "to": 8,
+        "normal": {
+          "health": 6.0,
+          "move_speed": 1.28,
+          "projectile_speed": 1.5,
+          "attack_cycle": 0.72
+        },
+        "elite": {
+          "health": 1.5,
+          "move_speed": 1.22,
+          "projectile_speed": 1.5,
+          "attack_cycle": 0.85
+        }
+      },
+      {
+        "id": "inner_pressure",
+        "from": 9,
+        "to": 11,
+        "normal": {
+          "health": 10.0,
+          "move_speed": 1.43,
+          "projectile_speed": 1.85,
+          "attack_cycle": 0.62
+        },
+        "elite": {
+          "health": 2.0,
+          "move_speed": 1.35,
+          "projectile_speed": 1.85,
+          "attack_cycle": 0.78
+        }
+      },
+      {
+        "id": "gate_pressure",
+        "from": 12,
+        "to": 15,
+        "normal": {
+          "health": 15.0,
+          "move_speed": 1.55,
+          "projectile_speed": 2.2,
+          "attack_cycle": 0.55
+        },
+        "elite": {
+          "health": 2.6,
+          "move_speed": 1.45,
+          "projectile_speed": 2.2,
+          "attack_cycle": 0.72
+        }
+      },
+      {
+        "id": "crossfire_entry",
+        "from": 16,
+        "to": 20,
+        "normal": {
+          "health": 18,
+          "move_speed": 1.6,
+          "projectile_speed": 2.35,
+          "attack_cycle": 0.52
+        },
+        "elite": {
+          "health": 3.0,
+          "move_speed": 1.5,
+          "projectile_speed": 2.35,
+          "attack_cycle": 0.69
+        }
+      },
+      {
+        "id": "crossfire_mix",
+        "from": 21,
+        "to": 25,
+        "normal": {
+          "health": 20,
+          "move_speed": 1.66,
+          "projectile_speed": 2.45,
+          "attack_cycle": 0.5
+        },
+        "elite": {
+          "health": 3.3,
+          "move_speed": 1.55,
+          "projectile_speed": 2.45,
+          "attack_cycle": 0.67
+        }
+      },
+      {
+        "id": "crossfire_gate",
+        "from": 26,
+        "to": 30,
+        "normal": {
+          "health": 23,
+          "move_speed": 1.72,
+          "projectile_speed": 2.55,
+          "attack_cycle": 0.48
+        },
+        "elite": {
+          "health": 3.6,
+          "move_speed": 1.6,
+          "projectile_speed": 2.55,
+          "attack_cycle": 0.65
+        }
+      },
+      {
+        "id": "deep_entry",
+        "from": 31,
+        "to": 35,
+        "normal": {
+          "health": 24.5,
+          "move_speed": 1.77,
+          "projectile_speed": 2.6,
+          "attack_cycle": 0.47
+        },
+        "elite": {
+          "health": 3.9,
+          "move_speed": 1.64,
+          "projectile_speed": 2.6,
+          "attack_cycle": 0.64
+        }
+      },
+      {
+        "id": "deep_mix",
+        "from": 36,
+        "to": 40,
+        "normal": {
+          "health": 26,
+          "move_speed": 1.81,
+          "projectile_speed": 2.68,
+          "attack_cycle": 0.46
+        },
+        "elite": {
+          "health": 4.2,
+          "move_speed": 1.68,
+          "projectile_speed": 2.68,
+          "attack_cycle": 0.63
+        }
+      },
+      {
+        "id": "deep_gate",
+        "from": 41,
+        "to": 45,
+        "normal": {
+          "health": 27,
+          "move_speed": 1.85,
+          "projectile_speed": 2.75,
+          "attack_cycle": 0.45
+        },
+        "elite": {
+          "health": 4.5,
+          "move_speed": 1.72,
+          "projectile_speed": 2.75,
+          "attack_cycle": 0.62
+        }
+      },
+      {
+        "id": "heart_entry",
+        "from": 46,
+        "to": 50,
+        "normal": {
+          "health": 28.5,
+          "move_speed": 1.85,
+          "projectile_speed": 2.75,
+          "attack_cycle": 0.45
+        },
+        "elite": {
+          "health": 4.8,
+          "move_speed": 1.72,
+          "projectile_speed": 2.75,
+          "attack_cycle": 0.62
+        }
+      },
+      {
+        "id": "heart_mix",
+        "from": 51,
+        "to": 55,
+        "normal": {
+          "health": 30,
+          "move_speed": 1.85,
+          "projectile_speed": 2.75,
+          "attack_cycle": 0.45
+        },
+        "elite": {
+          "health": 5.1,
+          "move_speed": 1.72,
+          "projectile_speed": 2.75,
+          "attack_cycle": 0.62
+        }
+      },
+      {
+        "id": "heart_gate",
+        "from": 56,
+        "to": 60,
+        "normal": {
+          "health": 32,
+          "move_speed": 1.85,
+          "projectile_speed": 2.75,
+          "attack_cycle": 0.45
+        },
+        "elite": {
+          "health": 5.4,
+          "move_speed": 1.72,
+          "projectile_speed": 2.75,
+          "attack_cycle": 0.62
+        }
+      }
+    ],
+    "stage_rules": "Only health, walking speed, projectile speed and attack-cycle start intervals change by room. Damage, footprints, attack shapes, direction locking and warnings stay fixed. Minimum cycle includes the full readable attack and recovery."
+  },
+  "data/route_nonboss_runtime.json": {
+    "boss_rooms": [
+      15,
+      30,
+      45,
+      60
+    ],
+    "stages": [
+      {
+        "id": "early",
+        "name": "前期",
+        "from": 1,
+        "to": 14,
+        "alive_cap": 6,
+        "ranged_alive_cap": 3,
+        "ring_alive_cap": 0,
+        "sweep_alive_cap": 0,
+        "heavy_alive_cap": 2,
+        "max_waves": 2,
+        "projectile_cap": 48
+      },
+      {
+        "id": "middle",
+        "name": "中期",
+        "from": 16,
+        "to": 29,
+        "alive_cap": 8,
+        "ranged_alive_cap": 4,
+        "ring_alive_cap": 1,
+        "sweep_alive_cap": 0,
+        "heavy_alive_cap": 2,
+        "max_waves": 3,
+        "projectile_cap": 96
+      },
+      {
+        "id": "late",
+        "name": "后期",
+        "from": 31,
+        "to": 44,
+        "alive_cap": 10,
+        "ranged_alive_cap": 5,
+        "ring_alive_cap": 2,
+        "sweep_alive_cap": 1,
+        "heavy_alive_cap": 3,
+        "max_waves": 3,
+        "projectile_cap": 144
+      },
+      {
+        "id": "extreme",
+        "name": "超高难度",
+        "from": 46,
+        "to": 59,
+        "alive_cap": 12,
+        "ranged_alive_cap": 6,
+        "ring_alive_cap": 2,
+        "sweep_alive_cap": 2,
+        "heavy_alive_cap": 3,
+        "max_waves": 4,
+        "projectile_cap": 192
+      }
+    ],
+    "body_contact": {
+      "damage_by_group": {
+        "small": [
+          12,
+          16,
+          20,
+          24
+        ],
+        "heavy": [
+          18,
+          24,
+          30,
+          36
+        ],
+        "elite": [
+          24,
+          30,
+          36,
+          42
+        ]
+      },
+      "player_contact_interval": 0.8,
+      "hurt_invulnerability_reference": "base.player.hurt_invulnerability",
+      "per_frame_max_hits": 1,
+      "priority": [
+        "active_attack",
+        "projectile",
+        "body_contact"
+      ],
+      "multiple_bodies": "highest final eligible damage wins; stable actor id breaks ties",
+      "damage_bucket": "direct; normal defense/shield; no projectile-only reduction",
+      "swept_relative_circles": true,
+      "contact_during_active_lunge": false,
+      "contact_during_frozen_dead_spawn_preview": false,
+      "contact_grace_after_spawn": 0.5,
+      "solid_body_blocking": false,
+      "forced_knockback": false,
+      "timer_uses_combat_time": true,
+      "exit_reentry_resets_interval": false
+    },
+    "spawn": {
+      "preserve_room_geometry": true,
+      "north_x_fractions": [
+        -0.58,
+        -0.29,
+        0,
+        0.29,
+        0.58
+      ],
+      "north_portal_z_offsets": [
+        -2.2,
+        -4.4,
+        -6.6
+      ],
+      "preview_seconds": 0.8,
+      "safe_player_distance": 3.0,
+      "max_survivors_before_next_wave": 2,
+      "whole_pack_and_role_caps_required": true,
+      "shield_or_cooldown_reset_between_waves": false
+    },
+    "projectiles": {
+      "lifetime": 5.0,
+      "range": 15.0,
+      "new_pattern_min_start_distance": 3.0,
+      "whole_volley_capacity_reservation": true,
+      "retry_delay": 0.25,
+      "curtain_start_spacing": 0.25,
+      "clear_on_emitter_death": false,
+      "warnings_pause_with_frozen_actor": true,
+      "released_shots_continue_while_emitter_frozen": true
+    },
+    "health_budget": {
+      "teaching_rooms_preserved": [
+        1,
+        2,
+        3
+      ],
+      "existing_role_reference": "actual current room health before proposed multiplier, including current stage; never multiply twice",
+      "new_roles_reference": "M05 reads same-room M02; M06/M07 read same-room M04",
+      "elite_health_unchanged": true,
+      "ratios_are_design_evidence_not_runtime_limits": true
+    },
+    "version": "route-nonboss-runtime-1-20261020",
+    "scope": "Approved non-Boss design21, explicitly authorized for implementation. Boss placeholders excluded. No runtime dependency on tools/balance.",
+    "types": {
+      "M01": {
+        "name": "跃袭史莱姆",
+        "role": "追击与扑击",
+        "health_reference": "M01",
+        "health_factor": 0.7,
+        "body_group": "small",
+        "radius": 0.45,
+        "introduced": 1,
+        "elite": false,
+        "pattern": "",
+        "roles": []
+      },
+      "M02": {
+        "name": "孢弹花妖",
+        "role": "瞄准连射",
+        "health_reference": "M02",
+        "health_factor": 0.8,
+        "body_group": "small",
+        "radius": 0.48,
+        "introduced": 2,
+        "elite": false,
+        "pattern": "aimed",
+        "roles": [
+          "ranged"
+        ]
+      },
+      "M03": {
+        "name": "岩甲冲锋兽",
+        "role": "预警冲锋切线",
+        "health_reference": "M03",
+        "health_factor": 1.0,
+        "body_group": "heavy",
+        "radius": 0.62,
+        "introduced": 8,
+        "elite": false,
+        "pattern": "",
+        "roles": [
+          "heavy"
+        ]
+      },
+      "M04": {
+        "name": "刻印术士",
+        "role": "锁点落印占位",
+        "health_reference": "M04",
+        "health_factor": 1.0,
+        "body_group": "small",
+        "radius": 0.45,
+        "introduced": 25,
+        "elite": false,
+        "pattern": "",
+        "roles": [
+          "heavy"
+        ]
+      },
+      "M05": {
+        "name": "散华花妖",
+        "role": "固定间隙扇射",
+        "health_reference": "M02",
+        "health_factor": 0.7,
+        "body_group": "small",
+        "radius": 0.5,
+        "introduced": 5,
+        "elite": false,
+        "pattern": "fan",
+        "roles": [
+          "ranged"
+        ]
+      },
+      "M06": {
+        "name": "环纹花妖",
+        "role": "缺口环形弹",
+        "health_reference": "M04",
+        "health_factor": 0.7,
+        "body_group": "small",
+        "radius": 0.5,
+        "introduced": 18,
+        "elite": false,
+        "pattern": "ring",
+        "roles": [
+          "ranged",
+          "ring"
+        ]
+      },
+      "M07": {
+        "name": "巡光花妖",
+        "role": "旋转扫射",
+        "health_reference": "M04",
+        "health_factor": 0.7,
+        "body_group": "small",
+        "radius": 0.5,
+        "introduced": 32,
+        "elite": false,
+        "pattern": "sweep",
+        "roles": [
+          "ranged",
+          "sweep"
+        ]
+      },
+      "EL01": {
+        "name": "冠纹史莱姆",
+        "role": "既有追击精英",
+        "health_reference": "EL01",
+        "health_factor": 1.0,
+        "body_group": "elite",
+        "radius": 0.78,
+        "introduced": 6,
+        "elite": true,
+        "pattern": "",
+        "roles": [
+          "heavy"
+        ]
+      },
+      "EL02": {
+        "name": "裂籽花妖",
+        "role": "既有扇射精英",
+        "health_reference": "EL02",
+        "health_factor": 1.0,
+        "body_group": "elite",
+        "radius": 0.78,
+        "introduced": 12,
+        "elite": true,
+        "pattern": "",
+        "roles": [
+          "ranged"
+        ]
+      }
+    },
+    "patterns": {
+      "aimed": {
+        "warning": 0.8,
+        "damage": 28,
+        "radius": 0.18,
+        "counts": [
+          1,
+          2,
+          3,
+          3
+        ],
+        "shot_interval": 0.28,
+        "cycle": [
+          3.6,
+          3.4,
+          3.2,
+          3.0
+        ],
+        "speed": [
+          3.2,
+          4.8,
+          6.0,
+          6.8
+        ],
+        "aim": "relock before each shot; straight after release",
+        "followup_warning": 0.2,
+        "kind": "aimed"
+      },
+      "fan": {
+        "warning": 0.9,
+        "damage": 18,
+        "radius": 0.16,
+        "counts": [
+          3,
+          5,
+          7,
+          9
+        ],
+        "step_degrees": 22,
+        "cycle": [
+          4.4,
+          4.0,
+          3.8,
+          3.6
+        ],
+        "speed": [
+          3.0,
+          3.8,
+          4.4,
+          4.8
+        ],
+        "aim": "lock fan center at warning start",
+        "kind": "fan"
+      },
+      "ring": {
+        "warning": 1.0,
+        "damage": 16,
+        "radius": 0.16,
+        "counts": [
+          0,
+          12,
+          16,
+          20
+        ],
+        "omitted_adjacent_spokes": 3,
+        "gap_rotation_degrees": 30,
+        "cycle": [
+          0,
+          6.0,
+          5.6,
+          5.2
+        ],
+        "speed": [
+          0,
+          2.8,
+          3.2,
+          3.6
+        ],
+        "aim": "first gap faces locked player; following gaps turn 30 degrees, shown before release",
+        "kind": "ring"
+      },
+      "sweep": {
+        "warning": 1.0,
+        "damage": 16,
+        "radius": 0.16,
+        "counts": [
+          0,
+          0,
+          7,
+          9
+        ],
+        "sweep_arc_degrees": 120,
+        "shot_interval": [
+          0,
+          0,
+          0.18,
+          0.16
+        ],
+        "cycle": [
+          0,
+          0,
+          5.2,
+          4.8
+        ],
+        "speed": [
+          0,
+          0,
+          3.6,
+          4.0
+        ],
+        "aim": "lock sweep center; alternate fixed left-to-right and right-to-left; no tracking",
+        "kind": "sweep"
+      }
+    }
+  },
+  "data/route_boss_runtime.json": {
+    "global": {
+      "spawn": [
+        0,
+        6
+      ],
+      "spawn_preview": 1.5,
+      "initial_attack_lock": 0.8,
+      "approach_stop_distance": 5.5,
+      "projectile_lifetime": 5.0,
+      "projectile_range": 15.0,
+      "whole_volley_reservation": true,
+      "retry_delay": 0.25,
+      "body_interval": 0.8,
+      "hurt_invulnerability_reference": "base.player.hurt_invulnerability",
+      "control_class": "fixed_strong",
+      "push_resistance": 1.0,
+      "control_coeff": 0.0,
+      "slow_cap": 0.15,
+      "health_refill_or_invulnerability_on_transition": false,
+      "transitions_clear_hostile_only": true,
+      "player_keeps_damage_during_transition": true,
+      "death_before_phase_transition": true,
+      "reaction_allowance": 0.25,
+      "minimum_melee_safety_margin": 0.15,
+      "capacity_horizon_seconds": 90
+    },
+    "bosses": [
+      {
+        "room": 15,
+        "id": "BOSS01",
+        "name": "岩冠守卫",
+        "health": 24000,
+        "radius": 1.0,
+        "move_speed": 1.65,
+        "body_damage": 30,
+        "projectile_cap": 48,
+        "transition_seconds": 0,
+        "phases": [
+          {
+            "id": "main",
+            "health_at_most": 1.0,
+            "sequence": [
+              "charge",
+              "fan"
+            ],
+            "patterns": {
+              "charge": {
+                "kind": "charge",
+                "warning": 1.2,
+                "distance": 7,
+                "duration": 0.7,
+                "half_width": 1.0,
+                "damage": 60,
+                "recovery": 1.8
+              },
+              "fan": {
+                "kind": "fan",
+                "count": 7,
+                "step_degrees": 22,
+                "speed": 3.6,
+                "damage": 24,
+                "radius": 0.16,
+                "warning": 1.2,
+                "recovery": 1.8
+              }
+            }
+          }
+        ]
+      },
+      {
+        "room": 30,
+        "id": "BOSS04",
+        "name": "千瓣花母",
+        "health": 48000,
+        "radius": 1.0,
+        "move_speed": 1.2,
+        "body_damage": 36,
+        "projectile_cap": 96,
+        "transition_seconds": 1.5,
+        "phases": [
+          {
+            "id": "bloom",
+            "health_at_most": 1.0,
+            "sequence": [
+              "fan",
+              "ring",
+              "marks",
+              "ring"
+            ],
+            "patterns": {
+              "fan": {
+                "kind": "fan",
+                "count": 7,
+                "step_degrees": 22,
+                "speed": 4,
+                "damage": 24,
+                "radius": 0.16,
+                "warning": 1.1,
+                "recovery": 1.6
+              },
+              "ring": {
+                "kind": "ring",
+                "count": 16,
+                "omitted_adjacent_spokes": 3,
+                "gap_rotation_degrees": 30,
+                "volleys": 1,
+                "release_interval": 0,
+                "followup_warning": 1.2,
+                "speed": 3,
+                "damage": 20,
+                "radius": 0.16,
+                "warning": 1.2,
+                "recovery": 2
+              },
+              "marks": {
+                "kind": "marks",
+                "count": 2,
+                "radius": 1.2,
+                "damage": 48,
+                "warning": 1.2,
+                "mark_interval": 0.7,
+                "active": 0.15,
+                "recovery": 1.6,
+                "per_mark_max_hits": 1
+              }
+            }
+          },
+          {
+            "id": "full_bloom",
+            "health_at_most": 0.5,
+            "sequence": [
+              "fan",
+              "double_ring",
+              "marks",
+              "double_ring"
+            ],
+            "patterns": {
+              "fan": {
+                "kind": "fan",
+                "count": 9,
+                "step_degrees": 22,
+                "speed": 4,
+                "damage": 24,
+                "radius": 0.16,
+                "warning": 1.1,
+                "recovery": 1.6
+              },
+              "double_ring": {
+                "kind": "ring",
+                "count": 20,
+                "omitted_adjacent_spokes": 3,
+                "gap_rotation_degrees": 30,
+                "volleys": 2,
+                "release_interval": 1.7,
+                "followup_warning": 1.2,
+                "speed": 3,
+                "damage": 20,
+                "radius": 0.16,
+                "warning": 1.2,
+                "recovery": 2
+              },
+              "marks": {
+                "kind": "marks",
+                "count": 3,
+                "radius": 1.2,
+                "damage": 48,
+                "warning": 1.2,
+                "mark_interval": 0.7,
+                "active": 0.15,
+                "recovery": 1.6,
+                "per_mark_max_hits": 1
+              }
+            }
+          }
+        ]
+      },
+      {
+        "room": 45,
+        "id": "BOSS02",
+        "name": "符阵监守",
+        "health": 80000,
+        "radius": 0.9,
+        "move_speed": 1.5,
+        "body_damage": 42,
+        "projectile_cap": 144,
+        "transition_seconds": 1.5,
+        "phases": [
+          {
+            "id": "inscription",
+            "health_at_most": 1.0,
+            "sequence": [
+              "sweep",
+              "marks",
+              "line"
+            ],
+            "patterns": {
+              "sweep": {
+                "kind": "sweep",
+                "count": 9,
+                "arc_degrees": 120,
+                "shot_interval": 0.18,
+                "alternate_direction": true,
+                "speed": 4,
+                "damage": 26,
+                "radius": 0.16,
+                "warning": 1.2,
+                "recovery": 1.6
+              },
+              "marks": {
+                "kind": "marks",
+                "count": 3,
+                "radius": 1.3,
+                "damage": 60,
+                "warning": 1.3,
+                "mark_interval": 0.7,
+                "active": 0.15,
+                "recovery": 1.6,
+                "per_mark_max_hits": 1
+              },
+              "line": {
+                "kind": "lines",
+                "count": 1,
+                "length": 12,
+                "width": 1.2,
+                "damage": 60,
+                "warning": 1.4,
+                "active": 1.2,
+                "recovery": 1.6,
+                "group_max_hits": 1
+              }
+            }
+          },
+          {
+            "id": "crossing",
+            "health_at_most": 0.5,
+            "sequence": [
+              "sweep",
+              "marks",
+              "sweep",
+              "cross_line"
+            ],
+            "patterns": {
+              "sweep": {
+                "kind": "sweep",
+                "count": 9,
+                "arc_degrees": 120,
+                "shot_interval": 0.18,
+                "alternate_direction": true,
+                "speed": 4,
+                "damage": 26,
+                "radius": 0.16,
+                "warning": 1.2,
+                "recovery": 1.6
+              },
+              "marks": {
+                "kind": "marks",
+                "count": 4,
+                "radius": 1.3,
+                "damage": 60,
+                "warning": 1.3,
+                "mark_interval": 0.7,
+                "active": 0.15,
+                "recovery": 1.6,
+                "per_mark_max_hits": 1
+              },
+              "cross_line": {
+                "kind": "lines",
+                "count": 2,
+                "length": 12,
+                "width": 1.2,
+                "damage": 60,
+                "warning": 1.4,
+                "active": 1.2,
+                "recovery": 1.6,
+                "group_max_hits": 1
+              }
+            }
+          }
+        ]
+      },
+      {
+        "room": 60,
+        "id": "BOSS03",
+        "name": "遗迹之心",
+        "health": 130000,
+        "radius": 1.1,
+        "move_speed": 1.4,
+        "body_damage": 48,
+        "projectile_cap": 192,
+        "transition_seconds": 2,
+        "phases": [
+          {
+            "id": "awakening",
+            "health_at_most": 1.0,
+            "sequence": [
+              "fan",
+              "ring",
+              "marks",
+              "ring"
+            ],
+            "patterns": {
+              "fan": {
+                "kind": "fan",
+                "count": 9,
+                "step_degrees": 22,
+                "speed": 4.6,
+                "damage": 28,
+                "radius": 0.16,
+                "warning": 1.2,
+                "recovery": 1.6
+              },
+              "ring": {
+                "kind": "ring",
+                "count": 20,
+                "omitted_adjacent_spokes": 3,
+                "gap_rotation_degrees": 30,
+                "volleys": 1,
+                "release_interval": 0,
+                "followup_warning": 1.2,
+                "speed": 3.2,
+                "damage": 24,
+                "radius": 0.16,
+                "warning": 1.3,
+                "recovery": 1.8
+              },
+              "marks": {
+                "kind": "marks",
+                "count": 3,
+                "radius": 1.4,
+                "damage": 70,
+                "warning": 1.3,
+                "mark_interval": 0.75,
+                "active": 0.15,
+                "recovery": 1.6,
+                "per_mark_max_hits": 1
+              }
+            }
+          },
+          {
+            "id": "resonance",
+            "health_at_most": 0.65,
+            "sequence": [
+              "sweep",
+              "marks",
+              "ring",
+              "fan"
+            ],
+            "patterns": {
+              "fan": {
+                "kind": "fan",
+                "count": 9,
+                "step_degrees": 22,
+                "speed": 4.6,
+                "damage": 28,
+                "radius": 0.16,
+                "warning": 1.2,
+                "recovery": 1.6
+              },
+              "ring": {
+                "kind": "ring",
+                "count": 20,
+                "omitted_adjacent_spokes": 3,
+                "gap_rotation_degrees": 30,
+                "volleys": 1,
+                "release_interval": 0,
+                "followup_warning": 1.2,
+                "speed": 3.2,
+                "damage": 24,
+                "radius": 0.16,
+                "warning": 1.3,
+                "recovery": 1.8
+              },
+              "marks": {
+                "kind": "marks",
+                "count": 3,
+                "radius": 1.4,
+                "damage": 70,
+                "warning": 1.3,
+                "mark_interval": 0.75,
+                "active": 0.15,
+                "recovery": 1.6,
+                "per_mark_max_hits": 1
+              },
+              "sweep": {
+                "kind": "sweep",
+                "count": 11,
+                "arc_degrees": 120,
+                "shot_interval": 0.16,
+                "alternate_direction": true,
+                "speed": 4.2,
+                "damage": 26,
+                "radius": 0.16,
+                "warning": 1.2,
+                "recovery": 1.6
+              }
+            }
+          },
+          {
+            "id": "heartstorm",
+            "health_at_most": 0.3,
+            "sequence": [
+              "double_ring",
+              "marks",
+              "sweep",
+              "cross_line"
+            ],
+            "patterns": {
+              "double_ring": {
+                "kind": "ring",
+                "count": 24,
+                "omitted_adjacent_spokes": 3,
+                "gap_rotation_degrees": 30,
+                "volleys": 2,
+                "release_interval": 1.8,
+                "followup_warning": 1.2,
+                "speed": 3.6,
+                "damage": 24,
+                "radius": 0.16,
+                "warning": 1.3,
+                "recovery": 1.8
+              },
+              "marks": {
+                "kind": "marks",
+                "count": 3,
+                "radius": 1.4,
+                "damage": 70,
+                "warning": 1.3,
+                "mark_interval": 0.75,
+                "active": 0.15,
+                "recovery": 1.6,
+                "per_mark_max_hits": 1
+              },
+              "sweep": {
+                "kind": "sweep",
+                "count": 11,
+                "arc_degrees": 120,
+                "shot_interval": 0.16,
+                "alternate_direction": true,
+                "speed": 4.2,
+                "damage": 26,
+                "radius": 0.16,
+                "warning": 1.2,
+                "recovery": 1.6
+              },
+              "cross_line": {
+                "kind": "lines",
+                "count": 2,
+                "length": 12,
+                "width": 1.2,
+                "damage": 70,
+                "warning": 1.4,
+                "active": 1.2,
+                "recovery": 1.6,
+                "group_max_hits": 1
+              }
+            }
+          }
+        ],
+        "summons": {
+          "groups_per_fight": 2,
+          "groups": [
+            {
+              "phase": "resonance",
+              "types": {
+                "M01": 1,
+                "M02": 1
+              }
+            },
+            {
+              "phase": "heartstorm",
+              "types": {
+                "M01": 1,
+                "M02": 1
+              }
+            }
+          ],
+          "alive_cap": 2,
+          "must_clear_previous_group": true,
+          "stat_room": 59,
+          "preview": 1.0,
+          "attack_lock": 0.5,
+          "safe_player_distance": 3.0,
+          "projectile_emitter_cap": 1,
+          "arrival_on_recovery_only": true,
+          "boss_death_clears_adds": true
+        }
+      }
+    ],
+    "version": "boss-runtime-1-20261020",
+    "source_design": "docs/游戏设计/22-四个Boss与必金双奖励方案.md",
+    "reward": {
+      "pickup_x_offsets": [
+        -1.2,
+        1.2
+      ],
+      "chest_choices": 3,
+      "fallback_damage_bonus": 0.15,
+      "fallback_health_max_add": 50
+    },
+    "fallback_items": {
+      "BGT15": {
+        "name": "岩冠金庭印",
+        "rarity": "gold",
+        "category": "generic",
+        "active": true,
+        "boss_only": true,
+        "boss_room": 15,
+        "damage_bonus": 0.15,
+        "health_max_add": 50,
+        "description": "常规伤害提高15%，最大生命增加50。获得时不恢复生命。仅在本关合资格金色宝物已取尽时出现。",
+        "scope": "generic"
+      },
+      "BGT30": {
+        "name": "千瓣金庭印",
+        "rarity": "gold",
+        "category": "generic",
+        "active": true,
+        "boss_only": true,
+        "boss_room": 30,
+        "damage_bonus": 0.15,
+        "health_max_add": 50,
+        "description": "常规伤害提高15%，最大生命增加50。获得时不恢复生命。仅在本关合资格金色宝物已取尽时出现。",
+        "scope": "generic"
+      },
+      "BGT45": {
+        "name": "符阵金庭印",
+        "rarity": "gold",
+        "category": "generic",
+        "active": true,
+        "boss_only": true,
+        "boss_room": 45,
+        "damage_bonus": 0.15,
+        "health_max_add": 50,
+        "description": "常规伤害提高15%，最大生命增加50。获得时不恢复生命。仅在本关合资格金色宝物已取尽时出现。",
+        "scope": "generic"
+      },
+      "BGT60": {
+        "name": "心核金庭印",
+        "rarity": "gold",
+        "category": "generic",
+        "active": true,
+        "boss_only": true,
+        "boss_room": 60,
+        "damage_bonus": 0.15,
+        "health_max_add": 50,
+        "description": "常规伤害提高15%，最大生命增加50。获得时不恢复生命。仅在本关合资格金色宝物已取尽时出现。",
+        "scope": "generic"
+      }
+    }
+  },
+  "data/balance_candidates/first_run_v1.json": {
+    "version": "first-run-v1-formal-fire-20261018",
+    "status": "runtime_shared_baseline_with_future_encounter_reference",
+    "units": {
+      "time": "s",
+      "distance": "m",
+      "damage": "HP",
+      "coefficient": "x_attack",
+      "rate": "0_to_1"
+    },
+    "player": {
+      "health": 300,
+      "shield": 100,
+      "attack": 100,
+      "crit_rate": 0.05,
+      "crit_multiplier": 1.5,
+      "fire_bonus": 0.0,
+      "move_speed": 5.0,
+      "radius": 0.3,
+      "hurt_invulnerability": 0.6
+    },
+    "limits": {
+      "slots": 8,
+      "spell_level": 3,
+      "crit_rate": null,
+      "cooldown_reduction": 0.6,
+      "minimum_cooldown": 0.2
+    },
+    "fire_synergy": {
+      "distinct_spells": 3,
+      "fire_bonus": 0.15,
+      "cooldown_reduction": 0.1
+    },
+    "recovery": {
+      "shop_fraction": 0.2,
+      "shop_max_health_gain": 20,
+      "boss_fraction": 0.25,
+      "shop_after": [
+        9,
+        24,
+        33,
+        42,
+        54
+      ],
+      "boss_after": [
+        15,
+        45
+      ],
+      "health_gain_also_heals": false
+    },
+    "attribute_artifact_candidates": {
+      "health_max_flat": 80,
+      "shield_max_flat": 25,
+      "attack_flat": 15,
+      "health_gain_also_heals": false,
+      "status": "amounts_only_no_new_item_ids_or_rarity"
+    },
+    "spells": {
+      "F01": {
+        "school": "fire",
+        "active": true,
+        "name": "焰弹术",
+        "kind": "bolt",
+        "windup": 0.15,
+        "cooldown": 1.2,
+        "range": 8.0,
+        "travel_delay": 0.15,
+        "secondary_delay": 0.18,
+        "levels": [
+          {
+            "coefficient": 1.0,
+            "secondary": 0.0,
+            "radius": 0.8
+          },
+          {
+            "coefficient": 1.35,
+            "secondary": 0.0,
+            "radius": 1.0
+          },
+          {
+            "coefficient": 1.35,
+            "secondary": 0.75,
+            "radius": 1.0
+          }
+        ]
+      },
+      "F02": {
+        "school": "fire",
+        "active": true,
+        "name": "炎法精通",
+        "kind": "passive",
+        "levels": [
+          {
+            "fire_bonus": 0.15,
+            "crit_bonus": 0.0
+          },
+          {
+            "fire_bonus": 0.25,
+            "crit_bonus": 0.0
+          },
+          {
+            "fire_bonus": 0.35,
+            "crit_bonus": 0.25
+          }
+        ]
+      },
+      "F03": {
+        "school": "fire",
+        "active": true,
+        "name": "流火之雨",
+        "kind": "rain",
+        "windup": 0.4,
+        "cooldown": 6.5,
+        "range": 8.0,
+        "impact_delay": 0.3,
+        "interval": 0.4,
+        "radius": 2.2,
+        "ground_interval": 0.5,
+        "first_drop_coefficient": 1.0,
+        "fixed_center_drops": 1,
+        "levels": [
+          {
+            "coefficient": 0.6,
+            "drops": 6,
+            "ground_coefficient": 0.0,
+            "ground_duration": 0.0
+          },
+          {
+            "coefficient": 0.6,
+            "drops": 8,
+            "ground_coefficient": 0.0,
+            "ground_duration": 0.0
+          },
+          {
+            "coefficient": 0.6,
+            "drops": 8,
+            "ground_coefficient": 0.4,
+            "ground_duration": 3.0
+          }
+        ]
+      },
+      "F04": {
+        "name": "契灵召唤",
+        "school": "spirit",
+        "active": false,
+        "kind": "spirit",
+        "windup": 0.35,
+        "cooldown": 12.0,
+        "range": 8.0,
+        "duration": 12.0,
+        "count": 1,
+        "levels": [
+          {
+            "coefficient": 1.0,
+            "interval": 1.25,
+            "pierce": false
+          },
+          {
+            "coefficient": 1.45,
+            "interval": 1.1,
+            "pierce": false
+          },
+          {
+            "coefficient": 1.45,
+            "interval": 1.1,
+            "pierce": true
+          }
+        ]
+      },
+      "F05": {
+        "school": "fire",
+        "active": true,
+        "name": "焰流旋涡",
+        "kind": "vortex",
+        "windup": 0.4,
+        "cooldown": 6.0,
+        "range": 7.0,
+        "interval": 0.5,
+        "duration": 4.0,
+        "speed": 1.75,
+        "levels": [
+          {
+            "coefficient": 0.4,
+            "radius": 1.2,
+            "end_duration": 0.0
+          },
+          {
+            "coefficient": 0.6,
+            "radius": 1.5,
+            "end_duration": 0.0
+          },
+          {
+            "coefficient": 0.6,
+            "radius": 1.5,
+            "end_duration": 2.0
+          }
+        ]
+      },
+      "F06": {
+        "school": "fire",
+        "active": true,
+        "name": "炽焰法阵",
+        "kind": "field",
+        "windup": 0.3,
+        "cooldown": 8.0,
+        "range": 8.0,
+        "interval": 0.5,
+        "attack_bonus": 0.2,
+        "levels": [
+          {
+            "coefficient": 0.4,
+            "radius": 2.2,
+            "duration": 4.0,
+            "grace": 0.0
+          },
+          {
+            "coefficient": 0.4,
+            "radius": 2.8,
+            "duration": 6.0,
+            "grace": 0.0
+          },
+          {
+            "coefficient": 0.4,
+            "radius": 2.8,
+            "duration": 6.0,
+            "grace": 1.5
+          }
+        ]
+      },
+      "F07": {
+        "school": "fire",
+        "active": true,
+        "name": "熔核爆弹",
+        "kind": "bomb",
+        "windup": 0.65,
+        "cooldown": 6.0,
+        "range": 9.0,
+        "travel_delay": 0.45,
+        "radius": 2.4,
+        "aftershock_delay": 0.6,
+        "levels": [
+          {
+            "coefficient": 5.0,
+            "outer": 2.5,
+            "center_radius": 0.9,
+            "aftershock": 0.0,
+            "detonation_multiplier": 1.0
+          },
+          {
+            "coefficient": 6.5,
+            "outer": 3.25,
+            "center_radius": 1.2,
+            "aftershock": 0.0,
+            "detonation_multiplier": 1.25
+          },
+          {
+            "coefficient": 6.5,
+            "outer": 3.25,
+            "center_radius": 1.2,
+            "aftershock": 1.5,
+            "detonation_multiplier": 1.5
+          }
+        ]
+      },
+      "F08": {
+        "school": "fire",
+        "active": true,
+        "name": "贯焰光束",
+        "kind": "beam",
+        "windup": 0.2,
+        "cooldown": 2.0,
+        "range": 8.0,
+        "width": 0.5,
+        "secondary_delay": 0.2,
+        "levels": [
+          {
+            "coefficient": 1.6,
+            "secondary": 0.0,
+            "range": 8.0
+          },
+          {
+            "coefficient": 2.2,
+            "secondary": 0.0,
+            "range": 9.5
+          },
+          {
+            "coefficient": 2.2,
+            "secondary": 1.1,
+            "range": 9.5
+          }
+        ]
+      },
+      "F09": {
+        "school": "fire",
+        "active": true,
+        "name": "灼浪冲击",
+        "kind": "wave",
+        "windup": 0.2,
+        "cooldown": 5.0,
+        "range": 2.6,
+        "levels": [
+          {
+            "coefficient": 0.6,
+            "radius": 2.0,
+            "push": 1.5,
+            "slow": 0.0,
+            "slow_duration": 0.0
+          },
+          {
+            "coefficient": 0.6,
+            "radius": 2.6,
+            "push": 2.2,
+            "slow": 0.0,
+            "slow_duration": 0.0
+          },
+          {
+            "coefficient": 0.6,
+            "radius": 2.6,
+            "push": 2.2,
+            "slow": 0.3,
+            "slow_duration": 2.0
+          }
+        ]
+      },
+      "F10": {
+        "school": "fire",
+        "active": true,
+        "name": "暖焰护持",
+        "kind": "shield",
+        "windup": 0.35,
+        "cooldown": 12.0,
+        "levels": [
+          {
+            "shield": 30,
+            "cooldown": 12.0
+          },
+          {
+            "shield": 45,
+            "cooldown": 12.0
+          },
+          {
+            "shield": 45,
+            "cooldown": 9.0
+          }
+        ]
+      },
+      "F11": {
+        "name": "引燃之印",
+        "school": "fire",
+        "kind": "brand",
+        "windup": 0.25,
+        "cooldown": 6.0,
+        "range": 8.0,
+        "levels": [
+          {
+            "coefficient": 0.8,
+            "spread_radius": 3.0,
+            "spread_targets": 2
+          },
+          {
+            "coefficient": 1.0,
+            "spread_radius": 3.5,
+            "spread_targets": 3
+          },
+          {
+            "coefficient": 1.0,
+            "spread_radius": 4.0,
+            "spread_targets": 4
+          }
+        ]
+      }
+    },
+    "normal_stages": [
+      {
+        "from": 1,
+        "to": 15,
+        "stats": {
+          "M01": {
+            "health": 180,
+            "damage": 30
+          },
+          "M02": {
+            "health": 160,
+            "damage": 28
+          }
+        }
+      },
+      {
+        "from": 16,
+        "to": 30,
+        "stats": {
+          "M01": {
+            "health": 360,
+            "damage": 36
+          },
+          "M02": {
+            "health": 300,
+            "damage": 34
+          },
+          "M03": {
+            "health": 630,
+            "damage": 55
+          },
+          "M04": {
+            "health": 360,
+            "damage": 42
+          }
+        }
+      },
+      {
+        "from": 31,
+        "to": 45,
+        "stats": {
+          "M01": {
+            "health": 620,
+            "damage": 42
+          },
+          "M02": {
+            "health": 520,
+            "damage": 40
+          },
+          "M03": {
+            "health": 950,
+            "damage": 65
+          },
+          "M04": {
+            "health": 600,
+            "damage": 50
+          }
+        }
+      },
+      {
+        "from": 46,
+        "to": 60,
+        "stats": {
+          "M01": {
+            "health": 860,
+            "damage": 48
+          },
+          "M02": {
+            "health": 720,
+            "damage": 46
+          },
+          "M03": {
+            "health": 1300,
+            "damage": 75
+          },
+          "M04": {
+            "health": 820,
+            "damage": 58
+          }
+        }
+      }
+    ],
+    "normal_types": {
+      "M01": {
+        "name": "跃袭史莱姆",
+        "introduced": 1,
+        "warning": 0.65,
+        "danger_radius": 0.55,
+        "attack_cycle": 3.2
+      },
+      "M02": {
+        "name": "孢弹花妖",
+        "introduced": 4,
+        "warning": 0.8,
+        "projectile_speed": 3.2,
+        "projectile_radius": 0.18,
+        "attack_cycle": 3.5
+      },
+      "M03": {
+        "name": "岩甲冲锋兽",
+        "introduced": 16,
+        "warning": 1.0,
+        "danger_half_width": 0.6,
+        "attack_cycle": 5.0
+      },
+      "M04": {
+        "name": "刻印术士",
+        "introduced": 25,
+        "warning": 1.1,
+        "danger_radius": 1.2,
+        "attack_cycle": 4.5
+      }
+    },
+    "elites": [
+      {
+        "room": 6,
+        "id": "EL01",
+        "name": "冠纹史莱姆",
+        "health": 2400,
+        "attacks": {
+          "扑击每次": 40
+        },
+        "adds": []
+      },
+      {
+        "room": 12,
+        "id": "EL02",
+        "name": "裂籽花妖",
+        "health": 4000,
+        "attacks": {
+          "孢弹每枚": 38
+        },
+        "adds": []
+      },
+      {
+        "room": 21,
+        "id": "EL03",
+        "name": "破阵岩甲兽",
+        "health": 6000,
+        "attacks": {
+          "冲锋": 65,
+          "碎石每枚": 42
+        },
+        "adds": []
+      },
+      {
+        "room": 30,
+        "id": "EL04",
+        "name": "双印术士",
+        "health": 7800,
+        "attacks": {
+          "印记每次": 60
+        },
+        "adds": []
+      },
+      {
+        "room": 39,
+        "id": "EL02",
+        "name": "裂籽花妖",
+        "health": 10000,
+        "attacks": {
+          "孢弹每枚": 50
+        },
+        "adds": [
+          "M03"
+        ]
+      },
+      {
+        "room": 51,
+        "id": "EL03",
+        "name": "破阵岩甲兽",
+        "health": 13000,
+        "attacks": {
+          "冲锋": 85,
+          "碎石每枚": 58
+        },
+        "adds": [
+          "M02"
+        ]
+      },
+      {
+        "room": 57,
+        "id": "EL04",
+        "name": "双印术士",
+        "health": 15000,
+        "attacks": {
+          "印记每次": 75
+        },
+        "adds": [
+          "M01"
+        ]
+      }
+    ],
+    "bosses": [
+      {
+        "room": 15,
+        "id": "BOSS01",
+        "name": "岩冠守卫",
+        "health": 9000,
+        "attacks": {
+          "蓄力冲撞": 60,
+          "岩屑每枚": 35
+        },
+        "minimum_warning": 1.1
+      },
+      {
+        "room": 45,
+        "id": "BOSS02",
+        "name": "符阵监守",
+        "health": 36000,
+        "attacks": {
+          "符光每枚": 50,
+          "落印每次": 65,
+          "符线每次": 60
+        },
+        "minimum_warning": 1.1
+      },
+      {
+        "room": 60,
+        "id": "BOSS03",
+        "name": "遗迹之心",
+        "health": 52000,
+        "attacks": {
+          "脉冲每枚": 60,
+          "落印每次": 80
+        },
+        "minimum_warning": 1.1,
+        "phase_fraction": 0.5,
+        "transition": 2.0,
+        "summon_interval": 18.0,
+        "adds": [
+          "M01",
+          "M02"
+        ]
+      }
+    ]
+  },
+  "data/first_room_runtime.json": {
+    "version": "first-room-runtime-2",
+    "scope": "current first playable room geometry plus missing movement and collision rules; historical shared layout candidates remain unchanged, as do approved base, spell, economy and meta values",
+    "room": {
+      "floor": {
+        "width": 18.0,
+        "depth": 28.0
+      },
+      "entry_player_center": [
+        0.0,
+        -12.5
+      ],
+      "portal_center": [
+        0.0,
+        13.0
+      ],
+      "blocks": [
+        {
+          "center": [
+            -5.25,
+            0.0
+          ],
+          "size": [
+            1.0,
+            1.0
+          ]
+        },
+        {
+          "center": [
+            5.25,
+            0.0
+          ],
+          "size": [
+            1.0,
+            1.0
+          ]
+        }
+      ],
+      "spawn": {
+        "side_x": [
+          -7.3,
+          7.3
+        ],
+        "anchor_z": [
+          -9.5,
+          -8.0,
+          -6.5
+        ]
+      }
+    },
+    "M01": {
+      "move_speed": 2.35,
+      "radius": 0.45,
+      "attack_trigger_range": 2.5,
+      "lunge_distance": 2.4,
+      "lunge_duration": 0.28,
+      "recovery": 0.7
+    },
+    "bolt_collision_radius": 0.15,
+    "spirit_offset": [
+      0.65,
+      0.4
+    ],
+    "portal_trigger_radius": 0.9
+  },
+  "data/courtyard_route.json": {
+    "version": "courtyard-route-7-four-bosses-20261020",
+    "active_room_count": 60,
+    "reward_pickup": {
+      "portal_z_offset": -2.2,
+      "radius": 0.6
+    },
+    "reward_rooms": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      10,
+      11,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      22,
+      23,
+      24,
+      25,
+      26,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      37,
+      38,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      52,
+      53,
+      54,
+      55,
+      56,
+      58,
+      59,
+      60
+    ],
+    "encounter_scope": "56 approved non-Boss encounters (929 enemies), seven normal roles and existing elites; four legacy elite Boss placeholders unchanged (69 enemies). 998 total. Rewards and shops unchanged; formal Boss behavior and dual rewards deferred.",
+    "encounters_by_room": {
+      "1": {
+        "kind": "normal",
+        "beat": "移动与接触教学",
+        "packs": [
+          {
+            "M01": 3
+          }
+        ]
+      },
+      "2": {
+        "kind": "normal",
+        "beat": "单发直射教学",
+        "packs": [
+          {
+            "M01": 3,
+            "M02": 1
+          }
+        ]
+      },
+      "3": {
+        "kind": "normal",
+        "beat": "追击与直射组合",
+        "packs": [
+          {
+            "M01": 3,
+            "M02": 2
+          }
+        ]
+      },
+      "4": {
+        "kind": "normal",
+        "beat": "首次分批",
+        "packs": [
+          {
+            "M01": 3,
+            "M02": 1
+          },
+          {
+            "M01": 3,
+            "M02": 1
+          }
+        ]
+      },
+      "5": {
+        "kind": "normal",
+        "beat": "扇射教学",
+        "packs": [
+          {
+            "M01": 2,
+            "M05": 1
+          },
+          {
+            "M01": 2,
+            "M02": 2
+          }
+        ]
+      },
+      "6": {
+        "kind": "elite",
+        "beat": "追击精英检验",
+        "packs": [
+          {
+            "EL01": 1,
+            "M01": 3
+          },
+          {
+            "M02": 2,
+            "M01": 2
+          }
+        ]
+      },
+      "7": {
+        "kind": "normal",
+        "beat": "双路扇射",
+        "packs": [
+          {
+            "M01": 3,
+            "M02": 1,
+            "M05": 1
+          },
+          {
+            "M01": 3,
+            "M02": 1
+          }
+        ]
+      },
+      "8": {
+        "kind": "normal",
+        "beat": "冲锋教学",
+        "packs": [
+          {
+            "M01": 2,
+            "M03": 1
+          },
+          {
+            "M01": 3,
+            "M05": 1
+          }
+        ]
+      },
+      "9": {
+        "kind": "normal",
+        "beat": "首店前交叉",
+        "packs": [
+          {
+            "M01": 3,
+            "M02": 1,
+            "M05": 1
+          },
+          {
+            "M01": 3,
+            "M02": 1,
+            "M05": 1
+          }
+        ]
+      },
+      "10": {
+        "kind": "normal",
+        "beat": "补给后回落",
+        "packs": [
+          {
+            "M01": 3,
+            "M02": 1
+          },
+          {
+            "M01": 2,
+            "M05": 1
+          }
+        ]
+      },
+      "11": {
+        "kind": "normal",
+        "beat": "冲锋与扇射",
+        "packs": [
+          {
+            "M01": 3,
+            "M03": 1,
+            "M05": 1
+          },
+          {
+            "M01": 3,
+            "M02": 1,
+            "M05": 1
+          }
+        ]
+      },
+      "12": {
+        "kind": "elite",
+        "beat": "弹幕精英检验",
+        "packs": [
+          {
+            "EL02": 1,
+            "M01": 2,
+            "M02": 1
+          },
+          {
+            "M01": 3,
+            "M03": 1,
+            "M05": 1
+          }
+        ]
+      },
+      "13": {
+        "kind": "normal",
+        "beat": "已知威胁组合",
+        "packs": [
+          {
+            "M01": 3,
+            "M02": 1,
+            "M05": 1
+          },
+          {
+            "M01": 3,
+            "M03": 1,
+            "M02": 1
+          }
+        ]
+      },
+      "14": {
+        "kind": "normal",
+        "beat": "Boss前减压",
+        "packs": [
+          {
+            "M01": 3,
+            "M02": 1
+          },
+          {
+            "M01": 2,
+            "M05": 1
+          }
+        ]
+      },
+      "15": {
+        "kind": "boss",
+        "packs": [
+          {
+            "BOSS01": 1
+          }
+        ]
+      },
+      "16": {
+        "kind": "normal",
+        "beat": "中期基础衔接",
+        "packs": [
+          {
+            "M01": 3,
+            "M02": 2,
+            "M05": 1
+          },
+          {
+            "M01": 3,
+            "M03": 1,
+            "M02": 1
+          }
+        ]
+      },
+      "17": {
+        "kind": "normal",
+        "beat": "双扇与冲锋",
+        "packs": [
+          {
+            "M01": 3,
+            "M03": 1,
+            "M05": 2
+          },
+          {
+            "M01": 3,
+            "M02": 2,
+            "M05": 1
+          }
+        ]
+      },
+      "18": {
+        "kind": "normal",
+        "beat": "缺口环弹教学",
+        "packs": [
+          {
+            "M01": 3,
+            "M06": 1
+          },
+          {
+            "M01": 3,
+            "M05": 2,
+            "M02": 1
+          }
+        ]
+      },
+      "19": {
+        "kind": "normal",
+        "beat": "环弹与直射",
+        "packs": [
+          {
+            "M01": 2,
+            "M02": 2,
+            "M05": 1,
+            "M06": 1
+          },
+          {
+            "M01": 3,
+            "M03": 1,
+            "M05": 1
+          },
+          {
+            "M02": 2,
+            "M01": 2
+          }
+        ]
+      },
+      "20": {
+        "kind": "normal",
+        "beat": "精英前回落",
+        "packs": [
+          {
+            "M01": 3,
+            "M05": 1,
+            "M06": 1
+          },
+          {
+            "M01": 3,
+            "M02": 2
+          }
+        ]
+      },
+      "21": {
+        "kind": "elite",
+        "beat": "追击精英与环弹",
+        "packs": [
+          {
+            "EL01": 1,
+            "M01": 2,
+            "M05": 2,
+            "M06": 1
+          },
+          {
+            "M01": 3,
+            "M02": 2,
+            "M03": 1
+          },
+          {
+            "M01": 2,
+            "M05": 1
+          }
+        ]
+      },
+      "22": {
+        "kind": "normal",
+        "beat": "环弹换位",
+        "packs": [
+          {
+            "M01": 3,
+            "M02": 1,
+            "M05": 2,
+            "M06": 1
+          },
+          {
+            "M01": 3,
+            "M03": 1,
+            "M05": 1,
+            "M06": 1
+          }
+        ]
+      },
+      "23": {
+        "kind": "normal",
+        "beat": "弹幕分批接力",
+        "packs": [
+          {
+            "M01": 3,
+            "M05": 2,
+            "M06": 1
+          },
+          {
+            "M01": 3,
+            "M02": 2,
+            "M03": 1
+          },
+          {
+            "M01": 2,
+            "M05": 1,
+            "M06": 1
+          }
+        ]
+      },
+      "24": {
+        "kind": "normal",
+        "beat": "商店前混编",
+        "packs": [
+          {
+            "M01": 3,
+            "M02": 1,
+            "M05": 2,
+            "M06": 1
+          },
+          {
+            "M01": 3,
+            "M03": 1,
+            "M05": 2
+          },
+          {
+            "M01": 2,
+            "M02": 1,
+            "M06": 1
+          }
+        ]
+      },
+      "25": {
+        "kind": "normal",
+        "beat": "落印教学",
+        "packs": [
+          {
+            "M01": 3,
+            "M04": 1
+          },
+          {
+            "M01": 3,
+            "M05": 2,
+            "M06": 1
+          },
+          {
+            "M01": 2,
+            "M02": 2
+          }
+        ]
+      },
+      "26": {
+        "kind": "normal",
+        "beat": "落印与环弹",
+        "packs": [
+          {
+            "M01": 2,
+            "M02": 1,
+            "M03": 1,
+            "M05": 2,
+            "M06": 1
+          },
+          {
+            "M01": 3,
+            "M04": 1,
+            "M05": 1,
+            "M06": 1
+          },
+          {
+            "M01": 2,
+            "M02": 1,
+            "M05": 1
+          }
+        ]
+      },
+      "27": {
+        "kind": "elite",
+        "beat": "弹幕精英与封位",
+        "packs": [
+          {
+            "EL02": 1,
+            "M01": 2,
+            "M03": 1,
+            "M05": 1,
+            "M06": 1
+          },
+          {
+            "M01": 3,
+            "M04": 1,
+            "M02": 1,
+            "M05": 1
+          },
+          {
+            "M01": 2,
+            "M05": 1,
+            "M06": 1
+          }
+        ]
+      },
+      "28": {
+        "kind": "normal",
+        "beat": "中期普通房峰值",
+        "packs": [
+          {
+            "M01": 3,
+            "M03": 1,
+            "M02": 1,
+            "M05": 1,
+            "M06": 1
+          },
+          {
+            "M01": 3,
+            "M04": 1,
+            "M05": 2,
+            "M06": 1
+          },
+          {
+            "M01": 2,
+            "M02": 2,
+            "M05": 1
+          }
+        ]
+      },
+      "29": {
+        "kind": "normal",
+        "beat": "Boss前减压",
+        "packs": [
+          {
+            "M01": 3,
+            "M02": 1,
+            "M05": 1
+          },
+          {
+            "M01": 3,
+            "M03": 1,
+            "M06": 1
+          }
+        ]
+      },
+      "30": {
+        "kind": "boss",
+        "packs": [
+          {
+            "BOSS04": 1
+          }
+        ]
+      },
+      "31": {
+        "kind": "normal",
+        "beat": "后期基础衔接",
+        "packs": [
+          {
+            "M01": 3,
+            "M02": 1,
+            "M05": 2,
+            "M06": 1
+          },
+          {
+            "M01": 3,
+            "M03": 1,
+            "M05": 1,
+            "M06": 1
+          },
+          {
+            "M01": 2,
+            "M04": 1,
+            "M02": 1
+          }
+        ]
+      },
+      "32": {
+        "kind": "normal",
+        "beat": "旋转扫射教学",
+        "packs": [
+          {
+            "M01": 3,
+            "M07": 1,
+            "M05": 1
+          },
+          {
+            "M01": 3,
+            "M02": 1,
+            "M06": 1,
+            "M03": 1
+          },
+          {
+            "M01": 3,
+            "M05": 2,
+            "M04": 1
+          }
+        ]
+      },
+      "33": {
+        "kind": "normal",
+        "beat": "首轮扫射混编",
+        "packs": [
+          {
+            "M01": 3,
+            "M03": 1,
+            "M02": 1,
+            "M05": 1,
+            "M06": 1,
+            "M07": 1
+          },
+          {
+            "M01": 3,
+            "M04": 1,
+            "M05": 2,
+            "M06": 1
+          },
+          {
+            "M01": 2,
+            "M02": 2,
+            "M05": 1
+          }
+        ]
+      },
+      "34": {
+        "kind": "normal",
+        "beat": "补给后回落",
+        "packs": [
+          {
+            "M01": 3,
+            "M02": 1,
+            "M05": 1,
+            "M06": 1
+          },
+          {
+            "M01": 3,
+            "M03": 1,
+            "M05": 1
+          },
+          {
+            "M01": 2,
+            "M04": 1,
+            "M07": 1
+          }
+        ]
+      },
+      "35": {
+        "kind": "normal",
+        "beat": "扫射与缺口换位",
+        "packs": [
+          {
+            "M01": 3,
+            "M03": 1,
+            "M05": 2,
+            "M06": 1,
+            "M07": 1
+          },
+          {
+            "M01": 3,
+            "M04": 1,
+            "M02": 1,
+            "M05": 1,
+            "M06": 1
+          },
+          {
+            "M01": 2,
+            "M05": 1,
+            "M06": 1,
+            "M07": 1
+          }
+        ]
+      },
+      "36": {
+        "kind": "elite",
+        "beat": "双精英接力",
+        "packs": [
+          {
+            "EL01": 1,
+            "M01": 3,
+            "M05": 1,
+            "M06": 1,
+            "M07": 1
+          },
+          {
+            "EL02": 1,
+            "M01": 2,
+            "M03": 1,
+            "M02": 1,
+            "M05": 1
+          },
+          {
+            "M01": 3,
+            "M04": 1,
+            "M05": 1,
+            "M06": 1
+          }
+        ]
+      },
+      "37": {
+        "kind": "normal",
+        "beat": "多型交叉",
+        "packs": [
+          {
+            "M01": 3,
+            "M03": 1,
+            "M02": 1,
+            "M05": 2,
+            "M06": 1,
+            "M07": 1
+          },
+          {
+            "M01": 3,
+            "M04": 1,
+            "M05": 2,
+            "M06": 1
+          },
+          {
+            "M01": 3,
+            "M02": 1,
+            "M07": 1
+          }
+        ]
+      },
+      "38": {
+        "kind": "normal",
+        "beat": "精英前回落",
+        "packs": [
+          {
+            "M01": 3,
+            "M02": 1,
+            "M05": 1,
+            "M06": 1
+          },
+          {
+            "M01": 3,
+            "M03": 1,
+            "M05": 1,
+            "M07": 1
+          },
+          {
+            "M01": 2,
+            "M04": 1
+          }
+        ]
+      },
+      "39": {
+        "kind": "elite",
+        "beat": "精英封路接力",
+        "packs": [
+          {
+            "EL02": 1,
+            "M01": 2,
+            "M03": 1,
+            "M05": 2,
+            "M06": 1,
+            "M07": 1
+          },
+          {
+            "EL01": 1,
+            "M01": 3,
+            "M04": 1,
+            "M02": 1,
+            "M05": 1
+          },
+          {
+            "M01": 3,
+            "M05": 1,
+            "M06": 1,
+            "M07": 1
+          }
+        ]
+      },
+      "40": {
+        "kind": "normal",
+        "beat": "持续换位",
+        "packs": [
+          {
+            "M01": 3,
+            "M02": 1,
+            "M05": 2,
+            "M06": 1,
+            "M07": 1
+          },
+          {
+            "M01": 3,
+            "M03": 1,
+            "M04": 1,
+            "M05": 1,
+            "M06": 1
+          },
+          {
+            "M01": 3,
+            "M02": 1,
+            "M05": 1,
+            "M07": 1
+          }
+        ]
+      },
+      "41": {
+        "kind": "normal",
+        "beat": "高密度混编",
+        "packs": [
+          {
+            "M01": 4,
+            "M03": 1,
+            "M02": 1,
+            "M05": 2,
+            "M06": 1,
+            "M07": 1
+          },
+          {
+            "M01": 3,
+            "M04": 1,
+            "M05": 2,
+            "M06": 1,
+            "M07": 1
+          },
+          {
+            "M01": 3,
+            "M03": 1,
+            "M02": 1,
+            "M05": 1
+          }
+        ]
+      },
+      "42": {
+        "kind": "normal",
+        "beat": "后期普通房峰值",
+        "packs": [
+          {
+            "M01": 3,
+            "M03": 1,
+            "M02": 1,
+            "M05": 1,
+            "M06": 2,
+            "M07": 1
+          },
+          {
+            "M01": 3,
+            "M04": 1,
+            "M05": 2,
+            "M06": 1,
+            "M07": 1
+          },
+          {
+            "M01": 3,
+            "M02": 2,
+            "M05": 1,
+            "M07": 1
+          }
+        ]
+      },
+      "43": {
+        "kind": "normal",
+        "beat": "补给后收束",
+        "packs": [
+          {
+            "M01": 3,
+            "M02": 1,
+            "M05": 1,
+            "M06": 1,
+            "M07": 1
+          },
+          {
+            "M01": 3,
+            "M03": 1,
+            "M05": 1,
+            "M06": 1
+          },
+          {
+            "M01": 3,
+            "M04": 1,
+            "M02": 1
+          }
+        ]
+      },
+      "44": {
+        "kind": "normal",
+        "beat": "Boss前减压",
+        "packs": [
+          {
+            "M01": 3,
+            "M02": 1,
+            "M05": 1,
+            "M06": 1
+          },
+          {
+            "M01": 3,
+            "M03": 1,
+            "M05": 1
+          },
+          {
+            "M01": 2,
+            "M07": 1
+          }
+        ]
+      },
+      "45": {
+        "kind": "boss",
+        "packs": [
+          {
+            "BOSS02": 1
+          }
+        ]
+      },
+      "46": {
+        "kind": "normal",
+        "beat": "超高难度衔接",
+        "packs": [
+          {
+            "M01": 4,
+            "M03": 1,
+            "M02": 1,
+            "M05": 2,
+            "M06": 1,
+            "M07": 1
+          },
+          {
+            "M01": 3,
+            "M04": 1,
+            "M05": 2,
+            "M06": 1,
+            "M07": 1
+          },
+          {
+            "M01": 3,
+            "M02": 1,
+            "M05": 1,
+            "M06": 1
+          }
+        ]
+      },
+      "47": {
+        "kind": "normal",
+        "beat": "双扫射交替",
+        "packs": [
+          {
+            "M01": 4,
+            "M03": 1,
+            "M05": 2,
+            "M06": 1,
+            "M07": 2
+          },
+          {
+            "M01": 3,
+            "M02": 1,
+            "M04": 1,
+            "M05": 2,
+            "M06": 1,
+            "M07": 1
+          },
+          {
+            "M01": 3,
+            "M03": 1,
+            "M02": 1,
+            "M05": 1,
+            "M07": 1
+          }
+        ]
+      },
+      "48": {
+        "kind": "normal",
+        "beat": "双环弹交替",
+        "packs": [
+          {
+            "M01": 3,
+            "M03": 1,
+            "M02": 1,
+            "M05": 2,
+            "M06": 2,
+            "M07": 1
+          },
+          {
+            "M01": 4,
+            "M04": 1,
+            "M05": 2,
+            "M06": 1,
+            "M07": 1
+          },
+          {
+            "M01": 3,
+            "M03": 1,
+            "M05": 1,
+            "M06": 1,
+            "M07": 1
+          }
+        ]
+      },
+      "49": {
+        "kind": "normal",
+        "beat": "交叉路线压缩",
+        "packs": [
+          {
+            "M01": 4,
+            "M03": 1,
+            "M02": 1,
+            "M05": 2,
+            "M06": 1,
+            "M07": 1
+          },
+          {
+            "M01": 3,
+            "M03": 1,
+            "M04": 1,
+            "M05": 2,
+            "M06": 1,
+            "M07": 1
+          },
+          {
+            "M01": 3,
+            "M02": 2,
+            "M05": 1,
+            "M06": 1,
+            "M07": 1
+          }
+        ]
+      },
+      "50": {
+        "kind": "normal",
+        "beat": "精英前回落",
+        "packs": [
+          {
+            "M01": 4,
+            "M02": 1,
+            "M05": 1,
+            "M06": 1,
+            "M07": 1
+          },
+          {
+            "M01": 3,
+            "M03": 1,
+            "M05": 2,
+            "M06": 1
+          },
+          {
+            "M01": 3,
+            "M04": 1,
+            "M02": 1,
+            "M05": 1
+          }
+        ]
+      },
+      "51": {
+        "kind": "elite",
+        "beat": "双精英综合检验",
+        "packs": [
+          {
+            "EL01": 1,
+            "M01": 3,
+            "M03": 1,
+            "M05": 2,
+            "M06": 1,
+            "M07": 1
+          },
+          {
+            "EL02": 1,
+            "M01": 3,
+            "M04": 1,
+            "M02": 1,
+            "M05": 1,
+            "M06": 1,
+            "M07": 1
+          },
+          {
+            "M01": 3,
+            "M03": 1,
+            "M05": 2,
+            "M06": 1,
+            "M07": 1
+          }
+        ]
+      },
+      "52": {
+        "kind": "normal",
+        "beat": "精英后回落",
+        "packs": [
+          {
+            "M01": 4,
+            "M02": 1,
+            "M05": 2,
+            "M06": 1,
+            "M07": 1
+          },
+          {
+            "M01": 3,
+            "M03": 1,
+            "M04": 1,
+            "M05": 1,
+            "M06": 1
+          },
+          {
+            "M01": 3,
+            "M02": 1,
+            "M05": 1,
+            "M07": 1
+          }
+        ]
+      },
+      "53": {
+        "kind": "normal",
+        "beat": "末段混编抬升",
+        "packs": [
+          {
+            "M01": 4,
+            "M03": 1,
+            "M05": 2,
+            "M06": 1,
+            "M07": 2
+          },
+          {
+            "M01": 4,
+            "M04": 1,
+            "M02": 1,
+            "M05": 2,
+            "M06": 1,
+            "M07": 1
+          },
+          {
+            "M01": 3,
+            "M03": 1,
+            "M02": 1,
+            "M05": 1,
+            "M06": 1,
+            "M07": 1
+          }
+        ]
+      },
+      "54": {
+        "kind": "normal",
+        "beat": "最后补给前检验",
+        "packs": [
+          {
+            "M01": 4,
+            "M03": 1,
+            "M02": 1,
+            "M05": 1,
+            "M06": 2,
+            "M07": 1
+          },
+          {
+            "M01": 3,
+            "M03": 1,
+            "M04": 1,
+            "M05": 2,
+            "M06": 1,
+            "M07": 1
+          },
+          {
+            "M01": 4,
+            "M02": 1,
+            "M05": 1,
+            "M06": 1,
+            "M07": 1
+          }
+        ]
+      },
+      "55": {
+        "kind": "normal",
+        "beat": "四批持续压力",
+        "packs": [
+          {
+            "M01": 4,
+            "M03": 1,
+            "M05": 2,
+            "M06": 1,
+            "M07": 2
+          },
+          {
+            "M01": 4,
+            "M04": 1,
+            "M02": 1,
+            "M05": 2,
+            "M06": 1,
+            "M07": 1
+          },
+          {
+            "M01": 4,
+            "M03": 1,
+            "M05": 1,
+            "M06": 1,
+            "M07": 1
+          },
+          {
+            "M01": 2,
+            "M02": 1,
+            "M05": 1
+          }
+        ]
+      },
+      "56": {
+        "kind": "normal",
+        "beat": "非Boss普通房峰值",
+        "packs": [
+          {
+            "M01": 4,
+            "M03": 1,
+            "M02": 1,
+            "M05": 1,
+            "M06": 2,
+            "M07": 1
+          },
+          {
+            "M01": 4,
+            "M03": 1,
+            "M04": 1,
+            "M05": 1,
+            "M06": 1,
+            "M07": 2
+          },
+          {
+            "M01": 4,
+            "M02": 1,
+            "M05": 2,
+            "M06": 1,
+            "M07": 1
+          },
+          {
+            "M01": 3,
+            "M03": 1,
+            "M05": 1,
+            "M06": 1
+          }
+        ]
+      },
+      "57": {
+        "kind": "elite",
+        "beat": "末段双精英接力",
+        "packs": [
+          {
+            "EL02": 1,
+            "M01": 3,
+            "M03": 1,
+            "M05": 2,
+            "M06": 1,
+            "M07": 1
+          },
+          {
+            "EL01": 1,
+            "M01": 3,
+            "M04": 1,
+            "M02": 1,
+            "M05": 1,
+            "M06": 1,
+            "M07": 1
+          },
+          {
+            "M01": 4,
+            "M03": 1,
+            "M05": 1,
+            "M06": 1,
+            "M07": 1
+          },
+          {
+            "M01": 2,
+            "M02": 1,
+            "M05": 1
+          }
+        ]
+      },
+      "58": {
+        "kind": "normal",
+        "beat": "最终Boss前降压",
+        "packs": [
+          {
+            "M01": 4,
+            "M02": 1,
+            "M05": 1,
+            "M06": 1,
+            "M07": 1
+          },
+          {
+            "M01": 3,
+            "M03": 1,
+            "M05": 2,
+            "M06": 1
+          },
+          {
+            "M01": 3,
+            "M04": 1,
+            "M02": 1,
+            "M05": 1,
+            "M07": 1
+          }
+        ]
+      },
+      "59": {
+        "kind": "normal",
+        "beat": "最终Boss前缓冲",
+        "packs": [
+          {
+            "M01": 4,
+            "M02": 1,
+            "M05": 1,
+            "M06": 1
+          },
+          {
+            "M01": 3,
+            "M03": 1,
+            "M05": 1,
+            "M07": 1
+          },
+          {
+            "M01": 3,
+            "M02": 1,
+            "M05": 1
+          }
+        ]
+      },
+      "60": {
+        "kind": "boss",
+        "packs": [
+          {
+            "BOSS03": 1
+          }
+        ]
+      }
+    },
+    "coordinates": "meters; x right; z toward upper portal; origin at room center",
+    "sources": {
+      "first_room": "res://data/first_room_runtime.json",
+      "spatial": "res://data/balance_candidates/room_spatial_v1.json",
+      "ordinary": "res://data/balance_candidates/normal_rooms_v1.json",
+      "base": "res://data/balance_candidates/first_run_v1.json",
+      "economy": "res://data/balance_candidates/run_economy_v1.json",
+      "enemies": "res://data/route_enemy_runtime.json",
+      "bosses": "res://data/route_boss_runtime.json"
+    },
+    "first_room": {
+      "name": "庭院入口",
+      "geometry_ref": "first_room.room",
+      "theme": "outer_ruins"
+    },
+    "selection": "cycle templates by authored legacy layout occurrence, excluding first room",
+    "layout_templates": {
+      "open": [
+        "outer_court",
+        "processional_court"
+      ],
+      "pillars": [
+        "twin_pillars",
+        "long_colonnade"
+      ],
+      "cover": [
+        "staggered_walls",
+        "broken_forecourt"
+      ]
+    },
+    "stage_themes": {
+      "early": {
+        "id": "outer_ruins",
+        "name": "外庭遗迹"
+      },
+      "middle": {
+        "id": "inner_ruins",
+        "name": "内庭回廊"
+      },
+      "late": {
+        "id": "heart_ruins",
+        "name": "遗迹深庭"
+      }
+    },
+    "templates": {
+      "outer_court": {
+        "name": "开阔前庭",
+        "layout": "open",
+        "landmark": "边侧残柱与贯通中轴",
+        "geometry": {
+          "floor": {
+            "width": 18.0,
+            "depth": 28.0
+          },
+          "entry_player_center": [
+            0.0,
+            -12.5
+          ],
+          "portal_center": [
+            0.0,
+            13.0
+          ],
+          "blocks": [
+            {
+              "center": [
+                -5.25,
+                0.0
+              ],
+              "size": [
+                1.2,
+                1.2
+              ]
+            },
+            {
+              "center": [
+                5.25,
+                0.0
+              ],
+              "size": [
+                1.2,
+                1.2
+              ]
+            }
+          ],
+          "spawn": {
+            "side_x": [
+              -7.3,
+              7.3
+            ],
+            "anchor_z": [
+              -10.0,
+              -7.5,
+              -5.0,
+              -2.5
+            ]
+          },
+          "spike_plate_centers": {
+            "SW": [
+              -4.5,
+              -7.0
+            ],
+            "SE": [
+              4.5,
+              -7.0
+            ],
+            "NW": [
+              -4.5,
+              7.0
+            ],
+            "NE": [
+              4.5,
+              7.0
+            ]
+          }
+        }
+      },
+      "processional_court": {
+        "name": "长阶门庭",
+        "layout": "open",
+        "landmark": "错位孤柱与北端门庭",
+        "geometry": {
+          "floor": {
+            "width": 20.0,
+            "depth": 32.0
+          },
+          "entry_player_center": [
+            0.0,
+            -14.5
+          ],
+          "portal_center": [
+            0.0,
+            15.0
+          ],
+          "blocks": [
+            {
+              "center": [
+                -6.0,
+                -5.0
+              ],
+              "size": [
+                1.4,
+                1.4
+              ]
+            },
+            {
+              "center": [
+                6.0,
+                4.0
+              ],
+              "size": [
+                1.4,
+                1.4
+              ]
+            }
+          ],
+          "spawn": {
+            "side_x": [
+              -8.3,
+              8.3
+            ],
+            "anchor_z": [
+              -12.0,
+              -9.5,
+              -7.0,
+              -4.5
+            ]
+          },
+          "spike_plate_centers": {
+            "SW": [
+              -5.0,
+              -8.0
+            ],
+            "SE": [
+              5.0,
+              -8.0
+            ],
+            "NW": [
+              -5.0,
+              8.0
+            ],
+            "NE": [
+              5.0,
+              8.0
+            ]
+          }
+        }
+      },
+      "twin_pillars": {
+        "name": "双列柱庭",
+        "layout": "pillars",
+        "landmark": "两列四柱与环绕路线",
+        "geometry": {
+          "floor": {
+            "width": 20.0,
+            "depth": 30.0
+          },
+          "entry_player_center": [
+            0.0,
+            -13.5
+          ],
+          "portal_center": [
+            0.0,
+            14.0
+          ],
+          "blocks": [
+            {
+              "center": [
+                -5.4,
+                -4.0
+              ],
+              "size": [
+                1.4,
+                1.4
+              ]
+            },
+            {
+              "center": [
+                -5.4,
+                4.0
+              ],
+              "size": [
+                1.4,
+                1.4
+              ]
+            },
+            {
+              "center": [
+                5.4,
+                -4.0
+              ],
+              "size": [
+                1.4,
+                1.4
+              ]
+            },
+            {
+              "center": [
+                5.4,
+                4.0
+              ],
+              "size": [
+                1.4,
+                1.4
+              ]
+            }
+          ],
+          "spawn": {
+            "side_x": [
+              -8.3,
+              8.3
+            ],
+            "anchor_z": [
+              -11.0,
+              -8.5,
+              -6.0,
+              -3.5
+            ]
+          },
+          "spike_plate_centers": {
+            "SW": [
+              -5.0,
+              -7.5
+            ],
+            "SE": [
+              5.0,
+              -7.5
+            ],
+            "NW": [
+              -5.0,
+              7.5
+            ],
+            "NE": [
+              5.0,
+              7.5
+            ]
+          }
+        }
+      },
+      "long_colonnade": {
+        "name": "纵深回廊",
+        "layout": "pillars",
+        "landmark": "三段柱列与长向视线",
+        "geometry": {
+          "floor": {
+            "width": 18.0,
+            "depth": 34.0
+          },
+          "entry_player_center": [
+            0.0,
+            -15.5
+          ],
+          "portal_center": [
+            0.0,
+            16.0
+          ],
+          "blocks": [
+            {
+              "center": [
+                -5.0,
+                -7.0
+              ],
+              "size": [
+                1.1,
+                1.1
+              ]
+            },
+            {
+              "center": [
+                -5.0,
+                0.0
+              ],
+              "size": [
+                1.1,
+                1.1
+              ]
+            },
+            {
+              "center": [
+                -5.0,
+                7.0
+              ],
+              "size": [
+                1.1,
+                1.1
+              ]
+            },
+            {
+              "center": [
+                5.0,
+                -7.0
+              ],
+              "size": [
+                1.1,
+                1.1
+              ]
+            },
+            {
+              "center": [
+                5.0,
+                0.0
+              ],
+              "size": [
+                1.1,
+                1.1
+              ]
+            },
+            {
+              "center": [
+                5.0,
+                7.0
+              ],
+              "size": [
+                1.1,
+                1.1
+              ]
+            }
+          ],
+          "spawn": {
+            "side_x": [
+              -7.3,
+              7.3
+            ],
+            "anchor_z": [
+              -13.0,
+              -10.5,
+              -8.0,
+              -5.5
+            ]
+          },
+          "spike_plate_centers": {
+            "SW": [
+              -4.5,
+              -8.5
+            ],
+            "SE": [
+              4.5,
+              -8.5
+            ],
+            "NW": [
+              -4.5,
+              8.5
+            ],
+            "NE": [
+              4.5,
+              8.5
+            ]
+          }
+        }
+      },
+      "staggered_walls": {
+        "name": "错列短墙",
+        "layout": "cover",
+        "landmark": "两侧短墙与交错绕行",
+        "geometry": {
+          "floor": {
+            "width": 20.0,
+            "depth": 30.0
+          },
+          "entry_player_center": [
+            0.0,
+            -13.5
+          ],
+          "portal_center": [
+            0.0,
+            14.0
+          ],
+          "blocks": [
+            {
+              "center": [
+                -5.2,
+                -3.8
+              ],
+              "size": [
+                3.2,
+                1.2
+              ]
+            },
+            {
+              "center": [
+                5.2,
+                3.8
+              ],
+              "size": [
+                3.2,
+                1.2
+              ]
+            }
+          ],
+          "spawn": {
+            "side_x": [
+              -8.3,
+              8.3
+            ],
+            "anchor_z": [
+              -11.0,
+              -8.5,
+              -6.0,
+              -3.5
+            ]
+          },
+          "spike_plate_centers": {
+            "SW": [
+              -5.0,
+              -7.5
+            ],
+            "SE": [
+              5.0,
+              -7.5
+            ],
+            "NW": [
+              -5.0,
+              7.5
+            ],
+            "NE": [
+              5.0,
+              7.5
+            ]
+          }
+        }
+      },
+      "broken_forecourt": {
+        "name": "残墙中庭",
+        "layout": "cover",
+        "landmark": "四段残墙与宽阔侧廊",
+        "geometry": {
+          "floor": {
+            "width": 22.0,
+            "depth": 32.0
+          },
+          "entry_player_center": [
+            0.0,
+            -14.5
+          ],
+          "portal_center": [
+            0.0,
+            15.0
+          ],
+          "blocks": [
+            {
+              "center": [
+                -6.2,
+                -5.4
+              ],
+              "size": [
+                3.4,
+                1.2
+              ]
+            },
+            {
+              "center": [
+                -6.2,
+                5.4
+              ],
+              "size": [
+                3.4,
+                1.2
+              ]
+            },
+            {
+              "center": [
+                6.2,
+                -5.4
+              ],
+              "size": [
+                3.4,
+                1.2
+              ]
+            },
+            {
+              "center": [
+                6.2,
+                5.4
+              ],
+              "size": [
+                3.4,
+                1.2
+              ]
+            }
+          ],
+          "spawn": {
+            "side_x": [
+              -9.3,
+              9.3
+            ],
+            "anchor_z": [
+              -12.0,
+              -9.5,
+              -7.0,
+              -4.5
+            ]
+          },
+          "spike_plate_centers": {
+            "SW": [
+              -5.5,
+              -8.0
+            ],
+            "SE": [
+              5.5,
+              -8.0
+            ],
+            "NW": [
+              -5.5,
+              8.0
+            ],
+            "NE": [
+              5.5,
+              8.0
+            ]
+          }
+        }
+      }
+    },
+    "quantity_overrides": {},
+    "artifact_reward_rooms": [
+      6,
+      12,
+      15,
+      21,
+      27,
+      30,
+      36,
+      39,
+      45,
+      51,
+      57,
+      60
+    ],
+    "encounter_limits": {
+      "stages": [
+        {
+          "from": 1,
+          "to": 15,
+          "alive_cap": 5,
+          "max_batches": 2
+        },
+        {
+          "from": 16,
+          "to": 20,
+          "alive_cap": 6,
+          "max_batches": 2
+        },
+        {
+          "from": 21,
+          "to": 30,
+          "alive_cap": 7,
+          "max_batches": 3
+        },
+        {
+          "from": 31,
+          "to": 38,
+          "alive_cap": 8,
+          "max_batches": 3
+        },
+        {
+          "from": 39,
+          "to": 45,
+          "alive_cap": 9,
+          "max_batches": 3
+        },
+        {
+          "from": 46,
+          "to": 54,
+          "alive_cap": 9,
+          "max_batches": 3
+        },
+        {
+          "from": 55,
+          "to": 60,
+          "alive_cap": 10,
+          "max_batches": 3
+        }
+      ],
+      "description": "Legacy limits retained for Boss placeholders. Non-Boss limits and role caps come from route_nonboss_runtime.json. Whole packs wait without wave shield or cooldown resets."
+    },
+    "difficulty_bands": [
+      {
+        "from": 1,
+        "to": 15,
+        "id": "outer_trial",
+        "name": "前期",
+        "description": "追击与直射起步，学习扇射和身体接触，逐步加入冲锋。"
+      },
+      {
+        "from": 16,
+        "to": 30,
+        "id": "crossfire_trial",
+        "name": "中期",
+        "description": "扇射、缺口环弹与冲锋混编，落印要求持续换位。"
+      },
+      {
+        "from": 31,
+        "to": 45,
+        "id": "deep_trial",
+        "name": "后期",
+        "description": "加入旋转扫射，交叉火力与精英接力检验成型构筑。"
+      },
+      {
+        "from": 46,
+        "to": 60,
+        "id": "heart_trial",
+        "name": "超高难度",
+        "description": "多源弹幕与近身威胁，四批压力后逐步减压，Boss仍为精英占位。"
+      }
+    ]
+  }
+}

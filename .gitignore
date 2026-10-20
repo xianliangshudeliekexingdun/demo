@@ -1,0 +1,10 @@
+.godot/
+/build/
+/Godot*.exe
+/logs/
+/tmp/
+/output/
+__pycache__/
+*.py[cod]
+*.log
+# .gd.uid and .import files are retained.

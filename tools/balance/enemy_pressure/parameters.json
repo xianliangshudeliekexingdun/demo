@@ -1,0 +1,40 @@
+{
+  "model_version": "enemy-pressure-1",
+  "capacity_horizon": 60,
+  "damage_sweep": [
+    0.9,
+    1.0,
+    1.1
+  ],
+  "capacity_sweep": [
+    0.75,
+    1.0,
+    1.25
+  ],
+  "reaction_allowance": 0.25,
+  "guardrails": {
+    "single_ray_reaction_margin": 0.1,
+    "capacity_rejection_ratio_max": 0.15
+  },
+  "survival_cases": [
+    {
+      "id": "bare_reference",
+      "health": 300,
+      "shield": 100,
+      "defense": 0
+    },
+    {
+      "id": "ordinary_reference",
+      "health": 500,
+      "shield": 100,
+      "defense": 35
+    },
+    {
+      "id": "optimized_mitigation_boundary",
+      "health": 700,
+      "shield": 200,
+      "defense": 200
+    }
+  ],
+  "scope": "Frozen baseline versus proposed/current source. Reference health and defense fixtures, not observed player loadouts, win rates or natural route timings."
+}

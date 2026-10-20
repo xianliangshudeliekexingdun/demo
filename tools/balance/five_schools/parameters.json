@@ -1,0 +1,28 @@
+{
+  "model_version": "five-schools-design-1.1",
+  "status": "proposed_unapproved_not_runtime",
+  "school_order": ["ice", "lightning", "wind", "earth", "spirit"],
+  "attack": 100.0,
+  "crit_rate": 0.05,
+  "crit_multiplier": 1.5,
+  "target_health": 180.0,
+  "horizons": [30.0, 60.0],
+  "cooldown_reductions": [0.0, 0.3, 0.6],
+  "target_counts": [1, 6],
+  "accuracy_expectations": [1.0, 0.65],
+  "targets": {
+    "starter_max_first_hit_seconds": 2.0,
+    "starter_max_ttk180_seconds": 6.0,
+    "minimum_cd": 0.2,
+    "cooldown_reduction_cap": 0.6
+  },
+  "assumptions": [
+    "All schools and item values are original design candidates, not installed gameplay.",
+    "Target count is the explicitly attainable geometric bound in each probe, not measured coverage of six real enemies.",
+    "Accuracy 0.65 is an independent linear expectation probe, not a simulated human or proc sequence.",
+    "Crit uses the current base expectation; TTK is a separate deterministic all-hit noncritical primary-target calculation.",
+    "No mastery, resonance, item inventory, AI, player health, shield survival, defense, travel pathfinding, or route duration is inferred.",
+    "Delayed damage is clipped at the observation horizon; summons have real finite lifetimes and occupancy in this model.",
+    "Group projectile probes use declared representative distance/component times rather than per-enemy flight arrival, so horizon-edge differences are an envelope approximation."
+  ]
+}

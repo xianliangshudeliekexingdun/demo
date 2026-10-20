@@ -1,0 +1,35 @@
+{
+  "version": "map-metrics-v1-candidate-20261017",
+  "status": "design_dimensions_not_loaded_by_game",
+  "base_parameters": "first_run_v1.json",
+  "ordinary_room_parameters": "normal_rooms_v1.json",
+  "viewport_reference": "project.godot",
+  "visual_reference": {
+    "actor_call": "scripts/presentation/trial_view.gd",
+    "actor_kind": "LINA"
+  },
+  "floor": {
+    "width": 18.0,
+    "depth": 9.0,
+    "tile_size": 1.0,
+    "same_dimensions_for_normal_elite_boss": true,
+    "dimensions_exclude_walls_and_hud": true
+  },
+  "presentation": {
+    "pixels_per_meter_x": 60.0,
+    "pixels_per_meter_depth": 45.0,
+    "floor_center_canvas_y": 426.0,
+    "horizontal_alignment": "center",
+    "hud_top_reserved": 64.0,
+    "hud_bottom_reserved": 84.0,
+    "ground_projection": "fixed_2d_oblique",
+    "scale_actor_texture_with_ground_projection": false
+  },
+  "flow_defaults": {
+    "entry_side": "bottom",
+    "exit_side": "top",
+    "clear_disables_spikes_before_rewards": true,
+    "exit_after_rewards": "walk_into_exit_zone"
+  },
+  "delegation": "Dimensions proposed by assistant; remaining map details delegated by user. No obstacle, spike or enemy coordinates authored."
+}

@@ -1,0 +1,21 @@
+{
+  "pixels_per_meter": 64,
+  "arena_size": [20, 11.25],
+  "player_bounds": {"half_width": 8.5, "min_z": -4.65, "max_z": 1.1},
+  "spawns": [[-3, 2.3], [0, 2.8], [3, 2.3]],
+  "player_speed": 5.0,
+  "player_radius": 0.4,
+  "player_health": 100,
+  "enemy_health": 30,
+  "enemy_radius": 0.45,
+  "chase_speed": 2.7,
+  "chase_distance": 2.0,
+  "melee_windup": 0.7,
+  "melee_active": 0.18,
+  "melee_recover": 0.85,
+  "melee_radius": 1.05,
+  "melee_damage": 15,
+  "fireball": {"interval": 2.0, "damage": 12, "range": 8.0, "speed": 9.0, "radius": 0.22, "explosion_radius": 1.0, "lifetime": 2.0},
+  "lightning": {"interval": 2.4, "damage": 10, "range": 8.0, "chain_range": 3.0, "count": 2},
+  "orbit": {"radius": 1.8, "speed": 2.8, "damage": 8, "contact_radius": 0.22, "hit_interval": 0.5}
+}

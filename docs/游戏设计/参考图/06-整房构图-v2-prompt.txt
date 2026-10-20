@@ -1,0 +1,26 @@
+Built-in image_gen; generated concept reference only, not game art.
+
+Use case: stylized-concept / infographic-diagram.
+Asset type: ONE landscape 16:9 whole-room composition sketch for a PC top-down auto-casting magic roguelike. This is a DESIGN DIAGRAM, not final game art. High quality readable simplified 2.5D cartoon environment, orthographic steep overhead camera, entire room visible at once.
+
+Primary composition: a strong BOTTOM-TO-TOP progression axis inside a landscape screen. A compact, vertically organized chamber is centered in the frame, with relatively generous dark margins at left and right for labels. The chamber is slightly LONGER FRONT-TO-BACK in world space than side-to-side. It must NOT look like a wide horizontal running strip. Show full left and right walls and bottom entrance, and the upper rear wall. Keep the room footprint compact and almost square in its screen projection, with visible depth. No camera cropping. No side-scrolling composition. Muted gray-violet stone ground, low modular side walls, restrained blue-green light, very simple reusable geometry.
+
+Three functional zones:
+BOTTOM: shallow safe entry apron with a small doorway opening centered in the near wall. One small static chibi witch with white hair, purple pointed hat and staff stands just inside, facing UP. She is a scale reference, not a new character design.
+MIDDLE: the largest OPEN combat floor, around 70% of the chamber depth. ONLY TWO short low stone cover blocks, separated, one off the left side and one off the right side, leaving a very wide connected central area and continuous paths around both sides. FOUR small fixed spike trap plates sit off the central axis, always identifiable. The image shows the room AFTER CLEAR, so all spikes are retracted. Small subtle spawn glyphs lie on side edges, no active enemies. Do not make a maze or narrow lane.
+TOP: a shallow dedicated clear-floor portal landing centered on the rear wall. A bright cyan/soft-gold upright magical portal and its flat round floor rune appear here AFTER THE ROOM IS CLEARED. This is the strongest focal point. Simple framing arch, NO stairs to climb, NO raised gameplay platform. Maintain a clear approach from the middle. Floor seams and three subtle gold upward flow arrows guide from the bottom entrance through the open middle toward this top portal. The arrows are diagram overlays, not a physical road.
+
+Show post-clear state consistently: no live enemies, no hostile shots, spike plates all retracted, portal brightly on. Quiet floor and low blocks support the portal as the main target. No extra treasure, NPCs, props, exits, giant statues, waterfalls or set dressing. Use only a few clear blockout-like modules, simple enough for a two-day prototype.
+
+Screen framing: a slim quiet top HUD placeholder, eight small spell-slot placeholders along the bottom screen margin, both outside the playable chamber and not covering it. No phone buttons or mobile UI.
+
+Typography: small clear Chinese callouts in the LEFT MARGIN with fine leader lines, EXACTLY:
+"整房构图示意"
+"上方：清场后出现传送门"
+"中部：开阔战斗区"
+"下方：入口与开场区"
+In the RIGHT MARGIN, two small labels with leader lines:
+"地刺：清场后收回"
+"边缘：预警出生区"
+Small footer EXACTLY: "构图草案 · 非游戏实机"
+Do not put any room sizes, meters, counts or numerical dimensions anywhere in the image. No extra paragraphs or logos. The overall image should communicate 'enter below, fight in the middle, teleport upward' at first glance.

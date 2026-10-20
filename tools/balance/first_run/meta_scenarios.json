@@ -1,0 +1,12 @@
+{
+  "version": "meta-scenarios-1.0",
+  "seed": 20261020,
+  "trials": 2000,
+  "levels": [0, 1, 2, 3],
+  "choice_policies": ["seek_related", "follow_route"],
+  "progress_sessions": {"early_retries": [9, 9, 9, 9, 9, 9], "pre_boss_retries": [14, 14, 14, 14], "gradual_progress": [9, 15, 24, 45, 60], "full_clears": [60, 60, 60]},
+  "target_complete_runs_to_max_all": [3, 4],
+  "target_full_pool_related_offer_probability": {"1": [0.80, 0.84], "3": [0.86, 0.90]},
+  "sweep_weight_multipliers": [1.25, 1.5, 1.75, 2.0, 2.5],
+  "sweep_upgrade_cost_scales": [0.75, 1.0, 1.5]
+}

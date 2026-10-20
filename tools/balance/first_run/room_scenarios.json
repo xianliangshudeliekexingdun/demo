@@ -1,0 +1,18 @@
+{
+  "version": "normal-room-scenarios-1.0",
+  "seed": 20261021,
+  "trials": 32,
+  "horizon": 90.0,
+  "cases": {
+    "burst": {"path":"burst","profile":"ordinary","buy_policy":"balanced","gem":"MG01","gem_level":1},
+    "spirit": {"path":"spirit","profile":"ordinary","buy_policy":"balanced","gem":"MG01","gem_level":1},
+    "area": {"path":"area","profile":"ordinary","buy_policy":"balanced","gem":"MG01","gem_level":1},
+    "weak_no_shop": {"path":"weak","profile":"weak","buy_policy":"no_shop","gem":null,"gem_level":0},
+    "optimized_gem3": {"path":"optimized","profile":"optimized","buy_policy":"balanced","gem":"MG03","gem_level":3}
+  },
+  "timing_observation_bands": {"early":[3.0,15.0],"middle":[4.0,22.0],"late":[5.0,28.0]},
+  "tutorial_rooms": [4,16,25],
+  "sweep_rooms": [9,19,28,37,42,49,54,56,59],
+  "sweeps": {"preview_seconds":[0.5,0.8,1.2],"remaining_alive_threshold":[0,2,3]},
+  "sweep_trials": 16
+}

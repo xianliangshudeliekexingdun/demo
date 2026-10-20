@@ -1,0 +1,26 @@
+{
+  "model_version": "spell-growth-native-1",
+  "seeds": [7, 31, 117],
+  "single_seconds": 16,
+  "build_seconds": 24,
+  "attack": 100,
+  "critical_rate": 0,
+  "target_health": 100000000,
+  "single_levels": [1, 2, 3],
+  "build_levels": [2, 3],
+  "patterns": {
+    "single": [[0, 2]],
+    "group": [[0, 2], [-0.7, 2.7], [0.7, 3.3]]
+  },
+  "builds": {
+    "fire": ["F01", "F02", "F03", "F06", "F07", "F08", "F10", "F11"],
+    "ice": ["I01", "I02", "I05", "I06", "I07", "I08", "I09", "I10"],
+    "mixed": ["F01", "F06", "F07", "F11", "I01", "I07", "I08", "I09"]
+  },
+  "extremes": [
+    {"name": "critical", "critical_rate": 1, "cdr": 0},
+    {"name": "fast", "critical_rate": 0.4, "cdr": 0.6}
+  ],
+  "guardrails": {"minimum_level2_damage_ratio": 1, "minimum_level3_damage_ratio": 1, "healing_counts_actual_only": true},
+  "scope": "Stationary authoritative core encounters without AI, death, movement or natural rewards; target placements and builds are explicit fixtures. Measures direct/status/derived damage, real shield recovery and armor uptime; never predicts survival, player clear rate or full-run length."
+}

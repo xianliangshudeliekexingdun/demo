@@ -1,0 +1,821 @@
+{
+  "schema_version": 1,
+  "school_id": "earth",
+  "school_name": "岩",
+  "status": "proposed_unapproved_not_runtime",
+  "document": "docs/游戏设计/17-正式岩系法术与职业宝物.md",
+  "mechanics": {
+    "units": "seconds/meters/coefficient_1_equals_100_percent",
+    "level_values": "full_not_additive",
+    "slots": 8,
+    "max_level": 3,
+    "resonance_count": 3,
+    "resonance_damage_bonus": 0.15,
+    "resonance_cdr": 0.1,
+    "cdr_cap": 0.6,
+    "minimum_cd": 0.2,
+    "cast_cycle": "windup + max(minimum_cd, cooldown * (1-min(cdr_cap,total_cdr)))",
+    "damage_read": "release fixes level/geometry/component coefficient/cast scale; hit reads current attack/general/earth/vulnerability/crit",
+    "school_bonus_stacking": "additive",
+    "control_displacement_multipliers": {
+      "normal": 1,
+      "elite": 0.35,
+      "fixed_strong": 0
+    },
+    "movement_slow_caps": {
+      "normal": 0.45,
+      "elite": 0.25,
+      "fixed_strong": 0.15
+    },
+    "construct_sources": [
+      "R03",
+      "R04",
+      "R09"
+    ],
+    "construct_global_cap": 3,
+    "construct_cap_per_spell": 1,
+    "construct_nonblocking": true,
+    "construct_hp": false,
+    "construct_aggro": false,
+    "construct_max_lifetime": 15,
+    "construct_end_reasons": [
+      "natural_expiry",
+      "replacement",
+      "consumption",
+      "combat_cleanup"
+    ],
+    "construct_end_exclusive": true,
+    "construction_placement": "legal ground within range and line-of-sight; no collision, doors/actors never blocked; source ID unique even adjacent placement",
+    "same_time_order": "due existing pulses/echoes -> natural expiry -> new releases (consume/replacement/build) -> death/cleanup cancels any later event; each still checks alive/in-room",
+    "shield_restore_scaling": "fixed points then restoration amplification then actual deficit; never attack/general/earth/crit",
+    "derived": "R06 aftershock/R07 echoes/item quakes may crit but no GT01/P04/P05/profession chain or natural count",
+    "timers": "combat_only",
+    "crit_rate_cap": null,
+    "crit_above_one": "always_crit_no_supercrit"
+  },
+  "spells": [
+    {
+      "id": "R01",
+      "name": "碎岩矢",
+      "starter": true,
+      "passive": false,
+      "windup": 0.25,
+      "cooldowns": [
+        1.5,
+        1.5,
+        1.5
+      ],
+      "levels": [
+        {
+          "main": 1.5,
+          "range": 8,
+          "speed": 12,
+          "width": 0.45,
+          "shard": 0.5,
+          "shard_count": 3,
+          "shard_range": 3,
+          "shard_width": 0.25,
+          "shard_pierce": 1,
+          "shard_target_cap": 3
+        },
+        {
+          "main": 2,
+          "range": 8,
+          "speed": 12,
+          "width": 0.55,
+          "shard": 0.65,
+          "shard_count": 3,
+          "shard_range": 3.5,
+          "shard_width": 0.3,
+          "shard_pierce": 1,
+          "shard_target_cap": 3
+        },
+        {
+          "main": 2,
+          "range": 8,
+          "speed": 12,
+          "width": 0.55,
+          "shard": 0.65,
+          "shard_count": 3,
+          "shard_range": 3.5,
+          "shard_width": 0.3,
+          "shard_pierce": 2,
+          "shard_target_cap": 6
+        }
+      ],
+      "targeting": "最近8m无遮挡敌，重矢主击后沿原行进方向±30度/0度发三碎片；主击致死仍可从有效命中处散片",
+      "occlusion": "主矢/碎片各被首个障碍截停；碎片不再伤主击目标，同cast各次目标最多吃一片；各片穿透按实际碰撞",
+      "shard_speed": 12,
+      "shards_class": "本术次级直接分量；不计自然次数，不再生成碎片",
+      "shard_delay": 0.05
+    },
+    {
+      "id": "R02",
+      "name": "震地波",
+      "starter": true,
+      "passive": false,
+      "windup": 0.25,
+      "cooldowns": [
+        2.4,
+        2.4,
+        2.4
+      ],
+      "levels": [
+        {
+          "main": 1.6,
+          "radius": 4,
+          "speed": 7,
+          "wave_width": 0.6,
+          "outer_threshold": 2.5,
+          "outer_bonus": 0
+        },
+        {
+          "main": 2.2,
+          "radius": 4.8,
+          "speed": 7,
+          "wave_width": 0.7,
+          "outer_threshold": 2.5,
+          "outer_bonus": 0
+        },
+        {
+          "main": 2.2,
+          "radius": 4.8,
+          "speed": 7,
+          "wave_width": 0.7,
+          "outer_threshold": 2.5,
+          "outer_bonus": 1
+        }
+      ],
+      "targeting": "半径内有合法敌人时吟唱；释放时以玩家当前位置为圆心发推进波前；同敌一次",
+      "occlusion": "中心至目标线段不能穿实体障碍，波前实际经过才命中；三级实际命中距离≥2.5m才系数+100个百分点，不凭最远圆覆盖全场",
+      "creates_construct": false
+    },
+    {
+      "id": "R03",
+      "name": "岩棱坠击",
+      "starter": true,
+      "passive": false,
+      "windup": 0.35,
+      "cooldowns": [
+        4,
+        4,
+        4
+      ],
+      "levels": [
+        {
+          "main": 2.2,
+          "radius": 1.25,
+          "delay": 0.3,
+          "construct_duration": 6,
+          "after": 0,
+          "after_delay": 0,
+          "after_radius": 0
+        },
+        {
+          "main": 3,
+          "radius": 1.55,
+          "delay": 0.3,
+          "construct_duration": 7,
+          "after": 0,
+          "after_delay": 0,
+          "after_radius": 0
+        },
+        {
+          "main": 3,
+          "radius": 1.55,
+          "delay": 0.3,
+          "construct_duration": 7,
+          "after": 1.2,
+          "after_delay": 0.6,
+          "after_radius": 2.2
+        }
+      ],
+      "target_range": 8,
+      "targeting": "吟唱锁最近无遮挡敌位置；落点固定；落击合法地面即建立非阻路支点，即使敌移走也成立",
+      "construct_created_at": "main impact; lifetime starts then",
+      "occlusion": "落点和各受击者间无遮挡；不从墙外/门外建立支点",
+      "replacement": "新落击到地时先以replacement结束旧R03支点再建；不因相邻坐标视为另一来源；三级裂波是落击预排本体后续，不依赖支点仍在，不制造额外构造",
+      "after_may_crit": true
+    },
+    {
+      "id": "R04",
+      "name": "地脉石柱",
+      "starter": false,
+      "passive": false,
+      "windup": 0.4,
+      "cooldowns": [
+        9,
+        9,
+        9
+      ],
+      "levels": [
+        {
+          "tick": 0.6,
+          "radius": 2,
+          "duration": 6,
+          "interval": 1,
+          "first_tick": 1
+        },
+        {
+          "tick": 0.8,
+          "radius": 2.4,
+          "duration": 7,
+          "interval": 1,
+          "first_tick": 1
+        },
+        {
+          "tick": 0.8,
+          "radius": 2.4,
+          "duration": 7,
+          "interval": 1,
+          "first_tick": 0
+        }
+      ],
+      "target_range": 8,
+      "targeting": "释放锁最近无遮挡敌位置，建固定非阻路输出柱；末跳含到期同刻",
+      "occlusion": "柱心到敌逐条遮挡，无敌离区空跳不算命中；不追敌/不吸仇恨",
+      "replacement": "同ID只1，新建先移除旧柱；旧到点伤害先结，再处理替换；销毁不补末跳或爆炸",
+      "damage_class": "本体持续区域；可暴击，不直接暴击链；自然cast仅第一次有效命中检查GT01；脉冲不另计自然施法"
+    },
+    {
+      "id": "R05",
+      "name": "岩甲术",
+      "starter": false,
+      "passive": false,
+      "windup": 0.5,
+      "cooldowns": [
+        12,
+        12,
+        9
+      ],
+      "levels": [
+        {
+          "shield_restore": 35
+        },
+        {
+          "shield_restore": 50
+        },
+        {
+          "shield_restore": 50
+        }
+      ],
+      "targeting": "战斗有活敌且缺盾才吟唱，释放再查；满盾取消，无CD/自然计数",
+      "occlusion": "自身回复，无敌人直射需求",
+      "restore_order": "RB05固定+15与RP03条件固定+10 -> GT01等回复增幅 -> 实际缺盾裁定",
+      "extra_casts": "可真实回盾但不触发职业自然事件；不得以伤害倍率放大回复"
+    },
+    {
+      "id": "R06",
+      "name": "坍岩令",
+      "starter": false,
+      "passive": false,
+      "windup": 0.35,
+      "cooldowns": [
+        6,
+        6,
+        6
+      ],
+      "levels": [
+        {
+          "main": 3.5,
+          "radius": 2.4,
+          "delay": 0.2,
+          "after": 0,
+          "after_delay": 0
+        },
+        {
+          "main": 4.75,
+          "radius": 2.8,
+          "delay": 0.2,
+          "after": 0,
+          "after_delay": 0
+        },
+        {
+          "main": 4.75,
+          "radius": 2.8,
+          "delay": 0.2,
+          "after": 1.5,
+          "after_delay": 0.4
+        }
+      ],
+      "requires_any": [
+        "R03",
+        "R04",
+        "R09"
+      ],
+      "construct_select_range": 9,
+      "targeting": "候选需持构造来源；仅从9m内仍在场、爆心半径有活敌且无遮挡的构造选剩余寿命最短者，同剩余按稳定ID；吟唱完成重选合法者，无则取消等待",
+      "consume": "成功释放时原子性将所选构造置consumption并移除，随后按固定中心预排震击；只消费1，不能消费同刻已经到期/替换对象",
+      "no_prerequisite_fallback": "不具当前场上构造时等待，不空施/不起CD/不计P04；已有施法的震击可在构造已移除后正常落地",
+      "after_may_crit": true,
+      "after_class": "派生余波，不再消费/职业链/GT01"
+    },
+    {
+      "id": "R07",
+      "name": "地脉共振",
+      "starter": false,
+      "passive": false,
+      "windup": 0.3,
+      "cooldowns": [
+        5,
+        5,
+        5
+      ],
+      "levels": [
+        {
+          "main": 1.2,
+          "main_radius": 1.8,
+          "echo": 1,
+          "echo_radius": 2.4,
+          "echo_delay": 0.25,
+          "echo_construct_cap": 1,
+          "second_echo": 0
+        },
+        {
+          "main": 1.6,
+          "main_radius": 2.2,
+          "echo": 1.4,
+          "echo_radius": 2.4,
+          "echo_delay": 0.25,
+          "echo_construct_cap": 1,
+          "second_echo": 0
+        },
+        {
+          "main": 1.6,
+          "main_radius": 2.2,
+          "echo": 1.4,
+          "echo_radius": 2.4,
+          "echo_delay": 0.25,
+          "echo_construct_cap": 2,
+          "second_echo": 0.7
+        }
+      ],
+      "target_range": 8,
+      "anchor_search_range": 6,
+      "targeting": "释放锁最近无遮挡敌位置，基础震击立即成立；从距基础落点6m内且到落点无遮挡构造按距离选1/1/2个；回响在各自锚点圆心发生，不传递到第三锚点",
+      "echo_selection": "释放固定所选构造ID/位置；回响到点源已消失则该份取消；不改为新的构造、不移除构造、不重置寿命",
+      "echo_timing": "首回响+.25s，三级第二+.5s且70%；各自对同敌一次，可真实重叠但不能把两个表现算同一个构造两次",
+      "fallback": "无构造仍基础120/160/160%",
+      "echo_may_crit": true,
+      "echo_class": "派生区域，无直接链/GT01/自然计数"
+    },
+    {
+      "id": "R08",
+      "name": "山崩落击",
+      "starter": false,
+      "passive": false,
+      "windup": 0.65,
+      "cooldowns": [
+        7.5,
+        7.5,
+        7.5
+      ],
+      "levels": [
+        {
+          "main": 5,
+          "radius": 2.5,
+          "delay": 0.7,
+          "stun": 0.35,
+          "fracture": 0,
+          "fracture_length": 0,
+          "fracture_width": 0
+        },
+        {
+          "main": 6.5,
+          "radius": 2.8,
+          "delay": 0.7,
+          "stun": 0.5,
+          "fracture": 0,
+          "fracture_length": 0,
+          "fracture_width": 0
+        },
+        {
+          "main": 6.5,
+          "radius": 2.8,
+          "delay": 0.7,
+          "stun": 0.5,
+          "fracture": 1.25,
+          "fracture_length": 3,
+          "fracture_width": 0.5
+        }
+      ],
+      "target_range": 9,
+      "targeting": "吟唱开始锁当前生命最高可见敌位置；完成不追踪，长预兆后落击",
+      "occlusion": "爆心到受击敌逐条遮挡；三级从主爆边缘沿相对施法起点方向±60度向外发两条裂隙，不伤已被主爆击中的敌；裂隙每敌最多1击、各遇墙截停",
+      "fracture_delay": 0.1,
+      "fracture_speed": 10,
+      "stun_rule": "硬控时长乘k一次，免硬控者仍受伤；不取消明示免打断招式；不制造构造",
+      "fracture_class": "本术次级直接分量，不生成更多裂隙"
+    },
+    {
+      "id": "R09",
+      "name": "护阵石碑",
+      "starter": false,
+      "passive": false,
+      "windup": 0.35,
+      "cooldowns": [
+        10,
+        10,
+        10
+      ],
+      "levels": [
+        {
+          "radius": 3,
+          "duration": 6,
+          "defense": 20,
+          "exit_grace": 0
+        },
+        {
+          "radius": 3.5,
+          "duration": 7,
+          "defense": 30,
+          "exit_grace": 0
+        },
+        {
+          "radius": 3.5,
+          "duration": 7,
+          "defense": 30,
+          "exit_grace": 1.5
+        }
+      ],
+      "enemy_presence_range": 10,
+      "targeting": "10m内有活敌才于释放时玩家合法脚下建唯一固定非阻路石碑；防御仅玩家在范围且玩家到碑无遮挡时获得",
+      "occlusion": "围墙隔断增益，不穿墙支持",
+      "replacement": "同ID只1；自然到期/消费/替换立即移除该碑防御及离阵保留；三级grace只因真实走出覆盖触发，不借删除保留；不回血回盾"
+    },
+    {
+      "id": "R10",
+      "name": "岩法研习",
+      "starter": false,
+      "passive": true,
+      "windup": 0,
+      "cooldowns": [
+        0,
+        0,
+        0
+      ],
+      "levels": [
+        {
+          "earth_bonus": 0.15,
+          "shielded_defense": 0
+        },
+        {
+          "earth_bonus": 0.25,
+          "shielded_defense": 0
+        },
+        {
+          "earth_bonus": 0.35,
+          "shielded_defense": 15
+        }
+      ],
+      "effect": "常驻岩伤同桶增加；三级当前真实护盾>0时防御+15，归零即时失效；不恢复盾、不提高盾上限",
+      "qualification": "占槽计岩共鸣，不吟唱不计自然施法"
+    }
+  ],
+  "items": [
+    {
+      "id": "RB01",
+      "name": "碎锋指环",
+      "rarity": "blue",
+      "requires": [
+        "R01"
+      ],
+      "effect": "碎片全宽×1.5，主矢宽度/碎片数/穿透/同敌去重不变，不能让三片重伤主目标。",
+      "params": {
+        "shard_width_scale": 1.5
+      }
+    },
+    {
+      "id": "RB02",
+      "name": "行脉轮",
+      "rarity": "blue",
+      "requires": [
+        "R02"
+      ],
+      "effect": "波前推进速度7→9.5m/s，半径、系数、每敌1击不变；不缩吟唱/CD。",
+      "params": {
+        "wave_speed": 9.5
+      }
+    },
+    {
+      "id": "RB03",
+      "name": "驻棱玉",
+      "rarity": "blue",
+      "requires": [
+        "R03"
+      ],
+      "effect": "支点持续+3s：6/7/7→9/10/10；不增落击/裂波，不把替换视为到期。",
+      "params": {
+        "construct_duration_add": 3
+      }
+    },
+    {
+      "id": "RB04",
+      "name": "震脉石芯",
+      "rarity": "blue",
+      "requires": [
+        "R04"
+      ],
+      "effect": "石柱脉冲间隔1→0.8s，持续不变，首跳变为0.8/0.8/0s；到期前原相位所有完整跳照常，不能因替换补跳。",
+      "params": {
+        "interval": 0.8,
+        "first_tick_by_level": [
+          0.8,
+          0.8,
+          0
+        ]
+      }
+    },
+    {
+      "id": "RB05",
+      "name": "岩心护符",
+      "rarity": "blue",
+      "requires": [
+        "R05"
+      ],
+      "effect": "岩甲术固定回复请求+15：35→50、50→65，之后再算回复增幅和实际缺盾；不加上限。",
+      "params": {
+        "shield_restore_add": 15
+      }
+    },
+    {
+      "id": "RB06",
+      "name": "坍岳令牌",
+      "rarity": "blue",
+      "requires": [
+        "R06"
+      ],
+      "effect": "自然/追加坍岩主震技能系数均+100个百分点：350→450%、475→575%；不提高三级余波或职业派生。",
+      "params": {
+        "main_coefficient_add": 1
+      }
+    },
+    {
+      "id": "RB07",
+      "name": "连脉耳坠",
+      "rarity": "blue",
+      "requires": [
+        "R07"
+      ],
+      "effect": "以基础落点为中心的锚点检索距离6→8m；不增回响半径、次数，不跨墙取源。",
+      "params": {
+        "anchor_search_range": 8
+      }
+    },
+    {
+      "id": "RB08",
+      "name": "定岳星盘",
+      "rarity": "blue",
+      "requires": [
+        "R08"
+      ],
+      "effect": "主落击释放后延迟0.7→0.45s；吟唱、CD与锁点时机不变，不追踪躲开的目标。",
+      "params": {
+        "impact_delay": 0.45
+      }
+    },
+    {
+      "id": "RB09",
+      "name": "护阵铜印",
+      "rarity": "blue",
+      "requires": [
+        "R09"
+      ],
+      "effect": "该碑覆盖提供防御+15：20→35、30→45；与其他防御相加，玩家最终减伤仍最高45%。",
+      "params": {
+        "defense_add": 15
+      }
+    },
+    {
+      "id": "RB10",
+      "name": "岩纹研习札",
+      "rarity": "blue",
+      "requires": [
+        "R10"
+      ],
+      "effect": "岩系合格伤害暴击率+15个百分点；不提高其他学派、实际回盾，不赋予派生职业链。",
+      "params": {
+        "earth_crit_rate_add": 0.15
+      }
+    },
+    {
+      "id": "RP01",
+      "name": "碎层遗环",
+      "rarity": "purple",
+      "requires": [
+        "R01",
+        "R02或R08至少1种"
+      ],
+      "effect": "自然R01主矢有效命中后，该敌岩系易伤+15%、3s；该主击不追溯受益，碎片不施加，刷新不叠，同敌同cast最多一次。",
+      "params": {
+        "earth_vulnerability_add": 0.15,
+        "duration": 3,
+        "per_cast_actor_cap": 1
+      }
+    },
+    {
+      "id": "RP02",
+      "name": "筑脉纹盘",
+      "rarity": "purple",
+      "requires": [
+        "R03/R04/R09至少2种"
+      ],
+      "effect": "自然新建构造时，若4m内有另一个不同法术ID构造且两者无遮挡，新构造初始寿命+2s；每新实例只判一次，不延旧构造；同源替换不算邻接来源。全部寿命最终≤15s。",
+      "params": {
+        "neighbor_radius": 4,
+        "new_construct_duration_add": 2,
+        "per_instance_cap": 1,
+        "total_lifetime_cap": 15,
+        "natural_only": true
+      }
+    },
+    {
+      "id": "RP03",
+      "name": "守阵玉扣",
+      "rarity": "purple",
+      "requires": [
+        "R05",
+        "R09"
+      ],
+      "effect": "岩甲术成功释放时玩家在护阵碑有效覆盖内，该次固定回盾请求+10；并使持有碑的走出覆盖保留至少1s（三级仍1.5，不相加）。消费/替换/到期不保留，满盾仍取消不触发。",
+      "params": {
+        "conditional_shield_restore_add": 10,
+        "minimum_exit_grace": 1,
+        "scope": "R05 restore only; R09 movement exit only"
+      }
+    },
+    {
+      "id": "RG01",
+      "name": "山心王印",
+      "rarity": "gold",
+      "requires": [
+        "R06",
+        "R03/R04/R09至少2种"
+      ],
+      "effect": "自然坍岩主震技能系数+150个百分点、半径+0.4m；若消费构造已存在≥2s，主震后1s再于同中心发生200%派生重响，半径2.4m。每cast最多一次，追加坍岩不获本物强化，替换/到期/清场不触发。",
+      "params": {
+        "main_coefficient_add": 1.5,
+        "radius_add": 0.4,
+        "consumed_age_threshold": 2,
+        "derived_coefficient": 2,
+        "derived_delay_after_main": 1,
+        "derived_radius": 2.4,
+        "per_natural_cast_cap": 1
+      }
+    },
+    {
+      "id": "RG02",
+      "name": "地脉天衡",
+      "rarity": "gold",
+      "requires": [
+        "R07",
+        "R04",
+        "R03或R09至少1种"
+      ],
+      "effect": "自然地脉共振可从检索内最多3个不同构造各发一次主回响，按近到远每0.25s一份；各份100/140/140%（覆盖三级原第二70%，不在其上另加）。逐源存活重查，不无限连锁、不消费或延寿；追加仍基础1/1/2来源。",
+      "params": {
+        "natural_echo_construct_cap": 3,
+        "echo_coefficients_by_level": [
+          1,
+          1.4,
+          1.4
+        ],
+        "echo_spacing": 0.25,
+        "replace_level3_secondary": true
+      }
+    },
+    {
+      "id": "RG03",
+      "name": "垒盾圣契",
+      "rarity": "gold",
+      "requires": [
+        "R05",
+        "R03/R04/R09至少1种"
+      ],
+      "effect": "自然岩甲术当次实际恢复护盾≥20且6m内有可见构造时，最近构造0.3s后发生一次200%岩震、半径2.4m；每cast至多一次、玩家共享4s。安排时固定源ID，源提前消失则取消且不退间隔；不消耗/延寿/新建，不再触发职业或GT01。",
+      "params": {
+        "actual_restore_threshold": 20,
+        "anchor_range": 6,
+        "derived_delay": 0.3,
+        "derived_coefficient": 2,
+        "derived_radius": 2.4,
+        "shared_interval": 4,
+        "per_natural_cast_cap": 1
+      }
+    }
+  ],
+  "starter_probes": [
+    {
+      "spell_id": "R01",
+      "mode": "casts",
+      "events": [
+        {
+          "delay": [
+            0.25,
+            0.25,
+            0.25
+          ],
+          "coefficients": [
+            1.5,
+            2,
+            2
+          ],
+          "target_caps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "delay": [
+            0.425,
+            0.425,
+            0.425
+          ],
+          "coefficients": [
+            0.5,
+            0.65,
+            0.65
+          ],
+          "target_caps": [
+            3,
+            3,
+            6
+          ],
+          "minimum_targets": [
+            2,
+            2,
+            2
+          ],
+          "excluded_targets": 1
+        }
+      ],
+      "assumptions": "主敌3m；其后存在±30度扇内不同敌，碎片各真实相交，每敌只一片且主目标排除；第三级最多6个次目标是可达纵深上界，六敌探针实际最多5个，孤立主敌完全无碎片伤害。"
+    },
+    {
+      "spell_id": "R02",
+      "mode": "casts",
+      "events": [
+        {
+          "delay": [
+            0.428571,
+            0.428571,
+            0.428571
+          ],
+          "coefficients": [
+            1.6,
+            2.2,
+            3.2
+          ],
+          "target_caps": [
+            6,
+            6,
+            6
+          ]
+        }
+      ],
+      "assumptions": "合法敌均在3m同环且无遮挡，实际波前经过；三级满足≥2.5m外缘奖励。2.5m以内三级仍2.2；分散远程在4/4.8m外不受伤。"
+    },
+    {
+      "spell_id": "R03",
+      "mode": "casts",
+      "events": [
+        {
+          "delay": [
+            0.3,
+            0.3,
+            0.3
+          ],
+          "coefficients": [
+            2.2,
+            3,
+            3
+          ],
+          "target_caps": [
+            6,
+            6,
+            6
+          ]
+        },
+        {
+          "delay": [
+            0.9,
+            0.9,
+            0.9
+          ],
+          "coefficients": [
+            0,
+            0,
+            1.2
+          ],
+          "target_caps": [
+            0,
+            0,
+            6
+          ]
+        }
+      ],
+      "assumptions": "目标实际留在固定落点主半径内，三级又留在2.2m裂波范围；六敌密集包络，不将全圈覆盖用于疏散平均。支点本身无周期伤害，不能额外算柱脉冲。"
+    }
+  ]
+}

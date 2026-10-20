@@ -1,0 +1,24 @@
+{
+  "version": "meta-growth-v2-20261018",
+  "status": "active_fire_ice_catalysts_20261018",
+  "base_parameters": "first_run_v1.json",
+  "ice_parameters": "res://data/ice_spells_v1.json",
+  "economy_parameters": "run_economy_v1.json",
+  "artifact_parameters": "fire_artifacts_v1.json",
+  "currency": {"name": "魔尘", "initial": 0, "persistent": true, "gold_conversion": false, "room_dust_by_stage": {"early": 1, "middle": 2, "late": 3}, "boss_bonus_by_id": {"BOSS01": 5, "BOSS02": 10, "BOSS03": 15}, "credit_at_normal_run_end": true, "normal_abandon_keeps_cleared_rewards": true, "forced_close_loses_unsettled_rewards": true},
+  "progression": {"max_level": 3, "first_choice_free_per_kind": true, "free_choice_level": 1, "unlock_level": 1, "unlock_cost": 20, "upgrade_cost_by_current_level": {"1": 20, "2": 40}, "failure_chance": 0, "copies_required": 0, "upgrade_in_run": false, "refund": false, "completed_growth_keeps_surplus_currency": true},
+  "equipment": {"catalyst_slots": 1, "gem_slots": 1, "free_swap_outside_run": true, "locked_during_run": true, "snapshot_at_run_start": true, "can_unequip": true},
+  "spell_sampling_assumptions": {"baseline_spell_weight": 1.0, "offer_size": 3, "unique_within_offer": true, "eligibility_before_weighting": true, "affects_initial_offer": false, "affects_owned_spell_upgrades": true, "affects_artifact_quality": false},
+  "catalyst_weight_by_level": [1.5, 1.75, 2.0],
+  "catalyst_schools": ["fire", "ice"],
+  "catalysts": {
+    "MC04": {"name": "火法术触媒", "school": "fire", "related_spells": ["F01", "F02", "F03", "F05", "F06", "F07", "F08", "F09", "F10", "F11"]},
+    "MC05": {"name": "冰法术触媒", "school": "ice", "related_spells": ["I01", "I02", "I03", "I04", "I05", "I06", "I07", "I08", "I09", "I10"]}
+  },
+  "gems": {
+    "MG01": {"name": "生机宝石", "stat": "health", "flat_by_level": [20, 40, 60]},
+    "MG02": {"name": "护壁宝石", "stat": "shield", "flat_by_level": [4, 7, 10]},
+    "MG03": {"name": "强攻宝石", "stat": "attack", "flat_by_level": [3, 6, 10]}
+  },
+  "scope": {"rarities": false, "random_affixes": false, "duplicate_items": false, "synthesis": false, "salvage": false, "reroll": false, "inventory_grid": false, "mid_run_resume": false, "cloud_save": false}
+}

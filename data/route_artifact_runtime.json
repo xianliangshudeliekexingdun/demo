@@ -1,0 +1,13 @@
+{
+  "version": "formal-fire-ice-artifacts-runtime-20261018",
+  "artifact_source": "res://data/balance_candidates/fire_artifacts_v1.json",
+  "economy_source": "res://data/balance_candidates/run_economy_v1.json",
+  "route_source": "res://data/courtyard_route.json",
+  "direct_player_spells": ["F01", "F03", "F07", "F08", "F09", "F11", "I01", "I02", "I03", "I04", "I07", "I08"],
+  "offensive_player_spells": ["F01", "F03", "F05", "F06", "F07", "F08", "F09", "F11", "I01", "I02", "I03", "I04", "I05", "I06", "I07", "I08"],
+  "igniter_spells": ["F01", "F03", "F05", "F06", "F08", "F09", "F11"],
+  "area_spells": ["F03", "F05", "F06"],
+  "persistent_spells": ["F05", "F06"],
+  "persistent_rain_level": 3,
+  "effects": {"explosion_lifetime": 0.5, "cooldown_lifetime": 0.5}
+}

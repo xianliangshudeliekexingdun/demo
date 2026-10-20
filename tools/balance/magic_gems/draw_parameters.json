@@ -1,0 +1,59 @@
+{
+  "version": "magic-gem-draw-proposal-20261019-v1",
+  "status": "discussion_only_not_runtime",
+  "sources": {
+    "meta": "data/balance_candidates/meta_growth_v1.json",
+    "economy": "data/balance_candidates/run_economy_v1.json",
+    "base": "data/balance_candidates/first_run_v1.json",
+    "gem_design": "tools/balance/magic_gems/parameters.json"
+  },
+  "draw_cost": 5,
+  "base_weights": {"green": 50, "blue": 30, "purple": 16, "gold": 4},
+  "pity": {
+    "purple_or_better": 10,
+    "first_gold": 10,
+    "gold_hard": 30,
+    "gold_soft_start": 21,
+    "gold_soft_increment": 0.08
+  },
+  "gold_effects": {
+    "policy": "fully_random_with_replacement",
+    "weights": {"prism": 1, "weave": 1, "blood": 1, "flash": 1, "layers": 1, "erosion": 1, "collapse": 1, "thermal": 1},
+    "wishlist": false,
+    "choice_offer": false,
+    "first_gold_effect_choice": false
+  },
+  "ordinary_affixes": {"pool_size": 8, "uniform": true, "unique_within_gem": true},
+  "income_projection": {
+    "actual_route_income_enabled": false,
+    "include_unimplemented_bosses_in_45_room_forecast": false,
+    "failed_runs_keep_completed_rooms": true,
+    "salvage_dust_refunds_included": false,
+    "starting_dust": 0,
+    "forecast_sessions": 36,
+    "cleared_room_paths": [9, 15, 30, 45],
+    "future_60_with_formal_bosses_is_reference_only": true
+  },
+  "exact": {"tail_tolerance": 1e-12, "max_draws": 4096, "exposures": [4, 10, 15, 30, 60, 100, 150, 300]},
+  "monte_carlo": {"seeds": [20261019, 20261020, 20261021], "accounts_per_seed": 6000, "draws_per_account": 150},
+  "targets": {
+    "first_gold_max_draws": 10,
+    "steady_mean_gold_draws": [14, 18],
+    "steady_mean_gold_per_projected_45_clear": [0.8, 1.2],
+    "purple_or_gold_max_drought": 9
+  },
+  "sweeps": {
+    "draw_cost": [5, 10, 15],
+    "base_tables": [
+      {"green": 55, "blue": 30, "purple": 12, "gold": 3},
+      {"green": 50, "blue": 30, "purple": 16, "gold": 4},
+      {"green": 45, "blue": 30, "purple": 20, "gold": 5}
+    ],
+    "hard_gold": [
+      {"gold_hard": 20, "gold_soft_start": 15},
+      {"gold_hard": 30, "gold_soft_start": 21},
+      {"gold_hard": 40, "gold_soft_start": 31}
+    ],
+    "soft_increment": [0.05, 0.08, 0.1]
+  }
+}

@@ -1,0 +1,869 @@
+{
+  "schema_version": 1,
+  "school_id": "spirit",
+  "school_name": "灵契",
+  "status": "proposed_unapproved_not_runtime",
+  "document": "docs/游戏设计/18-正式灵契法术与职业宝物.md",
+  "mechanics": {
+    "total_attack_unit_capacity": 4,
+    "per_family_base_capacity": {
+      "F04": 1,
+      "S03": 1,
+      "S04": 1
+    },
+    "summon_sources": [
+      "F04",
+      "S03",
+      "S04"
+    ],
+    "mark_sources": {
+      "S01": 1,
+      "S08": 3
+    },
+    "mark_target_cap": 1,
+    "mark_duration": 4,
+    "mark_normal_pet_spirit_damage_bonus": 0.15,
+    "synergy_distinct_spells": 3,
+    "synergy_spirit_damage_bonus": 0.15,
+    "synergy_cooldown_reduction": 0.1,
+    "cooldown_reduction_cap": 0.6,
+    "minimum_cooldown": 0.2,
+    "base_crit_rate": 0.05,
+    "base_crit_multiplier": 1.5,
+    "crit_rate_cap": null,
+    "crit_above_one": "always_crit_no_supercrit",
+    "unit_lifetime_extension_cap": 4,
+    "recall_eligible_remaining_max": 6,
+    "leash_distance": 10,
+    "command_does_not_reset_normal_attack_timer": true,
+    "natural_summon_counts_once": true,
+    "normal_attacks_are_not_natural_casts": true,
+    "normal_pet_can_crit": true,
+    "command_can_crit": false,
+    "derived_hit_procs": false,
+    "control_slow_caps": {
+      "normal": 0.45,
+      "elite": 0.25,
+      "fixed_strong": 0.15
+    },
+    "event_order": [
+      "old_scheduled_normal_hits_including_expiry_time",
+      "expiry_unregister",
+      "in_flight_command_and_derived_check_unit_liveness",
+      "natural_or_extra_new_releases"
+    ],
+    "attribute_policy": "正式候选统一命中读当前A/临时A/通用/学派桶/易伤/暴击；等级/几何/持续/来源/追加倍率在成功释放固定。旧F04临时攻击快照不自动修改。",
+    "lifecycle": "满同名/总容量等待，不替换不续存；P01空位不足2只补1只；每宠额外续存仅4秒(有SB06为6)，宠不受击不阻路；玩家死亡/清场/换房取消宠、契印、待协同和临时buff，计时冻结不catchup。",
+    "normal_attack_timing": "attack_delay与attack_interval均是包含.15秒普通前摇窗口的实际计划命中时点，不额外加.15；追击/目标重获/LOS等待只推迟，不赶进度。旧F04没有该独立前摇，正式候选是明示改制。"
+  },
+  "spells": [
+    {
+      "id": "S01",
+      "name": "契印灵矢",
+      "starter": true,
+      "passive": false,
+      "windup": 0.2,
+      "cooldowns": [
+        1.35,
+        1.35,
+        1.35
+      ],
+      "levels": [
+        {
+          "coefficient": 1.1,
+          "range": 8,
+          "projectile_speed": 16,
+          "projectile_radius": 0.12,
+          "target_cap": 1,
+          "mark_duration": 4
+        },
+        {
+          "coefficient": 1.5,
+          "range": 8,
+          "projectile_speed": 16,
+          "projectile_radius": 0.12,
+          "target_cap": 1,
+          "mark_duration": 4
+        },
+        {
+          "coefficient": 1.5,
+          "range": 9,
+          "projectile_speed": 16,
+          "projectile_radius": 0.12,
+          "target_cap": 2,
+          "mark_duration": 6
+        }
+      ],
+      "kind": "projectile",
+      "mark_rule": "仅本次第一个有效主击且目标仍活时转移/刷新全队单一契印；穿透后续命中不转印",
+      "targeting": "最近可直射存活敌人；实体墙截弹，同敌每弹至多一次"
+    },
+    {
+      "id": "F04",
+      "name": "契灵召唤",
+      "starter": true,
+      "passive": false,
+      "windup": 0.35,
+      "cooldowns": [
+        12,
+        12,
+        12
+      ],
+      "levels": [
+        {
+          "coefficient": 1.0,
+          "capacity": 1,
+          "summon_per_cast": 1,
+          "duration": 12,
+          "attack_interval": 1.25,
+          "attack_delay": 1.25,
+          "attack_windup": 0.15,
+          "range": 8,
+          "beam_width": 0.18,
+          "target_cap": 1
+        },
+        {
+          "coefficient": 1.45,
+          "capacity": 1,
+          "summon_per_cast": 1,
+          "duration": 12,
+          "attack_interval": 1.1,
+          "attack_delay": 1.1,
+          "attack_windup": 0.15,
+          "range": 8,
+          "beam_width": 0.18,
+          "target_cap": 1
+        },
+        {
+          "coefficient": 1.45,
+          "capacity": 1,
+          "summon_per_cast": 1,
+          "duration": 12,
+          "attack_interval": 1.1,
+          "attack_delay": 1.1,
+          "attack_windup": 0.15,
+          "range": 8,
+          "beam_width": 0.18,
+          "target_cap": 3
+        }
+      ],
+      "kind": "summon",
+      "summon_family": "ranged",
+      "current_baseline": "旧ID/吟唱/CD/时长/单体系数/普攻间隔保留；三级原贯穿在正式候选封为最多3敌；当前active=false不开放",
+      "targeting": "优先射程/LOS内共享契印，否则最近合法目标；普通光束实体墙截断",
+      "formal_rework": "命中实时读取攻击临时增益，绝不宣称旧core已改"
+    },
+    {
+      "id": "S03",
+      "name": "灵刃侍从",
+      "starter": true,
+      "passive": false,
+      "windup": 0.3,
+      "cooldowns": [
+        10,
+        10,
+        10
+      ],
+      "levels": [
+        {
+          "coefficient": 1.2,
+          "capacity": 1,
+          "summon_per_cast": 1,
+          "duration": 10,
+          "attack_interval": 1.1,
+          "attack_delay": 0.55,
+          "attack_windup": 0.15,
+          "search_range": 6,
+          "attack_range": 1.0,
+          "move_speed": 8,
+          "cleave_angle_degrees": 0,
+          "cleave_radius": 1.0,
+          "target_cap": 1
+        },
+        {
+          "coefficient": 1.65,
+          "capacity": 1,
+          "summon_per_cast": 1,
+          "duration": 12,
+          "attack_interval": 1.0,
+          "attack_delay": 0.55,
+          "attack_windup": 0.15,
+          "search_range": 6,
+          "attack_range": 1.0,
+          "move_speed": 8,
+          "cleave_angle_degrees": 0,
+          "cleave_radius": 1.0,
+          "target_cap": 1
+        },
+        {
+          "coefficient": 1.65,
+          "capacity": 1,
+          "summon_per_cast": 1,
+          "duration": 12,
+          "attack_interval": 1.0,
+          "attack_delay": 0.55,
+          "attack_windup": 0.15,
+          "search_range": 6,
+          "attack_range": 1.0,
+          "move_speed": 8,
+          "cleave_angle_degrees": 90,
+          "cleave_radius": 1.2,
+          "target_cap": 3
+        }
+      ],
+      "kind": "summon",
+      "summon_family": "melee",
+      "targeting": "索敌优先可追击契印，实际走合法地面路径；到近战范围并LOS满足才攻击，不隔墙砍，不能堵路"
+    },
+    {
+      "id": "S04",
+      "name": "巡空灵鹰",
+      "starter": false,
+      "passive": false,
+      "windup": 0.3,
+      "cooldowns": [
+        9,
+        9,
+        9
+      ],
+      "levels": [
+        {
+          "coefficient": 0.9,
+          "capacity": 1,
+          "summon_per_cast": 1,
+          "duration": 8,
+          "attack_interval": 1.6,
+          "attack_delay": 0.45,
+          "attack_windup": 0.15,
+          "sweep_length": 3,
+          "sweep_width": 0.6,
+          "target_cap": 2,
+          "search_range": 8,
+          "attack_range": 3,
+          "move_speed": 10
+        },
+        {
+          "coefficient": 1.2,
+          "capacity": 1,
+          "summon_per_cast": 1,
+          "duration": 10,
+          "attack_interval": 1.4,
+          "attack_delay": 0.45,
+          "attack_windup": 0.15,
+          "sweep_length": 3,
+          "sweep_width": 0.6,
+          "target_cap": 2,
+          "search_range": 8,
+          "attack_range": 3,
+          "move_speed": 10
+        },
+        {
+          "coefficient": 1.2,
+          "capacity": 1,
+          "summon_per_cast": 1,
+          "duration": 10,
+          "attack_interval": 1.4,
+          "attack_delay": 0.45,
+          "attack_windup": 0.15,
+          "sweep_length": 3,
+          "sweep_width": 0.6,
+          "target_cap": 3,
+          "search_range": 8,
+          "attack_range": 3,
+          "move_speed": 10
+        }
+      ],
+      "kind": "summon",
+      "summon_family": "hawk",
+      "targeting": "8米仅索敌；以10米/秒沿合法路径机动到目标3米内且LOS满足才开启包含.15秒的攻击窗口；以实际攻击位置为起点沿本次锁定方向形成长3米扫掠线段，同敌一次、墙截断。攻击后继续择近敌覆盖位，无目标才归队；回位和移动路径不伤害。",
+      "geometry_scope": ".45秒出生首击计划延迟假定已经在攻击距离内，追击/LOS等待只推迟；3米是本次攻击线段，不是本体移动全程伤害。"
+    },
+    {
+      "id": "S05",
+      "name": "群灵号令",
+      "starter": false,
+      "passive": false,
+      "windup": 0.3,
+      "cooldowns": [
+        8,
+        8,
+        8
+      ],
+      "levels": [
+        {
+          "command_coefficient": 0.6,
+          "command_delay": 0.2,
+          "range": 8,
+          "command_unit_cap": 4,
+          "targets_per_unit": 1,
+          "can_crit": false
+        },
+        {
+          "command_coefficient": 0.85,
+          "command_delay": 0.2,
+          "range": 8,
+          "command_unit_cap": 4,
+          "targets_per_unit": 1,
+          "can_crit": false
+        },
+        {
+          "command_coefficient": 1.1,
+          "command_delay": 0.2,
+          "range": 8,
+          "command_unit_cap": 4,
+          "targets_per_unit": 1,
+          "can_crit": false
+        }
+      ],
+      "kind": "command",
+      "requires_any": [
+        "F04",
+        "S03",
+        "S04"
+      ],
+      "casting_requires": "当前至少1只未到期且可向同一8米内存活敌人协同的契灵；不空号令",
+      "targeting": "优先契印，否则最近能被至少1宠协同的合法敌人；每宠单目标8米灵击、逐宠LOS；派发后不加入新宠"
+    },
+    {
+      "id": "S06",
+      "name": "归灵爆发",
+      "starter": false,
+      "passive": false,
+      "windup": 0.4,
+      "cooldowns": [
+        6,
+        6,
+        6
+      ],
+      "levels": [
+        {
+          "base_coefficient": 2.0,
+          "consume_bonus_coefficient": 2.8,
+          "radius": 2.0,
+          "range": 8,
+          "target_cap": 6,
+          "consume_unit_cap": 1,
+          "consume_max_remaining": 6
+        },
+        {
+          "base_coefficient": 2.6,
+          "consume_bonus_coefficient": 3.4,
+          "radius": 2.4,
+          "range": 8,
+          "target_cap": 6,
+          "consume_unit_cap": 1,
+          "consume_max_remaining": 6
+        },
+        {
+          "base_coefficient": 2.6,
+          "consume_bonus_coefficient": 4.0,
+          "radius": 2.4,
+          "range": 8,
+          "target_cap": 6,
+          "consume_unit_cap": 1,
+          "consume_max_remaining": 6
+        }
+      ],
+      "kind": "recall_burst",
+      "targeting": "优先合法契印，否则最近合法敌人；锁定落点；半径内检查墙阻隔",
+      "consume_rule": "释放时仅消费剩余寿命<=6秒的1只最短余命活宠，同余命按出生ID；不符仍仅基础伤害。追加可消费但不获SG02收益。"
+    },
+    {
+      "id": "S07",
+      "name": "契约法阵",
+      "starter": false,
+      "passive": false,
+      "windup": 0.45,
+      "cooldowns": [
+        12,
+        12,
+        12
+      ],
+      "levels": [
+        {
+          "duration": 4,
+          "radius": 2.5,
+          "extension_per_unit": 2,
+          "lifetime_extension_cap": 4,
+          "new_unit_first_attack_delay_reduction": 0.15,
+          "minimum_first_attack_delay": 0.2,
+          "field_cap": 1,
+          "range": 8
+        },
+        {
+          "duration": 5,
+          "radius": 3.0,
+          "extension_per_unit": 3,
+          "lifetime_extension_cap": 4,
+          "new_unit_first_attack_delay_reduction": 0.2,
+          "minimum_first_attack_delay": 0.2,
+          "field_cap": 1,
+          "range": 8
+        },
+        {
+          "duration": 6,
+          "radius": 3.5,
+          "extension_per_unit": 4,
+          "lifetime_extension_cap": 4,
+          "new_unit_first_attack_delay_reduction": 0.25,
+          "minimum_first_attack_delay": 0.2,
+          "field_cap": 1,
+          "range": 8
+        }
+      ],
+      "kind": "summon_field",
+      "requires_any": [
+        "F04",
+        "S03",
+        "S04"
+      ],
+      "casting_requires": "有活敌且当前至少1只活宠；无人时等待，不造宠不空阵",
+      "extension_rule": "首次同时满足覆盖与阵心到宠物LOS时给本阵额度，墙后接触不消耗首次资格；每宠全部来源生涯续存额外<=4s，多阵只补足未用额度。重施替换旧阵不引爆不返还。",
+      "deployment_rule": "仅出生时位于覆盖内且阵心到出生点LOS满足的新宠减少第一击部署延迟；不改吟唱/CD/正常普攻间隔或既有攻击计时。"
+    },
+    {
+      "id": "S08",
+      "name": "灵缚锁链",
+      "starter": false,
+      "passive": false,
+      "windup": 0.25,
+      "cooldowns": [
+        5,
+        5,
+        5
+      ],
+      "levels": [
+        {
+          "coefficient": 1.2,
+          "range": 8,
+          "base_slow": 0.15,
+          "marked_slow": 0.3,
+          "slow_duration": 2,
+          "target_cap": 1,
+          "secondary_radius": 2.5,
+          "can_apply_mark": false,
+          "mark_duration": 4
+        },
+        {
+          "coefficient": 1.65,
+          "range": 8,
+          "base_slow": 0.15,
+          "marked_slow": 0.3,
+          "slow_duration": 2.5,
+          "target_cap": 1,
+          "secondary_radius": 2.5,
+          "can_apply_mark": false,
+          "mark_duration": 4
+        },
+        {
+          "coefficient": 1.65,
+          "range": 8,
+          "base_slow": 0.15,
+          "marked_slow": 0.3,
+          "slow_duration": 3,
+          "target_cap": 2,
+          "secondary_radius": 2.5,
+          "can_apply_mark": true,
+          "mark_duration": 4
+        }
+      ],
+      "kind": "direct_chain",
+      "targeting": "优先合法契印，无印仍命中最近合法敌人；三级第二名目标由近到远/ID且主目标到邻敌LOS，主击仍活可立/刷新契印，第二击不转印",
+      "control_rule": "减速取最强不相加；普通/精英/固定强敌最终上限45%/25%/15%，不改攻击/CD/弹速"
+    },
+    {
+      "id": "S09",
+      "name": "护主灵",
+      "starter": false,
+      "passive": false,
+      "windup": 0.3,
+      "cooldowns": [
+        12,
+        12,
+        9
+      ],
+      "levels": [
+        {
+          "shield_restore": 25,
+          "shield_per_alive_unit": 5,
+          "bonus_unit_cap": 3,
+          "has_attack_unit": false
+        },
+        {
+          "shield_restore": 40,
+          "shield_per_alive_unit": 5,
+          "bonus_unit_cap": 3,
+          "has_attack_unit": false
+        },
+        {
+          "shield_restore": 40,
+          "shield_per_alive_unit": 5,
+          "bonus_unit_cap": 3,
+          "has_attack_unit": false
+        }
+      ],
+      "kind": "shield",
+      "casting_requires": "有活敌且玩家缺盾；释放复查，满盾取消不耗CD",
+      "scope": "灵体仅为回盾显像，不进入进攻契灵容量/契印/消费/号令列表；可零宠单独使用"
+    },
+    {
+      "id": "S10",
+      "name": "灵契研习",
+      "starter": false,
+      "passive": true,
+      "windup": 0,
+      "cooldowns": [
+        0,
+        0,
+        0
+      ],
+      "levels": [
+        {
+          "spirit_damage_bonus": 0.15,
+          "mark_normal_attack_bonus_add": 0
+        },
+        {
+          "spirit_damage_bonus": 0.25,
+          "mark_normal_attack_bonus_add": 0
+        },
+        {
+          "spirit_damage_bonus": 0.35,
+          "mark_normal_attack_bonus_add": 0.05
+        }
+      ],
+      "kind": "passive",
+      "scope": "本系伤害同桶加成；三级仅使宠普通攻击命中契印的同桶加成15%->20%；不改数量/普攻间隔/回盾"
+    }
+  ],
+  "items": [
+    {
+      "id": "SB01",
+      "name": "透契棱晶",
+      "rarity": "blue",
+      "requires": [
+        "S01"
+      ],
+      "effect": "契印灵矢贯穿目标上限+1（1/1/2→2/2/3）；后续仍同系数、同敌仅一次，实体墙截断；仅首主击可转印。",
+      "params": {
+        "target_cap_add": 1
+      }
+    },
+    {
+      "id": "B04",
+      "name": "赤灵灯芯",
+      "rarity": "blue",
+      "requires": [
+        "F04"
+      ],
+      "effect": "沿用旧ID和数值：仅F04寿命+4秒、普通光束系数×1.1；不提高S05/G02/其他宠伤害，不改普攻间隔。",
+      "params": {
+        "duration_add": 4,
+        "normal_laser_damage_multiplier": 1.1
+      }
+    },
+    {
+      "id": "SB02",
+      "name": "逐影足环",
+      "rarity": "blue",
+      "requires": [
+        "S03"
+      ],
+      "effect": "仅灵刃侍从追击移动速度×1.25，索敌半径+2米；不改玩家移速/碰撞/攻击距离/普通攻击间隔，不越墙命中。",
+      "params": {
+        "move_speed_multiplier": 1.25,
+        "search_range_add": 2
+      }
+    },
+    {
+      "id": "SB03",
+      "name": "巡天羽徽",
+      "rarity": "blue",
+      "requires": [
+        "S04"
+      ],
+      "effect": "灵鹰每次划线最多命中目标+1（2/2/3→3/3/4）；不重复同敌，不增加单敌次数，不越墙。",
+      "params": {
+        "target_cap_add": 1
+      }
+    },
+    {
+      "id": "SB04",
+      "name": "合鸣哨",
+      "rarity": "blue",
+      "requires": [
+        "S05"
+      ],
+      "effect": "群灵号令每份协同系数×1.25；不增加派发宠数/攻击次数，不缩短或重置普通攻击计时。",
+      "params": {
+        "command_coefficient_multiplier": 1.25
+      }
+    },
+    {
+      "id": "SB05",
+      "name": "归灵晶盏",
+      "rarity": "blue",
+      "requires": [
+        "S06",
+        "any_summon_source"
+      ],
+      "effect": "归灵消费奖励系数×1.3，只改成功消费的奖励分量，不改基础伤害、6秒消费阈值或消费数；先加SG02固定系数再乘本倍率。",
+      "params": {
+        "consume_bonus_multiplier": 1.3
+      }
+    },
+    {
+      "id": "SB06",
+      "name": "延契纹盘",
+      "rarity": "blue",
+      "requires": [
+        "S07"
+      ],
+      "effect": "契约法阵每级续存额度+2秒（2/3/4→4/5/6），并使每宠生涯额外续存硬上限4→6秒；其他来源共享此额度，不重置普攻。",
+      "params": {
+        "extension_add": 2,
+        "lifetime_extension_cap": 6
+      }
+    },
+    {
+      "id": "SB07",
+      "name": "缚灵环扣",
+      "rarity": "blue",
+      "requires": [
+        "S08"
+      ],
+      "effect": "锁链对契印目标的减速+10个百分点（30%→40%）；无印15%不变，仍受普通/精英/固定强敌45%/25%/15%上限。",
+      "params": {
+        "marked_slow_add": 0.1
+      }
+    },
+    {
+      "id": "SB08",
+      "name": "护契玉铃",
+      "rarity": "blue",
+      "requires": [
+        "S09"
+      ],
+      "effect": "护主灵基础回盾请求+12点，存活宠物加成不变；先计算回复增幅再按真实缺盾裁定，不增盾上限。",
+      "params": {
+        "shield_restore_add": 12
+      }
+    },
+    {
+      "id": "SB09",
+      "name": "长印书签",
+      "rarity": "blue",
+      "requires": [
+        "S10",
+        "any_mark_source"
+      ],
+      "effect": "共享契印持续时间+2秒，基础4→6秒，S01三级6→8秒；不叠多印，不提高同桶契印伤害加成，不延长契灵寿命。",
+      "params": {
+        "mark_duration_add": 2
+      }
+    },
+    {
+      "id": "P01",
+      "name": "双契宝石",
+      "rarity": "purple",
+      "requires": [
+        "F04"
+      ],
+      "effect": "保留旧ID/主机制，仅F04同名容量和一次补位数量1→2；不足2空位时只补1只，不要求2空位；不即时造宠，不突破总4只，满员等待。",
+      "params": {
+        "spirit_count_add": 1,
+        "summon_per_cast_add": 1,
+        "global_capacity_override": null
+      }
+    },
+    {
+      "id": "SP01",
+      "name": "并契结绳",
+      "rarity": "purple",
+      "requires": [
+        "at_least_two_distinct_summon_sources"
+      ],
+      "effect": "当前至少两种不同来源活宠时，所有本系宠普通攻击伤害同桶+20%；两只F04不算两种，不加本体/号令/同步激光/派生，不加攻速。",
+      "params": {
+        "distinct_active_families": 2,
+        "normal_pet_spirit_damage_bonus": 0.2
+      }
+    },
+    {
+      "id": "SP02",
+      "name": "合印仪轨",
+      "rarity": "purple",
+      "requires": [
+        "any_mark_source",
+        "any_summon_source",
+        "S01_or_S06"
+      ],
+      "effect": "需契印来源、召唤来源且另持S01或S06；暂不开放仅三级S08的窄路径。自然本体S01/S06/S08对主击前已契印目标造成有效直伤时，每cast最多一次、全队1.5秒间隔，让最早出生可用宠储存一份2秒的下一普攻主击系数+0.5；单份不叠，刷新时限不积累，不重置攻击计时，贯穿后续无加成。普通主击仍可暴击；宠/协同/追加/派生不可再次触发，临时+.5不再纳入SG01回响模板。",
+      "params": {
+        "coefficient_add": 0.5,
+        "shared_cooldown": 1.5,
+        "buff_duration": 2,
+        "max_stacks": 1
+      }
+    },
+    {
+      "id": "G02",
+      "name": "赤灵王印",
+      "rarity": "gold",
+      "requires": [
+        "F04",
+        "any_player_direct_offensive_active"
+      ],
+      "effect": "保留旧250%同步激光/2秒共享间隔，仅最早出生F04响应本体任一学派自然伤害主动成功释放；其存活/射程/LOS不符则不触发也不起间隔，不改选另一只。三级最多贯穿3敌，可暴击；不吃B04普通光束倍率。不是S05群号令，不重置普攻，不触发自然计数/GT01/职业链。",
+      "params": {
+        "coefficient": 2.5,
+        "shared_cooldown": 2,
+        "unit_cap": 1,
+        "target_cap_by_F04_level": [
+          1,
+          1,
+          3
+        ],
+        "can_crit": true
+      }
+    },
+    {
+      "id": "SG01",
+      "name": "万灵契冠",
+      "rarity": "gold",
+      "requires": [
+        "at_least_three_distinct_spirit_spells",
+        "any_mark_source",
+        "any_summon_source"
+      ],
+      "effect": "宠普通攻击主击在命中前契印目标且造成有效伤害时，向该落点2.5米内最近至多2个其他存活且无遮挡敌人产生一次35%原主击基础系数的灵契回响；该主击击杀仍可按落点回响。每宠attack_id仅一次，回响不暴击、不再取契印普通攻击加成，不再传播/施印/触发宝物，邻敌不足不压回单体。",
+      "params": {
+        "echo_coefficient_ratio": 0.35,
+        "radius": 2.5,
+        "neighbor_cap": 2,
+        "echo_can_crit": false
+      }
+    },
+    {
+      "id": "SG02",
+      "name": "轮回契盘",
+      "rarity": "gold",
+      "requires": [
+        "S06",
+        "any_summon_source"
+      ],
+      "effect": "仅自然归灵成功消费1宠后：消费奖励基础系数+1.5，被消费宠来源法术当前剩余CD减半；全队4秒至多一次。不即时召宠，不改其他CD/普通攻击计时，冷却已就绪无额外补偿；自然到期/清房/替换/追加归灵均不触发。",
+      "params": {
+        "consume_bonus_coefficient_add": 1.5,
+        "remaining_cd_multiplier": 0.5,
+        "shared_cooldown": 4
+      }
+    }
+  ],
+  "starter_probes": [
+    {
+      "spell_id": "S01",
+      "mode": "casts",
+      "events": [
+        {
+          "delay": [
+            0.25,
+            0.25,
+            0.25
+          ],
+          "coefficients": [
+            1.1,
+            1.5,
+            1.5
+          ],
+          "target_caps": [
+            1,
+            1,
+            2
+          ]
+        }
+      ],
+      "assumptions": "4米直线路程/16米每秒=.25秒，不模拟遮挡/转火；L3假定最多2敌成线；契印无宠时没有额外伤害。"
+    },
+    {
+      "spell_id": "F04",
+      "mode": "summon",
+      "assumptions": "目标全程可合法命中；S03已经在近战距离，不模拟追击/移速/前摇中失去目标。无宝物/共鸣，满员等空位，释放后CD，旧普攻先于同刻到期。",
+      "capacity": [
+        1,
+        1,
+        1
+      ],
+      "duration": [
+        12,
+        12,
+        12
+      ],
+      "attack_interval": [
+        1.25,
+        1.1,
+        1.1
+      ],
+      "attack_delay": [
+        1.25,
+        1.1,
+        1.1
+      ],
+      "attack_coefficient": [
+        1.0,
+        1.45,
+        1.45
+      ],
+      "target_caps": [
+        1,
+        1,
+        3
+      ],
+      "summon_per_cast": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "spell_id": "S03",
+      "mode": "summon",
+      "assumptions": "目标全程可合法命中；S03已经在近战距离，不模拟追击/移速/前摇中失去目标。无宝物/共鸣，满员等空位，释放后CD，旧普攻先于同刻到期。",
+      "capacity": [
+        1,
+        1,
+        1
+      ],
+      "duration": [
+        10,
+        12,
+        12
+      ],
+      "attack_interval": [
+        1.1,
+        1.0,
+        1.0
+      ],
+      "attack_delay": [
+        0.55,
+        0.55,
+        0.55
+      ],
+      "attack_coefficient": [
+        1.2,
+        1.65,
+        1.65
+      ],
+      "target_caps": [
+        1,
+        1,
+        3
+      ],
+      "summon_per_cast": [
+        1,
+        1,
+        1
+      ]
+    }
+  ],
+  "model_scope": "候选参数供根离散事件包络；无实装/AI/追击/LOS模拟，不据此声称最终平衡/通关率/完整30分钟。"
+}

@@ -1,0 +1,237 @@
+{
+  "slots": 4,
+  "affix_counts": {
+    "green": 1,
+    "blue": 2,
+    "purple": 3,
+    "gold": 3
+  },
+  "affixes": {
+    "attack": {
+      "label": "攻击",
+      "unit": "flat",
+      "green": 2,
+      "blue": 3,
+      "purple": 4,
+      "gold": 4,
+      "tiers": [
+        2,
+        3,
+        4
+      ]
+    },
+    "health": {
+      "label": "生命上限",
+      "unit": "flat",
+      "green": 10,
+      "blue": 15,
+      "purple": 20,
+      "gold": 20,
+      "tiers": [
+        10,
+        15,
+        20
+      ]
+    },
+    "shield": {
+      "label": "护盾上限",
+      "unit": "flat",
+      "green": 4,
+      "blue": 6,
+      "purple": 8,
+      "gold": 8,
+      "tiers": [
+        4,
+        6,
+        8
+      ]
+    },
+    "defense": {
+      "label": "防御",
+      "unit": "flat",
+      "green": 2,
+      "blue": 3,
+      "purple": 4,
+      "gold": 4,
+      "tiers": [
+        2,
+        3,
+        4
+      ]
+    },
+    "crit_rate": {
+      "label": "暴击率",
+      "unit": "probability_add",
+      "green": 0.015,
+      "blue": 0.02,
+      "purple": 0.03,
+      "gold": 0.03,
+      "tiers": [
+        0.015,
+        0.02,
+        0.03
+      ]
+    },
+    "crit_multiplier": {
+      "label": "暴击伤害倍率",
+      "unit": "multiplier_add",
+      "green": 0.05,
+      "blue": 0.08,
+      "purple": 0.12,
+      "gold": 0.12,
+      "tiers": [
+        0.05,
+        0.08,
+        0.12
+      ]
+    },
+    "cdr": {
+      "label": "冷却缩减",
+      "unit": "probability_add",
+      "green": 0.01,
+      "blue": 0.015,
+      "purple": 0.02,
+      "gold": 0.02,
+      "tiers": [
+        0.01,
+        0.015,
+        0.02
+      ]
+    },
+    "speed": {
+      "label": "战斗移速",
+      "unit": "fraction_add",
+      "green": 0.01,
+      "blue": 0.015,
+      "purple": 0.02,
+      "gold": 0.02,
+      "tiers": [
+        0.01,
+        0.015,
+        0.02
+      ]
+    }
+  },
+  "cores": {
+    "reactor": {
+      "name": "万象熔炉",
+      "base_coefficient": 3.0,
+      "remaining_burn_scale": 1.1,
+      "radius": 3.5,
+      "neighbor_cap": 4,
+      "neighbor_scale": 0.6,
+      "cooldown": 1.5
+    },
+    "sacrifice": {
+      "name": "血祭契约",
+      "drain_max_health_per_second": 0.015,
+      "drain_floor_fraction": 0.1,
+      "damage_per_missing_fraction": 1.0
+    },
+    "aegis": {
+      "name": "血晶屏障",
+      "life_conversion": 0.35,
+      "shield_per_life": 2.5,
+      "combat_health_restore_conversion": 1.0
+    },
+    "inferno": {
+      "name": "灾厄火种",
+      "cap": 6,
+      "tick_coefficient_per_layer": 0.1,
+      "gain_interval": 0.4,
+      "decay_delay": 1.5,
+      "decay_interval": 1.0
+    },
+    "coffin": {
+      "name": "永霜冰棺",
+      "defer_fraction": 0.35,
+      "release_multiplier": 1.5,
+      "stored_attack_cap": 8.0,
+      "radius": 3.0,
+      "target_cap": 5
+    },
+    "fracture": {
+      "name": "星裂棱镜",
+      "extra_damage_multiplier": 1.6,
+      "first_delay": 0.18,
+      "bounce_delay": 0.12,
+      "bounce_count": 2,
+      "bounce_multiplier": 0.6,
+      "radius": 3.5
+    },
+    "echo": {
+      "name": "双生回响",
+      "base_multiplier": 0.6,
+      "cdr_multiplier": 3.0,
+      "delay": 0.65
+    },
+    "stride": {
+      "name": "行者蓄势",
+      "maximum_distance": 10.0,
+      "maximum_body_damage_bonus": 1.5,
+      "maximum_size_bonus": 0.35,
+      "minimum_motion": 1e-05
+    }
+  },
+  "version": "magic-gems-runtime-2",
+  "draw_cost": 5,
+  "base_weights": {
+    "green": 50,
+    "blue": 30,
+    "purple": 16,
+    "gold": 4
+  },
+  "pity": {
+    "purple_or_better": 10,
+    "first_gold": 10,
+    "gold_hard": 30,
+    "gold_soft_start": 21,
+    "gold_soft_increment": 0.08
+  },
+  "rarity_names": {
+    "green": "绿色",
+    "blue": "蓝色",
+    "purple": "紫色",
+    "gold": "金色",
+    "legacy": "传承"
+  },
+  "route_income": {
+    "max_room": 60,
+    "early_end": 15,
+    "early_dust": 1,
+    "later_dust": 2
+  },
+  "tier_weights": [
+    25,
+    50,
+    25
+  ],
+  "workshop": {
+    "currency_name": "宝石精粹",
+    "salvage_yields": {
+      "green": 1,
+      "blue": 3,
+      "purple": 10,
+      "gold": 30
+    },
+    "affix_costs": {
+      "green": 1,
+      "blue": 2,
+      "purple": 3,
+      "gold": 3
+    },
+    "core_cost": 60,
+    "exclude_identical_affix_result": true,
+    "exclude_current_core": true
+  },
+  "core_migration_map": {
+    "thermal": "reactor",
+    "blood": "aegis",
+    "layers": "inferno",
+    "prism": "fracture",
+    "collapse": "coffin",
+    "weave": "echo",
+    "flash": "sacrifice",
+    "erosion": "stride"
+  }
+}

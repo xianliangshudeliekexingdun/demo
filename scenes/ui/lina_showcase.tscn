@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/presentation/lina_showcase.gd" id="1"]
+
+[node name="LinaShowcase" type="SubViewportContainer"]
+custom_minimum_size = Vector2(320, 360)
+offset_right = 560.0
+offset_bottom = 600.0
+stretch = true
+script = ExtResource("1")

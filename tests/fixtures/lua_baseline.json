@@ -1,0 +1,7958 @@
+[
+  {
+    "ability": "fireball",
+    "moving": false,
+    "frames": [
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 30,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 0,
+        "enemies": [
+          {
+            "health": 30,
+            "z": 3.3451538124019073,
+            "state": "chase",
+            "x": -0.8362884531004768
+          },
+          {
+            "health": 30,
+            "z": 3.3451538124019073,
+            "state": "chase",
+            "x": 0.8362884531004768
+          },
+          {
+            "health": 30,
+            "z": 5.325000000000001,
+            "state": "chase",
+            "x": 0.0
+          }
+        ],
+        "damage": 0,
+        "shots": 1,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 60,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 1,
+        "enemies": [
+          {
+            "health": 30,
+            "z": 2.6903076248038147,
+            "state": "chase",
+            "x": -0.6725769062009537
+          },
+          {
+            "health": 18,
+            "z": 2.6903076248038147,
+            "state": "chase",
+            "x": 0.6725769062009537
+          },
+          {
+            "health": 30,
+            "z": 4.650000000000002,
+            "state": "chase",
+            "x": 0.0
+          }
+        ],
+        "damage": 12,
+        "shots": 1,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 90,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 1,
+        "enemies": [
+          {
+            "health": 30,
+            "z": 2.035461437205722,
+            "state": "chase",
+            "x": -0.5088653593014305
+          },
+          {
+            "health": 18,
+            "z": 2.035461437205722,
+            "state": "chase",
+            "x": 0.5088653593014305
+          },
+          {
+            "health": 30,
+            "z": 3.975000000000003,
+            "state": "chase",
+            "x": 0.0
+          }
+        ],
+        "damage": 12,
+        "shots": 1,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 120,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 1,
+        "enemies": [
+          {
+            "health": 30,
+            "z": 1.940285000290664,
+            "state": "warning",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 18,
+            "z": 1.940285000290664,
+            "state": "warning",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 30,
+            "z": 3.3000000000000043,
+            "state": "chase",
+            "x": 0.0
+          }
+        ],
+        "damage": 12,
+        "shots": 1,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 150,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 1,
+        "enemies": [
+          {
+            "health": 30,
+            "z": 1.940285000290664,
+            "state": "warning",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 18,
+            "z": 1.940285000290664,
+            "state": "warning",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 30,
+            "z": 2.6250000000000053,
+            "state": "chase",
+            "x": 0.0
+          }
+        ],
+        "damage": 12,
+        "shots": 1,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 180,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 1,
+        "enemies": [
+          {
+            "health": 30,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 18,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 30,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 12,
+        "shots": 1,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 210,
+        "hits": 2,
+        "health": 70,
+        "attack_hits": 1,
+        "enemies": [
+          {
+            "health": 30,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 18,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 30,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 12,
+        "shots": 1,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 240,
+        "hits": 2,
+        "health": 70,
+        "attack_hits": 1,
+        "enemies": [
+          {
+            "health": 30,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 18,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 30,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 12,
+        "shots": 1,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 270,
+        "hits": 3,
+        "health": 55,
+        "attack_hits": 2,
+        "enemies": [
+          {
+            "health": 18,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 6,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 18,
+            "z": 2.0,
+            "state": "attack",
+            "x": 0.0
+          }
+        ],
+        "damage": 48,
+        "shots": 2,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 300,
+        "hits": 3,
+        "health": 55,
+        "attack_hits": 2,
+        "enemies": [
+          {
+            "health": 18,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 6,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 18,
+            "z": 2.0,
+            "state": "recover",
+            "x": 0.0
+          }
+        ],
+        "damage": 48,
+        "shots": 2,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 330,
+        "hits": 3,
+        "health": 55,
+        "attack_hits": 2,
+        "enemies": [
+          {
+            "health": 18,
+            "z": 1.940285000290664,
+            "state": "warning",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 6,
+            "z": 1.940285000290664,
+            "state": "warning",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 18,
+            "z": 2.0,
+            "state": "recover",
+            "x": 0.0
+          }
+        ],
+        "damage": 48,
+        "shots": 2,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 360,
+        "hits": 3,
+        "health": 55,
+        "attack_hits": 2,
+        "enemies": [
+          {
+            "health": 18,
+            "z": 1.940285000290664,
+            "state": "warning",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 6,
+            "z": 1.940285000290664,
+            "state": "warning",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 18,
+            "z": 2.0,
+            "state": "recover",
+            "x": 0.0
+          }
+        ],
+        "damage": 48,
+        "shots": 2,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 390,
+        "hits": 3,
+        "health": 55,
+        "attack_hits": 2,
+        "enemies": [
+          {
+            "health": 18,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 6,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 18,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 48,
+        "shots": 2,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 420,
+        "hits": 5,
+        "health": 25,
+        "attack_hits": 2,
+        "enemies": [
+          {
+            "health": 18,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 6,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 18,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 48,
+        "shots": 2,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 450,
+        "hits": 5,
+        "health": 25,
+        "attack_hits": 2,
+        "enemies": [
+          {
+            "health": 18,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 6,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 18,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 48,
+        "shots": 2,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 480,
+        "hits": 6,
+        "health": 10,
+        "attack_hits": 2,
+        "enemies": [
+          {
+            "health": 18,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 6,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 18,
+            "z": 2.0,
+            "state": "attack",
+            "x": 0.0
+          }
+        ],
+        "damage": 48,
+        "shots": 2,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 3,
+        "z": 0,
+        "frame": 510,
+        "hits": 6,
+        "health": 10,
+        "attack_hits": 3,
+        "enemies": [
+          {
+            "health": 6,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 0,
+            "z": 1.940285000290664,
+            "state": "dead",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 6,
+            "z": 2.0,
+            "state": "recover",
+            "x": 0.0
+          }
+        ],
+        "damage": 78,
+        "shots": 3,
+        "kills": 1,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 3,
+        "z": 0,
+        "frame": 540,
+        "hits": 6,
+        "health": 10,
+        "attack_hits": 3,
+        "enemies": [
+          {
+            "health": 6,
+            "z": 1.940285000290664,
+            "state": "warning",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 0,
+            "z": 1.940285000290664,
+            "state": "dead",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 6,
+            "z": 2.0,
+            "state": "recover",
+            "x": 0.0
+          }
+        ],
+        "damage": 78,
+        "shots": 3,
+        "kills": 1,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 3,
+        "z": 0,
+        "frame": 570,
+        "hits": 6,
+        "health": 10,
+        "attack_hits": 3,
+        "enemies": [
+          {
+            "health": 6,
+            "z": 1.940285000290664,
+            "state": "warning",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 0,
+            "z": 1.940285000290664,
+            "state": "dead",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 6,
+            "z": 2.0,
+            "state": "recover",
+            "x": 0.0
+          }
+        ],
+        "damage": 78,
+        "shots": 3,
+        "kills": 1,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 3,
+        "z": 0,
+        "frame": 600,
+        "hits": 6,
+        "health": 10,
+        "attack_hits": 3,
+        "enemies": [
+          {
+            "health": 6,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 0,
+            "z": 1.940285000290664,
+            "state": "dead",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 6,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 78,
+        "shots": 3,
+        "kills": 1,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 3,
+        "z": 0,
+        "frame": 630,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 3,
+        "enemies": [
+          {
+            "health": 6,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 0,
+            "z": 1.940285000290664,
+            "state": "dead",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 6,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 78,
+        "shots": 3,
+        "kills": 1,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 3,
+        "z": 0,
+        "frame": 660,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 3,
+        "enemies": [
+          {
+            "health": 6,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 0,
+            "z": 1.940285000290664,
+            "state": "dead",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 6,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 78,
+        "shots": 3,
+        "kills": 1,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 3,
+        "z": 0,
+        "frame": 690,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 3,
+        "enemies": [
+          {
+            "health": 6,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 0,
+            "z": 1.940285000290664,
+            "state": "dead",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 6,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 78,
+        "shots": 3,
+        "kills": 1,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 3,
+        "z": 0,
+        "frame": 720,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 3,
+        "enemies": [
+          {
+            "health": 6,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 0,
+            "z": 1.940285000290664,
+            "state": "dead",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 6,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 78,
+        "shots": 3,
+        "kills": 1,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 3,
+        "z": 0,
+        "frame": 750,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 3,
+        "enemies": [
+          {
+            "health": 6,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 0,
+            "z": 1.940285000290664,
+            "state": "dead",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 6,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 78,
+        "shots": 3,
+        "kills": 1,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 3,
+        "z": 0,
+        "frame": 780,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 3,
+        "enemies": [
+          {
+            "health": 6,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 0,
+            "z": 1.940285000290664,
+            "state": "dead",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 6,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 78,
+        "shots": 3,
+        "kills": 1,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 3,
+        "z": 0,
+        "frame": 810,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 3,
+        "enemies": [
+          {
+            "health": 6,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 0,
+            "z": 1.940285000290664,
+            "state": "dead",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 6,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 78,
+        "shots": 3,
+        "kills": 1,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 3,
+        "z": 0,
+        "frame": 840,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 3,
+        "enemies": [
+          {
+            "health": 6,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 0,
+            "z": 1.940285000290664,
+            "state": "dead",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 6,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 78,
+        "shots": 3,
+        "kills": 1,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 3,
+        "z": 0,
+        "frame": 870,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 3,
+        "enemies": [
+          {
+            "health": 6,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 0,
+            "z": 1.940285000290664,
+            "state": "dead",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 6,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 78,
+        "shots": 3,
+        "kills": 1,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 3,
+        "z": 0,
+        "frame": 900,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 3,
+        "enemies": [
+          {
+            "health": 6,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 0,
+            "z": 1.940285000290664,
+            "state": "dead",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 6,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 78,
+        "shots": 3,
+        "kills": 1,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 3,
+        "z": 0,
+        "frame": 930,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 3,
+        "enemies": [
+          {
+            "health": 6,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 0,
+            "z": 1.940285000290664,
+            "state": "dead",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 6,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 78,
+        "shots": 3,
+        "kills": 1,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 3,
+        "z": 0,
+        "frame": 960,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 3,
+        "enemies": [
+          {
+            "health": 6,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 0,
+            "z": 1.940285000290664,
+            "state": "dead",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 6,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 78,
+        "shots": 3,
+        "kills": 1,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 3,
+        "z": 0,
+        "frame": 990,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 3,
+        "enemies": [
+          {
+            "health": 6,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 0,
+            "z": 1.940285000290664,
+            "state": "dead",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 6,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 78,
+        "shots": 3,
+        "kills": 1,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 3,
+        "z": 0,
+        "frame": 1020,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 3,
+        "enemies": [
+          {
+            "health": 6,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 0,
+            "z": 1.940285000290664,
+            "state": "dead",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 6,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 78,
+        "shots": 3,
+        "kills": 1,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 3,
+        "z": 0,
+        "frame": 1050,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 3,
+        "enemies": [
+          {
+            "health": 6,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 0,
+            "z": 1.940285000290664,
+            "state": "dead",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 6,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 78,
+        "shots": 3,
+        "kills": 1,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 3,
+        "z": 0,
+        "frame": 1080,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 3,
+        "enemies": [
+          {
+            "health": 6,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 0,
+            "z": 1.940285000290664,
+            "state": "dead",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 6,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 78,
+        "shots": 3,
+        "kills": 1,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 3,
+        "z": 0,
+        "frame": 1110,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 3,
+        "enemies": [
+          {
+            "health": 6,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 0,
+            "z": 1.940285000290664,
+            "state": "dead",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 6,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 78,
+        "shots": 3,
+        "kills": 1,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 3,
+        "z": 0,
+        "frame": 1140,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 3,
+        "enemies": [
+          {
+            "health": 6,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 0,
+            "z": 1.940285000290664,
+            "state": "dead",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 6,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 78,
+        "shots": 3,
+        "kills": 1,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 3,
+        "z": 0,
+        "frame": 1170,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 3,
+        "enemies": [
+          {
+            "health": 6,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 0,
+            "z": 1.940285000290664,
+            "state": "dead",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 6,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 78,
+        "shots": 3,
+        "kills": 1,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 3,
+        "z": 0,
+        "frame": 1200,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 3,
+        "enemies": [
+          {
+            "health": 6,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 0,
+            "z": 1.940285000290664,
+            "state": "dead",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 6,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 78,
+        "shots": 3,
+        "kills": 1,
+        "result": "failure",
+        "x": 0
+      }
+    ]
+  },
+  {
+    "ability": "fireball",
+    "moving": true,
+    "frames": [
+      {
+        "target": 2,
+        "z": 0.0,
+        "frame": 30,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 0,
+        "enemies": [
+          {
+            "health": 30,
+            "z": 3.3791650661937176,
+            "state": "chase",
+            "x": -0.7410537565346675
+          },
+          {
+            "health": 30,
+            "z": 3.3302531230539363,
+            "state": "chase",
+            "x": 0.9475104348250852
+          },
+          {
+            "health": 30,
+            "z": 5.330464938596098,
+            "state": "chase",
+            "x": 0.07452970562764029
+          }
+        ],
+        "damage": 0,
+        "shots": 1,
+        "kills": 0,
+        "result": "playing",
+        "x": 1.25
+      },
+      {
+        "target": 2,
+        "z": 0.0,
+        "frame": 60,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 1,
+        "enemies": [
+          {
+            "health": 30,
+            "z": 2.849532834511838,
+            "state": "chase",
+            "x": -0.32538169975755277
+          },
+          {
+            "health": 18,
+            "z": 2.686667802763556,
+            "state": "chase",
+            "x": 1.1371257181126662
+          },
+          {
+            "health": 30,
+            "z": 4.693713802492833,
+            "state": "chase",
+            "x": 0.2942976189347406
+          }
+        ],
+        "damage": 12,
+        "shots": 1,
+        "kills": 0,
+        "result": "playing",
+        "x": 2.4999999999999996
+      },
+      {
+        "target": 2,
+        "z": 0.0,
+        "frame": 90,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 1,
+        "enemies": [
+          {
+            "health": 30,
+            "z": 2.4225976475406665,
+            "state": "chase",
+            "x": 0.1961335780820161
+          },
+          {
+            "health": 18,
+            "z": 2.1504511898030025,
+            "state": "chase",
+            "x": 1.5421143740405432
+          },
+          {
+            "health": 30,
+            "z": 4.118618658561497,
+            "state": "chase",
+            "x": 0.6454042220469449
+          }
+        ],
+        "damage": 12,
+        "shots": 1,
+        "kills": 0,
+        "result": "playing",
+        "x": 3.749999999999995
+      },
+      {
+        "target": 2,
+        "z": 0.0,
+        "frame": 120,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 1,
+        "enemies": [
+          {
+            "health": 30,
+            "z": 2.0859559661103075,
+            "state": "chase",
+            "x": 0.7805753635814109
+          },
+          {
+            "health": 18,
+            "z": 1.746147498264054,
+            "state": "chase",
+            "x": 2.0807552067699917
+          },
+          {
+            "health": 30,
+            "z": 3.6207856859619376,
+            "state": "chase",
+            "x": 1.099950056031025
+          }
+        ],
+        "damage": 12,
+        "shots": 1,
+        "kills": 0,
+        "result": "playing",
+        "x": 5.000000000000001
+      },
+      {
+        "target": 2,
+        "z": 0.0,
+        "frame": 150,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 1,
+        "enemies": [
+          {
+            "health": 30,
+            "z": 1.7983775064111573,
+            "state": "chase",
+            "x": 1.3912441067148718
+          },
+          {
+            "health": 18,
+            "z": 1.4173012906312854,
+            "state": "chase",
+            "x": 2.6702183942208513
+          },
+          {
+            "health": 30,
+            "z": 3.1745910297989144,
+            "state": "chase",
+            "x": 1.6064295438215928
+          }
+        ],
+        "damage": 12,
+        "shots": 1,
+        "kills": 0,
+        "result": "playing",
+        "x": 5.225
+      },
+      {
+        "target": 2,
+        "z": 0.0,
+        "frame": 180,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 1,
+        "enemies": [
+          {
+            "health": 30,
+            "z": 1.511714180280321,
+            "state": "chase",
+            "x": 2.0023489565169386
+          },
+          {
+            "health": 18,
+            "z": 1.0898493224545835,
+            "state": "chase",
+            "x": 3.260472753406114
+          },
+          {
+            "health": 30,
+            "z": 2.7294382961508945,
+            "state": "chase",
+            "x": 2.113838692069524
+          }
+        ],
+        "damage": 12,
+        "shots": 1,
+        "kills": 0,
+        "result": "playing",
+        "x": 5.225
+      },
+      {
+        "target": 2,
+        "z": -1.25,
+        "frame": 210,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 1,
+        "enemies": [
+          {
+            "health": 30,
+            "z": 1.1352495059912802,
+            "state": "chase",
+            "x": 2.559747676570803
+          },
+          {
+            "health": 18,
+            "z": 0.642636200692839,
+            "state": "chase",
+            "x": 3.759935665148213
+          },
+          {
+            "health": 30,
+            "z": 2.2332259157585086,
+            "state": "chase",
+            "x": 2.569805028932623
+          }
+        ],
+        "damage": 12,
+        "shots": 1,
+        "kills": 0,
+        "result": "playing",
+        "x": 5.225
+      },
+      {
+        "target": 2,
+        "z": -2.4999999999999996,
+        "frame": 240,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 1,
+        "enemies": [
+          {
+            "health": 30,
+            "z": 0.628550076367184,
+            "state": "chase",
+            "x": 3.0036063158691655
+          },
+          {
+            "health": 18,
+            "z": 0.05880835902387939,
+            "state": "chase",
+            "x": 4.095474540687997
+          },
+          {
+            "health": 30,
+            "z": 1.6657233888375704,
+            "state": "chase",
+            "x": 2.9341391226418496
+          }
+        ],
+        "damage": 12,
+        "shots": 1,
+        "kills": 0,
+        "result": "playing",
+        "x": 5.225
+      },
+      {
+        "target": 2,
+        "z": -3.749999999999995,
+        "frame": 270,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 2,
+        "enemies": [
+          {
+            "health": 30,
+            "z": 0.0471398677384821,
+            "state": "chase",
+            "x": 3.345157728119903
+          },
+          {
+            "health": 6,
+            "z": -0.5774433478666163,
+            "state": "chase",
+            "x": 4.319324441671417
+          },
+          {
+            "health": 30,
+            "z": 1.056460899706433,
+            "state": "chase",
+            "x": 3.2239410269078137
+          }
+        ],
+        "damage": 24,
+        "shots": 2,
+        "kills": 0,
+        "result": "playing",
+        "x": 5.225
+      },
+      {
+        "target": 2,
+        "z": -5.000000000000001,
+        "frame": 300,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 2,
+        "enemies": [
+          {
+            "health": 30,
+            "z": -0.5742998074086024,
+            "state": "chase",
+            "x": 3.6078190781084856
+          },
+          {
+            "health": 6,
+            "z": -1.2340797411472253,
+            "state": "chase",
+            "x": 4.474912281151858
+          },
+          {
+            "health": 30,
+            "z": 0.42290743194969427,
+            "state": "chase",
+            "x": 3.4563197711815716
+          }
+        ],
+        "damage": 24,
+        "shots": 2,
+        "kills": 0,
+        "result": "playing",
+        "x": 5.225
+      },
+      {
+        "target": 2,
+        "z": -6.25000000000001,
+        "frame": 330,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 2,
+        "enemies": [
+          {
+            "health": 30,
+            "z": -1.2172793473623067,
+            "state": "chase",
+            "x": 3.8127144185327495
+          },
+          {
+            "health": 6,
+            "z": -1.8994715103314983,
+            "state": "chase",
+            "x": 4.587966479159934
+          },
+          {
+            "health": 30,
+            "z": -0.22506142238089488,
+            "state": "chase",
+            "x": 3.645083372162684
+          }
+        ],
+        "damage": 24,
+        "shots": 2,
+        "kills": 0,
+        "result": "playing",
+        "x": 5.225
+      },
+      {
+        "target": 2,
+        "z": -7.500000000000019,
+        "frame": 360,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 2,
+        "enemies": [
+          {
+            "health": 30,
+            "z": -1.8722602703984288,
+            "state": "chase",
+            "x": 3.975537398843101
+          },
+          {
+            "health": 6,
+            "z": -2.5690246687565925,
+            "state": "chase",
+            "x": 4.673292516876592
+          },
+          {
+            "health": 30,
+            "z": -0.8818483848503508,
+            "state": "chase",
+            "x": 3.800588122639168
+          }
+        ],
+        "damage": 24,
+        "shots": 2,
+        "kills": 0,
+        "result": "playing",
+        "x": 5.225
+      },
+      {
+        "target": 2,
+        "z": -7.500000000000019,
+        "frame": 390,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 2,
+        "enemies": [
+          {
+            "health": 30,
+            "z": -2.542245861061581,
+            "state": "chase",
+            "x": 4.04397284773559
+          },
+          {
+            "health": 6,
+            "z": -3.2417476928904163,
+            "state": "chase",
+            "x": 4.656396136074406
+          },
+          {
+            "health": 30,
+            "z": -1.5514353893400916,
+            "state": "chase",
+            "x": 3.876883604754177
+          }
+        ],
+        "damage": 24,
+        "shots": 2,
+        "kills": 0,
+        "result": "playing",
+        "x": 3.974999999999991
+      },
+      {
+        "target": 2,
+        "z": -7.500000000000019,
+        "frame": 420,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 2,
+        "enemies": [
+          {
+            "health": 30,
+            "z": -3.2079058387428763,
+            "state": "chase",
+            "x": 3.9445299109191043
+          },
+          {
+            "health": 6,
+            "z": -3.882901843052666,
+            "state": "chase",
+            "x": 4.452886855056095
+          },
+          {
+            "health": 30,
+            "z": -2.221997316400398,
+            "state": "chase",
+            "x": 3.8125883875495847
+          }
+        ],
+        "damage": 24,
+        "shots": 2,
+        "kills": 0,
+        "result": "playing",
+        "x": 2.7249999999999956
+      },
+      {
+        "target": 2,
+        "z": -7.500000000000019,
+        "frame": 450,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 2,
+        "enemies": [
+          {
+            "health": 30,
+            "z": -3.824128929587764,
+            "state": "chase",
+            "x": 3.6738154936974943
+          },
+          {
+            "health": 6,
+            "z": -4.4444172522935315,
+            "state": "chase",
+            "x": 4.081727669163366
+          },
+          {
+            "health": 30,
+            "z": -2.8612401361306468,
+            "state": "chase",
+            "x": 3.6003448013156114
+          }
+        ],
+        "damage": 24,
+        "shots": 2,
+        "kills": 0,
+        "result": "playing",
+        "x": 1.4749999999999972
+      },
+      {
+        "target": 2,
+        "z": -7.500000000000019,
+        "frame": 480,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 2,
+        "enemies": [
+          {
+            "health": 30,
+            "z": -4.355810501035853,
+            "state": "chase",
+            "x": 3.2603340603784603
+          },
+          {
+            "health": 6,
+            "z": -4.904933950744782,
+            "state": "chase",
+            "x": 3.5898628051616503
+          },
+          {
+            "health": 30,
+            "z": -3.438844421292931,
+            "state": "chase",
+            "x": 3.2534842743105603
+          }
+        ],
+        "damage": 24,
+        "shots": 2,
+        "kills": 0,
+        "result": "playing",
+        "x": 0.22499999999999673
+      },
+      {
+        "target": 2,
+        "z": -7.500000000000019,
+        "frame": 510,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 2,
+        "enemies": [
+          {
+            "health": 30,
+            "z": -4.7929805146949755,
+            "state": "chase",
+            "x": 2.747223090905259
+          },
+          {
+            "health": 6,
+            "z": -5.270811362090799,
+            "state": "chase",
+            "x": 3.023404665673754
+          },
+          {
+            "health": 30,
+            "z": -3.938080050963715,
+            "state": "chase",
+            "x": 2.8005346768305084
+          }
+        ],
+        "damage": 24,
+        "shots": 3,
+        "kills": 0,
+        "result": "playing",
+        "x": -1.0250000000000028
+      },
+      {
+        "target": 1,
+        "z": -7.500000000000019,
+        "frame": 540,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 3,
+        "enemies": [
+          {
+            "health": 18,
+            "z": -5.145012647833882,
+            "state": "chase",
+            "x": 2.171887590145113
+          },
+          {
+            "health": 0,
+            "z": -5.384731227900496,
+            "state": "dead",
+            "x": 2.8037039789907214
+          },
+          {
+            "health": 30,
+            "z": -4.357877179330074,
+            "state": "chase",
+            "x": 2.2727056552902596
+          }
+        ],
+        "damage": 42,
+        "shots": 3,
+        "kills": 1,
+        "result": "playing",
+        "x": -2.2750000000000035
+      },
+      {
+        "target": 1,
+        "z": -6.25000000000001,
+        "frame": 570,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 3,
+        "enemies": [
+          {
+            "health": 18,
+            "z": -5.381281652185487,
+            "state": "chase",
+            "x": 1.5416889394475979
+          },
+          {
+            "health": 0,
+            "z": -5.384731227900496,
+            "state": "dead",
+            "x": 2.8037039789907214
+          },
+          {
+            "health": 30,
+            "z": -4.677795412545777,
+            "state": "chase",
+            "x": 1.6799837965655364
+          }
+        ],
+        "damage": 42,
+        "shots": 3,
+        "kills": 1,
+        "result": "playing",
+        "x": -2.2750000000000035
+      },
+      {
+        "target": 1,
+        "z": -5.000000000000001,
+        "frame": 600,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 3,
+        "enemies": [
+          {
+            "health": 18,
+            "z": -5.413112576762391,
+            "state": "chase",
+            "x": 0.8710137696016486
+          },
+          {
+            "health": 0,
+            "z": -5.384731227900496,
+            "state": "dead",
+            "x": 2.8037039789907214
+          },
+          {
+            "health": 30,
+            "z": -4.823951798177046,
+            "state": "chase",
+            "x": 1.024074829848827
+          }
+        ],
+        "damage": 42,
+        "shots": 3,
+        "kills": 1,
+        "result": "playing",
+        "x": -2.2750000000000035
+      },
+      {
+        "target": 1,
+        "z": -3.749999999999995,
+        "frame": 630,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 3,
+        "enemies": [
+          {
+            "health": 18,
+            "z": -5.193295731332891,
+            "state": "chase",
+            "x": 0.23738188763313858
+          },
+          {
+            "health": 0,
+            "z": -5.384731227900496,
+            "state": "dead",
+            "x": 2.8037039789907214
+          },
+          {
+            "health": 30,
+            "z": -4.7216264354943895,
+            "state": "chase",
+            "x": 0.3616244993648671
+          }
+        ],
+        "damage": 42,
+        "shots": 3,
+        "kills": 1,
+        "result": "playing",
+        "x": -2.2750000000000035
+      },
+      {
+        "target": 1,
+        "z": -2.4999999999999996,
+        "frame": 660,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 3,
+        "enemies": [
+          {
+            "health": 18,
+            "z": -4.761283003986572,
+            "state": "chase",
+            "x": -0.2773992724521397
+          },
+          {
+            "health": 0,
+            "z": -5.384731227900496,
+            "state": "dead",
+            "x": 2.8037039789907214
+          },
+          {
+            "health": 30,
+            "z": -4.366766046137958,
+            "state": "chase",
+            "x": -0.20776156089245806
+          }
+        ],
+        "damage": 42,
+        "shots": 3,
+        "kills": 1,
+        "result": "playing",
+        "x": -2.2750000000000035
+      },
+      {
+        "target": 1,
+        "z": -1.25,
+        "frame": 690,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 3,
+        "enemies": [
+          {
+            "health": 18,
+            "z": -4.205459234334581,
+            "state": "chase",
+            "x": -0.6579682824283185
+          },
+          {
+            "health": 0,
+            "z": -5.384731227900496,
+            "state": "dead",
+            "x": 2.8037039789907214
+          },
+          {
+            "health": 30,
+            "z": -3.8459695618153136,
+            "state": "chase",
+            "x": -0.6339342369814516
+          }
+        ],
+        "damage": 42,
+        "shots": 3,
+        "kills": 1,
+        "result": "playing",
+        "x": -2.2750000000000035
+      },
+      {
+        "target": 1,
+        "z": -4.163336342344337e-17,
+        "frame": 720,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 3,
+        "enemies": [
+          {
+            "health": 18,
+            "z": -3.59002745627735,
+            "state": "chase",
+            "x": -0.9338429342318296
+          },
+          {
+            "health": 0,
+            "z": -5.384731227900496,
+            "state": "dead",
+            "x": 2.8037039789907214
+          },
+          {
+            "health": 30,
+            "z": -3.2441910032137318,
+            "state": "chase",
+            "x": -0.9378722329966662
+          }
+        ],
+        "damage": 42,
+        "shots": 3,
+        "kills": 1,
+        "result": "playing",
+        "x": -2.2750000000000035
+      },
+      {
+        "target": 1,
+        "z": -4.163336342344337e-17,
+        "frame": 750,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 3,
+        "enemies": [
+          {
+            "health": 18,
+            "z": -2.9294849452452203,
+            "state": "chase",
+            "x": -1.0527776851583501
+          },
+          {
+            "health": 0,
+            "z": -5.384731227900496,
+            "state": "dead",
+            "x": 2.8037039789907214
+          },
+          {
+            "health": 30,
+            "z": -2.5864482546311915,
+            "state": "chase",
+            "x": -1.0668624026531155
+          }
+        ],
+        "damage": 42,
+        "shots": 4,
+        "kills": 1,
+        "result": "playing",
+        "x": -1.0250000000000026
+      },
+      {
+        "target": 1,
+        "z": -4.163336342344337e-17,
+        "frame": 780,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 4,
+        "enemies": [
+          {
+            "health": 6,
+            "z": -2.2792070664093576,
+            "state": "chase",
+            "x": -0.8942599914309751
+          },
+          {
+            "health": 0,
+            "z": -5.384731227900496,
+            "state": "dead",
+            "x": 2.8037039789907214
+          },
+          {
+            "health": 18,
+            "z": -1.943870514609792,
+            "state": "chase",
+            "x": -0.8850560832621406
+          }
+        ],
+        "damage": 66,
+        "shots": 4,
+        "kills": 1,
+        "result": "playing",
+        "x": 0.224999999999997
+      },
+      {
+        "target": 1,
+        "z": -4.163336342344337e-17,
+        "frame": 810,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 4,
+        "enemies": [
+          {
+            "health": 6,
+            "z": -1.7514256626930995,
+            "state": "chase",
+            "x": -0.4800977199429515
+          },
+          {
+            "health": 0,
+            "z": -5.384731227900496,
+            "state": "dead",
+            "x": 2.8037039789907214
+          },
+          {
+            "health": 18,
+            "z": -1.4492187416194895,
+            "state": "chase",
+            "x": -0.4324105831043958
+          }
+        ],
+        "damage": 66,
+        "shots": 4,
+        "kills": 1,
+        "result": "playing",
+        "x": 1.4749999999999974
+      },
+      {
+        "target": 1,
+        "z": -4.163336342344337e-17,
+        "frame": 840,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 4,
+        "enemies": [
+          {
+            "health": 6,
+            "z": -1.3765219107268696,
+            "state": "chase",
+            "x": 0.07913003245166007
+          },
+          {
+            "health": 0,
+            "z": -5.384731227900496,
+            "state": "dead",
+            "x": 2.8037039789907214
+          },
+          {
+            "health": 18,
+            "z": -1.1178295912318985,
+            "state": "chase",
+            "x": 0.1538349748282398
+          }
+        ],
+        "damage": 66,
+        "shots": 4,
+        "kills": 1,
+        "result": "playing",
+        "x": 2.7249999999999956
+      },
+      {
+        "target": 1,
+        "z": -4.163336342344337e-17,
+        "frame": 870,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 4,
+        "enemies": [
+          {
+            "health": 6,
+            "z": -1.1167716095890474,
+            "state": "chase",
+            "x": 0.7014725252408927
+          },
+          {
+            "health": 0,
+            "z": -5.384731227900496,
+            "state": "dead",
+            "x": 2.8037039789907214
+          },
+          {
+            "health": 18,
+            "z": -0.8967948766606502,
+            "state": "chase",
+            "x": 0.7910865716490137
+          }
+        ],
+        "damage": 66,
+        "shots": 4,
+        "kills": 1,
+        "result": "playing",
+        "x": 3.974999999999991
+      },
+      {
+        "target": 1,
+        "z": -4.163336342344337e-17,
+        "frame": 900,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 4,
+        "enemies": [
+          {
+            "health": 6,
+            "z": -0.9320457115859405,
+            "state": "chase",
+            "x": 1.350458045415883
+          },
+          {
+            "health": 0,
+            "z": -5.384731227900496,
+            "state": "dead",
+            "x": 2.8037039789907214
+          },
+          {
+            "health": 18,
+            "z": -0.7430831260318289,
+            "state": "chase",
+            "x": 1.4481700734812823
+          }
+        ],
+        "damage": 66,
+        "shots": 4,
+        "kills": 1,
+        "result": "playing",
+        "x": 5.225
+      },
+      {
+        "target": 1,
+        "z": -1.25,
+        "frame": 930,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 4,
+        "enemies": [
+          {
+            "health": 6,
+            "z": -0.8897318557429537,
+            "state": "chase",
+            "x": 2.020680607628256
+          },
+          {
+            "health": 0,
+            "z": -5.384731227900496,
+            "state": "dead",
+            "x": 2.8037039789907214
+          },
+          {
+            "health": 18,
+            "z": -0.7330945980974498,
+            "state": "chase",
+            "x": 2.1194282824644506
+          }
+        ],
+        "damage": 66,
+        "shots": 4,
+        "kills": 1,
+        "result": "playing",
+        "x": 5.225
+      },
+      {
+        "target": 1,
+        "z": -2.4999999999999996,
+        "frame": 960,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 4,
+        "enemies": [
+          {
+            "health": 6,
+            "z": -1.0966053591387277,
+            "state": "chase",
+            "x": 2.6587096094325933
+          },
+          {
+            "health": 0,
+            "z": -5.384731227900496,
+            "state": "dead",
+            "x": 2.8037039789907214
+          },
+          {
+            "health": 18,
+            "z": -0.9737903144265316,
+            "state": "chase",
+            "x": 2.7455267939205776
+          }
+        ],
+        "damage": 66,
+        "shots": 4,
+        "kills": 1,
+        "result": "playing",
+        "x": 5.225
+      },
+      {
+        "target": 3,
+        "z": -3.749999999999995,
+        "frame": 990,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 5,
+        "enemies": [
+          {
+            "health": 0,
+            "z": -1.5017821375693223,
+            "state": "dead",
+            "x": 3.1666412939307276
+          },
+          {
+            "health": 0,
+            "z": -5.384731227900496,
+            "state": "dead",
+            "x": 2.8037039789907214
+          },
+          {
+            "health": 6,
+            "z": -1.4188353621440288,
+            "state": "chase",
+            "x": 3.249322014186919
+          }
+        ],
+        "damage": 84,
+        "shots": 5,
+        "kills": 2,
+        "result": "playing",
+        "x": 5.225
+      },
+      {
+        "target": 3,
+        "z": -5.000000000000001,
+        "frame": 1020,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 5,
+        "enemies": [
+          {
+            "health": 0,
+            "z": -1.5017821375693223,
+            "state": "dead",
+            "x": 3.1666412939307276
+          },
+          {
+            "health": 0,
+            "z": -5.384731227900496,
+            "state": "dead",
+            "x": 2.8037039789907214
+          },
+          {
+            "health": 6,
+            "z": -1.980758803193934,
+            "state": "chase",
+            "x": 3.621006408646404
+          }
+        ],
+        "damage": 84,
+        "shots": 5,
+        "kills": 2,
+        "result": "playing",
+        "x": 5.225
+      },
+      {
+        "target": 3,
+        "z": -6.25000000000001,
+        "frame": 1050,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 5,
+        "enemies": [
+          {
+            "health": 0,
+            "z": -1.5017821375693223,
+            "state": "dead",
+            "x": 3.1666412939307276
+          },
+          {
+            "health": 0,
+            "z": -5.384731227900496,
+            "state": "dead",
+            "x": 2.8037039789907214
+          },
+          {
+            "health": 6,
+            "z": -2.5988085646446577,
+            "state": "chase",
+            "x": 3.8910625942780697
+          }
+        ],
+        "damage": 84,
+        "shots": 5,
+        "kills": 2,
+        "result": "playing",
+        "x": 5.225
+      },
+      {
+        "target": 3,
+        "z": -7.500000000000019,
+        "frame": 1080,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 5,
+        "enemies": [
+          {
+            "health": 0,
+            "z": -1.5017821375693223,
+            "state": "dead",
+            "x": 3.1666412939307276
+          },
+          {
+            "health": 0,
+            "z": -5.384731227900496,
+            "state": "dead",
+            "x": 2.8037039789907214
+          },
+          {
+            "health": 6,
+            "z": -3.2432992165228973,
+            "state": "chase",
+            "x": 4.0909518087733145
+          }
+        ],
+        "damage": 84,
+        "shots": 5,
+        "kills": 2,
+        "result": "playing",
+        "x": 5.225
+      },
+      {
+        "target": 3,
+        "z": -7.500000000000019,
+        "frame": 1110,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 5,
+        "enemies": [
+          {
+            "health": 0,
+            "z": -1.5017821375693223,
+            "state": "dead",
+            "x": 3.1666412939307276
+          },
+          {
+            "health": 0,
+            "z": -5.384731227900496,
+            "state": "dead",
+            "x": 2.8037039789907214
+          },
+          {
+            "health": 6,
+            "z": -3.911814877968578,
+            "state": "chase",
+            "x": 4.161528094531697
+          }
+        ],
+        "damage": 84,
+        "shots": 5,
+        "kills": 2,
+        "result": "playing",
+        "x": 3.974999999999991
+      },
+      {
+        "target": 3,
+        "z": -7.500000000000019,
+        "frame": 1140,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 5,
+        "enemies": [
+          {
+            "health": 0,
+            "z": -1.5017821375693223,
+            "state": "dead",
+            "x": 3.1666412939307276
+          },
+          {
+            "health": 0,
+            "z": -5.384731227900496,
+            "state": "dead",
+            "x": 2.8037039789907214
+          },
+          {
+            "health": 6,
+            "z": -4.564471612004698,
+            "state": "chase",
+            "x": 4.004204836207367
+          }
+        ],
+        "damage": 84,
+        "shots": 5,
+        "kills": 2,
+        "result": "playing",
+        "x": 2.7249999999999956
+      },
+      {
+        "target": 3,
+        "z": -7.500000000000019,
+        "frame": 1170,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 5,
+        "enemies": [
+          {
+            "health": 0,
+            "z": -1.5017821375693223,
+            "state": "dead",
+            "x": 3.1666412939307276
+          },
+          {
+            "health": 0,
+            "z": -5.384731227900496,
+            "state": "dead",
+            "x": 2.8037039789907214
+          },
+          {
+            "health": 6,
+            "z": -5.124542585280769,
+            "state": "chase",
+            "x": 3.632827772503073
+          }
+        ],
+        "damage": 84,
+        "shots": 5,
+        "kills": 2,
+        "result": "playing",
+        "x": 1.4749999999999972
+      },
+      {
+        "target": 3,
+        "z": -7.500000000000019,
+        "frame": 1200,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 5,
+        "enemies": [
+          {
+            "health": 0,
+            "z": -1.5017821375693223,
+            "state": "dead",
+            "x": 3.1666412939307276
+          },
+          {
+            "health": 0,
+            "z": -5.384731227900496,
+            "state": "dead",
+            "x": 2.8037039789907214
+          },
+          {
+            "health": 6,
+            "z": -5.558726035000411,
+            "state": "chase",
+            "x": 3.118132204324874
+          }
+        ],
+        "damage": 84,
+        "shots": 5,
+        "kills": 2,
+        "result": "playing",
+        "x": 0.22499999999999673
+      }
+    ]
+  },
+  {
+    "ability": "lightning",
+    "moving": false,
+    "frames": [
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 30,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 2,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 3.3451538124019073,
+            "state": "chase",
+            "x": -0.8362884531004768
+          },
+          {
+            "health": 20,
+            "z": 3.3451538124019073,
+            "state": "chase",
+            "x": 0.8362884531004768
+          },
+          {
+            "health": 30,
+            "z": 5.325000000000001,
+            "state": "chase",
+            "x": 0.0
+          }
+        ],
+        "damage": 20,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 60,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 2,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 2.6903076248038147,
+            "state": "chase",
+            "x": -0.6725769062009537
+          },
+          {
+            "health": 20,
+            "z": 2.6903076248038147,
+            "state": "chase",
+            "x": 0.6725769062009537
+          },
+          {
+            "health": 30,
+            "z": 4.650000000000002,
+            "state": "chase",
+            "x": 0.0
+          }
+        ],
+        "damage": 20,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 90,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 2,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 2.035461437205722,
+            "state": "chase",
+            "x": -0.5088653593014305
+          },
+          {
+            "health": 20,
+            "z": 2.035461437205722,
+            "state": "chase",
+            "x": 0.5088653593014305
+          },
+          {
+            "health": 30,
+            "z": 3.975000000000003,
+            "state": "chase",
+            "x": 0.0
+          }
+        ],
+        "damage": 20,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 120,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 2,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 1.940285000290664,
+            "state": "warning",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 20,
+            "z": 1.940285000290664,
+            "state": "warning",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 30,
+            "z": 3.3000000000000043,
+            "state": "chase",
+            "x": 0.0
+          }
+        ],
+        "damage": 20,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 150,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 2,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 1.940285000290664,
+            "state": "warning",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 20,
+            "z": 1.940285000290664,
+            "state": "warning",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 30,
+            "z": 2.6250000000000053,
+            "state": "chase",
+            "x": 0.0
+          }
+        ],
+        "damage": 20,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 180,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 2,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 20,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 30,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 20,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 210,
+        "hits": 2,
+        "health": 70,
+        "attack_hits": 2,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 20,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 30,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 20,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 240,
+        "hits": 2,
+        "health": 70,
+        "attack_hits": 2,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 20,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 30,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 20,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 270,
+        "hits": 3,
+        "health": 55,
+        "attack_hits": 2,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 20,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 30,
+            "z": 2.0,
+            "state": "attack",
+            "x": 0.0
+          }
+        ],
+        "damage": 20,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 300,
+        "hits": 3,
+        "health": 55,
+        "attack_hits": 4,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 10,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 20,
+            "z": 2.0,
+            "state": "recover",
+            "x": 0.0
+          }
+        ],
+        "damage": 40,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 330,
+        "hits": 3,
+        "health": 55,
+        "attack_hits": 4,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 1.940285000290664,
+            "state": "warning",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 10,
+            "z": 1.940285000290664,
+            "state": "warning",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 20,
+            "z": 2.0,
+            "state": "recover",
+            "x": 0.0
+          }
+        ],
+        "damage": 40,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 360,
+        "hits": 3,
+        "health": 55,
+        "attack_hits": 4,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 1.940285000290664,
+            "state": "warning",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 10,
+            "z": 1.940285000290664,
+            "state": "warning",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 20,
+            "z": 2.0,
+            "state": "recover",
+            "x": 0.0
+          }
+        ],
+        "damage": 40,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 390,
+        "hits": 3,
+        "health": 55,
+        "attack_hits": 4,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 10,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 20,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 40,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 420,
+        "hits": 5,
+        "health": 25,
+        "attack_hits": 4,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 10,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 20,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 40,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 450,
+        "hits": 5,
+        "health": 25,
+        "attack_hits": 4,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 10,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 20,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 40,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 480,
+        "hits": 6,
+        "health": 10,
+        "attack_hits": 4,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 10,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 20,
+            "z": 2.0,
+            "state": "attack",
+            "x": 0.0
+          }
+        ],
+        "damage": 40,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 510,
+        "hits": 6,
+        "health": 10,
+        "attack_hits": 4,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 10,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 20,
+            "z": 2.0,
+            "state": "recover",
+            "x": 0.0
+          }
+        ],
+        "damage": 40,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 540,
+        "hits": 6,
+        "health": 10,
+        "attack_hits": 4,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 1.940285000290664,
+            "state": "warning",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 10,
+            "z": 1.940285000290664,
+            "state": "warning",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 20,
+            "z": 2.0,
+            "state": "recover",
+            "x": 0.0
+          }
+        ],
+        "damage": 40,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 570,
+        "hits": 6,
+        "health": 10,
+        "attack_hits": 4,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 1.940285000290664,
+            "state": "warning",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 10,
+            "z": 1.940285000290664,
+            "state": "warning",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 20,
+            "z": 2.0,
+            "state": "recover",
+            "x": 0.0
+          }
+        ],
+        "damage": 40,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 3,
+        "z": 0,
+        "frame": 600,
+        "hits": 6,
+        "health": 10,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 0,
+            "z": 1.940285000290664,
+            "state": "dead",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 10,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 60,
+        "shots": 0,
+        "kills": 1,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 3,
+        "z": 0,
+        "frame": 630,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 0,
+            "z": 1.940285000290664,
+            "state": "dead",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 10,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 60,
+        "shots": 0,
+        "kills": 1,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 3,
+        "z": 0,
+        "frame": 660,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 0,
+            "z": 1.940285000290664,
+            "state": "dead",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 10,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 60,
+        "shots": 0,
+        "kills": 1,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 3,
+        "z": 0,
+        "frame": 690,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 0,
+            "z": 1.940285000290664,
+            "state": "dead",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 10,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 60,
+        "shots": 0,
+        "kills": 1,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 3,
+        "z": 0,
+        "frame": 720,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 0,
+            "z": 1.940285000290664,
+            "state": "dead",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 10,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 60,
+        "shots": 0,
+        "kills": 1,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 3,
+        "z": 0,
+        "frame": 750,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 0,
+            "z": 1.940285000290664,
+            "state": "dead",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 10,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 60,
+        "shots": 0,
+        "kills": 1,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 3,
+        "z": 0,
+        "frame": 780,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 0,
+            "z": 1.940285000290664,
+            "state": "dead",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 10,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 60,
+        "shots": 0,
+        "kills": 1,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 3,
+        "z": 0,
+        "frame": 810,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 0,
+            "z": 1.940285000290664,
+            "state": "dead",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 10,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 60,
+        "shots": 0,
+        "kills": 1,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 3,
+        "z": 0,
+        "frame": 840,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 0,
+            "z": 1.940285000290664,
+            "state": "dead",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 10,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 60,
+        "shots": 0,
+        "kills": 1,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 3,
+        "z": 0,
+        "frame": 870,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 0,
+            "z": 1.940285000290664,
+            "state": "dead",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 10,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 60,
+        "shots": 0,
+        "kills": 1,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 3,
+        "z": 0,
+        "frame": 900,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 0,
+            "z": 1.940285000290664,
+            "state": "dead",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 10,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 60,
+        "shots": 0,
+        "kills": 1,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 3,
+        "z": 0,
+        "frame": 930,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 0,
+            "z": 1.940285000290664,
+            "state": "dead",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 10,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 60,
+        "shots": 0,
+        "kills": 1,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 3,
+        "z": 0,
+        "frame": 960,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 0,
+            "z": 1.940285000290664,
+            "state": "dead",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 10,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 60,
+        "shots": 0,
+        "kills": 1,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 3,
+        "z": 0,
+        "frame": 990,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 0,
+            "z": 1.940285000290664,
+            "state": "dead",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 10,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 60,
+        "shots": 0,
+        "kills": 1,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 3,
+        "z": 0,
+        "frame": 1020,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 0,
+            "z": 1.940285000290664,
+            "state": "dead",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 10,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 60,
+        "shots": 0,
+        "kills": 1,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 3,
+        "z": 0,
+        "frame": 1050,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 0,
+            "z": 1.940285000290664,
+            "state": "dead",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 10,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 60,
+        "shots": 0,
+        "kills": 1,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 3,
+        "z": 0,
+        "frame": 1080,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 0,
+            "z": 1.940285000290664,
+            "state": "dead",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 10,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 60,
+        "shots": 0,
+        "kills": 1,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 3,
+        "z": 0,
+        "frame": 1110,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 0,
+            "z": 1.940285000290664,
+            "state": "dead",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 10,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 60,
+        "shots": 0,
+        "kills": 1,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 3,
+        "z": 0,
+        "frame": 1140,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 0,
+            "z": 1.940285000290664,
+            "state": "dead",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 10,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 60,
+        "shots": 0,
+        "kills": 1,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 3,
+        "z": 0,
+        "frame": 1170,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 0,
+            "z": 1.940285000290664,
+            "state": "dead",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 10,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 60,
+        "shots": 0,
+        "kills": 1,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 3,
+        "z": 0,
+        "frame": 1200,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 0,
+            "z": 1.940285000290664,
+            "state": "dead",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 10,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 60,
+        "shots": 0,
+        "kills": 1,
+        "result": "failure",
+        "x": 0
+      }
+    ]
+  },
+  {
+    "ability": "lightning",
+    "moving": true,
+    "frames": [
+      {
+        "target": 2,
+        "z": 0.0,
+        "frame": 30,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 2,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 3.3791650661937176,
+            "state": "chase",
+            "x": -0.7410537565346675
+          },
+          {
+            "health": 20,
+            "z": 3.3302531230539363,
+            "state": "chase",
+            "x": 0.9475104348250852
+          },
+          {
+            "health": 30,
+            "z": 5.330464938596098,
+            "state": "chase",
+            "x": 0.07452970562764029
+          }
+        ],
+        "damage": 20,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 1.25
+      },
+      {
+        "target": 2,
+        "z": 0.0,
+        "frame": 60,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 2,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 2.849532834511838,
+            "state": "chase",
+            "x": -0.32538169975755277
+          },
+          {
+            "health": 20,
+            "z": 2.686667802763556,
+            "state": "chase",
+            "x": 1.1371257181126662
+          },
+          {
+            "health": 30,
+            "z": 4.693713802492833,
+            "state": "chase",
+            "x": 0.2942976189347406
+          }
+        ],
+        "damage": 20,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 2.4999999999999996
+      },
+      {
+        "target": 2,
+        "z": 0.0,
+        "frame": 90,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 2,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 2.4225976475406665,
+            "state": "chase",
+            "x": 0.1961335780820161
+          },
+          {
+            "health": 20,
+            "z": 2.1504511898030025,
+            "state": "chase",
+            "x": 1.5421143740405432
+          },
+          {
+            "health": 30,
+            "z": 4.118618658561497,
+            "state": "chase",
+            "x": 0.6454042220469449
+          }
+        ],
+        "damage": 20,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 3.749999999999995
+      },
+      {
+        "target": 2,
+        "z": 0.0,
+        "frame": 120,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 2,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 2.0859559661103075,
+            "state": "chase",
+            "x": 0.7805753635814109
+          },
+          {
+            "health": 20,
+            "z": 1.746147498264054,
+            "state": "chase",
+            "x": 2.0807552067699917
+          },
+          {
+            "health": 30,
+            "z": 3.6207856859619376,
+            "state": "chase",
+            "x": 1.099950056031025
+          }
+        ],
+        "damage": 20,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 5.000000000000001
+      },
+      {
+        "target": 2,
+        "z": 0.0,
+        "frame": 150,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 2,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 1.7983775064111573,
+            "state": "chase",
+            "x": 1.3912441067148718
+          },
+          {
+            "health": 20,
+            "z": 1.4173012906312854,
+            "state": "chase",
+            "x": 2.6702183942208513
+          },
+          {
+            "health": 30,
+            "z": 3.1745910297989144,
+            "state": "chase",
+            "x": 1.6064295438215928
+          }
+        ],
+        "damage": 20,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 5.225
+      },
+      {
+        "target": 2,
+        "z": 0.0,
+        "frame": 180,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 2,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 1.511714180280321,
+            "state": "chase",
+            "x": 2.0023489565169386
+          },
+          {
+            "health": 20,
+            "z": 1.0898493224545835,
+            "state": "chase",
+            "x": 3.260472753406114
+          },
+          {
+            "health": 30,
+            "z": 2.7294382961508945,
+            "state": "chase",
+            "x": 2.113838692069524
+          }
+        ],
+        "damage": 20,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 5.225
+      },
+      {
+        "target": 2,
+        "z": -1.25,
+        "frame": 210,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 2,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 1.1352495059912802,
+            "state": "chase",
+            "x": 2.559747676570803
+          },
+          {
+            "health": 20,
+            "z": 0.642636200692839,
+            "state": "chase",
+            "x": 3.759935665148213
+          },
+          {
+            "health": 30,
+            "z": 2.2332259157585086,
+            "state": "chase",
+            "x": 2.569805028932623
+          }
+        ],
+        "damage": 20,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 5.225
+      },
+      {
+        "target": 2,
+        "z": -2.4999999999999996,
+        "frame": 240,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 2,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 0.628550076367184,
+            "state": "chase",
+            "x": 3.0036063158691655
+          },
+          {
+            "health": 20,
+            "z": 0.05880835902387939,
+            "state": "chase",
+            "x": 4.095474540687997
+          },
+          {
+            "health": 30,
+            "z": 1.6657233888375704,
+            "state": "chase",
+            "x": 2.9341391226418496
+          }
+        ],
+        "damage": 20,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 5.225
+      },
+      {
+        "target": 2,
+        "z": -3.749999999999995,
+        "frame": 270,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 2,
+        "enemies": [
+          {
+            "health": 20,
+            "z": 0.0471398677384821,
+            "state": "chase",
+            "x": 3.345157728119903
+          },
+          {
+            "health": 20,
+            "z": -0.5774433478666163,
+            "state": "chase",
+            "x": 4.319324441671417
+          },
+          {
+            "health": 30,
+            "z": 1.056460899706433,
+            "state": "chase",
+            "x": 3.2239410269078137
+          }
+        ],
+        "damage": 20,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 5.225
+      },
+      {
+        "target": 2,
+        "z": -5.000000000000001,
+        "frame": 300,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 4,
+        "enemies": [
+          {
+            "health": 10,
+            "z": -0.5742998074086024,
+            "state": "chase",
+            "x": 3.6078190781084856
+          },
+          {
+            "health": 10,
+            "z": -1.2340797411472253,
+            "state": "chase",
+            "x": 4.474912281151858
+          },
+          {
+            "health": 30,
+            "z": 0.42290743194969427,
+            "state": "chase",
+            "x": 3.4563197711815716
+          }
+        ],
+        "damage": 40,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 5.225
+      },
+      {
+        "target": 2,
+        "z": -6.25000000000001,
+        "frame": 330,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 4,
+        "enemies": [
+          {
+            "health": 10,
+            "z": -1.2172793473623067,
+            "state": "chase",
+            "x": 3.8127144185327495
+          },
+          {
+            "health": 10,
+            "z": -1.8994715103314983,
+            "state": "chase",
+            "x": 4.587966479159934
+          },
+          {
+            "health": 30,
+            "z": -0.22506142238089488,
+            "state": "chase",
+            "x": 3.645083372162684
+          }
+        ],
+        "damage": 40,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 5.225
+      },
+      {
+        "target": 2,
+        "z": -7.500000000000019,
+        "frame": 360,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 4,
+        "enemies": [
+          {
+            "health": 10,
+            "z": -1.8722602703984288,
+            "state": "chase",
+            "x": 3.975537398843101
+          },
+          {
+            "health": 10,
+            "z": -2.5690246687565925,
+            "state": "chase",
+            "x": 4.673292516876592
+          },
+          {
+            "health": 30,
+            "z": -0.8818483848503508,
+            "state": "chase",
+            "x": 3.800588122639168
+          }
+        ],
+        "damage": 40,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 5.225
+      },
+      {
+        "target": 2,
+        "z": -7.500000000000019,
+        "frame": 390,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 4,
+        "enemies": [
+          {
+            "health": 10,
+            "z": -2.542245861061581,
+            "state": "chase",
+            "x": 4.04397284773559
+          },
+          {
+            "health": 10,
+            "z": -3.2417476928904163,
+            "state": "chase",
+            "x": 4.656396136074406
+          },
+          {
+            "health": 30,
+            "z": -1.5514353893400916,
+            "state": "chase",
+            "x": 3.876883604754177
+          }
+        ],
+        "damage": 40,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 3.974999999999991
+      },
+      {
+        "target": 2,
+        "z": -7.500000000000019,
+        "frame": 420,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 4,
+        "enemies": [
+          {
+            "health": 10,
+            "z": -3.2079058387428763,
+            "state": "chase",
+            "x": 3.9445299109191043
+          },
+          {
+            "health": 10,
+            "z": -3.882901843052666,
+            "state": "chase",
+            "x": 4.452886855056095
+          },
+          {
+            "health": 30,
+            "z": -2.221997316400398,
+            "state": "chase",
+            "x": 3.8125883875495847
+          }
+        ],
+        "damage": 40,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 2.7249999999999956
+      },
+      {
+        "target": 2,
+        "z": -7.500000000000019,
+        "frame": 450,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 4,
+        "enemies": [
+          {
+            "health": 10,
+            "z": -3.824128929587764,
+            "state": "chase",
+            "x": 3.6738154936974943
+          },
+          {
+            "health": 10,
+            "z": -4.4444172522935315,
+            "state": "chase",
+            "x": 4.081727669163366
+          },
+          {
+            "health": 30,
+            "z": -2.8612401361306468,
+            "state": "chase",
+            "x": 3.6003448013156114
+          }
+        ],
+        "damage": 40,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 1.4749999999999972
+      },
+      {
+        "target": 2,
+        "z": -7.500000000000019,
+        "frame": 480,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 4,
+        "enemies": [
+          {
+            "health": 10,
+            "z": -4.355810501035853,
+            "state": "chase",
+            "x": 3.2603340603784603
+          },
+          {
+            "health": 10,
+            "z": -4.904933950744782,
+            "state": "chase",
+            "x": 3.5898628051616503
+          },
+          {
+            "health": 30,
+            "z": -3.438844421292931,
+            "state": "chase",
+            "x": 3.2534842743105603
+          }
+        ],
+        "damage": 40,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 0.22499999999999673
+      },
+      {
+        "target": 2,
+        "z": -7.500000000000019,
+        "frame": 510,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 4,
+        "enemies": [
+          {
+            "health": 10,
+            "z": -4.7929805146949755,
+            "state": "chase",
+            "x": 2.747223090905259
+          },
+          {
+            "health": 10,
+            "z": -5.270811362090799,
+            "state": "chase",
+            "x": 3.023404665673754
+          },
+          {
+            "health": 30,
+            "z": -3.938080050963715,
+            "state": "chase",
+            "x": 2.8005346768305084
+          }
+        ],
+        "damage": 40,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": -1.0250000000000028
+      },
+      {
+        "target": 2,
+        "z": -7.500000000000019,
+        "frame": 540,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 4,
+        "enemies": [
+          {
+            "health": 10,
+            "z": -5.145012647833882,
+            "state": "chase",
+            "x": 2.171887590145113
+          },
+          {
+            "health": 10,
+            "z": -5.559979489303781,
+            "state": "chase",
+            "x": 2.4138593911903143
+          },
+          {
+            "health": 30,
+            "z": -4.357877179330074,
+            "state": "chase",
+            "x": 2.2727056552902596
+          }
+        ],
+        "damage": 40,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": -2.2750000000000035
+      },
+      {
+        "target": 2,
+        "z": -6.25000000000001,
+        "frame": 570,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 4,
+        "enemies": [
+          {
+            "health": 10,
+            "z": -5.381281652185487,
+            "state": "chase",
+            "x": 1.5416889394475979
+          },
+          {
+            "health": 10,
+            "z": -5.734095946579646,
+            "state": "chase",
+            "x": 1.7637691466541585
+          },
+          {
+            "health": 30,
+            "z": -4.677795412545777,
+            "state": "chase",
+            "x": 1.6799837965655364
+          }
+        ],
+        "damage": 40,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": -2.2750000000000035
+      },
+      {
+        "target": 3,
+        "z": -5.000000000000001,
+        "frame": 600,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 0,
+            "z": -5.415598231788434,
+            "state": "dead",
+            "x": 1.3421989752282375
+          },
+          {
+            "health": 0,
+            "z": -5.749298912698318,
+            "state": "dead",
+            "x": 1.5619155272038596
+          },
+          {
+            "health": 30,
+            "z": -4.823951798177046,
+            "state": "chase",
+            "x": 1.024074829848827
+          }
+        ],
+        "damage": 60,
+        "shots": 0,
+        "kills": 2,
+        "result": "playing",
+        "x": -2.2750000000000035
+      },
+      {
+        "target": 3,
+        "z": -3.749999999999995,
+        "frame": 630,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 0,
+            "z": -5.415598231788434,
+            "state": "dead",
+            "x": 1.3421989752282375
+          },
+          {
+            "health": 0,
+            "z": -5.749298912698318,
+            "state": "dead",
+            "x": 1.5619155272038596
+          },
+          {
+            "health": 30,
+            "z": -4.7216264354943895,
+            "state": "chase",
+            "x": 0.3616244993648671
+          }
+        ],
+        "damage": 60,
+        "shots": 0,
+        "kills": 2,
+        "result": "playing",
+        "x": -2.2750000000000035
+      },
+      {
+        "target": 3,
+        "z": -2.4999999999999996,
+        "frame": 660,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 0,
+            "z": -5.415598231788434,
+            "state": "dead",
+            "x": 1.3421989752282375
+          },
+          {
+            "health": 0,
+            "z": -5.749298912698318,
+            "state": "dead",
+            "x": 1.5619155272038596
+          },
+          {
+            "health": 30,
+            "z": -4.366766046137958,
+            "state": "chase",
+            "x": -0.20776156089245806
+          }
+        ],
+        "damage": 60,
+        "shots": 0,
+        "kills": 2,
+        "result": "playing",
+        "x": -2.2750000000000035
+      },
+      {
+        "target": 3,
+        "z": -1.25,
+        "frame": 690,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 0,
+            "z": -5.415598231788434,
+            "state": "dead",
+            "x": 1.3421989752282375
+          },
+          {
+            "health": 0,
+            "z": -5.749298912698318,
+            "state": "dead",
+            "x": 1.5619155272038596
+          },
+          {
+            "health": 30,
+            "z": -3.8459695618153136,
+            "state": "chase",
+            "x": -0.6339342369814516
+          }
+        ],
+        "damage": 60,
+        "shots": 0,
+        "kills": 2,
+        "result": "playing",
+        "x": -2.2750000000000035
+      },
+      {
+        "target": 3,
+        "z": -4.163336342344337e-17,
+        "frame": 720,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 0,
+            "z": -5.415598231788434,
+            "state": "dead",
+            "x": 1.3421989752282375
+          },
+          {
+            "health": 0,
+            "z": -5.749298912698318,
+            "state": "dead",
+            "x": 1.5619155272038596
+          },
+          {
+            "health": 30,
+            "z": -3.2441910032137318,
+            "state": "chase",
+            "x": -0.9378722329966662
+          }
+        ],
+        "damage": 60,
+        "shots": 0,
+        "kills": 2,
+        "result": "playing",
+        "x": -2.2750000000000035
+      },
+      {
+        "target": 3,
+        "z": -4.163336342344337e-17,
+        "frame": 750,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 0,
+            "z": -5.415598231788434,
+            "state": "dead",
+            "x": 1.3421989752282375
+          },
+          {
+            "health": 0,
+            "z": -5.749298912698318,
+            "state": "dead",
+            "x": 1.5619155272038596
+          },
+          {
+            "health": 30,
+            "z": -2.5864482546311915,
+            "state": "chase",
+            "x": -1.0668624026531155
+          }
+        ],
+        "damage": 60,
+        "shots": 0,
+        "kills": 2,
+        "result": "playing",
+        "x": -1.0250000000000026
+      },
+      {
+        "target": 3,
+        "z": -4.163336342344337e-17,
+        "frame": 780,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 0,
+            "z": -5.415598231788434,
+            "state": "dead",
+            "x": 1.3421989752282375
+          },
+          {
+            "health": 0,
+            "z": -5.749298912698318,
+            "state": "dead",
+            "x": 1.5619155272038596
+          },
+          {
+            "health": 30,
+            "z": -1.943870514609792,
+            "state": "chase",
+            "x": -0.8850560832621406
+          }
+        ],
+        "damage": 60,
+        "shots": 0,
+        "kills": 2,
+        "result": "playing",
+        "x": 0.224999999999997
+      },
+      {
+        "target": 3,
+        "z": -4.163336342344337e-17,
+        "frame": 810,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 0,
+            "z": -5.415598231788434,
+            "state": "dead",
+            "x": 1.3421989752282375
+          },
+          {
+            "health": 0,
+            "z": -5.749298912698318,
+            "state": "dead",
+            "x": 1.5619155272038596
+          },
+          {
+            "health": 30,
+            "z": -1.4492187416194895,
+            "state": "chase",
+            "x": -0.4324105831043958
+          }
+        ],
+        "damage": 60,
+        "shots": 0,
+        "kills": 2,
+        "result": "playing",
+        "x": 1.4749999999999974
+      },
+      {
+        "target": 3,
+        "z": -4.163336342344337e-17,
+        "frame": 840,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 0,
+            "z": -5.415598231788434,
+            "state": "dead",
+            "x": 1.3421989752282375
+          },
+          {
+            "health": 0,
+            "z": -5.749298912698318,
+            "state": "dead",
+            "x": 1.5619155272038596
+          },
+          {
+            "health": 30,
+            "z": -1.1178295912318985,
+            "state": "chase",
+            "x": 0.1538349748282398
+          }
+        ],
+        "damage": 60,
+        "shots": 0,
+        "kills": 2,
+        "result": "playing",
+        "x": 2.7249999999999956
+      },
+      {
+        "target": 3,
+        "z": -4.163336342344337e-17,
+        "frame": 870,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 7,
+        "enemies": [
+          {
+            "health": 0,
+            "z": -5.415598231788434,
+            "state": "dead",
+            "x": 1.3421989752282375
+          },
+          {
+            "health": 0,
+            "z": -5.749298912698318,
+            "state": "dead",
+            "x": 1.5619155272038596
+          },
+          {
+            "health": 20,
+            "z": -0.8967948766606502,
+            "state": "chase",
+            "x": 0.7910865716490137
+          }
+        ],
+        "damage": 70,
+        "shots": 0,
+        "kills": 2,
+        "result": "playing",
+        "x": 3.974999999999991
+      },
+      {
+        "target": 3,
+        "z": -4.163336342344337e-17,
+        "frame": 900,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 7,
+        "enemies": [
+          {
+            "health": 0,
+            "z": -5.415598231788434,
+            "state": "dead",
+            "x": 1.3421989752282375
+          },
+          {
+            "health": 0,
+            "z": -5.749298912698318,
+            "state": "dead",
+            "x": 1.5619155272038596
+          },
+          {
+            "health": 20,
+            "z": -0.7430831260318289,
+            "state": "chase",
+            "x": 1.4481700734812823
+          }
+        ],
+        "damage": 70,
+        "shots": 0,
+        "kills": 2,
+        "result": "playing",
+        "x": 5.225
+      },
+      {
+        "target": 3,
+        "z": -1.25,
+        "frame": 930,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 7,
+        "enemies": [
+          {
+            "health": 0,
+            "z": -5.415598231788434,
+            "state": "dead",
+            "x": 1.3421989752282375
+          },
+          {
+            "health": 0,
+            "z": -5.749298912698318,
+            "state": "dead",
+            "x": 1.5619155272038596
+          },
+          {
+            "health": 20,
+            "z": -0.7330945980974498,
+            "state": "chase",
+            "x": 2.1194282824644506
+          }
+        ],
+        "damage": 70,
+        "shots": 0,
+        "kills": 2,
+        "result": "playing",
+        "x": 5.225
+      },
+      {
+        "target": 3,
+        "z": -2.4999999999999996,
+        "frame": 960,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 7,
+        "enemies": [
+          {
+            "health": 0,
+            "z": -5.415598231788434,
+            "state": "dead",
+            "x": 1.3421989752282375
+          },
+          {
+            "health": 0,
+            "z": -5.749298912698318,
+            "state": "dead",
+            "x": 1.5619155272038596
+          },
+          {
+            "health": 20,
+            "z": -0.9737903144265316,
+            "state": "chase",
+            "x": 2.7455267939205776
+          }
+        ],
+        "damage": 70,
+        "shots": 0,
+        "kills": 2,
+        "result": "playing",
+        "x": 5.225
+      },
+      {
+        "target": 3,
+        "z": -3.749999999999995,
+        "frame": 990,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 7,
+        "enemies": [
+          {
+            "health": 0,
+            "z": -5.415598231788434,
+            "state": "dead",
+            "x": 1.3421989752282375
+          },
+          {
+            "health": 0,
+            "z": -5.749298912698318,
+            "state": "dead",
+            "x": 1.5619155272038596
+          },
+          {
+            "health": 20,
+            "z": -1.4188353621440288,
+            "state": "chase",
+            "x": 3.249322014186919
+          }
+        ],
+        "damage": 70,
+        "shots": 0,
+        "kills": 2,
+        "result": "playing",
+        "x": 5.225
+      },
+      {
+        "target": 3,
+        "z": -5.000000000000001,
+        "frame": 1020,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 7,
+        "enemies": [
+          {
+            "health": 0,
+            "z": -5.415598231788434,
+            "state": "dead",
+            "x": 1.3421989752282375
+          },
+          {
+            "health": 0,
+            "z": -5.749298912698318,
+            "state": "dead",
+            "x": 1.5619155272038596
+          },
+          {
+            "health": 20,
+            "z": -1.980758803193934,
+            "state": "chase",
+            "x": 3.621006408646404
+          }
+        ],
+        "damage": 70,
+        "shots": 0,
+        "kills": 2,
+        "result": "playing",
+        "x": 5.225
+      },
+      {
+        "target": 3,
+        "z": -6.25000000000001,
+        "frame": 1050,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 7,
+        "enemies": [
+          {
+            "health": 0,
+            "z": -5.415598231788434,
+            "state": "dead",
+            "x": 1.3421989752282375
+          },
+          {
+            "health": 0,
+            "z": -5.749298912698318,
+            "state": "dead",
+            "x": 1.5619155272038596
+          },
+          {
+            "health": 20,
+            "z": -2.5988085646446577,
+            "state": "chase",
+            "x": 3.8910625942780697
+          }
+        ],
+        "damage": 70,
+        "shots": 0,
+        "kills": 2,
+        "result": "playing",
+        "x": 5.225
+      },
+      {
+        "target": 3,
+        "z": -7.500000000000019,
+        "frame": 1080,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 7,
+        "enemies": [
+          {
+            "health": 0,
+            "z": -5.415598231788434,
+            "state": "dead",
+            "x": 1.3421989752282375
+          },
+          {
+            "health": 0,
+            "z": -5.749298912698318,
+            "state": "dead",
+            "x": 1.5619155272038596
+          },
+          {
+            "health": 20,
+            "z": -3.2432992165228973,
+            "state": "chase",
+            "x": 4.0909518087733145
+          }
+        ],
+        "damage": 70,
+        "shots": 0,
+        "kills": 2,
+        "result": "playing",
+        "x": 5.225
+      },
+      {
+        "target": 3,
+        "z": -7.500000000000019,
+        "frame": 1110,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 7,
+        "enemies": [
+          {
+            "health": 0,
+            "z": -5.415598231788434,
+            "state": "dead",
+            "x": 1.3421989752282375
+          },
+          {
+            "health": 0,
+            "z": -5.749298912698318,
+            "state": "dead",
+            "x": 1.5619155272038596
+          },
+          {
+            "health": 20,
+            "z": -3.911814877968578,
+            "state": "chase",
+            "x": 4.161528094531697
+          }
+        ],
+        "damage": 70,
+        "shots": 0,
+        "kills": 2,
+        "result": "playing",
+        "x": 3.974999999999991
+      },
+      {
+        "target": 3,
+        "z": -7.500000000000019,
+        "frame": 1140,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 7,
+        "enemies": [
+          {
+            "health": 0,
+            "z": -5.415598231788434,
+            "state": "dead",
+            "x": 1.3421989752282375
+          },
+          {
+            "health": 0,
+            "z": -5.749298912698318,
+            "state": "dead",
+            "x": 1.5619155272038596
+          },
+          {
+            "health": 20,
+            "z": -4.564471612004698,
+            "state": "chase",
+            "x": 4.004204836207367
+          }
+        ],
+        "damage": 70,
+        "shots": 0,
+        "kills": 2,
+        "result": "playing",
+        "x": 2.7249999999999956
+      },
+      {
+        "target": 3,
+        "z": -7.500000000000019,
+        "frame": 1170,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 8,
+        "enemies": [
+          {
+            "health": 0,
+            "z": -5.415598231788434,
+            "state": "dead",
+            "x": 1.3421989752282375
+          },
+          {
+            "health": 0,
+            "z": -5.749298912698318,
+            "state": "dead",
+            "x": 1.5619155272038596
+          },
+          {
+            "health": 10,
+            "z": -5.124542585280769,
+            "state": "chase",
+            "x": 3.632827772503073
+          }
+        ],
+        "damage": 80,
+        "shots": 0,
+        "kills": 2,
+        "result": "playing",
+        "x": 1.4749999999999972
+      },
+      {
+        "target": 3,
+        "z": -7.500000000000019,
+        "frame": 1200,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 8,
+        "enemies": [
+          {
+            "health": 0,
+            "z": -5.415598231788434,
+            "state": "dead",
+            "x": 1.3421989752282375
+          },
+          {
+            "health": 0,
+            "z": -5.749298912698318,
+            "state": "dead",
+            "x": 1.5619155272038596
+          },
+          {
+            "health": 10,
+            "z": -5.558726035000411,
+            "state": "chase",
+            "x": 3.118132204324874
+          }
+        ],
+        "damage": 80,
+        "shots": 0,
+        "kills": 2,
+        "result": "playing",
+        "x": 0.22499999999999673
+      }
+    ]
+  },
+  {
+    "ability": "orbit",
+    "moving": false,
+    "frames": [
+      {
+        "target": 0,
+        "z": 0,
+        "frame": 30,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 0,
+        "enemies": [
+          {
+            "health": 30,
+            "z": 3.3451538124019073,
+            "state": "chase",
+            "x": -0.8362884531004768
+          },
+          {
+            "health": 30,
+            "z": 3.3451538124019073,
+            "state": "chase",
+            "x": 0.8362884531004768
+          },
+          {
+            "health": 30,
+            "z": 5.325000000000001,
+            "state": "chase",
+            "x": 0.0
+          }
+        ],
+        "damage": 0,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 0,
+        "z": 0,
+        "frame": 60,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 0,
+        "enemies": [
+          {
+            "health": 30,
+            "z": 2.6903076248038147,
+            "state": "chase",
+            "x": -0.6725769062009537
+          },
+          {
+            "health": 30,
+            "z": 2.6903076248038147,
+            "state": "chase",
+            "x": 0.6725769062009537
+          },
+          {
+            "health": 30,
+            "z": 4.650000000000002,
+            "state": "chase",
+            "x": 0.0
+          }
+        ],
+        "damage": 0,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 0,
+        "z": 0,
+        "frame": 90,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 1,
+        "enemies": [
+          {
+            "health": 22,
+            "z": 2.035461437205722,
+            "state": "chase",
+            "x": -0.5088653593014305
+          },
+          {
+            "health": 30,
+            "z": 2.035461437205722,
+            "state": "chase",
+            "x": 0.5088653593014305
+          },
+          {
+            "health": 30,
+            "z": 3.975000000000003,
+            "state": "chase",
+            "x": 0.0
+          }
+        ],
+        "damage": 8,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 120,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 1,
+        "enemies": [
+          {
+            "health": 22,
+            "z": 1.940285000290664,
+            "state": "warning",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 30,
+            "z": 1.940285000290664,
+            "state": "warning",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 30,
+            "z": 3.3000000000000043,
+            "state": "chase",
+            "x": 0.0
+          }
+        ],
+        "damage": 8,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 150,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 1,
+        "enemies": [
+          {
+            "health": 22,
+            "z": 1.940285000290664,
+            "state": "warning",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 30,
+            "z": 1.940285000290664,
+            "state": "warning",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 30,
+            "z": 2.6250000000000053,
+            "state": "chase",
+            "x": 0.0
+          }
+        ],
+        "damage": 8,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 180,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 1,
+        "enemies": [
+          {
+            "health": 22,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 30,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 30,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 8,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 210,
+        "hits": 2,
+        "health": 70,
+        "attack_hits": 1,
+        "enemies": [
+          {
+            "health": 22,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 30,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 30,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 8,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 240,
+        "hits": 2,
+        "health": 70,
+        "attack_hits": 1,
+        "enemies": [
+          {
+            "health": 22,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 30,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 30,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 8,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 270,
+        "hits": 3,
+        "health": 55,
+        "attack_hits": 1,
+        "enemies": [
+          {
+            "health": 22,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 30,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 30,
+            "z": 2.0,
+            "state": "attack",
+            "x": 0.0
+          }
+        ],
+        "damage": 8,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 300,
+        "hits": 3,
+        "health": 55,
+        "attack_hits": 1,
+        "enemies": [
+          {
+            "health": 22,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 30,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 30,
+            "z": 2.0,
+            "state": "recover",
+            "x": 0.0
+          }
+        ],
+        "damage": 8,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 330,
+        "hits": 3,
+        "health": 55,
+        "attack_hits": 3,
+        "enemies": [
+          {
+            "health": 22,
+            "z": 1.940285000290664,
+            "state": "warning",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 22,
+            "z": 1.940285000290664,
+            "state": "warning",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 22,
+            "z": 2.0,
+            "state": "recover",
+            "x": 0.0
+          }
+        ],
+        "damage": 24,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 360,
+        "hits": 3,
+        "health": 55,
+        "attack_hits": 4,
+        "enemies": [
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "warning",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 22,
+            "z": 1.940285000290664,
+            "state": "warning",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 22,
+            "z": 2.0,
+            "state": "recover",
+            "x": 0.0
+          }
+        ],
+        "damage": 32,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 390,
+        "hits": 3,
+        "health": 55,
+        "attack_hits": 4,
+        "enemies": [
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 22,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 22,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 32,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 420,
+        "hits": 5,
+        "health": 25,
+        "attack_hits": 4,
+        "enemies": [
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 22,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 22,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 32,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 450,
+        "hits": 5,
+        "health": 25,
+        "attack_hits": 4,
+        "enemies": [
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 22,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 22,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 32,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 480,
+        "hits": 6,
+        "health": 10,
+        "attack_hits": 4,
+        "enemies": [
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 22,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 22,
+            "z": 2.0,
+            "state": "attack",
+            "x": 0.0
+          }
+        ],
+        "damage": 32,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 510,
+        "hits": 6,
+        "health": 10,
+        "attack_hits": 4,
+        "enemies": [
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 22,
+            "z": 1.940285000290664,
+            "state": "recover",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 22,
+            "z": 2.0,
+            "state": "recover",
+            "x": 0.0
+          }
+        ],
+        "damage": 32,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 540,
+        "hits": 6,
+        "health": 10,
+        "attack_hits": 4,
+        "enemies": [
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "warning",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 22,
+            "z": 1.940285000290664,
+            "state": "warning",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 22,
+            "z": 2.0,
+            "state": "recover",
+            "x": 0.0
+          }
+        ],
+        "damage": 32,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 570,
+        "hits": 6,
+        "health": 10,
+        "attack_hits": 4,
+        "enemies": [
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "warning",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 22,
+            "z": 1.940285000290664,
+            "state": "warning",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 22,
+            "z": 2.0,
+            "state": "recover",
+            "x": 0.0
+          }
+        ],
+        "damage": 32,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 600,
+        "hits": 6,
+        "health": 10,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 14,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 48,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 630,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 14,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 48,
+        "shots": 0,
+        "kills": 0,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 660,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 14,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 48,
+        "shots": 0,
+        "kills": 0,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 690,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 14,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 48,
+        "shots": 0,
+        "kills": 0,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 720,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 14,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 48,
+        "shots": 0,
+        "kills": 0,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 750,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 14,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 48,
+        "shots": 0,
+        "kills": 0,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 780,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 14,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 48,
+        "shots": 0,
+        "kills": 0,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 810,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 14,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 48,
+        "shots": 0,
+        "kills": 0,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 840,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 14,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 48,
+        "shots": 0,
+        "kills": 0,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 870,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 14,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 48,
+        "shots": 0,
+        "kills": 0,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 900,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 14,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 48,
+        "shots": 0,
+        "kills": 0,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 930,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 14,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 48,
+        "shots": 0,
+        "kills": 0,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 960,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 14,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 48,
+        "shots": 0,
+        "kills": 0,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 990,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 14,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 48,
+        "shots": 0,
+        "kills": 0,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 1020,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 14,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 48,
+        "shots": 0,
+        "kills": 0,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 1050,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 14,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 48,
+        "shots": 0,
+        "kills": 0,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 1080,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 14,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 48,
+        "shots": 0,
+        "kills": 0,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 1110,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 14,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 48,
+        "shots": 0,
+        "kills": 0,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 1140,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 14,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 48,
+        "shots": 0,
+        "kills": 0,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 1170,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 14,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 48,
+        "shots": 0,
+        "kills": 0,
+        "result": "failure",
+        "x": 0
+      },
+      {
+        "target": 2,
+        "z": 0,
+        "frame": 1200,
+        "hits": 7,
+        "health": 0,
+        "attack_hits": 6,
+        "enemies": [
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": -0.485071250072666
+          },
+          {
+            "health": 14,
+            "z": 1.940285000290664,
+            "state": "attack",
+            "x": 0.485071250072666
+          },
+          {
+            "health": 14,
+            "z": 2.0,
+            "state": "warning",
+            "x": 0.0
+          }
+        ],
+        "damage": 48,
+        "shots": 0,
+        "kills": 0,
+        "result": "failure",
+        "x": 0
+      }
+    ]
+  },
+  {
+    "ability": "orbit",
+    "moving": true,
+    "frames": [
+      {
+        "target": 0,
+        "z": 0.0,
+        "frame": 30,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 0,
+        "enemies": [
+          {
+            "health": 30,
+            "z": 3.3791650661937176,
+            "state": "chase",
+            "x": -0.7410537565346675
+          },
+          {
+            "health": 30,
+            "z": 3.3302531230539363,
+            "state": "chase",
+            "x": 0.9475104348250852
+          },
+          {
+            "health": 30,
+            "z": 5.330464938596098,
+            "state": "chase",
+            "x": 0.07452970562764029
+          }
+        ],
+        "damage": 0,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 1.25
+      },
+      {
+        "target": 0,
+        "z": 0.0,
+        "frame": 60,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 0,
+        "enemies": [
+          {
+            "health": 30,
+            "z": 2.849532834511838,
+            "state": "chase",
+            "x": -0.32538169975755277
+          },
+          {
+            "health": 30,
+            "z": 2.686667802763556,
+            "state": "chase",
+            "x": 1.1371257181126662
+          },
+          {
+            "health": 30,
+            "z": 4.693713802492833,
+            "state": "chase",
+            "x": 0.2942976189347406
+          }
+        ],
+        "damage": 0,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 2.4999999999999996
+      },
+      {
+        "target": 0,
+        "z": 0.0,
+        "frame": 90,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 0,
+        "enemies": [
+          {
+            "health": 30,
+            "z": 2.4225976475406665,
+            "state": "chase",
+            "x": 0.1961335780820161
+          },
+          {
+            "health": 30,
+            "z": 2.1504511898030025,
+            "state": "chase",
+            "x": 1.5421143740405432
+          },
+          {
+            "health": 30,
+            "z": 4.118618658561497,
+            "state": "chase",
+            "x": 0.6454042220469449
+          }
+        ],
+        "damage": 0,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 3.749999999999995
+      },
+      {
+        "target": 0,
+        "z": 0.0,
+        "frame": 120,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 0,
+        "enemies": [
+          {
+            "health": 30,
+            "z": 2.0859559661103075,
+            "state": "chase",
+            "x": 0.7805753635814109
+          },
+          {
+            "health": 30,
+            "z": 1.746147498264054,
+            "state": "chase",
+            "x": 2.0807552067699917
+          },
+          {
+            "health": 30,
+            "z": 3.6207856859619376,
+            "state": "chase",
+            "x": 1.099950056031025
+          }
+        ],
+        "damage": 0,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 5.000000000000001
+      },
+      {
+        "target": 0,
+        "z": 0.0,
+        "frame": 150,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 0,
+        "enemies": [
+          {
+            "health": 30,
+            "z": 1.7983775064111573,
+            "state": "chase",
+            "x": 1.3912441067148718
+          },
+          {
+            "health": 30,
+            "z": 1.4173012906312854,
+            "state": "chase",
+            "x": 2.6702183942208513
+          },
+          {
+            "health": 30,
+            "z": 3.1745910297989144,
+            "state": "chase",
+            "x": 1.6064295438215928
+          }
+        ],
+        "damage": 0,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 5.225
+      },
+      {
+        "target": 0,
+        "z": 0.0,
+        "frame": 180,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 0,
+        "enemies": [
+          {
+            "health": 30,
+            "z": 1.511714180280321,
+            "state": "chase",
+            "x": 2.0023489565169386
+          },
+          {
+            "health": 30,
+            "z": 1.0898493224545835,
+            "state": "chase",
+            "x": 3.260472753406114
+          },
+          {
+            "health": 30,
+            "z": 2.7294382961508945,
+            "state": "chase",
+            "x": 2.113838692069524
+          }
+        ],
+        "damage": 0,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 5.225
+      },
+      {
+        "target": 0,
+        "z": -1.25,
+        "frame": 210,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 0,
+        "enemies": [
+          {
+            "health": 30,
+            "z": 1.1352495059912802,
+            "state": "chase",
+            "x": 2.559747676570803
+          },
+          {
+            "health": 30,
+            "z": 0.642636200692839,
+            "state": "chase",
+            "x": 3.759935665148213
+          },
+          {
+            "health": 30,
+            "z": 2.2332259157585086,
+            "state": "chase",
+            "x": 2.569805028932623
+          }
+        ],
+        "damage": 0,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 5.225
+      },
+      {
+        "target": 0,
+        "z": -2.4999999999999996,
+        "frame": 240,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 0,
+        "enemies": [
+          {
+            "health": 30,
+            "z": 0.628550076367184,
+            "state": "chase",
+            "x": 3.0036063158691655
+          },
+          {
+            "health": 30,
+            "z": 0.05880835902387939,
+            "state": "chase",
+            "x": 4.095474540687997
+          },
+          {
+            "health": 30,
+            "z": 1.6657233888375704,
+            "state": "chase",
+            "x": 2.9341391226418496
+          }
+        ],
+        "damage": 0,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 5.225
+      },
+      {
+        "target": 0,
+        "z": -3.749999999999995,
+        "frame": 270,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 0,
+        "enemies": [
+          {
+            "health": 30,
+            "z": 0.0471398677384821,
+            "state": "chase",
+            "x": 3.345157728119903
+          },
+          {
+            "health": 30,
+            "z": -0.5774433478666163,
+            "state": "chase",
+            "x": 4.319324441671417
+          },
+          {
+            "health": 30,
+            "z": 1.056460899706433,
+            "state": "chase",
+            "x": 3.2239410269078137
+          }
+        ],
+        "damage": 0,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 5.225
+      },
+      {
+        "target": 0,
+        "z": -5.000000000000001,
+        "frame": 300,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 0,
+        "enemies": [
+          {
+            "health": 30,
+            "z": -0.5742998074086024,
+            "state": "chase",
+            "x": 3.6078190781084856
+          },
+          {
+            "health": 30,
+            "z": -1.2340797411472253,
+            "state": "chase",
+            "x": 4.474912281151858
+          },
+          {
+            "health": 30,
+            "z": 0.42290743194969427,
+            "state": "chase",
+            "x": 3.4563197711815716
+          }
+        ],
+        "damage": 0,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 5.225
+      },
+      {
+        "target": 0,
+        "z": -6.25000000000001,
+        "frame": 330,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 0,
+        "enemies": [
+          {
+            "health": 30,
+            "z": -1.2172793473623067,
+            "state": "chase",
+            "x": 3.8127144185327495
+          },
+          {
+            "health": 30,
+            "z": -1.8994715103314983,
+            "state": "chase",
+            "x": 4.587966479159934
+          },
+          {
+            "health": 30,
+            "z": -0.22506142238089488,
+            "state": "chase",
+            "x": 3.645083372162684
+          }
+        ],
+        "damage": 0,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 5.225
+      },
+      {
+        "target": 0,
+        "z": -7.500000000000019,
+        "frame": 360,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 0,
+        "enemies": [
+          {
+            "health": 30,
+            "z": -1.8722602703984288,
+            "state": "chase",
+            "x": 3.975537398843101
+          },
+          {
+            "health": 30,
+            "z": -2.5690246687565925,
+            "state": "chase",
+            "x": 4.673292516876592
+          },
+          {
+            "health": 30,
+            "z": -0.8818483848503508,
+            "state": "chase",
+            "x": 3.800588122639168
+          }
+        ],
+        "damage": 0,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 5.225
+      },
+      {
+        "target": 0,
+        "z": -7.500000000000019,
+        "frame": 390,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 0,
+        "enemies": [
+          {
+            "health": 30,
+            "z": -2.542245861061581,
+            "state": "chase",
+            "x": 4.04397284773559
+          },
+          {
+            "health": 30,
+            "z": -3.2417476928904163,
+            "state": "chase",
+            "x": 4.656396136074406
+          },
+          {
+            "health": 30,
+            "z": -1.5514353893400916,
+            "state": "chase",
+            "x": 3.876883604754177
+          }
+        ],
+        "damage": 0,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 3.974999999999991
+      },
+      {
+        "target": 0,
+        "z": -7.500000000000019,
+        "frame": 420,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 0,
+        "enemies": [
+          {
+            "health": 30,
+            "z": -3.2079058387428763,
+            "state": "chase",
+            "x": 3.9445299109191043
+          },
+          {
+            "health": 30,
+            "z": -3.882901843052666,
+            "state": "chase",
+            "x": 4.452886855056095
+          },
+          {
+            "health": 30,
+            "z": -2.221997316400398,
+            "state": "chase",
+            "x": 3.8125883875495847
+          }
+        ],
+        "damage": 0,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 2.7249999999999956
+      },
+      {
+        "target": 0,
+        "z": -7.500000000000019,
+        "frame": 450,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 0,
+        "enemies": [
+          {
+            "health": 30,
+            "z": -3.824128929587764,
+            "state": "chase",
+            "x": 3.6738154936974943
+          },
+          {
+            "health": 30,
+            "z": -4.4444172522935315,
+            "state": "chase",
+            "x": 4.081727669163366
+          },
+          {
+            "health": 30,
+            "z": -2.8612401361306468,
+            "state": "chase",
+            "x": 3.6003448013156114
+          }
+        ],
+        "damage": 0,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 1.4749999999999972
+      },
+      {
+        "target": 0,
+        "z": -7.500000000000019,
+        "frame": 480,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 0,
+        "enemies": [
+          {
+            "health": 30,
+            "z": -4.355810501035853,
+            "state": "chase",
+            "x": 3.2603340603784603
+          },
+          {
+            "health": 30,
+            "z": -4.904933950744782,
+            "state": "chase",
+            "x": 3.5898628051616503
+          },
+          {
+            "health": 30,
+            "z": -3.438844421292931,
+            "state": "chase",
+            "x": 3.2534842743105603
+          }
+        ],
+        "damage": 0,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 0.22499999999999673
+      },
+      {
+        "target": 0,
+        "z": -7.500000000000019,
+        "frame": 510,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 0,
+        "enemies": [
+          {
+            "health": 30,
+            "z": -4.7929805146949755,
+            "state": "chase",
+            "x": 2.747223090905259
+          },
+          {
+            "health": 30,
+            "z": -5.270811362090799,
+            "state": "chase",
+            "x": 3.023404665673754
+          },
+          {
+            "health": 30,
+            "z": -3.938080050963715,
+            "state": "chase",
+            "x": 2.8005346768305084
+          }
+        ],
+        "damage": 0,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": -1.0250000000000028
+      },
+      {
+        "target": 0,
+        "z": -7.500000000000019,
+        "frame": 540,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 0,
+        "enemies": [
+          {
+            "health": 30,
+            "z": -5.145012647833882,
+            "state": "chase",
+            "x": 2.171887590145113
+          },
+          {
+            "health": 30,
+            "z": -5.559979489303781,
+            "state": "chase",
+            "x": 2.4138593911903143
+          },
+          {
+            "health": 30,
+            "z": -4.357877179330074,
+            "state": "chase",
+            "x": 2.2727056552902596
+          }
+        ],
+        "damage": 0,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": -2.2750000000000035
+      },
+      {
+        "target": 0,
+        "z": -6.25000000000001,
+        "frame": 570,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 0,
+        "enemies": [
+          {
+            "health": 30,
+            "z": -5.381281652185487,
+            "state": "chase",
+            "x": 1.5416889394475979
+          },
+          {
+            "health": 30,
+            "z": -5.734095946579646,
+            "state": "chase",
+            "x": 1.7637691466541585
+          },
+          {
+            "health": 30,
+            "z": -4.677795412545777,
+            "state": "chase",
+            "x": 1.6799837965655364
+          }
+        ],
+        "damage": 0,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": -2.2750000000000035
+      },
+      {
+        "target": 0,
+        "z": -5.000000000000001,
+        "frame": 600,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 0,
+        "enemies": [
+          {
+            "health": 30,
+            "z": -5.413112576762391,
+            "state": "chase",
+            "x": 0.8710137696016486
+          },
+          {
+            "health": 30,
+            "z": -5.706481160906328,
+            "state": "chase",
+            "x": 1.0924991420001595
+          },
+          {
+            "health": 30,
+            "z": -4.823951798177046,
+            "state": "chase",
+            "x": 1.024074829848827
+          }
+        ],
+        "damage": 0,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": -2.2750000000000035
+      },
+      {
+        "target": 0,
+        "z": -3.749999999999995,
+        "frame": 630,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 0,
+        "enemies": [
+          {
+            "health": 30,
+            "z": -5.193295731332891,
+            "state": "chase",
+            "x": 0.23738188763313858
+          },
+          {
+            "health": 30,
+            "z": -5.451855453071581,
+            "state": "chase",
+            "x": 0.4710569906143358
+          },
+          {
+            "health": 30,
+            "z": -4.7216264354943895,
+            "state": "chase",
+            "x": 0.3616244993648671
+          }
+        ],
+        "damage": 0,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": -2.2750000000000035
+      },
+      {
+        "target": 0,
+        "z": -2.4999999999999996,
+        "frame": 660,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 0,
+        "enemies": [
+          {
+            "health": 30,
+            "z": -4.761283003986572,
+            "state": "chase",
+            "x": -0.2773992724521397
+          },
+          {
+            "health": 30,
+            "z": -5.012927418628501,
+            "state": "chase",
+            "x": -0.038679640787224606
+          },
+          {
+            "health": 30,
+            "z": -4.366766046137958,
+            "state": "chase",
+            "x": -0.20776156089245806
+          }
+        ],
+        "damage": 0,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": -2.2750000000000035
+      },
+      {
+        "target": 0,
+        "z": -1.25,
+        "frame": 690,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 0,
+        "enemies": [
+          {
+            "health": 30,
+            "z": -4.205459234334581,
+            "state": "chase",
+            "x": -0.6579682824283185
+          },
+          {
+            "health": 30,
+            "z": -4.462408601206775,
+            "state": "chase",
+            "x": -0.4272415969306653
+          },
+          {
+            "health": 30,
+            "z": -3.8459695618153136,
+            "state": "chase",
+            "x": -0.6339342369814516
+          }
+        ],
+        "damage": 0,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": -2.2750000000000035
+      },
+      {
+        "target": 0,
+        "z": -4.163336342344337e-17,
+        "frame": 720,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 0,
+        "enemies": [
+          {
+            "health": 30,
+            "z": -3.59002745627735,
+            "state": "chase",
+            "x": -0.9338429342318296
+          },
+          {
+            "health": 30,
+            "z": -3.8539249237065842,
+            "state": "chase",
+            "x": -0.7182084884335829
+          },
+          {
+            "health": 30,
+            "z": -3.2441910032137318,
+            "state": "chase",
+            "x": -0.9378722329966662
+          }
+        ],
+        "damage": 0,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": -2.2750000000000035
+      },
+      {
+        "target": 0,
+        "z": -4.163336342344337e-17,
+        "frame": 750,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 0,
+        "enemies": [
+          {
+            "health": 30,
+            "z": -2.9294849452452203,
+            "state": "chase",
+            "x": -1.0527776851583501
+          },
+          {
+            "health": 30,
+            "z": -3.1983908932440235,
+            "state": "chase",
+            "x": -0.8652679870536994
+          },
+          {
+            "health": 30,
+            "z": -2.5864482546311915,
+            "state": "chase",
+            "x": -1.0668624026531155
+          }
+        ],
+        "damage": 0,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": -1.0250000000000026
+      },
+      {
+        "target": 0,
+        "z": -4.163336342344337e-17,
+        "frame": 780,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 0,
+        "enemies": [
+          {
+            "health": 30,
+            "z": -2.2792070664093576,
+            "state": "chase",
+            "x": -0.8942599914309751
+          },
+          {
+            "health": 30,
+            "z": -2.537288093542301,
+            "state": "chase",
+            "x": -0.7563846327681506
+          },
+          {
+            "health": 30,
+            "z": -1.943870514609792,
+            "state": "chase",
+            "x": -0.8850560832621406
+          }
+        ],
+        "damage": 0,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 0.224999999999997
+      },
+      {
+        "target": 0,
+        "z": -4.163336342344337e-17,
+        "frame": 810,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 0,
+        "enemies": [
+          {
+            "health": 30,
+            "z": -1.7514256626930995,
+            "state": "chase",
+            "x": -0.4800977199429515
+          },
+          {
+            "health": 30,
+            "z": -1.9752497795515527,
+            "state": "chase",
+            "x": -0.390241112478306
+          },
+          {
+            "health": 30,
+            "z": -1.4492187416194895,
+            "state": "chase",
+            "x": -0.4324105831043958
+          }
+        ],
+        "damage": 0,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 1.4749999999999974
+      },
+      {
+        "target": 0,
+        "z": -4.163336342344337e-17,
+        "frame": 840,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 0,
+        "enemies": [
+          {
+            "health": 30,
+            "z": -1.3765219107268696,
+            "state": "chase",
+            "x": 0.07913003245166007
+          },
+          {
+            "health": 30,
+            "z": -1.5605377393964184,
+            "state": "chase",
+            "x": 0.13976129666250484
+          },
+          {
+            "health": 30,
+            "z": -1.1178295912318985,
+            "state": "chase",
+            "x": 0.1538349748282398
+          }
+        ],
+        "damage": 0,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 2.7249999999999956
+      },
+      {
+        "target": 0,
+        "z": -4.163336342344337e-17,
+        "frame": 870,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 0,
+        "enemies": [
+          {
+            "health": 30,
+            "z": -1.1167716095890474,
+            "state": "chase",
+            "x": 0.7014725252408927
+          },
+          {
+            "health": 30,
+            "z": -1.2678424553754464,
+            "state": "chase",
+            "x": 0.7471297372933263
+          },
+          {
+            "health": 30,
+            "z": -0.8967948766606502,
+            "state": "chase",
+            "x": 0.7910865716490137
+          }
+        ],
+        "damage": 0,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 3.974999999999991
+      },
+      {
+        "target": 0,
+        "z": -4.163336342344337e-17,
+        "frame": 900,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 0,
+        "enemies": [
+          {
+            "health": 30,
+            "z": -0.9320457115859405,
+            "state": "chase",
+            "x": 1.350458045415883
+          },
+          {
+            "health": 30,
+            "z": -1.0581937220816917,
+            "state": "chase",
+            "x": 1.3884265723646525
+          },
+          {
+            "health": 30,
+            "z": -0.7430831260318289,
+            "state": "chase",
+            "x": 1.4481700734812823
+          }
+        ],
+        "damage": 0,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 5.225
+      },
+      {
+        "target": 0,
+        "z": -1.25,
+        "frame": 930,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 0,
+        "enemies": [
+          {
+            "health": 30,
+            "z": -0.8897318557429537,
+            "state": "chase",
+            "x": 2.020680607628256
+          },
+          {
+            "health": 30,
+            "z": -0.9938622814829305,
+            "state": "chase",
+            "x": 2.0568585669312958
+          },
+          {
+            "health": 30,
+            "z": -0.7330945980974498,
+            "state": "chase",
+            "x": 2.1194282824644506
+          }
+        ],
+        "damage": 0,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 5.225
+      },
+      {
+        "target": 0,
+        "z": -2.4999999999999996,
+        "frame": 960,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 0,
+        "enemies": [
+          {
+            "health": 30,
+            "z": -1.0966053591387277,
+            "state": "chase",
+            "x": 2.6587096094325933
+          },
+          {
+            "health": 30,
+            "z": -1.1839441968169844,
+            "state": "chase",
+            "x": 2.6998217237194315
+          },
+          {
+            "health": 30,
+            "z": -0.9737903144265316,
+            "state": "chase",
+            "x": 2.7455267939205776
+          }
+        ],
+        "damage": 0,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 5.225
+      },
+      {
+        "target": 0,
+        "z": -3.749999999999995,
+        "frame": 990,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 0,
+        "enemies": [
+          {
+            "health": 30,
+            "z": -1.518377322904403,
+            "state": "chase",
+            "x": 3.181835036843332
+          },
+          {
+            "health": 30,
+            "z": -1.5987863499468635,
+            "state": "chase",
+            "x": 3.228144434926339
+          },
+          {
+            "health": 30,
+            "z": -1.4188353621440288,
+            "state": "chase",
+            "x": 3.249322014186919
+          }
+        ],
+        "damage": 0,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 5.225
+      },
+      {
+        "target": 0,
+        "z": -5.000000000000001,
+        "frame": 1020,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 0,
+        "enemies": [
+          {
+            "health": 30,
+            "z": -2.068261736921708,
+            "state": "chase",
+            "x": 3.5708334851361854
+          },
+          {
+            "health": 30,
+            "z": -2.1476405040908664,
+            "state": "chase",
+            "x": 3.618428253368025
+          },
+          {
+            "health": 30,
+            "z": -1.980758803193934,
+            "state": "chase",
+            "x": 3.621006408646404
+          }
+        ],
+        "damage": 0,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 5.225
+      },
+      {
+        "target": 0,
+        "z": -6.25000000000001,
+        "frame": 1050,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 0,
+        "enemies": [
+          {
+            "health": 30,
+            "z": -2.6805873764680697,
+            "state": "chase",
+            "x": 3.8534639962451016
+          },
+          {
+            "health": 30,
+            "z": -2.76067474402562,
+            "state": "chase",
+            "x": 3.899459385638675
+          },
+          {
+            "health": 30,
+            "z": -2.5988085646446577,
+            "state": "chase",
+            "x": 3.8910625942780697
+          }
+        ],
+        "damage": 0,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 5.225
+      },
+      {
+        "target": 0,
+        "z": -7.500000000000019,
+        "frame": 1080,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 0,
+        "enemies": [
+          {
+            "health": 30,
+            "z": -3.3222857026837724,
+            "state": "chase",
+            "x": 4.062053624337153
+          },
+          {
+            "health": 30,
+            "z": -3.4032744971105995,
+            "state": "chase",
+            "x": 4.105240538322043
+          },
+          {
+            "health": 30,
+            "z": -3.2432992165228973,
+            "state": "chase",
+            "x": 4.0909518087733145
+          }
+        ],
+        "damage": 0,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 5.225
+      },
+      {
+        "target": 0,
+        "z": -7.500000000000019,
+        "frame": 1110,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 0,
+        "enemies": [
+          {
+            "health": 30,
+            "z": -3.9900703528890413,
+            "state": "chase",
+            "x": 4.138340131840489
+          },
+          {
+            "health": 30,
+            "z": -4.07153699529571,
+            "state": "chase",
+            "x": 4.1759476426255215
+          },
+          {
+            "health": 30,
+            "z": -3.911814877968578,
+            "state": "chase",
+            "x": 4.161528094531697
+          }
+        ],
+        "damage": 0,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 3.974999999999991
+      },
+      {
+        "target": 0,
+        "z": -7.500000000000019,
+        "frame": 1140,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 0,
+        "enemies": [
+          {
+            "health": 30,
+            "z": -4.642696613887892,
+            "state": "chase",
+            "x": 3.9816733745329005
+          },
+          {
+            "health": 30,
+            "z": -4.721485091297961,
+            "state": "chase",
+            "x": 4.009066242430374
+          },
+          {
+            "health": 30,
+            "z": -4.564471612004698,
+            "state": "chase",
+            "x": 4.004204836207367
+          }
+        ],
+        "damage": 0,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 2.7249999999999956
+      },
+      {
+        "target": 0,
+        "z": -7.500000000000019,
+        "frame": 1170,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 0,
+        "enemies": [
+          {
+            "health": 30,
+            "z": -5.199991759539415,
+            "state": "chase",
+            "x": 3.6063589291214884
+          },
+          {
+            "health": 30,
+            "z": -5.2713128451517255,
+            "state": "chase",
+            "x": 3.6229247090311545
+          },
+          {
+            "health": 30,
+            "z": -5.124542585280769,
+            "state": "chase",
+            "x": 3.632827772503073
+          }
+        ],
+        "damage": 0,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 1.4749999999999972
+      },
+      {
+        "target": 0,
+        "z": -7.500000000000019,
+        "frame": 1200,
+        "hits": 0,
+        "health": 100,
+        "attack_hits": 0,
+        "enemies": [
+          {
+            "health": 30,
+            "z": -5.6283543946283325,
+            "state": "chase",
+            "x": 3.086840388245884
+          },
+          {
+            "health": 30,
+            "z": -5.690154042038381,
+            "state": "chase",
+            "x": 3.095647857092372
+          },
+          {
+            "health": 30,
+            "z": -5.558726035000411,
+            "state": "chase",
+            "x": 3.118132204324874
+          }
+        ],
+        "damage": 0,
+        "shots": 0,
+        "kills": 0,
+        "result": "playing",
+        "x": 0.22499999999999673
+      }
+    ]
+  }
+]

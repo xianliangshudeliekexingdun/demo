@@ -1,0 +1,19 @@
+{
+  "version":"room-spatial-scenarios-1.0",
+  "seed":20261022,
+  "grid_step":0.25,
+  "escape_profiles":{
+    "practiced":{"reaction":0.2,"effective_speed_ratio":1.0},
+    "ordinary":{"reaction":0.45,"effective_speed_ratio":1.0},
+    "cautious":{"reaction":0.7,"effective_speed_ratio":0.6}
+  },
+  "minimum_escape_margin":0.15,
+  "warning_sweep":[0.8,1.0,1.2,1.5],
+  "plate_size_sweep":[1.0,1.5],
+  "spawn_trials_per_normal_room":16,
+  "reinforcement_trials_per_layout":200,
+  "slot_capacity_player_probes":250,
+  "clock_horizon":20.0,
+  "heavy_request_fixture":[{"ready":1.0,"duration":2.0},{"ready":4.0,"duration":1.5},{"ready":10.0,"duration":1.8}],
+  "pressure_cases":["one_slime_hit_and_spike","two_slime_hits_and_spike","one_charger_hit_and_spike"]
+}

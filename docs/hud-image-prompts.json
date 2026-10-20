@@ -1,0 +1,24 @@
+{
+  "tool": "built-in image_gen",
+  "transparent_background": true,
+  "referenceIcons": "C:/Users/naife/AppData/Local/Temp/codex-clipboard-69ce1e9f-8358-4674-ba8b-0447e586692a.png",
+  "assets": [
+    {
+      "path": "assets/ui/fireball.png",
+      "prompt": "Create one production game HUD square skill icon for a hand painted cute fantasy RPG. Match reference: thick dark gunmetal square frame, chamfered corners, restrained silver bevel highlights, warm aged metal edges, deep dark inner panel, vividly painted magic center. Front facing orthographic UI, no perspective. One icon only, centered filling 92% of square canvas, small even transparent margin around external frame. No text, letters, numbers, other icons, scenery or ground. Crisp simple bold silhouette readable at 72px. A brilliant orange golden fireball with creamy yellow core and orange flame tail sweeping to upper right, dark warm burnt orange interior."
+    },
+    {
+      "path": "assets/ui/lightning.png",
+      "prompt": "Create one production game HUD square skill icon for a hand painted cute fantasy RPG. Match reference: thick dark gunmetal square frame, chamfered corners, restrained silver bevel highlights, warm aged metal edges, deep dark inner panel, vividly painted magic center. Front facing orthographic UI, no perspective. One icon only, centered filling 92% of square canvas, small even transparent margin around external frame. No text, letters, numbers, other icons, scenery or ground. Crisp simple bold silhouette readable at 72px. An angular blue-white lightning bolt surrounded by a few electric blue streaks, dark midnight blue interior."
+    },
+    {
+      "path": "assets/ui/orbit.png",
+      "prompt": "Create one production game HUD square skill icon for a hand painted cute fantasy RPG. Match reference: thick dark gunmetal square frame, chamfered corners, restrained silver bevel highlights, warm aged metal edges, deep dark inner panel, vividly painted magic center. Front facing orthographic UI, no perspective. One icon only, centered filling 92% of square canvas, small even transparent margin around external frame. No text, letters, numbers, other icons, scenery or ground. Crisp simple bold silhouette readable at 72px. A cyan luminous magic orb encircled by two flowing blue orbit rings, luminous pale cyan center, dark teal blue interior."
+    }
+  ],
+  "portrait": {
+    "path": "assets/ui/lina_portrait.png",
+    "reference": "assets/characters/lina.png",
+    "prompt": "Create a compact game HUD portrait from the supplied exact character reference. Preserve Lina identity: white hair, blue eyes, purple broad witch hat with brown strap gold buckle and hanging cyan lantern, cute chibi handpainted anime ink style. HEAD ONLY with small shoulders in short purple cape. No staff, no hands, no body or legs. Entire hat must fit. Face slightly turned to viewer right with confident sweet expression. Portrait framed as a neat small circular dark charcoal medallion with thin aged silver rim behind head, hat breaks the upper circular border, hair contained neatly in lower medallion edge. Icon fills 90% of square canvas, perfectly centered, transparent outside silhouette, no scenery, no text, no health bar. Intended 80px HUD avatar readable shape."
+  }
+}
