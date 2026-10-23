@@ -3,7 +3,7 @@ extends SceneTree
 const Route = preload("res://scripts/core/courtyard_route_run.gd")
 const First = preload("res://scripts/core/first_room_run.gd")
 const Sources = preload("res://tests/formal_ice_source_binding.gd")
-const OUT = "res://build/qa/spell-replacement-20261018/"
+const OUT = "res://build/qa/six-schools-implementation-20261021/spell-replacement/"
 const FULL = ["F01","F02","F03","F05","F06","F07","F08","F09"]
 var checks: int = 0
 var failures: Array = []
@@ -81,7 +81,7 @@ func pool_and_legacy():
 		for level in [1,2,3]:
 			var b=fresh(FULL.slice(0,size),level)
 			var eligible: Array=b.eligible_reward_ids()
-			check(eligible.size()==20-(size if level==3 else 0),"legal pool retains unowned spells with slots%d lv%d"%[size,level])
+			check(eligible.size()==57-(size if level==3 else 0),"legal pool retains unowned spells with slots%d lv%d"%[size,level])
 			check("F04" not in eligible and "I01" in eligible,"archived spirit excluded, other school stays legal")
 			var sampled: Array=b._sample_rewards()
 			check(sampled.size()==3,"three real weighted candidates at slots%d lv%d"%[size,level])

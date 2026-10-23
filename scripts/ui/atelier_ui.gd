@@ -4,9 +4,12 @@ const T=preload("res://scripts/ui/atelier_theme.gd")
 const Art=preload("res://scripts/ui/atelier_art.gd")
 const ArtifactIcon=preload("res://scripts/ui/artifact_icon.gd")
 const EquipmentIcon=preload("res://scripts/ui/equipment_icon.gd")
+const GemIcon=preload("res://scripts/ui/gem_icon.gd")
 const GemWorkshop=preload("res://scripts/ui/gem_workshop.gd")
 const RouteCatalog=preload("res://scripts/core/courtyard_route_catalog.gd")
 const PREVIEWS=["opening","hud","reward","chest","shop","pause","result"]
+const SCHOOLS=["fire","ice","lightning","wind","earth","spirit"]
+const SPELL_FILTERS=["all","fire","ice","lightning","wind","earth","spirit"]
 var root:Control
 var page:Control
 var screen="home"
@@ -31,6 +34,11 @@ var gem_filter="all"
 var gem_page=0
 var gem_tool=""
 var gem_salvage_ids:Array=[]
+var gem_tab="cores"
+var gem_main_stat="attack"
+var gem_craft_rarity="green"
+var gem_line_index=1
+var gem_retype_stat="shield"
 
 func _ready():
 	root=Control.new()
@@ -50,7 +58,10 @@ func art(parent:Node,motif:String,rect:Rect2,tint:Color=T.GOLD,variant:int=0):
 	parent.add_child(a)
 	return a
 func btn(parent:Node,text:String,rect:Rect2,action:String,payload:String="",primary:bool=false,disabled:bool=false):
-	return T.button(parent,text,rect,func(): emit(action,payload),primary,disabled)
+	var button=T.button(parent,text,rect,func(): emit(action,payload),primary,disabled)
+	button.set_meta("ui_action",action)
+	button.set_meta("ui_payload",payload)
+	return button
 
 func artifact_picture(parent:Node,id:String,rarity:String,rect:Rect2):
 	var icon=ArtifactIcon.new()
@@ -61,8 +72,18 @@ func artifact_picture(parent:Node,id:String,rarity:String,rect:Rect2):
 	return icon
 
 func equipment_picture(parent:Node,id:String,rect:Rect2):
-	var icon=EquipmentIcon.new()
-	icon.set_item(id)
+	var icon: Control
+	if id.begins_with("core:") or id.begins_with("stat:"):
+		icon=GemIcon.new()
+		icon.item_id=id
+		icon.rarity="gold" if id.begins_with("core:") else "green"
+	elif id in T.Icon.PROCEDURAL_CATALYSTS:
+		icon=T.Icon.new()
+		icon.spell_id=id
+		icon.tint=catalog.school_color(T.Icon.CATALYST_SCHOOLS[id])
+	else:
+		icon=EquipmentIcon.new()
+		icon.set_item(id)
 	icon.position=rect.position
 	icon.size=rect.size
 	parent.add_child(icon)
@@ -168,77 +189,92 @@ func equipment():
 	var kind="catalyst" if screen=="catalyst" else "gem"
 	var items=meta.get_items(kind)
 	if selected.is_empty() and not items.is_empty(): selected=str(items[0].id)
-	T.paragraph(page,"调谐火／冰触媒，提高本系法术在奖励中出现的概率。" if kind=="catalyst" else "镶入一枚宝石，让下一次出发更有把握。",Rect2(54,198,1400,40),21)
+	T.paragraph(page,"调谐六系触媒，提高偏好学派的出现倾向；起手学派可独立选择。" if kind=="catalyst" else "镶入一枚宝石，让下一次出发更有把握。",Rect2(54,198,1400,40),21)
 	btn(page,"法术触媒",Rect2(54,256,180,50),"navigate","catalyst",screen=="catalyst")
 	btn(page,"魔法宝石",Rect2(250,256,180,50),"navigate","gem",screen=="gem")
 	T.label(page,"本次装备   "+equipped_name(kind),Rect2(462,256,500,50),20,T.GOLD)
-	var accent:Array=[]
 	if kind=="catalyst":
-		for item in items:
-			accent.append(Color("f0af7b") if str(item.get("school","fire"))=="fire" else Color("8fc9ee"))
+		_catalyst_cards(items)
 	else:
-		accent=[Color("90cfb2"),T.CYAN,Color("f0af7b")]
-	var compact=items.size()>2
-	var card_w=276.0 if compact else 400.0
-	var card_h=422.0 if compact else 440.0
-	var gap=24.0 if compact else 40.0
-	var total_w=items.size()*card_w+maxf(0.0,float(items.size()-1))*gap
-	var start_x=54.0+maxf(0.0,(876.0-total_w)*0.5)
-	for i in range(items.size()):
-		var item=items[i]
-		var s=meta.get_item_status(kind,str(item.id))
-		var p=T.panel(page,Rect2(start_x+i*(card_w+gap),330,card_w,card_h))
-		if selected==str(item.id): p.add_theme_stylebox_override("panel",T.box(Color("28334a"),T.GOLD,2))
-		var seal_size=176.0 if compact else 200.0
-		var pic_size=156.0 if compact else 180.0
-		var seal_y=18.0 if compact else 16.0
-		var seal_x=(card_w-seal_size)*0.5
-		art(p,"seal",Rect2(seal_x,seal_y,seal_size,seal_size),Color(accent[i],.4),i)
-		equipment_picture(p,str(item.id),Rect2(seal_x+(seal_size-pic_size)*0.5,seal_y+8,pic_size,pic_size))
-		var label_x=22.0 if compact else 24.0
-		var label_w=card_w-label_x*2
-		var name_y=190.0 if compact else 220.0
-		T.label(p,str(item.name),Rect2(label_x,name_y,label_w,48),26 if compact else 28)
-		T.label(p,"未解锁" if int(s.level)==0 else "等级 %d / 3%s"%[s.level," · 已装备" if s.equipped else ""],Rect2(label_x,name_y+54,label_w,32),19,T.GOLD if s.equipped else T.MUTED)
-		var subtitle=""
-		if kind=="catalyst":
-			subtitle="提高%s法术出现权重"%("火系" if str(item.get("school","fire"))=="fire" else "冰系")
-		else:
-			subtitle={"health":"提高生命上限","shield":"提高护盾上限","attack":"提高攻击力"}.get(item.get("stat",""),"")
-		T.label(p,subtitle,Rect2(label_x,name_y+99,label_w,32),18,T.MUTED)
-		var value=("权重 ×" if kind=="catalyst" else "属性 +")+number(s.effect_value)
-		T.label(p,"未生效" if int(s.level)==0 else value,Rect2(label_x,name_y+135,label_w,30),20,accent[i])
-		var button_y=name_y+(180.0 if compact else 168.0)
-		btn(p,"查看与培养",Rect2(label_x,button_y,label_w,46),"select",str(item.id),selected==str(item.id)).set_meta("selection_id",str(item.id))
+		var accent:Array=[Color("90cfb2"),T.CYAN,Color("f0af7b")]
+		var compact=items.size()>2
+		var card_w=276.0 if compact else 400.0
+		var card_h=422.0 if compact else 440.0
+		var gap=24.0 if compact else 40.0
+		var total_w=items.size()*card_w+maxf(0.0,float(items.size()-1))*gap
+		var start_x=54.0+maxf(0.0,(876.0-total_w)*0.5)
+		for i in range(items.size()):
+			var item=items[i]
+			var s=meta.get_item_status(kind,str(item.id))
+			var p=T.panel(page,Rect2(start_x+i*(card_w+gap),330,card_w,card_h))
+			if selected==str(item.id): p.add_theme_stylebox_override("panel",T.box(Color("28334a"),T.GOLD,2))
+			var seal_size=176.0 if compact else 200.0
+			var pic_size=156.0 if compact else 180.0
+			var seal_y=18.0 if compact else 16.0
+			var seal_x=(card_w-seal_size)*0.5
+			art(p,"seal",Rect2(seal_x,seal_y,seal_size,seal_size),Color(accent[i],.4),i)
+			equipment_picture(p,str(item.id),Rect2(seal_x+(seal_size-pic_size)*0.5,seal_y+8,pic_size,pic_size))
+			var label_x=22.0 if compact else 24.0
+			var label_w=card_w-label_x*2
+			var name_y=190.0 if compact else 220.0
+			T.label(p,str(item.name),Rect2(label_x,name_y,label_w,48),26 if compact else 28)
+			T.label(p,"未解锁" if int(s.level)==0 else "等级 %d / 3%s"%[s.level," · 已装备" if s.equipped else ""],Rect2(label_x,name_y+54,label_w,32),19,T.GOLD if s.equipped else T.MUTED)
+			var subtitle={"health":"提高生命上限","shield":"提高护盾上限","attack":"提高攻击力"}.get(item.get("stat",""),"")
+			T.label(p,subtitle,Rect2(label_x,name_y+99,label_w,32),18,T.MUTED)
+			var value="属性 +"+number(s.effect_value)
+			T.label(p,"未生效" if int(s.level)==0 else value,Rect2(label_x,name_y+135,label_w,30),20,accent[i])
+			var button_y=name_y+(180.0 if compact else 168.0)
+			btn(p,"查看与培养",Rect2(label_x,button_y,label_w,46),"select",str(item.id),selected==str(item.id)).set_meta("selection_id",str(item.id))
 	if items.is_empty(): return
 	var chosen=items[0]
 	for item in items:
 		if str(item.id)==selected: chosen=item
 	var status=meta.get_item_status(kind,str(chosen.id))
-	var d=T.panel(page,Rect2(990,256,556,496),true)
+	var d=T.panel(page,Rect2(990,256,556,558),true)
 	T.label(d,str(chosen.name),Rect2(30,22,492,54),32)
 	T.label(d,"培养与装备",Rect2(32,80,492,30),19,T.GOLD)
 	var text=""
 	if kind=="catalyst":
-		var school_name="火系" if str(chosen.get("school","fire"))=="fire" else "冰系"
-		var related_count=chosen.get("related_spells",[]).size()
-		text="当前路线关联\n%s全部 %d 种法术（含三种起手）。\n\n提高奖励权重，不改变起始三选一。\n不保证必出本系。"%[school_name,related_count]
+		text=catalog.catalyst_description(str(chosen.get("school","fire")),chosen.get("related_spells",[]).size(),meta.get_catalog().get("spell_sampling",{}))
 	else: text="每次出发时，按当前装备等级\n增强一种基础属性。\n\n一局内无法更换宝石。"
-	T.paragraph(d,text,Rect2(32,126,492,162),20,T.MUTED)
-	var effects:Array=meta.get_catalog().catalyst_weight_by_level if kind=="catalyst" else chosen.flat_by_level
+	T.paragraph(d,text,Rect2(32,126,492,210),19,T.MUTED)
+	var effects:Array=status.get("effect_by_level",[]) if kind=="catalyst" else chosen.flat_by_level
 	for i in range(effects.size()):
-		var col=T.panel(d,Rect2(32+i*166,300,156,70))
+		var col=T.panel(d,Rect2(32+i*166,348,156,70))
 		T.label(col,"%d级"%(i+1),Rect2(14,6,130,26),17,T.GOLD if int(status.level)==i+1 else T.MUTED)
-		T.label(col,("×" if kind=="catalyst" else "+")+number(effects[i]),Rect2(14,30,130,32),25,T.TEXT)
+		T.label(col,("优先＋"+catalog._percent(effects[i])) if kind=="catalyst" else "+"+number(effects[i]),Rect2(14,30,130,32),22,T.TEXT)
+		if kind=="catalyst": col.tooltip_text=catalog.catalyst_reference_text(meta.get_catalog().get("spell_sampling",{}),i+1)
 	if int(status.level)==0:
-		btn(d,"免费领取并装备" if status.free else "解锁 · %s 魔尘"%status.cost,Rect2(32,408,492,58),"unlock",str(chosen.id),true,not status.can_unlock)
+		btn(d,"免费领取并装备" if status.free else "解锁 · %s 魔尘"%status.cost,Rect2(32,470,492,58),"unlock",str(chosen.id),true,not status.can_unlock)
 	else:
-		btn(d,"卸下" if status.equipped else "装备",Rect2(32,408,154,58),"equip","" if status.equipped else str(chosen.id))
-		btn(d,"已达满级" if int(status.level)>=3 else "升级 · %s 魔尘"%status.cost,Rect2(202,408,322,58),"upgrade",str(chosen.id),true,not status.can_upgrade)
+		btn(d,"卸下" if status.equipped else "装备",Rect2(32,470,154,58),"equip","" if status.equipped else str(chosen.id))
+		btn(d,"已达满级" if int(status.level)>=3 else "升级 · %s 魔尘"%status.cost,Rect2(202,470,322,58),"upgrade",str(chosen.id),true,not status.can_upgrade)
 	var blocked=str(status.get("blocked_reason",""))
 	if blocked.is_empty() and int(status.level)<3 and not (status.can_unlock if int(status.level)==0 else status.can_upgrade): blocked="魔尘不足，还需要 %s 魔尘"%number(maxf(0,float(status.cost)-float(meta.get_state().get("dust",0))))
-	T.label(d,blocked if not blocked.is_empty() else "选择后自动保存",Rect2(32,374,492,28),17,T.GOLD if not blocked.is_empty() else T.MUTED)
-	T.label(page,"触媒首次免费领取 · 装备一件触媒 · 最高三级",Rect2(56,778,850,38),19,T.MUTED)
+	T.label(d,blocked if not blocked.is_empty() else "选择后自动保存",Rect2(32,432,492,28),17,T.GOLD if not blocked.is_empty() else T.MUTED)
+	T.label(page,"账号首选一件免费 · 装备一件触媒 · 最高三级",Rect2(56,816,850,38),19,T.MUTED)
+
+static func catalyst_card_rect(index:int)->Rect2:
+	return Rect2(54+(index%3)*300,330+(index/3)*234,276,216)
+
+func _catalyst_cards(items:Array):
+	for i in items.size():
+		var item:Dictionary=items[i]
+		var status:Dictionary=meta.get_item_status("catalyst",str(item.id))
+		var tint:Color=catalog.school_color(str(item.school))
+		var panel=T.panel(page,catalyst_card_rect(i))
+		panel.set_meta("catalyst_id",str(item.id))
+		if selected==str(item.id): panel.add_theme_stylebox_override("panel",T.box(Color("28334a"),T.GOLD,2))
+		art(panel,"seal",Rect2(8,5,90,90),Color(tint,.27),i)
+		equipment_picture(panel,str(item.id),Rect2(18,15,70,70))
+		T.label(panel,str(item.name),Rect2(102,20,158,38),22)
+		T.label(panel,"未解锁" if int(status.level)==0 else "等级 %d / 3%s"%[status.level," · 已装" if status.equipped else ""],Rect2(102,60,158,28),17,T.GOLD if status.equipped else T.MUTED)
+		var effect="未生效" if int(status.level)==0 else "本系优先＋"+catalog._percent(status.effect_value)
+		T.label(panel,effect,Rect2(18,103,240,34),22,tint)
+		var inspect=btn(panel,"查看与培养",Rect2(16,158,244,44),"select",str(item.id),selected==str(item.id))
+		inspect.set_meta("selection_id",str(item.id))
+		inspect.tooltip_text=catalog.catalyst_reference_text(meta.get_catalog().get("spell_sampling",{}),maxi(1,int(status.level)))
+
 
 func stats(parent:Node,rect:Rect2):
 	var values=meta.get_preview_stats()
@@ -265,7 +301,7 @@ func equipped_id(kind:String)->String:
 	if kind=="gem":
 		var state:Dictionary=meta.get_state().gem_state
 		var gem:Dictionary=meta.gems.find(state,str(state.slots[0]))
-		return str(gem.get("legacy_id","MG02")) if not gem.is_empty() else ""
+		return "core:"+str(gem.get("core","")) if not gem.is_empty() and not str(gem.get("core","")).is_empty() else ""
 	for item in meta.get_items(kind):
 		if meta.get_item_status(kind,str(item.id)).equipped:return str(item.id)
 	return ""
@@ -282,25 +318,25 @@ func prepare():
 	T.label(page,"见习魔法师",Rect2(282,775,300,36),21,T.GOLD)
 	var p=T.panel(page,Rect2(736,224,808,514))
 	T.label(p,"本局学派",Rect2(32,20,180,42),25,T.GOLD)
-	for index in 2:
-		var school="fire" if index==0 else "ice"
-		var school_button=btn(p,"火系试炼" if index==0 else "冰系试炼",Rect2(230+index*274,20,254,42),"route_school",school,route_school==school)
+	for index in SCHOOLS.size():
+		var school=SCHOOLS[index]
+		var school_button=btn(p,catalog.school_name(school)+"试炼",Rect2(230+(index%3)*182,20+(index/3)*54,172,44),"route_school",school,route_school==school)
 		school_button.set_meta("route_school",school)
-		school_button.tooltip_text="决定%d房路线的起始三选一；奖励可学习火、冰法术。独立首房仍用原起手。"%route_count
-	var catalyst=T.panel(p,Rect2(30,76,748,84))
+		school_button.tooltip_text="决定%d房路线的起始三选一；火、冰、雷、风、岩、灵契可混学。起手不要求同系触媒；装备触媒提高对应学派出现倾向，不保证必出。"%route_count
+	var catalyst=T.panel(p,Rect2(30,130,748,84))
 	equipment_picture(catalyst,equipped_id("catalyst"),Rect2(6,4,76,76))
 	T.label(catalyst,"法术触媒",Rect2(94,7,230,28),18,T.MUTED)
 	T.label(catalyst,equipped_name("catalyst"),Rect2(94,37,440,34),24)
 	btn(catalyst,"更换",Rect2(584,16,140,52),"navigate","catalyst")
-	var gem=T.panel(p,Rect2(30,170,748,84))
+	var gem=T.panel(p,Rect2(30,224,748,84))
 	equipment_picture(gem,equipped_id("gem"),Rect2(6,4,76,76))
-	T.label(gem,"魔法宝石 · 1核心＋3副槽",Rect2(94,7,450,28),18,T.MUTED)
+	T.label(gem,"魔法宝石 · 1核心＋3属性槽",Rect2(94,7,450,28),18,T.MUTED)
 	T.label(gem,equipped_name("gem"),Rect2(94,37,472,34),22)
 	btn(gem,"更换",Rect2(584,16,140,52),"navigate","gem")
-	bar(p,Rect2(32,276,744,1),Color(T.GOLD,.3))
-	stats(p,Rect2(32,294,744,96))
-	T.paragraph(p,"选择学派决定起手；移动中自动施法，火冰法术可混学。\n触媒提升火／冰本系奖励权重，宝石提供出发属性。",Rect2(32,412,744,80),19,T.MUTED)
-	T.label(page,"%d房路线 · %s起手／火冰混搭 · 清房结算魔尘，通关%d尘"%[route_count,"冰系" if route_school=="ice" else "火系",completion_dust],Rect2(738,747,806,30),18,T.GOLD)
+	bar(p,Rect2(32,326,744,1),Color(T.GOLD,.3))
+	stats(p,Rect2(32,344,744,96))
+	T.paragraph(p,"选择学派决定起手，六系可混学。\n装备触媒提高对应学派出现倾向，不保证必出。",Rect2(32,456,744,48),18,T.MUTED)
+	T.label(page,"%d房路线 · %s起手／六系混搭 · 清房结算魔尘，通关%d尘"%[route_count,catalog.school_name(route_school),completion_dust],Rect2(738,747,806,30),18,T.GOLD)
 	btn(page,"查看界面预览",Rect2(736,788,174,48),"navigate","opening")
 	var legacy_room_button=btn(page,"进入首房试玩    ›",Rect2(928,788,270,48),"start_room")
 	legacy_room_button.tooltip_text="独立首房保留旧版战斗规则；新宝石完整词条与核心效果请在%d房路线测试。"%route_count
@@ -329,17 +365,17 @@ func grimoire():
 		if str(item.id)==selected:selected_exists=true
 	if not selected_exists:selected=""
 	if selected.is_empty() and not items.is_empty(): selected=str(items[0].id)
-	T.label(page,"%d种法术 · 火冰自由混搭，重复选择升至三级"%all_items.size() if is_spell else "通用宝物强化属性与循环 · 首领庭印提供通关成长 · 均不占法术槽",Rect2(54,198,1400,40),21,T.MUTED)
+	T.label(page,"%d种法术 · 六系自由混搭，重复选择升至三级"%all_items.size() if is_spell else "通用宝物强化属性与循环 · 首领庭印提供通关成长 · 均不占法术槽",Rect2(54,198,1400,40),21,T.MUTED)
 	T.panel(page,Rect2(54,254,478,542))
-	var counts={"all":all_items.size(),"generic":0,"boss":0,"fire":0,"ice":0}
+	var counts={"all":all_items.size(),"generic":0,"boss":0,"fire":0,"ice":0,"lightning":0,"wind":0,"earth":0,"spirit":0}
 	for item in all_items:
 		var scope=str(item.get("school","fire")) if is_spell else ("boss" if bool(item.get("values",{}).get("boss_only",false)) else "generic")
 		counts[scope]=int(counts.get(scope,0))+1
-	var scopes=["all","fire","ice"] if is_spell else ["all","generic","boss"]
-	var names=["全部","火系","冰系"] if is_spell else ["全部","通用","庭印"]
+	var scopes=SPELL_FILTERS if is_spell else ["all","generic","boss"]
+	var names=["全部","火系","冰系","雷系","风系","岩系","灵契"] if is_spell else ["全部","通用","庭印"]
 	if is_spell:
 		for i in scopes.size():
-			var filter_button=T.button(page,"%s %d"%[names[i],counts[scopes[i]]],Rect2(66+i*151,266,146,38),func():_filter_spells(str(scopes[i])),_spell_scope==scopes[i])
+			var filter_button=T.button(page,"%s %d"%[names[i],counts[scopes[i]]],Rect2(66+(i%4)*113,266+(i/4)*52,106,44),func():_filter_spells(str(scopes[i])),_spell_scope==scopes[i])
 			filter_button.set_meta("spell_school",scopes[i])
 	else:
 		for i in scopes.size():
@@ -348,8 +384,8 @@ func grimoire():
 	var scroll=ScrollContainer.new()
 	scroll.name="CatalogList"
 	scroll.follow_focus=true
-	scroll.position=Vector2(66,314)
-	scroll.size=Vector2(454,470)
+	scroll.position=Vector2(66,370 if is_spell else 314)
+	scroll.size=Vector2(454,414 if is_spell else 470)
 	scroll.horizontal_scroll_mode=ScrollContainer.SCROLL_MODE_DISABLED
 	page.add_child(scroll)
 	var list=VBoxContainer.new()
@@ -365,7 +401,7 @@ func grimoire():
 			padded.content_margin_left=72
 			b.add_theme_stylebox_override(state,padded)
 		b.add_theme_font_size_override("font_size",21)
-		if is_spell: T.icon(b,str(item.id),Rect2(8,7,48,48),Color("25314a") if str(item.id)==selected else Color("f0af7b"))
+		if is_spell: T.icon(b,str(item.id),Rect2(8,7,48,48),Color("25314a") if str(item.id)==selected else catalog.school_color(str(item.get("school","fire"))))
 		else: artifact_picture(b,str(item.id),str(item.rarity),Rect2(8,7,48,48))
 		b.set_meta("selection_id",str(item.id))
 	scroll.set_deferred("scroll_vertical",_list_scroll)
@@ -374,10 +410,10 @@ func grimoire():
 	for item in items:
 		if str(item.id)==selected: chosen=item
 	var p=T.panel(page,Rect2(562,254,982,542),true)
-	if is_spell: T.icon(p,str(chosen.id),Rect2(32,24,118,118))
+	if is_spell: T.icon(p,str(chosen.id),Rect2(32,24,118,118),catalog.school_color(str(chosen.get("school","fire"))))
 	else: artifact_picture(p,str(chosen.id),str(chosen.rarity),Rect2(32,24,118,118))
 	T.label(p,str(chosen.name),Rect2(178,36,742,56),36)
-	T.label(p,str(chosen.get("element",""))+"系 · "+str(chosen.get("role","法术")) if is_spell else str(chosen.rarity_name)+" · "+str(chosen.get("scope_name","宝物"))+" · "+str(chosen.get("school_name","")),Rect2(180,96,742,32),20,T.GOLD)
+	T.label(p,catalog.school_name(str(chosen.get("school","fire")))+" · "+str(chosen.get("role","法术")) if is_spell else str(chosen.rarity_name)+" · "+str(chosen.get("scope_name","宝物"))+" · "+str(chosen.get("school_name","")),Rect2(180,96,742,32),20,T.GOLD)
 	bar(p,Rect2(34,159,910,1),Color(T.GOLD,.3))
 	var detail_scroll=ScrollContainer.new()
 	detail_scroll.position=Vector2(36,184)
@@ -443,11 +479,12 @@ func preview():
 	preview_navigation()
 func spell_choices():
 	T.label(page,"选择起始法术" if screen=="opening" else "选择一份新的魔法",Rect2(54,242,1300,52),32)
-	var ids=catalog.starter_ids(route_school) if screen=="opening" else (["I01","I07","I09"] if route_school=="ice" else ["F01","F11","F10"])
+	var reward_examples={"fire":["F01","F11","F10"],"ice":["I01","I07","I09"],"lightning":["L03","L08","L09"],"wind":["W02","W08","W09"],"earth":["R03","R07","R09"],"spirit":["S01","S04","S09"]}
+	var ids=catalog.starter_ids(route_school) if screen=="opening" else reward_examples.get(route_school,reward_examples.fire)
 	for i in range(3):
 		var p=T.panel(page,Rect2(54+i*502,316,478,404),true)
 		art(p,"seal",Rect2(14,2,146,146),Color(T.GOLD,.35))
-		T.icon(p,ids[i],Rect2(32,20,110,110))
+		T.icon(p,ids[i],Rect2(32,20,110,110),catalog.school_color(route_school))
 		T.label(p,catalog.spell_name(str(ids[i])),Rect2(164,28,280,50),30)
 		T.label(p,"起始法术 · 一级" if screen=="opening" else "新法术 · 一级",Rect2(166,88,280,32),19,T.GOLD)
 		var info:Dictionary=catalog.describe_spell(ids[i],1)
@@ -514,7 +551,7 @@ func hud_preview():
 	for i in range(8):
 		var slot=T.panel(p,Rect2(265+i*120,352,104,100))
 		if i==0:
-			T.icon(slot,opening_spell,Rect2(20,5,64,64))
+			T.icon(slot,opening_spell,Rect2(20,5,64,64),catalog.school_color(str(catalog.describe_spell(opening_spell).get("school","fire"))))
 			T.label(slot,"等级 1",Rect2(20,70,80,24),15,T.GOLD)
 		else: T.label(slot,"空槽",Rect2(25,31,70,34),18,T.MUTED)
 	T.label(p,"示例法术：%s · 此处不推进吟唱或冷却"%catalog.spell_name(opening_spell),Rect2(30,274,1300,35),20,T.MUTED)

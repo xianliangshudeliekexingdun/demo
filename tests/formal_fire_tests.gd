@@ -4,7 +4,7 @@ extends SceneTree
 
 const Route = preload("res://scripts/core/courtyard_route_run.gd")
 const First = preload("res://scripts/core/first_room_run.gd")
-const OUT = "res://build/qa/spell-growth-implementation-20261020/formal-fire"
+const OUT = "res://build/qa/formal-schools-current/fire"
 const FIRE_IDS = ["F01", "F02", "F03", "F05", "F06", "F07", "F08", "F09", "F10", "F11"]
 var checks: int = 0
 var failures: Array = []
@@ -221,7 +221,7 @@ func catalog_qualification():
 	check(first.configure().ok and first.initial_choices().map(func(value): return value.id) == ["F01", "F04", "F08"], "independent FirstRoom preserves historical starters")
 	check("F11" not in first.eligible_reward_ids(), "independent FirstRoom does not sample unsupported new brand")
 	var eligible: Array = b.eligible_reward_ids()
-	check(eligible.size() == 20 and "F04" not in eligible and "F11" in eligible, "normal Route twenty mixed IDs exclude archived spirit and retain all ten fire")
+	check(eligible.size() == 57 and "F04" not in eligible and "F11" in eligible, "normal Route fifty-seven currently qualified IDs exclude archived spirit and retain all ten fire")
 	for id in FIRE_IDS: check(id in eligible, "formal active ID " + id)
 	check(b._base.spells.F04.school == "spirit" and not b._base.spells.F04.active, "F04 retained as archived spirit definition")
 	var items: Dictionary = b._artifact_combat._items

@@ -269,6 +269,8 @@ func before_combat_tick(run, dt: float, move: Vector2) -> void:
 func incoming_damage_multiplier(run, damage_kind: String) -> float:
 	var original: float = _generic.incoming_damage_multiplier(run, damage_kind)
 	var extra: float = ice_defense_bonus(run)
+	if run.get("_spell_combat") != null and run._spell_combat.get("earth") != null:
+		extra += run._spell_combat.earth.defense_bonus(run)
 	if extra <= 0.0:
 		return original
 	var defense: float = float(_generic.combat_stats(run).defense)
@@ -533,6 +535,11 @@ func _legal_extras(run) -> Array:
 		var stats: Dictionary = run.get_spell_stats(spell)
 		if str(stats.kind) == "passive":
 			continue
+		if str(stats.get("school", "")) == "lightning" and run.has_method("artifact_extra_spell_target"):
+			var lightning_target: Dictionary = run.artifact_extra_spell_target(spell)
+			if not lightning_target.is_empty():
+				result.append({"id": id, "target": lightning_target})
+			continue
 		if str(stats.kind) == "shield":
 			var alive: bool = false
 			for actor in run.actors:
@@ -584,7 +591,7 @@ func _eligible(run, item: Dictionary) -> bool:
 			for spell in run.spells:
 				if str(spell.id) in _runtime.offensive_player_spells:
 					can_damage = true
-				if str(spell.id) == "F10" or (str(spell.id) == "I08" and float(run.get_spell_stats(spell).level.get("window_restore", 0.0)) > 0.0):
+				if str(spell.id) in ["F10", "L09", "R05", "S09"] or (str(spell.id) == "I08" and float(run.get_spell_stats(spell).level.get("window_restore", 0.0)) > 0.0):
 					can_restore = true
 			if not can_damage or not can_restore:
 				return false
@@ -644,6 +651,7 @@ func ice_shatter_effect(run, actor: Dictionary, context: Dictionary, info: Dicti
 func _has_uncapped_cooldown(run) -> bool:
 	var count: Dictionary = {}
 	for spell in run.spells:
+		if str(spell.id) == "F04": continue
 		var school: String = str(_base.spells.get(str(spell.id), {}).get("school", "fire"))
 		count[school] = int(count.get(school, 0)) + 1
 	var active: int = 0
@@ -658,6 +666,10 @@ func _has_uncapped_cooldown(run) -> bool:
 			reduction += float(_base.fire_synergy.cooldown_reduction)
 		elif school == "ice":
 			var resonance: Dictionary = _base.get("ice_mechanics", {}).get("resonance", {})
+			if int(count.get(school, 0)) >= int(resonance.get("distinct_spells", 3)):
+				reduction += float(resonance.get("school_cdr", 0.0))
+		elif str(spell.id) != "F04" and school in ["lightning", "wind", "earth", "spirit"]:
+			var resonance: Dictionary = _base.get(school + "_mechanics", {}).get("resonance", {})
 			if int(count.get(school, 0)) >= int(resonance.get("distinct_spells", 3)):
 				reduction += float(resonance.get("school_cdr", 0.0))
 		if reduction + 0.000001 < float(_base.limits.cooldown_reduction):

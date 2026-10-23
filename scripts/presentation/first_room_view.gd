@@ -14,6 +14,7 @@ const EnemyVisual := preload("res://scripts/presentation/route_enemy_visual.gd")
 const CombatOverlay := preload("res://scripts/presentation/route_combat_overlay.gd")
 const RewardVisual := preload("res://scripts/presentation/route_reward_visual.gd")
 const SpellVFX := preload("res://scripts/presentation/route_spell_vfx.gd")
+const GemVFX := preload("res://scripts/presentation/route_gem_vfx.gd")
 const CYAN_FLAME := preload("res://assets/environment/courtyard_v2/cyan_flame.png")
 const PORTAL_ENERGY := preload("res://assets/environment/courtyard_v2/portal_energy_soft.png")
 const ROOM_PATH := "res://data/first_room_runtime.json"
@@ -31,6 +32,7 @@ var spirit: Node3D
 var reward_visual: Node3D
 var _boss_chest_visual: Node3D
 var spell_vfx: Node3D
+var gem_vfx: Node3D
 var _stage: Node3D
 var _overlay: Control
 var _texture: TextureRect
@@ -129,6 +131,7 @@ func sync(snapshot: Dictionary, _delta: float = 0.0) -> void:
 	reward_visual.sync_pickup(pickups[0] if pickups.size() == 2 else _state.get("reward_pickup", {}))
 	_boss_chest_visual.sync_pickup(pickups[1] if pickups.size() == 2 else {})
 	spell_vfx.sync_snapshot(snapshot, camera, _visual_options)
+	gem_vfx.sync_snapshot(snapshot, camera, _visual_options)
 	_overlay.queue_redraw()
 
 
@@ -142,6 +145,8 @@ func set_visual_options(options: Dictionary) -> void:
 		_overlay.queue_redraw()
 	if is_instance_valid(spell_vfx) and not _state.is_empty():
 		spell_vfx.sync_snapshot(_state, camera, _visual_options)
+	if is_instance_valid(gem_vfx) and not _state.is_empty():
+		gem_vfx.sync_snapshot(_state, camera, _visual_options)
 
 
 func _sync_ambient_visuals(time: float) -> void:
@@ -160,6 +165,9 @@ func get_room_viewport() -> SubViewport:
 
 func get_vfx_debug_state() -> Dictionary:
 	return spell_vfx.get_debug_state() if is_instance_valid(spell_vfx) else {}
+
+func get_gem_vfx_debug_state() -> Dictionary:
+	return gem_vfx.get_debug_state() if is_instance_valid(gem_vfx) else {}
 
 
 func _layout_stage() -> void:
@@ -361,6 +369,8 @@ func _build_world() -> void:
 	world.add_child(_boss_chest_visual)
 	spell_vfx = SpellVFX.new()
 	world.add_child(spell_vfx)
+	gem_vfx = GemVFX.new()
+	world.add_child(gem_vfx)
 	camera = Camera3D.new()
 	camera.name = "FollowRoomCamera"
 	camera.projection = Camera3D.PROJECTION_PERSPECTIVE
@@ -749,7 +759,9 @@ func _draw_overlay() -> void:
 	var player: Dictionary = _state.get("player", {})
 	for spell in _state.get("spells", []):
 		if float(spell.get("cast_remaining", 0.0)) > 0:
-			_ground_ring(player.get("pos", Vector2.ZERO), 0.64, Color(1, 0.64, 0.27, 0.07), Color("f8cf8a"), 2.0)
+			var id: String = str(spell.get("id", ""))
+			var cast_tint := Color({"L":"c5b3ff", "I":"8bd9ed", "W":"a4e4cf", "R":"d7b580", "S":"e6b7e5"}.get(id.left(1), "f8cf8a"))
+			_ground_ring(player.get("pos", Vector2.ZERO), 0.64, Color(cast_tint, 0.07), cast_tint, 2.0)
 	for effect in _state.get("effects", []):
 		_draw_effect(effect)
 	_draw_reward_pickup()
@@ -801,6 +813,8 @@ func _draw_pickup_label(pickup: Dictionary) -> void:
 
 
 func _draw_effect(effect: Dictionary) -> void:
+	if GemVFX.handles_effect(str(effect.get("kind", ""))):
+		return
 	if is_instance_valid(spell_vfx) and spell_vfx.handles_effect(str(effect.get("kind", ""))):
 		return
 	# Choice screens freeze the simulation. Old attack events may still exist in

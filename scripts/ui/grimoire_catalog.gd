@@ -21,6 +21,18 @@ const SPELL_ROLES := {
 	"I01": "连续施霜", "I02": "穿线寒霜", "I03": "落点冰击",
 	"I04": "近身缓敌", "I05": "寒域控制", "I06": "条带冰暴",
 	"I07": "碎冰兑现", "I08": "冻结窗口", "I09": "短时防御", "I10": "被动研习",
+	"L01": "快速布点", "L02": "孤立贯穿", "L03": "邻接连锁", "L04": "导电布置",
+	"L05": "雷云点名", "L06": "近身放电", "L07": "强敌裁决", "L08": "网络过载",
+	"L09": "回盾布点", "L10": "被动研习",
+	"W01": "纵深穿透", "W02": "去回归航", "W03": "有限追击", "W04": "近身散阵",
+	"W05": "定点聚敌", "W06": "真空爆破", "W07": "双翼交剪", "W08": "真实风径",
+	"W09": "敌弹缓行", "W10": "走位研习",
+	"R01": "重矢散片", "R02": "扩散震波", "R03": "落击支点", "R04": "地脉脉冲",
+	"R05": "护盾回复", "R06": "消费构造", "R07": "借源共振", "R08": "山崩硬控",
+	"R09": "固定护阵", "R10": "被动研习",
+	"S01": "契印集火", "S02": "远程契灵", "S03": "近战侍从", "S04": "灵鹰扫掠",
+	"S05": "有限协同", "S06": "归灵爆发", "S07": "有界续存", "S08": "契印缓敌",
+	"S09": "护盾回复", "S10": "被动研习",
 }
 const SPELL_SUMMARIES := {
 	"F01": "向最近敌人发射焰弹，炸伤并点燃周围敌人。",
@@ -44,6 +56,46 @@ const SPELL_SUMMARIES := {
 	"I08": "锁定强敌落下冰棺，直接创造冻结或冰裂窗口。",
 	"I09": "短时提高防御，并对近敌施加寒霜。",
 	"I10": "被动强化冰系伤害，提升碎冰衔接的余量。",
+	"L01": "雷矢快速直射，命中后为存活敌人布下导电。",
+	"L02": "集中贯穿强敌，孤立目标承受更强主击。",
+	"L03": "沿邻接敌人依次放电，导电让连接更加可靠。",
+	"L04": "伤害主目标，并为周围未导电敌人建立有限节点。",
+	"L05": "在锁定位置点名落雷，各次雷云独立完成有限波次。",
+	"L06": "近敌逼近时向周围放电，高等级追加原地后脉冲。",
+	"L07": "锁定强敌裁决，成熟导电可向邻敌放出有限电弧。",
+	"L08": "沿既有导电网络放电，过载强化真实连出的边。",
+	"L09": "真实回复护盾后，为有限邻敌布下导电。",
+	"L10": "被动强化雷伤，延长导电保存并改善连接距离。",
+	"W01": "锁定方向发出风刃，依真实碰撞顺序贯穿有限敌人。",
+	"W02": "风环去回各可伤敌，转折时锁定一次归航点。",
+	"W03": "以有限转角追击原目标，长途飞行可强化本击。",
+	"W04": "向近敌方向释放锥形风压，伤敌并推散阵形。",
+	"W05": "固定风涡持续伤敌，以有限预算牵引附近敌人。",
+	"W06": "锁定敌点后引爆真空，高等级追加原地补压。",
+	"W07": "两翼朝锁定点交会，双翼实际命中可交剪。",
+	"W08": "沿你真实自主走过的路径留痕，接触才伤敌。",
+	"W09": "迎向接近的敌弹展开固定风幕，减慢带内飞弹。",
+	"W10": "最近走过足够真实路程时，强化风系伤害。",
+	"R01": "碎岩重矢主击后散片，覆盖不同后排敌人。",
+	"R02": "向四周扩散真实震波，波前触及敌人才命中。",
+	"R03": "锁定落点坠击，并留下不阻路的岩棱支点。",
+	"R04": "固定石柱按时脉冲，持续震伤可见近敌。",
+	"R05": "战斗中缺盾时自动回复护盾，按实际缺口裁切。",
+	"R06": "自动消费一个合格构造，在其中心释放坍岩震击。",
+	"R07": "先伤敌，再借附近仍存构造各自发出有限回响。",
+	"R08": "向强敌锁定落点山崩，伤敌并造成短时硬控。",
+	"R09": "脚下立起固定护阵石碑，覆盖内提高防御。",
+	"R10": "被动强化岩伤，三级在真实护盾尚存时提高防御。",
+	"S01": "灵矢为首名有效目标施加唯一契印，引导契灵集火。",
+	"S02": "召唤远程契灵，跟随并以实体视线光束攻击。",
+	"S03": "召唤灵刃侍从，沿合法地面追击并近战伤敌。",
+	"S04": "召唤灵鹰，靠近后沿真实条带扫掠有限敌人。",
+	"S05": "命令合格契灵各发一次协同，不重置普通攻击。",
+	"S06": "独立造成基础爆发，消费临近到期的契灵可强化。",
+	"S07": "固定法阵为覆盖内契灵有限续存，改善新宠首击。",
+	"S08": "锁链伤敌并缓行，已有契印者承受更强减速。",
+	"S09": "回复护盾，活跃进攻契灵提供有限额外请求量。",
+	"S10": "强化灵契伤害与新契印，高等级改善宠物契印普攻。",
 }
 const SPELL_BOUNDARIES := {
 	"F01": "优先攻击射程内未被掩体挡住的敌人。掩体会挡住焰弹；次弹不再分裂。",
@@ -67,6 +119,46 @@ const SPELL_BOUNDARIES := {
 	"I08": "优先当前生命最高的可见活敌；释放锁当前位置，落击不追踪，只攻击锁定目标。已有窗口只受伤害，不续冻；免控或固定强敌只形成冰裂。",
 	"I09": "有近域活敌且旧防御即将结束才施法；增益唯一，不回复盾或生命，不为回盾蓄能。防御仍受综合减伤上限限制。",
 	"I10": "占一个法术槽，不计自然施法；普通寒霜可保留更久；三级还延长碎冰窗口，不延长硬冻结或免控。",
+	"L01": "只发射一矢，遇墙或首敌结束；发射后不追踪。未导电加成读取命中前状态，不另打一段。",
+	"L02": "孤立只检查主目标周围活敌；只强化主击。未用贯穿名额不返还主目标，障碍截断枪线。",
+	"L03": "每次施法共用已访问名单，每敌最多一次；逐边检查距离与遮挡。断边或空跳数不返还单体。",
+	"L04": "布点只进行一轮，邻敌不受即时伤害。已导电邻敌不占名额，也不被本次刷新；主击致死仍可从有效命中点布置。",
+	"L05": "每次施法生成独立有限云团，不取消旧云的剩余落雷。各波选取有限可见活敌，同一波每敌一次；空圈不储存攻击。每个自然云团对各敌首次有效落雷后施加三级易伤，当前首击不倒算受益；追加云无此效果。",
+	"L06": "不击退、不麻痹。后脉冲停留在第一次释放的位置，不追随玩家，也不产生第二次施法。",
+	"L07": "落点锁定后不追踪，只攻击锁定主目标。条件附伤不暴击；成熟邻弧要求命中前导电年龄合格且主目标全部伤害后仍活。",
+	"L08": "只访问释放前旧导电网络；每敌一次。过载只强化实际连接边，节点不足和空余边不补主击；追加不享自然三级强化。",
+	"L09": "满盾不施放。回复按实际缺口裁切，零回复不布点；布点不是第二次回复，不生成递归施法。",
+	"L10": "占一个法术槽。只延长以后新施加或刷新的导电；三级增距只用于双端已有导电的连锁，不扩大首射程和独立布点范围。",
+	"W01": "实体风刃锁方向、遇墙结束；按真实碰撞次序衰减，同敌只命中一次。",
+	"W02": "去程结束只锁一次玩家当时位置，回程不持续追身。每程每敌一次、最多8敌，转折重叠不重复领伤；三级自然返程路程达标，本击后才施易伤。",
+	"W03": "只追原目标，不重新换靶；失去视线停止修正，目标死亡沿切线前进。首敌结束，长程奖按飞弹实际弧长。",
+	"W04": "推距按普通／精英／固定强敌抗性缩放一次并受墙裁剪，不重置攻击；减速与其它来源取最强并受分类上限。",
+	"W05": "同术唯一，重施替换，跨实例同敌仍有0.5秒命中门。首跳延迟，到期末跳结算；伤害不受拉动名额限制，漏掉的拉动机会不补领。",
+	"W06": "吟唱起手锁落点，延迟爆炸与补压不追敌。中心加值仅主爆；补压可暴击但不触发普通本体命中或新的派生。",
+	"W07": "两翼各自碰墙，每翼同敌一次；只有同一cast双翼实际命中才交剪一次。交剪可暴击但不再触发派生。",
+	"W08": "只记真实自主轨迹；顶墙、传送、击退不计。重施移除全部旧径，但保留每敌0.5秒门和滚动6秒共享上限；每段独立到期，风径不回盾。",
+	"W09": "有接近的可见敌方飞行弹才施法，完成重查。风幕静止、按地板和障碍裁剪；只减带内飞弹位移，不反弹、删弹、改寿命、伤害或方向；落印与冲锋无效。",
+	"W10": "占槽，不主动循环。窗口只统计真实自主路径；三级在条件失效后短时保留，不增加移速。",
+	"R01": "碎片排除主击目标，同cast每个次敌最多一片；各片独立碰墙、有限穿透，碎片不再散片。",
+	"R02": "按实际扩散波前命中，每敌一次；外缘奖励读取真实命中距离，掩体挡住波。",
+	"R03": "吟唱起手锁点，落空仍可在合法落地处建支点；同名新建替换旧支点，不阻路。三级已排裂波不因支点被消费而取消。",
+	"R04": "同名唯一、不阻路；先结算到点旧脉冲，再到期或替换，不补未到跳数或追加终结伤害。",
+	"R05": "战斗有活敌且缺盾才施放，完成重查。只据实际回复充能，不回复生命、不抬盾上限。",
+	"R06": "持有构造来源才进入候选；施法时还须有可消费构造和可伤敌人。先移除来源，再排一次震击；无源等待，余波可暴击但不递归。",
+	"R07": "无构造仍有基础伤害；借源在各自中心回响，到点核原实例仍在。源消失就取消对应回响，不转借同位置新构造；回响可暴击但不递归。",
+	"R08": "锁高生命敌点，预警后落击；硬控受抗性／免控限制。三级裂隙从外缘发出，排除主击敌，次敌最多一击、遇墙截停。",
+	"R09": "固定不阻路石碑，覆盖内且到碑无遮挡才加防御；三级保留仅限真实走出，到期／替换／消费立即取消。不回盾，最终减伤仍受上限限制。",
+	"R10": "占槽，不计自然施法。三级防御只在真实护盾大于零时生效，归零立即失效，不提高护盾上限。",
+	"S01": "同场仅一个契印，只由第一有效主击施加；穿透后续不施印。目标死亡／到期清印，不自动传邻。",
+	"S02": "同名容量和全队4只进攻契灵上限同时生效；满员等待，不刷新寿命。普通光束受墙阻挡，不算本体直接命中。",
+	"S03": "沿合法地面追击，须进入实际近战范围才攻击；不能穿墙近战。不阻路、挡弹或吸引仇恨。",
+	"S04": "先追击到扫掠距离，再沿合法条带命中；各次名额有限，孤立目标不承接空余名额。",
+	"S05": "先持有召唤来源才进候选；释放和延迟命中均核实际合格宠物。协同不暴击、不施印、不重置普攻，也不生成新命令链。",
+	"S06": "无可消费宠物仍有基础爆发；最多消费一只剩余寿命不超过门槛的合格宠物，先注销再付款。奖励仅加本次分量，不重复消费。",
+	"S07": "先持有召唤来源才进候选。固定唯一法阵，需实际覆盖且到场心无遮挡；每宠每场一次续存，所有法阵共用终身预算，不可无限刷新。",
+	"S08": "主击先检查既有契印决定减速，再处理施印；三级第二敌不施印。减速取最强并受普通／精英／固定强敌上限限制。",
+	"S09": "独立回盾，不生成进攻宠物；按真实活宠数和缺盾裁切。满盾或无活敌等待，不抬盾上限、不回复生命。",
+	"S10": "占槽，不计自然施法；新契印延时不追改旧印。契印普攻加成只给合格宠物普通攻击，与研习／共鸣同桶。",
 }
 const STARTER_SPELLS := ["F01", "F03", "F08"]
 const RARITY_NAMES := {"blue": "蓝色", "purple": "紫色", "gold": "金色"}
@@ -74,6 +166,10 @@ const RARITY_COLORS := {"blue": "79b7ee", "purple": "b49ae8", "gold": "e5bd75"}
 const GENERIC_SOURCE := "res://data/generic_artifacts_v1.json"
 const FIRE_RUNTIME_SOURCE := "res://data/route_spell_runtime.json"
 const ICE_SPELL_SOURCE := "res://data/ice_spells_v1.json"
+const LIGHTNING_SPELL_SOURCE := "res://data/lightning_spells_v1.json"
+const WIND_SPELL_SOURCE := "res://data/wind_spells_v1.json"
+const EARTH_SPELL_SOURCE := "res://data/earth_spells_v1.json"
+const SPIRIT_SPELL_SOURCE := "res://data/spirit_spells_v1.json"
 const ICE_ARTIFACT_SOURCE := "res://data/ice_artifacts_v1.json"
 const SpellGrowth = preload("res://scripts/core/route_spell_growth.gd")
 const BOSS_SOURCE := "res://data/route_boss_runtime.json"
@@ -117,18 +213,18 @@ static func load_catalog(force_reload: bool = false) -> Dictionary:
 			result["spell_runtime"] = {}
 		else:
 			result["spell_runtime"] = runtime_parser.data
-		for entry in [["ice_source", ICE_SPELL_SOURCE, "spells"], ["ice_artifact_source", ICE_ARTIFACT_SOURCE, "items"]]:
+		for entry in [["ice_source", ICE_SPELL_SOURCE, "spells"], ["ice_artifact_source", ICE_ARTIFACT_SOURCE, "items"], ["lightning_source", LIGHTNING_SPELL_SOURCE, "spells"], ["wind_source", WIND_SPELL_SOURCE, "spells"], ["earth_source", EARTH_SPELL_SOURCE, "spells"], ["spirit_source", SPIRIT_SPELL_SOURCE, "spells"]]:
 			var extra_file := FileAccess.open(str(entry[1]), FileAccess.READ)
 			var extra_parser := JSON.new()
 			if extra_file == null or extra_parser.parse(extra_file.get_as_text()) != OK or not extra_parser.data is Dictionary:
-				result["errors"].append("无法读取冰系目录：" + str(entry[1]))
+				result["errors"].append("无法读取学派目录：" + str(entry[1]))
 				result[str(entry[0])] = {}
 				continue
 			result[str(entry[0])] = extra_parser.data
 			var merged: Dictionary = result.get("base", {}).get("spells", {}) if str(entry[2]) == "spells" else result.get("artifact_source", {}).get("items", {})
 			for id in extra_parser.data.get(str(entry[2]), {}):
 				if merged.has(id):
-					result["errors"].append("冰系目录ID重复：" + str(id))
+					result["errors"].append("学派目录ID重复：" + str(id))
 				else:
 					merged[id] = extra_parser.data[str(entry[2])][id]
 		var boss_file := FileAccess.open(BOSS_SOURCE, FileAccess.READ)
@@ -207,11 +303,12 @@ static func describe_spell(id: String, level: int = 1, route_growth: bool = true
 		"id": id, "name": spell["name"], "kind": spell["kind"],
 		"role": SPELL_ROLES.get(id, ""), "summary": SPELL_SUMMARIES.get(id, ""),
 		"description": _spell_effect(id, values), "detail": _spell_effect(id, values),
+		"card_description": _new_school_card_effect(id, values) if str(spell.get("school", "")) in ["wind", "earth", "spirit"] else _spell_effect(id, values),
 		"upgrade_text": spell_upgrade_text(id, current_level, route_growth),
-		"boundary": str(SPELL_BOUNDARIES.get(id, "")) + ("\n" + _ice_spell_boundary(id, values) + "\n" + ice_state_rule() if str(spell.get("school", "fire")) == "ice" else ("\n" + burning_rule() if str(spell.get("school", "fire")) == "fire" and id not in ["F02", "F10"] else "")), "stats": stats,
+		"boundary": str(SPELL_BOUNDARIES.get(id, "")) + ("\n" + lightning_state_rule() if str(spell.get("school", "")) == "lightning" else "\n" + _ice_spell_boundary(id, values) + "\n" + ice_state_rule() if str(spell.get("school", "fire")) == "ice" else ("\n" + burning_rule() if str(spell.get("school", "fire")) == "fire" and id not in ["F02", "F10"] else "")), "stats": stats,
 		"level": current_level, "max_level": levels.size(), "level_details": level_details,
-		"starter": id in starter_ids(str(spell.get("school", "fire"))), "element": {"ice":"冰", "fire":"火", "spirit":"灵契（历史首房）"}.get(str(spell.get("school", "fire")), ""), "school": spell.get("school", "fire"), "active": spell.get("active", true), "color": "8bd9ed" if spell.get("school") == "ice" else "eea175",
-		"values": values, "source_version": spell.get("growth_version", catalog.get("ice_source" if spell.get("school") == "ice" else "base", {}).get("version", "")),
+		"starter": id in starter_ids(str(spell.get("school", "fire"))), "element": {"ice":"冰", "fire":"火", "lightning":"雷", "wind":"风", "earth":"岩", "spirit":"灵契"}.get(str(spell.get("school", "fire")), ""), "school": spell.get("school", "fire"), "active": spell.get("active", true), "color": school_color(str(spell.get("school", "fire"))).to_html(false),
+		"values": values, "source_version": spell.get("growth_version", catalog.get(str(spell.get("school", "fire")) + "_source" if str(spell.get("school", "fire")) != "fire" else "base", {}).get("version", "")),
 	}
 
 
@@ -293,6 +390,10 @@ static func _spell_effect(id: String, value: Dictionary) -> String:
 
 
 static func _spell_effect_base(id: String, value: Dictionary) -> String:
+	if str(value.get("school", "")) in ["wind", "earth", "spirit"]:
+		return _new_school_spell_effect(id, value)
+	if str(value.get("school", "")) == "lightning":
+		return _lightning_spell_effect(id, value)
 	if str(value.get("school", "")) == "ice":
 		return _ice_spell_effect(id, value)
 	match id:
@@ -366,6 +467,10 @@ static func spell_upgrade_text(id: String, level: int, route_growth: bool = true
 	before.merge(levels[level - 2], true)
 	var after: Dictionary = spell.duplicate(true)
 	after.merge(levels[level - 1], true)
+	if str(spell.get("school", "")) in ["wind", "earth", "spirit"]:
+		return _new_school_upgrade_text(id, before, after)
+	if str(spell.get("school", "")) == "lightning":
+		return _lightning_upgrade_text(id, before, after)
 	if spell.has("growth_version"):
 		return _growth_upgrade_text(id, before, after)
 	var changes: Array[String] = []
@@ -620,7 +725,224 @@ static func _artifact_requirement(item: Dictionary, catalog: Dictionary) -> Stri
 
 static func starter_ids(school: String = "fire") -> Array:
 	var content := load_catalog()
+	if school in ["lightning", "wind", "earth", "spirit"]:
+		return content.get(school + "_source", {}).get("mechanics", {}).get("initial_ids", [])
 	return content.get("ice_source", {}).get("mechanics", {}).get("initial_ids", []) if school == "ice" else content.get("spell_runtime", {}).get("fire", {}).get("initial_ids", STARTER_SPELLS)
+
+
+static func school_name(school: String) -> String:
+	return {"fire": "火系", "ice": "冰系", "lightning": "雷系", "wind": "风系", "earth": "岩系", "spirit": "灵契"}.get(school, school)
+
+
+static func school_color(school: String) -> Color:
+	return Color({"fire": "eea175", "ice": "8bd9ed", "lightning": "c5b3ff", "wind": "a5e2bd", "earth": "e0bd83", "spirit": "e9b2e1"}.get(school, "eea175"))
+
+
+static func _new_school_spell_effect(id: String, v: Dictionary) -> String:
+	match id:
+		"W01": return "主击%s攻击·全宽%s米\n最多%s敌·逐敌保留%s伤害\n弹速%s米／秒，锁定方向" % [_percent(v.coefficient), _number(v.width), _number(v.target_cap), _percent(v.falloff), _number(v.speed)]
+		"W02":
+			var text := "去程%s／回程%s攻击\n去程%s米·全宽%s米\n回程宽×%s·每程最多%s敌" % [_percent(v.out_coefficient), _percent(v.return_coefficient), _number(v.out_length), _number(v.width), _number(v.return_width_multiplier), _number(v.leg_target_cap)]
+			if float(v.return_vulnerability) > 0.0: text += "\n自然返程：自主路程≥%s米\n本击后风易伤＋%s，%s秒" % [_number(v.required_player_path), _percent(v.return_vulnerability), _number(v.vulnerability_duration)]
+			return text
+		"W03":
+			var text := "主击%s攻击·全宽%s米\n转速%s度／秒，累计最多%s度\n最多飞行%s米／%s秒" % [_percent(v.coefficient), _number(v.width), _number(v.turn_speed_degrees), _number(v.turn_budget_degrees), _number(v.max_path), _number(v.lifetime)]
+			if float(v.long_multiplier) > 1.0: text += "\n实际飞行≥%s米：本击×%s" % [_number(v.long_path), _number(v.long_multiplier)]
+			return text
+		"W04":
+			var text := "%s度锥形·长%s米\n伤害%s·基础推距%s米" % [_number(v.angle_degrees), _number(v.range), _percent(v.coefficient), _number(v.push_distance)]
+			if float(v.slow) > 0.0: text += "\n减速%s，持续%s秒（受抗性上限）" % [_percent(v.slow), _number(v.slow_duration)]
+			return text
+		"W05": return "半径%s米·持续%s秒\n每%s秒各%s攻击，首跳同间隔\n基本总拉距%s米，单跳最多%s米\n每跳最多拉%s敌；伤害不限此名额" % [_number(v.radius), _number(v.duration), _number(v.interval), _percent(v.coefficient), _number(v.pull_total), _number(v.pull_tick_cap), _number(v.pull_target_cap)]
+		"W06":
+			var text := "%s秒后固定落点主爆%s\n半径%s米" % [_number(v.impact_delay), _percent(v.coefficient), _number(v.radius)]
+			if float(v.center_coefficient_add) > 0.0: text += "\n中心%s米额外＋%s个百分点" % [_number(v.center_radius), _number(float(v.center_coefficient_add) * 100.0)]
+			if float(v.followup_coefficient) > 0.0: text += "\n再隔%s秒补压%s，可暴击" % [_number(v.followup_delay), _percent(v.followup_coefficient)]
+			return text
+		"W07":
+			var text := "每翼%s攻击·长%s／宽%s米\n两翼分别最多%s敌" % [_percent(v.coefficient), _number(v.length), _number(v.width), _number(v.target_cap)]
+			if float(v.cross_coefficient) > 0.0: text += "\n同cast双翼实际命中：交剪%s一次" % _percent(v.cross_coefficient)
+			return text
+		"W08": return "录制%s秒，最多%s米真实路径\n每%s米成段·半径%s米·段寿%s秒\n接触每击%s攻击\n每敌每cast最多%s击，任意%s秒最多%s击\n同敌最短间隔%s秒" % [_number(v.record_duration), _number(v.total_length), _number(v.spacing), _number(v.radius), _number(v.segment_lifetime), _percent(v.coefficient), _number(v.cast_hit_cap), _number(load_catalog().wind_source.mechanics.path_shared_window), _number(v.shared_hit_cap), _number(load_catalog().wind_source.mechanics.path_hit_gate)]
+		"W09": return "固定带宽%s米／厚%s米\n持续%s秒，带内敌飞弹速度×%s\n不回盾、不直接伤害" % [_number(v.width), _number(v.depth), _number(v.duration), _number(v.speed_multiplier)]
+		"W10": return "最近%s秒自主实际走过≥%s米\n满足时风伤＋%s\n条件失效后保留%s秒" % [_number(load_catalog().wind_source.mechanics.motion_window), _number(v.required_path), _percent(v.school_damage_bonus), _number(v.grace_duration)]
+		"R01": return "主矢%s攻击·全宽%s米\n%s片各%s，长%s／全宽%s米\n每片最多%s敌，同cast次敌最多一片" % [_percent(v.main), _number(v.width), _number(v.shard_count), _percent(v.shard), _number(v.shard_range), _number(v.shard_width), _number(v.shard_pierce)]
+		"R02": return "震波%s攻击·最远%s米\n波速%s米／秒·波宽%s米\n实际命中距离≥%s米：额外＋%s个百分点" % [_percent(v.main), _number(v.radius), _number(v.speed), _number(v.wave_width), _number(v.outer_threshold), _number(float(v.outer_bonus) * 100.0)]
+		"R03":
+			var text := "%s秒后落击%s·半径%s米\n留下%s秒岩棱支点，不阻路" % [_number(v.delay), _percent(v.main), _number(v.radius), _number(v.construct_duration)]
+			if float(v.after) > 0.0: text += "\n再隔%s秒原地裂波%s·半径%s米" % [_number(v.after_delay), _percent(v.after), _number(v.after_radius)]
+			return text
+		"R04": return "固定石柱半径%s米·存续%s秒\n首跳%s秒，每%s秒%s攻击\n同名唯一，不阻路" % [_number(v.radius), _number(v.duration), _number(v.first_tick), _number(v.interval), _percent(v.tick)]
+		"R05": return "请求回复%s护盾\n基础冷却%s秒\n回复量按真实缺盾裁切" % [_number(v.shield_restore), _number(v.cooldown)]
+		"R06":
+			var text := "消费一个合格构造\n%s秒后主震%s·半径%s米" % [_number(v.delay), _percent(v.main), _number(v.radius)]
+			if float(v.after) > 0.0: text += "\n主震后%s秒余波%s，可暴击" % [_number(v.after_delay), _percent(v.after)]
+			return text
+		"R07":
+			var text := "基础%s·半径%s米\n%s米内最多借%s个不同构造\n首回响%s·半径%s米，%s秒后" % [_percent(v.main), _number(v.main_radius), _number(v.anchor_search_range), _number(v.echo_construct_cap), _percent(v.echo), _number(v.echo_radius), _number(v.echo_delay)]
+			if float(v.second_echo) > 0.0: text += "\n第二源再隔同一间隔回响%s" % _percent(v.second_echo)
+			return text
+		"R08":
+			var text := "%s秒后山崩%s·半径%s米\n基础硬控%s秒，受分类抗性" % [_number(v.delay), _percent(v.main), _number(v.radius), _number(v.stun)]
+			if float(v.fracture) > 0.0: text += "\n外缘两条裂隙各%s·长%s／宽%s米" % [_percent(v.fracture), _number(v.fracture_length), _number(v.fracture_width)]
+			return text
+		"R09": return "固定护阵半径%s米·存续%s秒\n覆盖内且可见石碑：防御＋%s\n真实走出后保留%s秒" % [_number(v.radius), _number(v.duration), _number(v.defense), _number(v.exit_grace)]
+		"R10": return "岩系伤害＋%s\n真实护盾大于零时：防御＋%s" % [_percent(v.earth_bonus), _number(v.shielded_defense)]
+		"S01": return "灵矢%s攻击·最多贯%s敌\n第一有效主击施契印%s秒\n射程%s米，契印全队共享唯一" % [_percent(v.coefficient), _number(v.target_cap), _number(v.mark_duration), _number(v.range)]
+		"S02": return "远程同名最多%s只，每次补至多%s只\n寿命%s秒·首击%s秒\n每%s秒光束%s，最多%s敌" % [_number(v.capacity), _number(v.summon_per_cast), _number(v.duration), _number(v.attack_delay), _number(v.attack_interval), _percent(v.coefficient), _number(v.target_cap)]
+		"S03": return "侍从最多%s只，寿命%s秒\n每%s秒近战%s，最多%s敌\n索敌%s米·移动%s米／秒\n挥击角%s度，半径%s米" % [_number(v.capacity), _number(v.duration), _number(v.attack_interval), _percent(v.coefficient), _number(v.target_cap), _number(v.search_range), _number(v.move_speed), _number(v.cleave_angle_degrees), _number(v.cleave_radius)]
+		"S04": return "灵鹰最多%s只，寿命%s秒\n每%s秒扫掠%s，最多%s敌\n扫掠长%s／宽%s米" % [_number(v.capacity), _number(v.duration), _number(v.attack_interval), _percent(v.coefficient), _number(v.target_cap), _number(v.sweep_length), _number(v.sweep_width)]
+		"S05": return "最多%s名合格契灵各发一份协同\n%s秒后每份%s攻击\n每名来源最多%s敌，不暴击" % [_number(v.command_unit_cap), _number(v.command_delay), _percent(v.command_coefficient), _number(v.targets_per_unit)]
+		"S06": return "基础爆发%s攻击·半径%s米\n最多消费%s只剩余寿命≤%s秒的宠物\n成功消费额外＋%s攻击，最多%s敌" % [_percent(v.base_coefficient), _number(v.radius), _number(v.consume_unit_cap), _number(v.consume_max_remaining), _percent(v.consume_bonus_coefficient), _number(v.target_cap)]
+		"S07": return "固定法阵半径%s米·持续%s秒\n每宠每场首次合格覆盖续存%s秒\n每宠所有场累计额外上限%s秒\n新宠首击部署缩短%s秒，最低%s秒" % [_number(v.radius), _number(v.duration), _number(v.extension_per_unit), _number(v.lifetime_extension_cap), _number(v.new_unit_first_attack_delay_reduction), _number(v.minimum_first_attack_delay)]
+		"S08": return "伤害%s·最多%s敌\n普通减速%s，已有契印改为%s\n持续%s秒，受分类上限\n%s" % [_percent(v.coefficient), _number(v.target_cap), _percent(v.base_slow), _percent(v.marked_slow), _number(v.slow_duration), "主击随后施契印%s秒" % _number(v.mark_duration) if bool(v.can_apply_mark) else "本级锁链不施契印"]
+		"S09": return "基础请求回复%s护盾\n每只活跃进攻契灵额外＋%s\n最多计%s只·不生成宠物" % [_number(v.shield_restore), _number(v.shield_per_alive_unit), _number(v.bonus_unit_cap)]
+		"S10": return "灵契伤害＋%s\n新施契印延长%s秒\n宠物契印普通攻击另＋%s（同系桶）" % [_percent(v.spirit_damage_bonus), _number(v.mark_duration_add), _percent(v.mark_normal_attack_bonus_add)]
+	return ""
+
+
+static func _new_school_card_effect(id: String, v: Dictionary) -> String:
+	# Choice faces expose the defining result; full mechanics remain in details.
+	match id:
+		"W01": return "主击%s·最多%s敌\n每穿一敌余伤×%s\n锁定方向，遇墙结束" % [_percent(v.coefficient), _number(v.target_cap), _number(v.falloff)]
+		"W02": return "去程%s／回程%s\n程长%s米，各可命中一次\n转折只锁一次归航点" % [_percent(v.out_coefficient), _percent(v.return_coefficient), _number(v.out_length)]
+		"W03": return "追击主击%s\n累计转角最多%s度\n只追原目标，首敌结束" % [_percent(v.coefficient), _number(v.turn_budget_degrees)]
+		"W04": return "锥形%s·长%s米\n基础推距%s米\n推距受抗性及墙限制" % [_percent(v.coefficient), _number(v.range), _number(v.push_distance)]
+		"W05": return "每%s秒%s，持续%s秒\n半径%s米，定点聚敌\n基本总拉距%s米" % [_number(v.interval), _percent(v.coefficient), _number(v.duration), _number(v.radius), _number(v.pull_total)]
+		"W06": return "主爆%s·半径%s米\n释放后%s秒固定点引爆\n落点锁定后不追踪" % [_percent(v.coefficient), _number(v.radius), _number(v.impact_delay)]
+		"W07": return "每翼%s·各最多%s敌\n长%s／全宽%s米\n两翼独立碰撞与去重" % [_percent(v.coefficient), _number(v.target_cap), _number(v.length), _number(v.width)]
+		"W08": return "接触每击%s·同敌最多%s击\n录制%s秒／最多%s米\n只沿真实自主路径留痕\n重施不重置共享命中预算" % [_percent(v.coefficient), _number(v.cast_hit_cap), _number(v.record_duration), _number(v.total_length)]
+		"W09": return "带宽%s米·持续%s秒\n带内敌飞弹速度×%s\n固定风幕，只减弹速" % [_number(v.width), _number(v.duration), _number(v.speed_multiplier)]
+		"W10": return "最近%s秒自主走≥%s米\n满足时风伤＋%s\n不增加移动速度" % [_number(load_catalog().wind_source.mechanics.motion_window), _number(v.required_path), _percent(v.school_damage_bonus)]
+		"R01": return "主矢%s，散片各%s\n%s片，各最多%s名次敌\n同一敌人最多中一片" % [_percent(v.main), _percent(v.shard), _number(v.shard_count), _number(v.shard_pierce)]
+		"R02": return "扩散震波%s\n最远%s米·每敌一次\n波前经过才命中" % [_percent(v.main), _number(v.radius)]
+		"R03": return "落击%s·半径%s米\n%s秒后命中固定落点\n留下%s秒不阻路支点" % [_percent(v.main), _number(v.radius), _number(v.delay), _number(v.construct_duration)]
+		"R04": return "每%s秒脉冲%s\n半径%s米·持续%s秒\n同名唯一，不阻路" % [_number(v.interval), _percent(v.tick), _number(v.radius), _number(v.duration)]
+		"R05": return "请求回复%s护盾\n基础冷却%s秒\n按真实缺盾裁切" % [_number(v.shield_restore), _number(v.cooldown)]
+		"R06": return "消费一个构造，主震%s\n半径%s米·延迟%s秒\n无合格构造就等待" % [_percent(v.main), _number(v.radius), _number(v.delay)]
+		"R07": return "基础%s·半径%s米\n最多借%s源回响%s\n无构造仍有基础伤害" % [_percent(v.main), _number(v.main_radius), _number(v.echo_construct_cap), _percent(v.echo)]
+		"R08": return "山崩%s·半径%s米\n延迟%s秒·基础硬控%s秒\n硬控受抗性，落点不追踪" % [_percent(v.main), _number(v.radius), _number(v.delay), _number(v.stun)]
+		"R09": return "固定护阵半径%s米\n覆盖内防御＋%s，持续%s秒\n需到石碑无遮挡，不回盾" % [_number(v.radius), _number(v.defense), _number(v.duration)]
+		"R10": return "岩系伤害＋%s\n被动占槽，参与岩系共鸣" % _percent(v.earth_bonus)
+		"S01": return "灵矢%s·最多%s敌\n首名有效主击施契印%s秒\n契印全队共享唯一" % [_percent(v.coefficient), _number(v.target_cap), _number(v.mark_duration)]
+		"S02": return "召唤远程契灵，最多%s只\n每%s秒光束%s\n存续%s秒，最多%s敌\n满员等待，不刷新寿命" % [_number(v.capacity), _number(v.attack_interval), _percent(v.coefficient), _number(v.duration), _number(v.target_cap)]
+		"S03": return "召唤近战侍从，存续%s秒\n每%s秒近战%s\n须沿合法地面追击到位" % [_number(v.duration), _number(v.attack_interval), _percent(v.coefficient)]
+		"S04": return "召唤灵鹰，存续%s秒\n每%s秒扫掠%s\n每次最多%s敌，须追击到位" % [_number(v.duration), _number(v.attack_interval), _percent(v.coefficient), _number(v.target_cap)]
+		"S05": return "每名合格契灵协同%s\n%s秒后命中，不暴击\n不重置普通攻击" % [_percent(v.command_coefficient), _number(v.command_delay)]
+		"S06": return "基础%s·半径%s米\n消费合格宠物额外＋%s\n无可消费宠物仍可施放" % [_percent(v.base_coefficient), _number(v.radius), _percent(v.consume_bonus_coefficient)]
+		"S07": return "固定场半径%s米·%s秒\n每宠每场合格续存%s秒\n终身续存预算%s秒" % [_number(v.radius), _number(v.duration), _number(v.extension_per_unit), _number(v.lifetime_extension_cap)]
+		"S08": return "主击%s·减速%s\n已有契印改减速%s\n持续%s秒，受分类上限" % [_percent(v.coefficient), _percent(v.base_slow), _percent(v.marked_slow), _number(v.slow_duration)]
+		"S09": return "基础请求回复%s护盾\n每活宠另＋%s，最多%s只\n按真实缺盾裁切" % [_number(v.shield_restore), _number(v.shield_per_alive_unit), _number(v.bonus_unit_cap)]
+		"S10": return "灵契伤害＋%s\n被动占槽，参与灵契共鸣" % _percent(v.spirit_damage_bonus)
+	return ""
+
+
+static func _new_school_upgrade_text(id: String, a: Dictionary, b: Dictionary) -> String:
+	match id:
+		"W01": return "最多%s → %s敌\n%s\n主击%s" % [_number(a.target_cap), _number(b.target_cap), "穿透不再衰减" if float(b.falloff) >= 1.0 else "全宽增至%s米，仍逐敌衰减" % _number(b.width), "%s → %s" % [_percent(a.coefficient), _percent(b.coefficient)] if not is_equal_approx(float(a.coefficient), float(b.coefficient)) else "保持" + _percent(b.coefficient)]
+		"W02": return "去程%s／回程%s\n%s" % [_percent(b.out_coefficient), _percent(b.return_coefficient), "自然返程自主走≥%s米\n本击后风易伤＋%s" % [_number(b.required_player_path), _percent(b.return_vulnerability)] if float(b.return_vulnerability) > 0.0 else "去程增至%s米\n回程宽×%s" % [_number(b.out_length), _number(b.return_width_multiplier)]]
+		"W03": return "主击%s\n%s" % ["%s → %s" % [_percent(a.coefficient), _percent(b.coefficient)] if not is_equal_approx(float(a.coefficient), float(b.coefficient)) else "保持" + _percent(b.coefficient), "新增长程强化\n实际飞行≥%s米：本击×%s" % [_number(b.long_path), _number(b.long_multiplier)] if float(b.long_multiplier) > 1.0 else "全宽%s米，累计转角%s度" % [_number(b.width), _number(b.turn_budget_degrees)]]
+		"W04": return "伤害%s·基础推距%s米\n长度%s米\n%s" % [_percent(b.coefficient), _number(b.push_distance), _number(b.range), "减速%s／%s秒，受分类上限" % [_percent(b.slow), _number(b.slow_duration)] if float(b.slow) > 0.0 else "推距受抗性与墙裁剪"]
+		"W05": return "每跳%s，持续%s → %s秒\n半径%s米\n基本总拉距%s米" % [_percent(b.coefficient), _number(a.duration), _number(b.duration), _number(b.radius), _number(b.pull_total)]
+		"W06": return "主爆%s·半径%s米\n%s" % [_percent(b.coefficient), _number(b.radius), "中心另＋%s个百分点\n追加%s补压" % [_number(float(b.center_coefficient_add) * 100.0), _percent(b.followup_coefficient)] if float(b.followup_coefficient) > 0.0 else "伤害与范围提高，仍锁固定点"]
+		"W07": return "每翼%s → %s\n长%s／宽%s米\n%s" % [_percent(a.coefficient), _percent(b.coefficient), _number(b.length), _number(b.width), "同cast双翼命中再交剪%s" % _percent(b.cross_coefficient) if float(b.cross_coefficient) > 0.0 else "每翼最多%s敌" % _number(b.target_cap)]
+		"W08": return "录制%s秒／最多%s米\n每击%s，间距%s米\n段寿%s秒，同敌最多%s击" % [_number(b.record_duration), _number(b.total_length), _percent(b.coefficient), _number(b.spacing), _number(b.segment_lifetime), _number(b.cast_hit_cap)]
+		"W09": return "带宽%s → %s米\n持续%s → %s秒\n带内敌飞弹速度×%s" % [_number(a.width), _number(b.width), _number(a.duration), _number(b.duration), _number(b.speed_multiplier)]
+		"W10": return "条件风伤%s → %s\n路程门槛%s米\n失效后保留%s秒" % [_percent(a.school_damage_bonus), _percent(b.school_damage_bonus), _number(b.required_path), _number(b.grace_duration)]
+		"R01": return "主矢%s／碎片各%s\n碎片全宽%s米、长%s米\n每片最多%s敌" % [_percent(b.main), _percent(b.shard), _number(b.shard_width), _number(b.shard_range), _number(b.shard_pierce)]
+		"R02": return "伤害%s·最远%s米\n波速%s米／秒\n%s" % [_percent(b.main), _number(b.radius), _number(b.speed), "实际距离≥%s米：＋%s个百分点" % [_number(b.outer_threshold), _number(float(b.outer_bonus) * 100)] if float(b.outer_bonus) > 0.0 else "波速和范围提高"]
+		"R03": return "主击%s·半径%s米\n支点%s秒\n%s" % [_percent(b.main), _number(b.radius), _number(b.construct_duration), "%s秒后追加%s裂波" % [_number(b.after_delay), _percent(b.after)] if float(b.after) > 0.0 else "落空也可在合法点留支点"]
+		"R04": return "每%s秒%s，半径%s米\n存续%s秒\n首跳%s" % [_number(b.interval), _percent(b.tick), _number(b.radius), _number(b.duration), "改为立即" if float(b.first_tick) <= 0.0 else _number(b.first_tick) + "秒后"]
+		"R05": return "回盾请求%s → %s\n基础CD%s → %s秒\n按真实缺盾裁切" % [_number(a.shield_restore), _number(b.shield_restore), _number(a.cooldown), _number(b.cooldown)]
+		"R06": return "消费主震%s → %s\n半径%s米\n%s" % [_percent(a.main), _percent(b.main), _number(b.radius), "%s秒后余波%s" % [_number(b.after_delay), _percent(b.after)] if float(b.after) > 0.0 else "仍只消费一个构造"]
+		"R07": return "基础%s·找源%s米\n最多借%s个不同构造\n首回响%s%s" % [_percent(b.main), _number(b.anchor_search_range), _number(b.echo_construct_cap), _percent(b.echo), "，第二份" + _percent(b.second_echo) if float(b.second_echo) > 0.0 else ""]
+		"R08": return "主击%s·半径%s米\n延迟%s秒、基础硬控%s秒\n%s" % [_percent(b.main), _number(b.radius), _number(b.delay), _number(b.stun), "外缘两裂隙各%s" % _percent(b.fracture) if float(b.fracture) > 0.0 else "硬控受分类抗性"]
+		"R09": return "覆盖防御%s → %s\n半径%s米，持续%s秒\n真实走出保留%s秒" % [_number(a.defense), _number(b.defense), _number(b.radius), _number(b.duration), _number(b.exit_grace)]
+		"R10": return "岩伤%s → %s\n真实盾>0时防御＋%s" % [_percent(a.earth_bonus), _percent(b.earth_bonus), _number(b.shielded_defense)]
+		"S01": return "灵矢%s·最多%s → %s敌\n射程%s米、主击契印%s秒\n穿透后续不施印" % [_percent(b.coefficient), _number(a.target_cap), _number(b.target_cap), _number(b.range), _number(b.mark_duration)]
+		"S02": return "同名最多%s只，寿命%s秒\n每%s秒光束%s\n最多%s敌；满员等待" % [_number(b.capacity), _number(b.duration), _number(b.attack_interval), _percent(b.coefficient), _number(b.target_cap)]
+		"S03": return "近战%s·寿命%s秒\n每%s秒，索敌%s米\n%s" % [_percent(b.coefficient), _number(b.duration), _number(b.attack_interval), _number(b.search_range), "%s度挥击，最多%s敌" % [_number(b.cleave_angle_degrees), _number(b.target_cap)] if int(b.target_cap) > 1 else "移动%s米／秒，单敌近战" % _number(b.move_speed)]
+		"S04": return "每%s秒扫掠%s\n寿命%s秒\n最多%s → %s敌" % [_number(b.attack_interval), _percent(b.coefficient), _number(b.duration), _number(a.target_cap), _number(b.target_cap)]
+		"S05": return "每名来源协同%s → %s\n最多%s名契灵各一份\n不重置普通攻击" % [_percent(a.command_coefficient), _percent(b.command_coefficient), _number(b.command_unit_cap)]
+		"S06": return "基础爆发%s，半径%s米\n成功消费奖励%s → %s\n最多消费一只合格契灵" % [_percent(b.base_coefficient), _number(b.radius), _percent(a.consume_bonus_coefficient), _percent(b.consume_bonus_coefficient)]
+		"S07": return "半径%s米／持续%s秒\n每宠每场续存%s秒\n终身续存预算%s秒" % [_number(b.radius), _number(b.duration), _number(b.extension_per_unit), _number(b.lifetime_extension_cap)]
+		"S08": return "伤害%s·减速持续%s秒\n已有契印减速%s\n%s" % [_percent(b.coefficient), _number(b.slow_duration), _percent(b.marked_slow), "最多%s敌，主击可施契印" % _number(b.target_cap) if bool(b.can_apply_mark) else "本级不施契印"]
+		"S09": return "基础回盾%s → %s\n基础CD%s → %s秒\n每活宠＋%s，最多%s只" % [_number(a.shield_restore), _number(b.shield_restore), _number(a.cooldown), _number(b.cooldown), _number(b.shield_per_alive_unit), _number(b.bonus_unit_cap)]
+		"S10": return "灵契伤害%s → %s\n新契印延长%s秒\n契印普攻另＋%s（同桶）" % [_percent(a.spirit_damage_bonus), _percent(b.spirit_damage_bonus), _number(b.mark_duration_add), _percent(b.mark_normal_attack_bonus_add)]
+	return ""
+
+
+static func lightning_state_rule() -> String:
+	var source: Dictionary = load_catalog().get("lightning_source", {})
+	var conductive: Dictionary = source.get("mechanics", {}).get("conductive", {})
+	return "导电每敌一份，不叠层、不造成持续伤害或麻痹。普通连接%s米，双端已有导电时另加%s米；逐边检查遮挡，同次施法不重访，空跳数不返还单体。" % [_number(conductive.get("base_hop_range")), _number(conductive.get("both_conductive_range_add"))]
+
+
+static func _lightning_spell_effect(id: String, v: Dictionary) -> String:
+	match id:
+		"L01":
+			var text := "主击%s攻击·弹速%s米／秒\n命中后导电%s秒" % [_percent(v.get("coefficient")), _number(v.get("speed")), _number(v.get("conductive_duration"))]
+			if float(v.get("unconductive_coefficient_add", 0)) > 0:
+				text += "\n未导电主击另＋%s个百分点" % _number(float(v.unconductive_coefficient_add) * 100.0)
+			return text
+		"L02":
+			var text := "主击%s·穿线最多%s名其他敌人\n次目标各%s·全宽%s米" % [_percent(v.get("coefficient")), _number(v.get("secondary_target_cap")), _percent(v.get("secondary_coefficient")), _number(v.get("width"))]
+			if float(v.get("isolated_main_multiplier", 1)) > 1:
+				text += "\n主目标%s米内孤立：主击×%s" % [_number(v.get("isolated_radius")), _number(v.get("isolated_main_multiplier"))]
+			return text + "\n存活受击者导电%s秒" % _number(v.get("conductive_duration"))
+		"L03":
+			return "首击%s·最多%s名不同敌人\n后跳逐次保留%s伤害\n每跳间隔%s秒·存活者导电%s秒" % [_percent(v.get("coefficient")), _number(v.get("target_cap")), _percent(v.get("hop_decay")), _number(v.get("hop_interval")), _number(v.get("conductive_duration"))]
+		"L04":
+			return "主击%s\n%s米内最多%s名未导电邻敌布点\n导电%s秒·仅传播一轮" % [_percent(v.get("coefficient")), _number(v.get("spread_range")), _number(v.get("neighbor_cap")), _number(v.get("conductive_duration"))]
+		"L05":
+			var times: Array = v.get("strike_times", [])
+			var text := "半径%s米·持续%s秒\n共%s次落雷，最多%s敌各%s\n各次云团独立，不取消旧波" % [_number(v.get("radius")), _number(v.get("duration")), _number(times.size()), _number(v.get("strike_target_cap")), _percent(v.get("coefficient"))]
+			if float(v.get("natural_first_hit_vulnerability", 0)) > 0:
+				text += "\n自然云首次命中后雷易伤＋%s·%s秒" % [_percent(v.get("natural_first_hit_vulnerability")), _number(v.get("vulnerability_duration"))]
+			return text
+		"L06":
+			var text := "半径%s米·主脉冲%s\n存活命中者导电%s秒" % [_number(v.get("radius")), _percent(v.get("coefficient")), _number(v.get("conductive_duration"))]
+			if float(v.get("followup_coefficient", 0)) > 0:
+				text += "\n%s秒后原地追加%s脉冲\n后脉冲也刷新导电" % [_number(v.get("followup_delay")), _percent(v.get("followup_coefficient"))]
+			return text
+		"L07":
+			var text := "主击%s\n旧导电目标另受%s非暴击雷伤" % [_percent(v.get("coefficient")), _percent(v.get("conductive_extra_coefficient"))]
+			if int(v.get("mature_arc_target_cap", 0)) > 0:
+				text += "\n自然裁决：导电满%s秒且存活\n向最多%s名旧导电邻敌各放%s电弧" % [_number(v.get("mature_age")), _number(v.get("mature_arc_target_cap")), _percent(v.get("mature_arc_coefficient"))]
+			return text
+		"L08":
+			var overload: Dictionary = load_catalog().get("lightning_source", {}).get("mechanics", {}).get("overload", {})
+			var text := "主击%s·边伤%s，不暴击\n含主目标最多%s敌" % [_percent(v.get("coefficient")), _percent(v.get("edge_coefficient")), _number(v.get("target_cap"))]
+			text += "\n旧导电至少%s节点：前%s边×%s" % [_number(overload.get("minimum_precast_conductive_component")), _number(v.get("natural_overload_edges", overload.get("boosted_existing_edges"))), _number(v.get("natural_overload_multiplier", overload.get("coefficient_multiplier")))]
+			if v.has("natural_overload_edges"):
+				text += "\n追加仍按基础过载规则"
+			return text
+		"L09":
+			return "回复%s护盾·冷却%s秒\n实际回复后%s米内最多%s敌布点\n导电%s秒；不回复生命" % [_number(v.get("shield_restore")), _number(v.get("cooldown")), _number(v.get("conductive_range")), _number(v.get("conductive_target_cap")), _number(v.get("conductive_duration"))]
+		"L10":
+			var text := "雷系伤害＋%s" % _percent(v.get("school_damage_bonus"))
+			if float(v.get("conductive_duration_add", 0)) > 0:
+				text += "\n以后新施加／刷新导电延长%s秒" % _number(v.get("conductive_duration_add"))
+			if float(v.get("both_conductive_range_add", 0)) > 0:
+				text += "\n双端导电的连接再加%s米" % _number(v.get("both_conductive_range_add"))
+			return text
+	return ""
+
+
+static func _lightning_upgrade_text(id: String, a: Dictionary, b: Dictionary) -> String:
+	# Compact choice cards expose the resulting mechanism; full boundaries stay in tooltips.
+	match id:
+		"L01": return "主击%s → %s\n未导电另＋%s个百分点\n导电%s秒" % [_percent(a.get("coefficient")), _percent(b.get("coefficient")), _number(float(b.get("unconductive_coefficient_add", 0)) * 100), _number(b.get("conductive_duration"))]
+		"L02": return "主击%s → %s\n最多%s名次目标各%s\n孤立主目标×%s" % [_percent(a.get("coefficient")), _percent(b.get("coefficient")), _number(b.get("secondary_target_cap")), _percent(b.get("secondary_coefficient")), _number(b.get("isolated_main_multiplier", 1))]
+		"L03": return "首击%s → %s\n最多%s敌·后跳保留%s\n断边不返还单体" % [_percent(a.get("coefficient")), _percent(b.get("coefficient")), _number(b.get("target_cap")), _percent(b.get("hop_decay"))]
+		"L04": return "主击%s → %s\n布点邻敌%s → %s名\n不对邻敌造成即时伤害" % [_percent(a.get("coefficient")), _percent(b.get("coefficient")), _number(a.get("neighbor_cap")), _number(b.get("neighbor_cap"))]
+		"L05": return "每次落雷%s·最多%s敌\n共%s次·半径%s米\n%s" % [_percent(b.get("coefficient")), _number(b.get("strike_target_cap")), _number(b.get("strike_times", []).size()), _number(b.get("radius")), "自然落雷后雷易伤＋%s" % _percent(b.get("natural_first_hit_vulnerability")) if float(b.get("natural_first_hit_vulnerability", 0)) > 0 else "各次云团独立，不取消旧波"]
+		"L06": return "半径%s → %s米\n主脉冲%s\n%s" % [_number(a.get("radius")), _number(b.get("radius")), _percent(b.get("coefficient")), "%s秒后原地追加%s\n两段均刷新导电" % [_number(b.get("followup_delay")), _percent(b.get("followup_coefficient"))] if float(b.get("followup_coefficient", 0)) > 0 else "命中刷新导电"]
+		"L07": return "主击%s·旧导电附伤%s\n%s" % [_percent(b.get("coefficient")), _percent(b.get("conductive_extra_coefficient")), "自然裁决对成熟导电\n可向最多%s名邻敌各放%s弧" % [_number(b.get("mature_arc_target_cap")), _percent(b.get("mature_arc_coefficient"))] if int(b.get("mature_arc_target_cap", 0)) > 0 else "附伤不暴击"]
+		"L08": return _lightning_spell_effect(id, b)
+		"L09": return "回盾%s·冷却%s秒\n%s米内最多%s敌布点\n只据实际回复触发" % [_number(b.get("shield_restore")), _number(b.get("cooldown")), _number(b.get("conductive_range")), _number(b.get("conductive_target_cap"))]
+		"L10": return "雷伤%s → %s\n新导电延长%s秒\n双端导电连接再加%s米" % [_percent(a.get("school_damage_bonus")), _percent(b.get("school_damage_bonus")), _number(b.get("conductive_duration_add")), _number(b.get("both_conductive_range_add"))]
+	return ""
 
 
 static func ice_state_rule() -> String:
@@ -825,3 +1147,19 @@ static func _percent(value: Variant) -> String:
 
 static func _increase(multiplier: Variant) -> String:
 	return "—" if multiplier == null else _percent(float(multiplier) - 1.0)
+
+
+static func catalyst_description(school:String, count:int, sampling:Dictionary)->String:
+	var text: String = "%s关联%d术，起手独立选择。\n\n优先强度是额外优先抽本系的比例，不是固定单卡概率。" % [school_name(school),count]
+	if float(sampling.get("owned_upgrade_weight",1.0)) > 1.0:
+		text += "\n已学可升级法术权重×%s。" % _number(sampling.owned_upgrade_weight)
+	text += "满级／前置先过滤，同屏不重复，不保证必出。\n\n等级越高越集中本系；均衡混学可卸下触媒。"
+	return text
+
+
+static func catalyst_reference_text(sampling:Dictionary, level:int)->String:
+	var values:Array=sampling.get("catalyst_affinity_by_level",[])
+	if level<1 or level>values.size(): return "未读取到触媒倾向参数。"
+	var priority:float=float(values[level-1])
+	var first:float=1.0/6.0+(1.0-1.0/6.0)*priority
+	return "优先强度%s：每张先增加本系优先分量，剩余按合法池抽取。\n若本系10术、跨系50术均合法且同权，第一张本系概率为%s；实际概率随满级、前置和合法权重改变。\n不是必出本系或指定法术的保底。" % [_percent(priority),_percent(first)]

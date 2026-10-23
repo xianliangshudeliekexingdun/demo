@@ -4,7 +4,7 @@
     "green": 1,
     "blue": 2,
     "purple": 3,
-    "gold": 3
+    "gold": 0
   },
   "affixes": {
     "attack": {
@@ -18,6 +18,11 @@
         2,
         3,
         4
+      ],
+      "main_tiers": [
+        4,
+        6,
+        8
       ]
     },
     "health": {
@@ -31,6 +36,11 @@
         10,
         15,
         20
+      ],
+      "main_tiers": [
+        20,
+        30,
+        40
       ]
     },
     "shield": {
@@ -44,6 +54,11 @@
         4,
         6,
         8
+      ],
+      "main_tiers": [
+        8,
+        12,
+        16
       ]
     },
     "defense": {
@@ -57,6 +72,11 @@
         2,
         3,
         4
+      ],
+      "main_tiers": [
+        4,
+        6,
+        8
       ]
     },
     "crit_rate": {
@@ -70,6 +90,11 @@
         0.015,
         0.02,
         0.03
+      ],
+      "main_tiers": [
+        0.03,
+        0.04,
+        0.06
       ]
     },
     "crit_multiplier": {
@@ -83,6 +108,11 @@
         0.05,
         0.08,
         0.12
+      ],
+      "main_tiers": [
+        0.1,
+        0.16,
+        0.24
       ]
     },
     "cdr": {
@@ -96,6 +126,11 @@
         0.01,
         0.015,
         0.02
+      ],
+      "main_tiers": [
+        0.02,
+        0.03,
+        0.04
       ]
     },
     "speed": {
@@ -109,91 +144,135 @@
         0.01,
         0.015,
         0.02
+      ],
+      "main_tiers": [
+        0.02,
+        0.03,
+        0.04
       ]
     }
   },
   "cores": {
-    "reactor": {
-      "name": "万象熔炉",
-      "base_coefficient": 3.0,
-      "remaining_burn_scale": 1.1,
-      "radius": 3.5,
-      "neighbor_cap": 4,
-      "neighbor_scale": 0.6,
-      "cooldown": 1.5
-    },
-    "sacrifice": {
-      "name": "血祭契约",
-      "drain_max_health_per_second": 0.015,
-      "drain_floor_fraction": 0.1,
-      "damage_per_missing_fraction": 1.0
-    },
-    "aegis": {
-      "name": "血晶屏障",
-      "life_conversion": 0.35,
-      "shield_per_life": 2.5,
-      "combat_health_restore_conversion": 1.0
-    },
     "inferno": {
-      "name": "灾厄火种",
-      "cap": 6,
-      "tick_coefficient_per_layer": 0.1,
-      "gain_interval": 0.4,
-      "decay_delay": 1.5,
-      "decay_interval": 1.0
+      "name": "余烬炉心",
+      "burn_damage_fraction": 0.6,
+      "body_damage_fraction": 0.15,
+      "ticks_required": 4,
+      "stored_attack_cap": 3.0,
+      "radius": 2.0,
+      "neighbor_cap": 2,
+      "neighbor_scale": 0.35,
+      "description": "真实燃烧伤害的{burn_damage_fraction_pct}%及已燃目标自然火术首个本体命中的{body_damage_fraction_pct}%积为余烬；同一燃烧每{ticks_required}跳兑现，主目标全额、{radius}米内{neighbor_cap}邻各{neighbor_scale_pct}%。每敌上限{stored_attack_cap}倍攻击。熔核爆弹消费、死亡或燃烧结束清残量，不消费未来燃烧。"
     },
     "coffin": {
-      "name": "永霜冰棺",
-      "defer_fraction": 0.35,
-      "release_multiplier": 1.5,
+      "name": "晶封之心",
+      "defer_fraction": 0.4,
       "stored_attack_cap": 8.0,
+      "natural_multiplier": 1.8,
+      "consume_multiplier": 1.45,
+      "death_multiplier": 1.0,
+      "release_multiplier": 1.8,
       "radius": 3.0,
-      "target_cap": 5
+      "neighbor_cap": 2,
+      "neighbor_scale": 0.3,
+      "target_cap": 3,
+      "description": "已有冰裂窗口内，六系合格法术本体{defer_fraction_pct}%暂存，剩余即时；库存上限{stored_attack_cap}倍攻击。自然到期×{natural_multiplier}、提前消费×{consume_multiplier}，{radius}米内{neighbor_cap}邻各{neighbor_scale_pct}%；死亡仅以库存×{death_multiplier}向邻敌结算。不增加硬冻，宠物普攻与派生不储存。"
+    },
+    "lightning": {
+      "name": "雷暴回路",
+      "charge_damage_fraction": 0.4,
+      "charge_count": 4,
+      "charge_gate": 0.6,
+      "idle_timeout": 6.0,
+      "stored_attack_cap": 8.0,
+      "discharge_delay": 0.15,
+      "radius": 3.5,
+      "neighbor_cap": 2,
+      "neighbor_scale": 0.3,
+      "landing_radius": 0.8,
+      "description": "自然雷术首个本体命中旧导电，存{charge_damage_fraction_pct}%伤害并加1荷；{charge_gate}秒充荷门，{charge_count}荷满、上限{stored_attack_cap}倍攻击。下一自然伤害雷术先消费主及{neighbor_cap}邻旧导电，{discharge_delay}秒后定点落雷，主全额、邻各{neighbor_scale_pct}%；{idle_timeout}秒闲置清空，落点{landing_radius}米、不追人。"
+    },
+    "wind": {
+      "name": "流岚之心",
+      "flow_duration": 2.5,
+      "distance_per_stack": 1.5,
+      "max_stacks": 3,
+      "body_per_stack": 0.12,
+      "size_per_stack": 0.04,
+      "decay_delay": 0.5,
+      "decay_interval": 0.5,
+      "description": "自然进攻风术维持{flow_duration}秒气流；期间每真实移动{distance_per_stack}米加1层，最多{max_stacks}层，每层自然风术本体＋{body_per_stack_pct}%、合格伤害几何＋{size_per_stack_pct}%。施法不耗层；停步或气流中断{decay_delay}秒后，每{decay_interval}秒掉1层。不扩大控制区。"
+    },
+    "earth": {
+      "name": "镇岳基石",
+      "anchor_radius": 3.0,
+      "mature_duration": 1.5,
+      "pulse_interval": 3.0,
+      "pulse_coefficient": 2.0,
+      "pulse_radius": 2.4,
+      "target_cap": 4,
+      "leave_grace": 0.5,
+      "description": "靠近一个真实岩棱坠击支点、地脉石柱或护阵石碑，{anchor_radius}米可视范围累计驻留{mature_duration}秒成熟；立即并每{pulse_interval}秒震击，{pulse_coefficient_pct}%攻击系数、半径{pulse_radius}米、最多{target_cap}敌。短离{leave_grace}秒保进度但不伤害，来源消失立即清空。"
+    },
+    "spirit": {
+      "name": "协奏契印",
+      "charge_count": 3,
+      "base_charge": 1,
+      "alternate_charge": 1,
+      "bonus_fraction": 1.2,
+      "idle_timeout": 3.0,
+      "description": "契灵成功普通攻击动作加{base_charge}协同，换族额外加{alternate_charge}，最多{charge_count}。蓄满后的下一次成功普攻消费协同，对原合法目标追加{bonus_fraction_pct}%非暴击基础伤害。兑现不再蓄，{idle_timeout}秒无成功普攻或全宠离场清空；号令不参与。"
     },
     "fracture": {
       "name": "星裂棱镜",
-      "extra_damage_multiplier": 1.6,
+      "extra_damage_multiplier": 1.8,
       "first_delay": 0.18,
       "bounce_delay": 0.12,
       "bounce_count": 2,
-      "bounce_multiplier": 0.6,
-      "radius": 3.5
+      "bounce_multiplier": 0.5,
+      "radius": 3.5,
+      "description": "合格法术本体暴击时先结算非暴击基础段，暴击额外段E在{first_delay}秒后变为{extra_damage_multiplier}E碎晶；每{bounce_delay}秒最多再跳{bounce_count}名不同邻敌，每跳降至上次{bounce_multiplier_pct}%，寻找半径{radius}米。不补空跳，碎晶不暴击或施状态。"
     },
     "echo": {
-      "name": "双生回响",
-      "base_multiplier": 0.6,
-      "cdr_multiplier": 3.0,
-      "delay": 0.65
+      "name": "双生镜心",
+      "immediate_multiplier": 0.8,
+      "base_multiplier": 0.65,
+      "cdr_multiplier": 0.0,
+      "delay": 0.6,
+      "description": "合格自然法术本体即时×{immediate_multiplier}，{delay}秒后在记录的有限原几何重现{base_multiplier_pct}%非暴击基础伤害，重新查存活、墙体与目标上限。正常CDR保留；副击可落空，不复制状态、召唤、治疗或条件派生。"
     },
-    "stride": {
-      "name": "行者蓄势",
-      "maximum_distance": 10.0,
-      "maximum_body_damage_bonus": 1.5,
-      "maximum_size_bonus": 0.35,
-      "minimum_motion": 1e-05
+    "sacrifice": {
+      "name": "血祭红晶",
+      "drain_max_health_per_second": 0.01,
+      "drain_floor_fraction": 0.35,
+      "damage_per_missing_fraction": 1.0,
+      "description": "战斗每秒自耗{drain_max_health_per_second_pct}%生命上限，到{drain_floor_fraction_pct}%停止；每缺失1%生命独立增伤{damage_per_missing_fraction}%。治疗会降低加成，自耗不触发受击效果，停止线不是免死，敌人仍可击杀。"
+    },
+    "aegis": {
+      "name": "血晶屏障",
+      "life_conversion": 0.3,
+      "shield_per_life": 2.2,
+      "combat_health_restore_conversion": 1.0,
+      "description": "将{life_conversion_pct}%未转换生命上限换为护盾，每1生命换{shield_per_life}护盾。战斗中的数值生命治疗按{combat_health_restore_conversion_pct}%改为真实回盾，不储存满盾溢出；清房和商店恢复保留原类型，不借换装补满。"
     }
   },
-  "version": "magic-gems-runtime-2",
+  "version": "magic-gems-runtime-3",
   "draw_cost": 5,
   "base_weights": {
-    "green": 50,
+    "green": 60,
     "blue": 30,
-    "purple": 16,
-    "gold": 4
+    "purple": 10
   },
   "pity": {
-    "purple_or_better": 10,
-    "first_gold": 10,
-    "gold_hard": 30,
-    "gold_soft_start": 21,
-    "gold_soft_increment": 0.08
+    "purple_or_better": 10
   },
   "rarity_names": {
     "green": "绿色",
     "blue": "蓝色",
     "purple": "紫色",
-    "gold": "金色",
-    "legacy": "传承"
+    "gold": "核心",
+    "legacy": "传承",
+    "transition": "过渡属性"
   },
   "route_income": {
     "max_room": 60,
@@ -202,11 +281,128 @@
     "later_dust": 2
   },
   "tier_weights": [
-    25,
-    50,
-    25
+    60,
+    30,
+    10
   ],
   "workshop": {
+    "currency_name": "宝石精粹",
+    "salvage_yields": {
+      "green": 1,
+      "blue": 3,
+      "purple": 10,
+      "gold": 10,
+      "transition": 10
+    },
+    "craft_costs": {
+      "green": 3,
+      "blue": 10,
+      "purple": 30
+    },
+    "upgrade_costs": {
+      "green": 8,
+      "blue": 20
+    },
+    "main_tier_costs": [
+      8,
+      16
+    ],
+    "side_tier_costs": [
+      6,
+      12
+    ],
+    "random_retype_cost": 5,
+    "direct_retype_cost": 25,
+    "affix_costs": {
+      "green": 5,
+      "blue": 5,
+      "purple": 5,
+      "gold": 5
+    },
+    "core_cost": 0,
+    "exclude_identical_affix_result": true,
+    "exclude_current_core": true
+  },
+  "core_migration_map": {
+    "thermal": "reactor",
+    "blood": "aegis",
+    "layers": "inferno",
+    "prism": "fracture",
+    "collapse": "coffin",
+    "weave": "echo",
+    "flash": "sacrifice",
+    "erosion": "stride"
+  },
+  "legacy_cores": {
+    "reactor": {
+      "name": "万象熔炉",
+      "base_coefficient": 3.0,
+      "remaining_burn_scale": 1.1,
+      "radius": 3.5,
+      "neighbor_cap": 4,
+      "neighbor_scale": 0.6,
+      "cooldown": 1.5,
+      "description": "旧机制：法术命中同时燃烧、冻结或脆化的敌人，消耗两种状态反应，造成{base_coefficient}倍攻击＋剩余燃烧×{remaining_burn_scale}，{radius}米内最多{neighbor_cap}邻各{neighbor_scale_pct}%伤害；共用冷却{cooldown}秒。"
+    },
+    "sacrifice": {
+      "name": "血祭契约",
+      "drain_max_health_per_second": 0.015,
+      "drain_floor_fraction": 0.1,
+      "damage_per_missing_fraction": 1.0,
+      "description": "旧机制：战斗每秒消耗最大生命{drain_max_health_per_second_pct}%，自身最低到{drain_floor_fraction_pct}%生命。每损失1%生命，伤害独立提高{damage_per_missing_fraction}%。敌人仍可击杀。"
+    },
+    "aegis": {
+      "name": "血晶屏障",
+      "life_conversion": 0.35,
+      "shield_per_life": 2.5,
+      "combat_health_restore_conversion": 1.0,
+      "description": "旧机制：将{life_conversion_pct}%最大生命换成盾，每1生命换{shield_per_life}盾；战斗生命治疗按{combat_health_restore_conversion_pct}%改为回盾，清房／商店保留原补给。"
+    },
+    "inferno": {
+      "name": "灾厄火种",
+      "cap": 6,
+      "tick_coefficient_per_layer": 0.1,
+      "gain_interval": 0.4,
+      "decay_delay": 1.5,
+      "decay_interval": 1.0,
+      "description": "旧机制：燃烧最多{cap}层，每层每{burn_interval}秒造成{tick_coefficient_per_layer}倍攻击。重复点燃增层，增层间隔{gain_interval}秒；停止点燃{decay_delay}秒后每{decay_interval}秒掉层。燃烧结束清空，引爆按真实剩余燃料。"
+    },
+    "coffin": {
+      "name": "永霜冰棺",
+      "defer_fraction": 0.35,
+      "release_multiplier": 1.5,
+      "stored_attack_cap": 8.0,
+      "radius": 3.0,
+      "target_cap": 5,
+      "description": "旧机制：冻结或脆化期间，法术本体{defer_fraction_pct}%暂存，上限{stored_attack_cap}倍攻击；状态结束、碎冰消费或死亡按{release_multiplier}倍库存爆发，{radius}米内最多{target_cap}敌。"
+    },
+    "fracture": {
+      "name": "星裂棱镜",
+      "extra_damage_multiplier": 1.6,
+      "first_delay": 0.18,
+      "bounce_delay": 0.12,
+      "bounce_count": 2,
+      "bounce_multiplier": 0.6,
+      "radius": 3.5,
+      "description": "旧机制：本体暴击的额外段×{extra_damage_multiplier}在{first_delay}秒后命中，最多再跳{bounce_count}次，每跳是上次{bounce_multiplier_pct}%，半径{radius}米，不重访。"
+    },
+    "echo": {
+      "name": "双生回响",
+      "base_multiplier": 0.6,
+      "cdr_multiplier": 3.0,
+      "delay": 0.65,
+      "description": "旧机制：CDR不再缩短冷却，自然施法{delay}秒后回响{base_multiplier_pct}%本体伤害；每1%CDR再增加{cdr_multiplier}%。回响不暴击、不施状态或触发宝物。"
+    },
+    "stride": {
+      "name": "行者蓄势",
+      "maximum_distance": 10.0,
+      "maximum_body_damage_bonus": 1.5,
+      "maximum_size_bonus": 0.35,
+      "minimum_motion": 1e-05,
+      "description": "旧机制：移动时暂停伤害法术吟唱，真实移动{maximum_distance}米满蓄；停下后首个伤害法术消费蓄势，本体最多＋{maximum_body_damage_bonus_pct}%，范围最多＋{maximum_size_bonus_pct}%；防护术照常释放。"
+    }
+  },
+  "legacy_workshop": {
     "currency_name": "宝石精粹",
     "salvage_yields": {
       "green": 1,
@@ -224,14 +420,36 @@
     "exclude_identical_affix_result": true,
     "exclude_current_core": true
   },
-  "core_migration_map": {
-    "thermal": "reactor",
-    "blood": "aegis",
-    "layers": "inferno",
-    "prism": "fracture",
-    "collapse": "coffin",
-    "weave": "echo",
-    "flash": "sacrifice",
-    "erosion": "stride"
+  "legacy_pity": {
+    "purple_or_better": 10,
+    "first_gold": 10,
+    "gold_hard": 30,
+    "gold_soft_start": 21,
+    "gold_soft_increment": 0.08
+  },
+  "legacy_affix_counts": {
+    "green": 1,
+    "blue": 2,
+    "purple": 3,
+    "gold": 3
+  },
+  "schema_version": 3,
+  "core_unlock_cost": 30,
+  "starter_attribute_count": 3,
+  "milestone_essence": [
+    {
+      "cleared": 15,
+      "essence": 12
+    },
+    {
+      "cleared": 30,
+      "essence": 12
+    }
+  ],
+  "migration": {
+    "duplicate_core_essence": 20,
+    "core_pity_dust_budget": 30,
+    "transition_gold_salvage": 10,
+    "version": "gem-v3-migration-1"
   }
 }

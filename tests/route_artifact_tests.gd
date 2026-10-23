@@ -59,7 +59,7 @@ func _initialize():
 	checks = suite.checks
 	failures = suite.details.duplicate()
 	var result = {"checks": checks, "failures": failures.size(), "details": failures, "scope": "63 stored definitions: 24 ordinary generic, four Boss-only seals, 35 archived including 32 retired professions. Canonical spell/UI agreement, live capabilities, shop and Boss sampling, stale ownership cannot duplicate growth."}
-	var out: String = "res://build/qa/spell-growth-implementation-20261020/treasures"
+	var out: String = "res://build/qa/six-schools-implementation-20261021/treasures"
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--qa-out="):
 			out = arg.trim_prefix("--qa-out=")

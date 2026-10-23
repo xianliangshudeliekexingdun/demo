@@ -191,21 +191,24 @@
   {
     "source": "Original project-local GDScript or Godot shader authored for this task",
     "target": "scripts/ui/arcane_icon.gd",
-    "sha256": "2efaff8317f857fddc5fc1eabaea9657fbfb7b10abe15dac921792ebd77a6f5d",
-    "bytes": 5158,
+    "sha256": "4ba8fcc59b6ee4faca28fa1816cdc37097861be082387d7016c676255cd03941",
+    "bytes": 20767,
     "approval": "2026-10-17 user explicitly requested completing missing spell icons, item icons and attack VFX, followed by documentation matching implemented code. Inclusion authorized; new art user review remains pending.",
     "runtime_approved": true,
-    "purpose": "Twenty active fire/ice spells and archived F04 painted icon mapping, with native aspect containment for ice and safe unknown/empty fallback.",
+    "purpose": "Shared ID-based icon drawing: approved painted fire/ice and archived F04 mappings retained; forty distinct native lightning/wind/earth/spirit emblems plus four catalysts, scalable dark keylines, faceted fills and highlights.",
     "reference_is_not_runtime_asset": true,
-    "visual_status": "Native pixel checks recorded separately; user review of this new art pending",
+    "visual_status": "Headless script import, immutable-snapshot/batch and analytic icon geometry checks only. No rendered pixels, screenshots, interactive play, natural route, performance or export acceptance.",
     "formal_fire_revision": "2026-10-18: approved fire design13 display and source-only burn/spread/detonation presentation.",
-    "formal_ice_revision": "2026-10-18: approved ice design14 implementation, 26 new icon mappings, school choice/catalog and source-only ice presentation; user visual review pending."
+    "formal_ice_revision": "2026-10-18: approved ice design14 implementation, 26 new icon mappings, school choice/catalog and source-only ice presentation; user visual review pending.",
+    "new_schools_visual_revision": "new-schools-visuals-20261022",
+    "new_schools_visual_approval": "2026-10-22 user requested improving spell icons and VFX outside fire and ice. Local visual implementation authorized; interactive/pixel/performance review remains deferred by user.",
+    "new_schools_visual_evidence": "build/qa/new-schools-visuals-20261022/validation_summary.json"
   },
   {
     "source": "Original project-local GDScript or Godot shader authored for this task",
     "target": "scripts/presentation/first_room_view.gd",
-    "sha256": "52323b59d5c297bfb9c3c524b0da96aee74ec5b0741774292b58c3be407fab92",
-    "bytes": 38707,
+    "sha256": "87c8c1c80fcb6ff4d52f60530113748b7925b5a385b9e630f2caec6d35100289",
+    "bytes": 39378,
     "approval": "2026-10-17 user explicitly requested completing missing spell icons, item icons and attack VFX, followed by documentation matching implemented code. Inclusion authorized; new art user review remains pending.",
     "runtime_approved": true,
     "purpose": "Read-only courtyard view integrates cached spell VFX snapshots; chest prompts use the current treasure terminology.",
@@ -213,7 +216,9 @@
     "reference_is_not_runtime_asset": true,
     "visual_status": "Native pixel checks recorded separately; user review of this new art pending",
     "visual_revision": "2026-10-19: original procedural shop counter and sign; existing approved locomotion follows actual shop travel. No new character action or bitmap.",
-    "boss_revision": "2026-10-20 user authorized four Bosses, dual rewards and empty-gold seals. Original procedural shapes/read-only UI; no new raster/font/Lina motion. Pixel and gameplay acceptance deferred by user."
+    "boss_revision": "2026-10-20 user authorized four Bosses, dual rewards and empty-gold seals. Original procedural shapes/read-only UI; no new raster/font/Lina motion. Pixel and gameplay acceptance deferred by user.",
+    "gem_v3_revision": "2026-10-22: user authorized the complete approved ten fixed cores, three attribute slots, acquisition/cultivation and matching icons/VFX. UI requests only; rendering consumes authoritative snapshots. No new images/fonts; no pixel/play/performance/export acceptance.",
+    "gem_v3_evidence": "build/qa/gem-v3-implementation-20261022/validation_summary.json"
   },
   {
     "source": "Built-in image_gen.imagegen; original generated image retained unchanged",
@@ -1225,8 +1230,8 @@
   {
     "source": "Original project-local GDScript or Godot shader authored for this task",
     "target": "scripts/ui/atelier_ui.gd",
-    "sha256": "ec67db8564176a5c359d4b601bbb17c4ecff01fefef2d1516a57ebdffdc04cc1",
-    "bytes": 28916,
+    "sha256": "22c803efa4170452de58f5acb47437a7f795215bd16a86aa75d339bb4ecc61d7",
+    "bytes": 31366,
     "runtime_approved": true,
     "approval": "2026-10-17 user explicitly requested completing missing spell icons, item icons and attack VFX, followed by documentation matching implemented code. Inclusion authorized; new art user review remains pending.",
     "purpose": "Existing menu, equipment, preparation, grimoire and preview pages use exact item IDs; preparation opens the 60-room route and uses treasure terminology.",
@@ -1238,21 +1243,28 @@
     "gem_revision": "2026-10-19 authorized gem implementation: read-only four-slot inventory and source-driven core short effects; existing PNGs/fonts preserved.",
     "gem_v2_revision": "2026-10-20 user authorized eight new keystones, three-tier affixes, salvage and reforge. Read-only UI and source-driven effects, existing raster art/fonts unchanged; user playtest pending.",
     "route60_revision": "2026-10-20: authorized 60-room extension. Room count/completion dust read from current data/summary; no new art. User explicitly deferred native play, pixel checks and full gameplay testing.",
-    "spell_growth_revision": "2026-10-20 user authorized fire/ice three-level growth and retirement of 32 profession treasures. Read-only current cards/catalog and ordinary/Boss filters; no independent spell-specific upgrade system. Native pixel/playtest deferred by user."
+    "spell_growth_revision": "2026-10-20 user authorized fire/ice three-level growth and retirement of 32 profession treasures. Read-only current cards/catalog and ordinary/Boss filters; no independent spell-specific upgrade system. Native pixel/playtest deferred by user.",
+    "gem_v3_revision": "2026-10-22: user authorized the complete approved ten fixed cores, three attribute slots, acquisition/cultivation and matching icons/VFX. UI requests only; rendering consumes authoritative snapshots. No new images/fonts; no pixel/play/performance/export acceptance.",
+    "gem_v3_evidence": "build/qa/gem-v3-implementation-20261022/validation_summary.json"
   },
   {
     "source": "Original project-local GDScript or Godot shader authored for this task",
     "target": "scripts/presentation/route_spell_vfx.gd",
-    "sha256": "61f7099ffe6a87b1d5f791cebc3f614829639ddf05566788a99369cdfd42947e",
-    "bytes": 22501,
+    "sha256": "f957a5486d59cc65eb4a3b422eff178d723669f850f8fb0e5d527b327796790a",
+    "bytes": 24879,
     "runtime_approved": true,
     "approval": "2026-10-17 user explicitly requested completing missing spell icons, item icons and attack VFX, followed by documentation matching implemented code. Inclusion authorized; new art user review remains pending.",
-    "purpose": "Read-only fire effects using two cached batches and approved fire tongue, coordinating the independent two-batch ice renderer from actual snapshots.",
-    "visual_status": "Native pixel checks recorded separately; user review of this new art pending",
+    "purpose": "Existing unchanged six-school coordinator: two fire batches, two ice batches, one lightning batch and one shared wind/earth/spirit batch; only consumes actual snapshots and events.",
+    "visual_status": "Headless script import, immutable-snapshot/batch and analytic icon geometry checks only. No rendered pixels, screenshots, interactive play, natural route, performance or export acceptance.",
     "formal_fire_revision": "2026-10-18: approved fire design13 display and source-only burn/spread/detonation presentation.",
     "formal_ice_revision": "2026-10-18: approved ice design14 implementation, 26 new icon mappings, school choice/catalog and source-only ice presentation; user visual review pending.",
     "gem_revision": "2026-10-19 authorized gem implementation: read-only four-slot inventory and source-driven core short effects; existing PNGs/fonts preserved.",
-    "gem_v2_revision": "2026-10-20 user authorized eight new keystones, three-tier affixes, salvage and reforge. Read-only UI and source-driven effects, existing raster art/fonts unchanged; user playtest pending."
+    "gem_v2_revision": "2026-10-20 user authorized eight new keystones, three-tier affixes, salvage and reforge. Read-only UI and source-driven effects, existing raster art/fonts unchanged; user playtest pending.",
+    "new_schools_visual_revision": "new-schools-visuals-20261022",
+    "new_schools_visual_approval": "2026-10-22 user requested improving spell icons and VFX outside fire and ice. Local visual implementation authorized; interactive/pixel/performance review remains deferred by user.",
+    "new_schools_visual_evidence": "build/qa/new-schools-visuals-20261022/validation_summary.json",
+    "gem_v3_revision": "2026-10-22: user authorized the complete approved ten fixed cores, three attribute slots, acquisition/cultivation and matching icons/VFX. UI requests only; rendering consumes authoritative snapshots. No new images/fonts; no pixel/play/performance/export acceptance.",
+    "gem_v3_evidence": "build/qa/gem-v3-implementation-20261022/validation_summary.json"
   },
   {
     "source": "Original project-local GDScript or Godot shader authored for this task",
@@ -1414,8 +1426,8 @@
     "purpose": "Existing read-only battle UI displays generated backgrounds for all eight spell slots, data-owned difficulty-band names and room counts, and player-facing treasure terminology.",
     "latest_revision": "2026-10-18 user authorized the 45-room route and treasure terminology; UI reads core snapshots and retains the existing three room-type nodes.",
     "visual_status": "Native Godot pixel checks are recorded separately; user review of this new art remains pending.",
-    "sha256": "6502e613249b34d628972c5c843bc2ee16bbbbdcb3cc4a16532dccb049671c4e",
-    "bytes": 42256,
+    "sha256": "e0bee80950b567b77e4d009d1653b4561c5705c80cf70f42a0f3310f7ea0c0b9",
+    "bytes": 46051,
     "generic_items_revision": "2026-10-18: generic item catalog/class labels, icons and read-only combat attributes; existing interaction retained.",
     "formal_fire_revision": "2026-10-18: approved fire design13 display and source-only burn/spread/detonation presentation.",
     "formal_ice_revision": "2026-10-18: approved ice design14 implementation, 26 new icon mappings, school choice/catalog and source-only ice presentation; user visual review pending.",
@@ -1425,7 +1437,9 @@
     "gem_v2_revision": "2026-10-20 user authorized eight new keystones, three-tier affixes, salvage and reforge. Read-only UI and source-driven effects, existing raster art/fonts unchanged; user playtest pending.",
     "route60_revision": "2026-10-20: authorized 60-room extension. Room count/completion dust read from current data/summary; no new art. User explicitly deferred native play, pixel checks and full gameplay testing.",
     "boss_revision": "2026-10-20 user authorized four Bosses, dual rewards and empty-gold seals. Original procedural shapes/read-only UI; no new raster/font/Lina motion. Pixel and gameplay acceptance deferred by user.",
-    "spell_growth_revision": "2026-10-20 user authorized fire/ice three-level growth and retirement of 32 profession treasures. Read-only current cards/catalog and ordinary/Boss filters; no independent spell-specific upgrade system. Native pixel/playtest deferred by user."
+    "spell_growth_revision": "2026-10-20 user authorized fire/ice three-level growth and retirement of 32 profession treasures. Read-only current cards/catalog and ordinary/Boss filters; no independent spell-specific upgrade system. Native pixel/playtest deferred by user.",
+    "gem_v3_revision": "2026-10-22: user authorized the complete approved ten fixed cores, three attribute slots, acquisition/cultivation and matching icons/VFX. UI requests only; rendering consumes authoritative snapshots. No new images/fonts; no pixel/play/performance/export acceptance.",
+    "gem_v3_evidence": "build/qa/gem-v3-implementation-20261022/validation_summary.json"
   },
   {
     "source": "C:\\Users\\naife\\.codex\\generated_images\\01a14de7-d892-7d90-9ff0-7167febbfcd6\\exec-342c756a-d2ab-4b40-bbce-8d59e8d28318.png",
@@ -2234,22 +2248,26 @@
   {
     "source": "Original project-local GDScript authored for authorized magic gem implementation",
     "target": "scripts/ui/gem_workshop.gd",
-    "sha256": "5ef9ef260bb21137066af2e3f7902242f67f1d39deea59330ea42c64f4ac5eec",
-    "bytes": 13041,
+    "sha256": "0127b279f4dbfc9f10523b6582c21035edc2505d755f57628ff29450865216bf",
+    "bytes": 15076,
     "runtime_approved": true,
     "approval": "2026-10-19 user explicitly requested implementation of discussed gems. Visual/player acceptance pending.",
     "purpose": "Read-only four-slot gem inventory, descriptions, draw results and probability rules; reuses approved equipment art and font. No new raster assets.",
     "gem_v2_revision": "2026-10-20 user authorized eight new keystones, three-tier affixes, salvage and reforge. Read-only UI and source-driven effects, existing raster art/fonts unchanged; user playtest pending.",
-    "route60_revision": "2026-10-20: authorized 60-room extension. Room count/completion dust read from current data/summary; no new art. User explicitly deferred native play, pixel checks and full gameplay testing."
+    "route60_revision": "2026-10-20: authorized 60-room extension. Room count/completion dust read from current data/summary; no new art. User explicitly deferred native play, pixel checks and full gameplay testing.",
+    "gem_v3_revision": "2026-10-22: user authorized the complete approved ten fixed cores, three attribute slots, acquisition/cultivation and matching icons/VFX. UI requests only; rendering consumes authoritative snapshots. No new images/fonts; no pixel/play/performance/export acceptance.",
+    "gem_v3_evidence": "build/qa/gem-v3-implementation-20261022/validation_summary.json"
   },
   {
     "source": "Original project-local GDScript authored for authorized gem workshop implementation",
     "target": "scripts/ui/gem_workshop_actions.gd",
-    "sha256": "b566e6a6252cfab07e3270e17e25c5b05fc33bacd9aadf0c1627468a63c71127",
-    "bytes": 4965,
+    "sha256": "6ec5b76db59f50317508863a1471f66ae44ce75c7b6c9a3595b130f1fe2bb802",
+    "bytes": 11819,
     "runtime_approved": true,
     "approval": "2026-10-20 user requested eight new keystones then salvage/reforge; unified essence confirmed. Player acceptance pending.",
-    "purpose": "Read-only selected-line reforge, persistent old/new result comparison and salvage preview. Existing approved font and panels; account owns all mutations."
+    "purpose": "Read-only selected-line reforge, persistent old/new result comparison and salvage preview. Existing approved font and panels; account owns all mutations.",
+    "gem_v3_revision": "2026-10-22: user authorized the complete approved ten fixed cores, three attribute slots, acquisition/cultivation and matching icons/VFX. UI requests only; rendering consumes authoritative snapshots. No new images/fonts; no pixel/play/performance/export acceptance.",
+    "gem_v3_evidence": "build/qa/gem-v3-implementation-20261022/validation_summary.json"
   },
   {
     "source": "Original project-local GDScript for authorized four-Boss implementation",
@@ -2259,5 +2277,58 @@
     "runtime_approved": true,
     "approval": "2026-10-20 user explicitly authorized Boss production. Native play and pixel review deferred by user.",
     "purpose": "Read-only Boss name, health, phase thresholds and action/grace labels; existing approved font/theme. No gameplay decisions."
+  },
+  {
+    "source": "Original project-local GDScript authored for the authorized visual revision; no external raster or font asset.",
+    "target": "scripts/presentation/route_lightning_vfx.gd",
+    "sha256": "eed46b7b76f949f23abe2a94ca69e28fdde8d9231abe3cc579f3a18a3aa912d7",
+    "bytes": 18204,
+    "runtime_approved": true,
+    "approval": "2026-10-22 user requested improving spell icons and VFX outside fire and ice. Local visual implementation authorized; interactive/pixel/performance review remains deferred by user.",
+    "purpose": "Source-driven real lightning edges, lance width, cloud-to-target strikes, fixed judgment, ring and shield; conductivity and vulnerability expire independently. One cached batch, 768-segment limit.",
+    "visual_status": "Headless script import, immutable-snapshot/batch and analytic icon geometry checks only. No rendered pixels, screenshots, interactive play, natural route, performance or export acceptance.",
+    "visual_revision": "new-schools-visuals-20261022",
+    "evidence": "build/qa/new-schools-visuals-20261022/validation_summary.json"
+  },
+  {
+    "source": "Original project-local GDScript authored for the authorized visual revision; no external raster or font asset.",
+    "target": "scripts/presentation/route_remaining_schools_vfx.gd",
+    "sha256": "8f27581a18763da675f43bb85f652898761b6c53cbdc4021d10adff5db6fad83",
+    "bytes": 29559,
+    "runtime_approved": true,
+    "approval": "2026-10-22 user requested improving spell icons and VFX outside fire and ice. Local visual implementation authorized; interactive/pixel/performance review remains deferred by user.",
+    "purpose": "Distinct wind blades, actual path pieces and rectangular curtain; three hollow nonblocking earth constructs and wave fronts; three spirit silhouettes and real attacks/commands. One cached batch, 1536-segment limit. W10 display reads current owned level and thresholds from existing data.",
+    "visual_status": "Headless script import, immutable-snapshot/batch and analytic icon geometry checks only. No rendered pixels, screenshots, interactive play, natural route, performance or export acceptance.",
+    "visual_revision": "new-schools-visuals-20261022",
+    "evidence": "build/qa/new-schools-visuals-20261022/validation_summary.json"
+  },
+  {
+    "source": "Original project-local procedural GDScript authored for the authorized ten-core and attribute-gem implementation; no external raster, font or generation prompt.",
+    "target": "scripts/ui/gem_icon.gd",
+    "runtime_approved": true,
+    "sha256": "80254765dbfc997866bfc6242fe564ac3e2c623f79702c41bf253734878753c7",
+    "bytes": 9475,
+    "gem_v3_revision": "2026-10-22: user authorized the complete approved ten fixed cores, three attribute slots, acquisition/cultivation and matching icons/VFX. UI requests only; rendering consumes authoritative snapshots. No new images/fonts; no pixel/play/performance/export acceptance.",
+    "gem_v3_evidence": "build/qa/gem-v3-implementation-20261022/validation_summary.json",
+    "purpose": "Ten distinct fixed-core glyphs and eight attribute-type glyphs, rarity/main-side/tier cues; code-native vector geometry, existing fonts."
+  },
+  {
+    "source": "Original project-local procedural GDScript authored for the authorized ten-core and attribute-gem implementation; no external raster, font or generation prompt.",
+    "target": "scripts/presentation/route_gem_vfx.gd",
+    "runtime_approved": true,
+    "sha256": "5b8602a2e13e77e2d49badc1248aa6449ce10c2120f30aea76ae4dd964992e7c",
+    "bytes": 12218,
+    "gem_v3_revision": "2026-10-22: user authorized the complete approved ten fixed cores, three attribute slots, acquisition/cultivation and matching icons/VFX. UI requests only; rendering consumes authoritative snapshots. No new images/fonts; no pixel/play/performance/export acceptance.",
+    "gem_v3_evidence": "build/qa/gem-v3-implementation-20261022/validation_summary.json",
+    "purpose": "Read-only real core charge, reserve, anchor and finite payout feedback; one 768-line batch, 256 lines reserved for events, reduced motion and room cleanup."
+  },
+  {
+    "source": "Original project-local procedural GDScript authored for the authorized ten-core and attribute-gem implementation; no external raster, font or generation prompt.",
+    "target": "scripts/ui/atelier_art.gd",
+    "runtime_approved": true,
+    "sha256": "40e2de7b12b17f9d9bfa6db6c7c46c0035d07a5dcdb2fe1a363f06c5fcbde059",
+    "bytes": 1853,
+    "gem_v3_revision": "2026-10-22: user authorized the complete approved ten fixed cores, three attribute slots, acquisition/cultivation and matching icons/VFX. UI requests only; rendering consumes authoritative snapshots. No new images/fonts; no pixel/play/performance/export acceptance.",
+    "gem_v3_evidence": "build/qa/gem-v3-implementation-20261022/validation_summary.json"
   }
 ]

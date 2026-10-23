@@ -1,0 +1,20 @@
+{
+  "model_version": "six-school-sampling-model-2-20261021",
+  "seeds": [20261021, 20261022, 20261023, 20261024],
+  "trials_per_batch": 125,
+  "policies": ["main_priority", "upgrade_priority", "dual_four_four"],
+  "schools": ["fire", "ice", "lightning", "wind", "earth", "spirit"],
+  "proposal_affinity": [0.28, 0.40, 0.52],
+  "proposal_owned_weight": 2.0,
+  "affinity_sweep": [0.20, 0.28, 0.36, 0.35, 0.40, 0.45, 0.48, 0.52, 0.56],
+  "owned_weight_sweep": [1.0, 1.5, 2.0],
+  "targets": {
+    "level1_main_priority_final_main_median_min": 5,
+    "level1_main_priority_main_resonance_by_book8_min": 0.80,
+    "level3_main_priority_cross_option_rate_min": 0.65,
+    "upgrade_priority_final_levels_p10_min": 21,
+    "no_catalyst_upgrade_priority_final_levels_p10_min": 20,
+    "dual_four_four_final_levels_p10_min": 20,
+    "dual_four_four_complete_rate_min": 0.50
+  }
+}

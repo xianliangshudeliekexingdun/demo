@@ -454,7 +454,8 @@ func _update_projectiles(run, dt: float) -> void:
 		if run.phase != "combat":
 			break
 		var from: Vector2 = projectile.pos
-		var distance := minf(float(projectile.speed) * dt, float(projectile.range_remaining))
+		var speed_scale: float = run.enemy_projectile_speed_multiplier(from) if run.has_method("enemy_projectile_speed_multiplier") else 1.0
+		var distance := minf(float(projectile.speed) * speed_scale * dt, float(projectile.range_remaining))
 		var to: Vector2 = from + projectile.direction * distance
 		var wall_time: float = run._first_block_contact(from, to, float(projectile.radius))
 		var hit_time: float = run.segment_circle_time(from - run.player.previous, to - run.player.pos, Vector2.ZERO, float(projectile.radius) + float(run.player.radius))

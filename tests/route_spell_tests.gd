@@ -52,7 +52,7 @@ func _initialize():
 	_check_wall_and_extra()
 	_check_same_source_overlap()
 	var result = {"checks": checks, "failures": failures.size(), "details": failures, "scope": "formal ten fire spells plus archived F04; actual route damage/status pipeline; updated three-level direct/mature budgets separated from live burning, all three levels and boundaries"}
-	var out: String = "res://build/qa/spell-growth-implementation-20261020/spells"
+	var out: String = "res://build/qa/six-schools-implementation-20261021/spells"
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--qa-out="):
 			out = arg.trim_prefix("--qa-out=")

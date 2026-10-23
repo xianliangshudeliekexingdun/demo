@@ -168,21 +168,27 @@ func qualification_and_slots():
 	check(battle.configure().ok,"mixed route configures")
 	check(battle.choose_initial("F01"),"real starting choice")
 	var eligible: Array = battle.eligible_reward_ids()
-	check(eligible.size() == 20,"all twenty active fire and ice spells have real route qualification")
+	check(eligible.size() == 57,"sixty spells minus three unmet construction/summon prerequisites")
 	for id in ["F01","F02","F03","F05","F06","F07","F08","F09","F10","F11"]:
 		check(id in eligible,"active fire spell eligible "+str(id))
 	for id in ["I01","I02","I03","I04","I05","I06","I07","I08","I09","I10"]:
 		check(id in eligible,"active ice spell eligible "+str(id))
+	for id in ["L01","L02","L03","L04","L05","L06","L07","L08","L09","L10"]:
+		check(id in eligible,"active lightning spell eligible "+str(id))
+	for prefix in ["W", "R", "S"]:
+		for number in range(1, 11):
+			var id: String = "%s%02d" % [prefix, number]
+			check(battle._base.spells.has(id) and (id in eligible) == (id not in ["R06", "S05", "S07"]), "six school source and initial prerequisite " + id)
 	check("F04" not in eligible, "archived spirit excluded from formal normal pool")
 	battle.spells.clear()
 	for id in eligible.slice(0,8): battle.spells.append(battle._new_spell(id))
 	eligible = battle.eligible_reward_ids()
-	check(eligible.size() == 20,"full eight slots permit held upgrades and unowned replacement candidates")
-	check(eligible.filter(func(id): return battle._owned_spell(str(id)).is_empty()).size() == 12,"twelve new candidates require replacement rather than a ninth slot")
+	check(eligible.size() == 57,"full eight slots permit held upgrades and unowned replacement candidates")
+	check(eligible.filter(func(id): return battle._owned_spell(str(id)).is_empty()).size() == 49,"forty-nine new candidates require replacement rather than a ninth slot")
 	for spell in battle.spells:
 		spell.level = 3
 		battle._refresh_spell(spell)
-	check(battle.eligible_reward_ids().size() == 12 and battle.eligible_reward_ids().all(func(id): return battle._owned_spell(str(id)).is_empty()),"eight maxed spells retain only twelve new replacement candidates")
+	check(battle.eligible_reward_ids().size() == 49 and battle.eligible_reward_ids().all(func(id): return battle._owned_spell(str(id)).is_empty()),"eight maxed spells retain only forty-nine new replacement candidates")
 	var original = First.new()
 	check(original.configure().ok and original.initial_choices().size() == 3,"standalone first room stays independent")
 

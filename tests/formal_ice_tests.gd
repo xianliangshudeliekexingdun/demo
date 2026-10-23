@@ -4,7 +4,7 @@ extends SceneTree
 ## damage simulator, natural inventory assertion, or production save access.
 
 const First = preload("res://scripts/core/first_room_run.gd")
-const OUT = "res://build/qa/spell-growth-implementation-20261020/formal-ice"
+const OUT = "res://build/qa/formal-schools-current/ice"
 const ICE_IDS = ["I01", "I02", "I03", "I04", "I05", "I06", "I07", "I08", "I09", "I10"]
 const FIRE_IDS = ["F01", "F02", "F03", "F05", "F06", "F07", "F08", "F09", "F10", "F11"]
 const BLUE_IDS = ["IB01", "IB02", "IB03", "IB04", "IB05", "IB06", "IB07", "IB08", "IB09", "IB10"]
@@ -196,7 +196,7 @@ func catalog_and_qualification():
 	check(first.configure().ok and first.initial_choices().map(func(value): return value.id)==["F01","F04","F08"], "independent historical starters preserved")
 	check(not first.eligible_reward_ids().any(func(id): return str(id).begins_with("I")), "independent old reward pool excludes unsupported ice")
 	var eligible: Array = b.eligible_reward_ids()
-	check(eligible.size()==20 and "F04" not in eligible, "mixed Route twenty active spells, no archive")
+	check(eligible.size()==57 and "F04" not in eligible, "mixed Route fifty-seven qualified spells, no archive")
 	for id in ICE_IDS+FIRE_IDS: check(id in eligible, "normal mixed legal ID " + id)
 	var items: Dictionary = b._artifact_combat._items
 	check(items.size()==63, "63 stored treasure IDs including four Boss-only seals")

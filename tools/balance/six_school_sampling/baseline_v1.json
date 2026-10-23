@@ -1,0 +1,12 @@
+{
+  "version": "six-school-current-before-sampling-20261021",
+  "source_version": "meta-growth-v2-20261018",
+  "source_path": "data/balance_candidates/meta_growth_v1.json",
+  "source_sha256_before_task": "f8daa0e743d91b389e2c364d17301dcf4e272ae04c3538ae4d81a70c6b158bbd",
+  "scope": "Derived snapshot of the superseded numeric sampler only; runtime never loads this file.",
+  "method": "per_id_weighted_without_replacement",
+  "catalyst_weight_by_level": [1.5, 1.75, 2.0],
+  "owned_upgrade_weight": 1.0,
+  "offer_size": 3,
+  "active_content": "The same actual six-school 60 IDs, prerequisites, 52 books and replacement policy are used for both baseline and accepted trajectories. Old source offered only fire/ice catalyst objects; equivalent lightning/wind/earth/spirit baseline biases are counterfactual controls, not implemented historical objects."
+}

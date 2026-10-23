@@ -38,12 +38,7 @@ func apply_burn(run, actor: Dictionary, source: String = "") -> bool:
 		burns[key].expires = maxf(float(burns[key].expires), now + float(parameters.duration))
 		burns[key].maximum_ticks = maxi(int(burns[key].maximum_ticks), int(parameters.maximum_ticks))
 		burns[key].source = source
-		if run.has_method("gem_core") and run.gem_core() == "inferno":
-			var spec: Dictionary = run._gem_combat.spec
-			if now + 0.000001 >= float(burns[key].get("layer_ready", 0.0)):
-				burns[key].layers = mini(int(spec.cap), int(burns[key].get("layers", 1)) + 1)
-				burns[key].layer_ready = now + float(spec.gain_interval)
-			burns[key].decay_at = now + float(spec.decay_delay)
+
 	else:
 		_serial += 1
 		burns[key] = {"actor_id": key, "next_tick": now + float(parameters.interval),
@@ -51,10 +46,7 @@ func apply_burn(run, actor: Dictionary, source: String = "") -> bool:
 			"coefficient": float(parameters.coefficient), "maximum_ticks": int(parameters.maximum_ticks),
 			"token": _serial, "source": source, "layers": 1,
 			"layer_ready": now}
-		if run.has_method("gem_core") and run.gem_core() == "inferno":
-			burns[key].layer_ready = now + float(run._gem_combat.spec.gain_interval)
-			burns[key]["decay_at"] = now + float(run._gem_combat.spec.decay_delay)
-			burns[key]["decay_interval"] = float(run._gem_combat.spec.decay_interval)
+
 	_emit(run, "fire_ignited", {"actor_id": key, "pos": actor.pos, "source": source,
 		"expires": burns[key].expires, "next_tick": burns[key].next_tick})
 	return true
@@ -97,10 +89,12 @@ func update(run, dt: float) -> void:
 			var tick_at: float = float(state.next_tick)
 			_age_layers(state, tick_at, false)
 			state.next_tick = float(state.next_tick) + float(state.interval)
-			_damage(run, actor, float(state.coefficient) * int(state.get("layers", 1)), "burning", {"source": str(state.source)})
+			var actual: float = _damage(run, actor, float(state.coefficient), "burning", {"source": str(state.source)})
+			if run.has_method("gem_core"): run._gem_combat.fire_tick(run, actor, int(state.token), actual)
 			_age_layers(state, tick_at, true)
 		_age_layers(state, now, true)
 		if float(actor.health) <= 0.0 or float(state.expires) <= now + 0.000001:
+			if run.has_method("gem_core"): run._gem_combat.fire_ended(int(key), int(state.token))
 			burns.erase(key)
 
 
@@ -135,6 +129,7 @@ func detonate_burn(run, actor: Dictionary, multiplier: float, natural: bool = fa
 		g04 = run.artifact_reignite_spec()
 	if not g04.is_empty():
 		multiplier += float(g04.detonation_multiplier_add)
+	if run.has_method("gem_core"): run._gem_combat.fire_ended(key, int(state.token))
 	burns.erase(key)
 	var actual: float = _damage(run, actor, fuel * multiplier, "detonation", {"cast_id": cast_id, "future_ticks": count, "natural_bomb": natural})
 	_emit(run, "fire_detonation", {"actor_id": actor.id, "pos": actor.pos, "future_ticks": count, "multiplier": multiplier, "amount": actual, "cast_id": cast_id})
@@ -169,6 +164,7 @@ func consume_coefficient(run, actor: Dictionary) -> float:
 	var count: int = future_ticks(run, actor)
 	if count <= 0: return 0.0
 	var fuel: float = future_coefficient(run, actor)
+	if run.has_method("gem_core"): run._gem_combat.fire_ended(int(actor.id), int(burns[int(actor.id)].token))
 	burns.erase(int(actor.id))
 	return fuel
 

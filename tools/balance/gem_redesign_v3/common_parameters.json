@@ -1,0 +1,24 @@
+{
+  "version": "gem-redesign-v3-common-proposal-r1-20261022",
+  "status": "proposal_only_not_loaded_by_game",
+  "anchor": {"attack": 100, "health": 300, "shield": 100, "crit_rate": 0.05, "crit_multiplier": 1.5},
+  "fracture": {"name": "星裂棱镜", "primary_extra_multiplier": 1.8, "first_delay": 0.18, "bounce_delay": 0.12, "bounce_count": 2, "bounce_multiplier": 0.5, "radius": 3.5},
+  "echo": {"name": "双生镜心", "immediate_multiplier": 0.8, "replay_noncritical_multiplier": 0.65, "delay": 0.6, "preserve_cdr": true},
+  "sacrifice": {"name": "血祭红晶", "drain_max_health_fraction_per_second": 0.01, "drain_floor_fraction": 0.35, "damage_per_missing_fraction": 1.0},
+  "aegis": {"name": "血晶屏障", "life_conversion": 0.3, "shield_per_life": 2.2, "combat_health_restore_conversion": 1.0},
+  "scenarios": {
+    "crit_rates": [0.05, 0.25, 0.5, 1.0, 1.25],
+    "crit_multipliers": [1.5, 2.0, 3.0],
+    "echo_hit_fractions": [0.0, 0.25, 0.5, 0.8, 1.0],
+    "blood_horizons": [10, 30, 60, 120],
+    "initial_health_fractions": [1.0, 0.5, 0.35, 0.1],
+    "aegis_health": [300, 360, 600],
+    "aegis_shield": [100, 160, 300],
+    "defense_values": [0, 15, 30, 90]
+  },
+  "tuning": {
+    "fracture_primary_candidates": [1.4, 1.6, 1.8, 2.0],
+    "echo_replay_candidates": [0.45, 0.55, 0.65, 0.75],
+    "aegis_shield_per_life_candidates": [1.8, 2.0, 2.2, 2.5]
+  }
+}

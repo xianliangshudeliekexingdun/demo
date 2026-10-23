@@ -148,7 +148,7 @@ func eligible(run, item: Dictionary) -> bool:
 				var kind: String = str(_base.spells.get(str(spell.id), {}).get("kind", ""))
 				if kind == "shield":
 					recovery = true
-				if kind not in ["", "passive", "shield", "spirit"]:
+				if kind not in ["", "passive", "shield", "spirit", "wind_guard", "earth_guard", "spirit_guard"]:
 					player_damage = true
 			return recovery and player_damage
 	return true
@@ -233,7 +233,7 @@ func on_hit(run, actor: Dictionary, context: Dictionary, result: Dictionary) -> 
 		return
 	var kind: String = str(context.get("kind", ""))
 	var spell_kind: String = str(_base.spells.get(str(context.get("spell_id", "")), {}).get("kind", ""))
-	if spell_kind in ["", "passive", "shield", "spirit"] or kind in ["spirit", "artifact", "artifact_sync"]:
+	if spell_kind in ["", "passive", "shield", "spirit", "wind_guard", "earth_guard", "spirit_guard"] or kind in ["spirit", "artifact", "artifact_sync"]:
 		return
 	var cast_key: String = str(context.get("cast_id", ""))
 	if cast_key.is_empty() or _charge_checked_casts.has(cast_key):

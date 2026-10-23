@@ -4,11 +4,13 @@ extends Node3D
 
 const FIRE_SHADER = preload("res://scripts/presentation/procedural_fire.gdshader")
 const IceVFX = preload("res://scripts/presentation/route_ice_vfx.gd")
+const LightningVFX = preload("res://scripts/presentation/route_lightning_vfx.gd")
+const RemainingVFX = preload("res://scripts/presentation/route_remaining_schools_vfx.gd")
 const FLAME_TEXTURE_PATH = "res://assets/vfx/fire_v2/flame_tongue.png"
 const QUAD_LIMIT = 768
 const CORE_LIMIT = 128
 const FRIENDLY_EFFECTS = ["cast", "beam", "spirit_bolt", "bolt_hit", "rain_impact", "bomb_flight", "bomb_impact", "aftershock", "wave", "shield_restore", "summon", "artifact_patch", "artifact_explosion", "artifact_speed", "artifact_cooldown", "artifact_acquired", "fire_brand", "fire_spread", "fire_detonation", "fire_ignited", "fire_reignited"]
-const GEM_EFFECTS = ["gem_fracture", "gem_coffin", "gem_reactor", "gem_echo"]
+const GEM_EFFECTS = [] # Ten-core feedback is owned by route_gem_vfx; retain old branches for source compatibility.
 
 var _cards: MultiMeshInstance3D
 var _cores: MultiMeshInstance3D
@@ -23,6 +25,8 @@ var _footprints: Array = []
 var _coverage: Dictionary = {}
 var _revision: int = -1
 var _ice_vfx: Node3D
+var _lightning_vfx: Node3D
+var _remaining_vfx: Node3D
 
 
 func _ready():
@@ -61,11 +65,15 @@ func _ready():
 	_cores = _batch("MoltenCores", sphere, _core_material, CORE_LIMIT, false)
 	_ice_vfx = IceVFX.new()
 	add_child(_ice_vfx)
+	_lightning_vfx = LightningVFX.new()
+	add_child(_lightning_vfx)
+	_remaining_vfx = RemainingVFX.new()
+	add_child(_remaining_vfx)
 	set_process(false)
 
 
 func handles_effect(kind: String) -> bool:
-	return kind in FRIENDLY_EFFECTS or kind in IceVFX.HANDLED_EFFECTS or kind in GEM_EFFECTS
+	return kind.begins_with("wind_") or kind.begins_with("earth_") or kind.begins_with("spirit_") or kind in FRIENDLY_EFFECTS or kind in IceVFX.HANDLED_EFFECTS or kind in LightningVFX.HANDLED_EFFECTS or kind in GEM_EFFECTS
 
 
 func sync_snapshot(snapshot: Dictionary, camera: Camera3D, options: Dictionary = {}):
@@ -117,17 +125,26 @@ func sync_snapshot(snapshot: Dictionary, camera: Camera3D, options: Dictionary =
 	_cards.multimesh.visible_instance_count = _q
 	_cores.multimesh.visible_instance_count = _c
 	_ice_vfx.sync_snapshot(snapshot, camera, options)
-	visible = _q > 0 or _c > 0 or _ice_vfx.visible
+	_lightning_vfx.sync_snapshot(snapshot, camera, options)
+	_remaining_vfx.sync_snapshot(snapshot, camera, options)
+	visible = _q > 0 or _c > 0 or _ice_vfx.visible or _lightning_vfx.visible or _remaining_vfx.visible
 
 
 func get_debug_state() -> Dictionary:
 	var ice: Dictionary = _ice_vfx.get_debug_state() if is_instance_valid(_ice_vfx) else {}
+	var lightning: Dictionary = _lightning_vfx.get_debug_state() if is_instance_valid(_lightning_vfx) else {}
+	var remaining: Dictionary = _remaining_vfx.get_debug_state() if is_instance_valid(_remaining_vfx) else {}
 	var coverage: Dictionary = _coverage.duplicate(true)
+	for key in remaining.get("coverage", {}): coverage[key] = int(coverage.get(key, 0)) + int(remaining.coverage[key])
 	for key in ice.get("coverage", {}):
 		coverage[key] = int(coverage.get(key, 0)) + int(ice.coverage[key])
+	for key in lightning.get("coverage", {}):
+		coverage[key] = int(coverage.get(key, 0)) + int(lightning.coverage[key])
 	var footprints: Array = _footprints.duplicate(true)
 	footprints.append_array(ice.get("footprints", []))
-	return {"quad_count": _q, "core_count": _c, "quad_limit": QUAD_LIMIT, "core_limit": CORE_LIMIT, "clock": _clock, "reduced_motion": _reduced, "revision": _revision, "footprints": footprints, "coverage": coverage, "material_count": 4, "batch_count": 4, "fire_material_count": 2, "fire_batch_count": 2, "ice": ice, "painted_flame_bound": _fire_material.get_shader_parameter("has_flame_texture") == true}
+	footprints.append_array(lightning.get("footprints", []))
+	footprints.append_array(remaining.get("footprints", []))
+	return {"quad_count": _q, "core_count": _c, "quad_limit": QUAD_LIMIT, "core_limit": CORE_LIMIT, "clock": _clock, "reduced_motion": _reduced, "revision": _revision, "footprints": footprints, "coverage": coverage, "material_count": 6, "batch_count": 6, "fire_material_count": 2, "fire_batch_count": 2, "ice": ice, "lightning": lightning, "remaining_schools": remaining, "painted_flame_bound": _fire_material.get_shader_parameter("has_flame_texture") == true}
 
 
 func _bolt(projectile: Dictionary):
@@ -225,7 +242,7 @@ func _burning(actor: Dictionary, burn: Dictionary):
 
 func _effect(effect: Dictionary, snapshot: Dictionary):
 	var kind = str(effect.get("kind", ""))
-	if (kind not in FRIENDLY_EFFECTS and kind not in GEM_EFFECTS) or (kind == "cast" and str(effect.get("spell_id", "")).begins_with("I")):
+	if (kind not in FRIENDLY_EFFECTS and kind not in GEM_EFFECTS) or (kind == "cast" and str(effect.get("spell_id", "")).left(1) in ["I", "L", "W", "R", "S"]):
 		return
 	var alpha = clampf(float(effect.get("life", 0.0)) / maxf(0.001, float(effect.get("max_life", 0.1))), 0.0, 1.0)
 	if alpha <= 0.0:
@@ -254,7 +271,18 @@ func _effect(effect: Dictionary, snapshot: Dictionary):
 			var color:Color=Color("ad9bf4")
 			for index in (8 if _reduced else 16):
 				var at:float=float(index)/(7.0 if _reduced else 15.0)
-				var point:Vector2=effect.from.lerp(effect.to,at) if str(effect.get("kind_shape",""))=="segment" else pos+Vector2.from_angle(at*TAU)*radius
+				var point: Vector2
+				var shape: String = str(effect.get("kind_shape", ""))
+				if shape == "segment": point = effect.from.lerp(effect.to, at)
+				elif shape == "segments":
+					var pieces: Array = effect.get("segments", [])
+					if pieces.is_empty(): continue
+					var piece: Dictionary = pieces[mini(pieces.size() - 1, int(at * pieces.size()))]
+					point = piece.from.lerp(piece.to, fmod(at * pieces.size(), 1.0))
+				elif shape == "cone":
+					var direction: Vector2 = effect.get("direction", Vector2.UP)
+					point = pos + direction.rotated(deg_to_rad(float(effect.get("angle_degrees", 0))) * (at - 0.5)) * radius
+				else: point = pos + Vector2.from_angle(at * TAU) * radius
 				_core(_point(point,0.25),Vector3.ONE*0.13*alpha,color)
 		"fire_spread":
 			var from: Vector2 = effect.get("from", pos)

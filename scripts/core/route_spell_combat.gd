@@ -6,6 +6,10 @@ const FireStatus = preload("res://scripts/core/route_fire_status.gd")
 const SpellGrowth = preload("res://scripts/core/route_spell_growth.gd")
 var growth = SpellGrowth.new()
 const IceCombat = preload("res://scripts/core/route_ice_combat.gd")
+const LightningCombat = preload("res://scripts/core/route_lightning_combat.gd")
+const WindCombat = preload("res://scripts/core/route_wind_combat.gd")
+const EarthCombat = preload("res://scripts/core/route_earth_combat.gd")
+const SpiritCombat = preload("res://scripts/core/route_spirit_combat.gd")
 var zones: Array = []
 var pending: Array = []
 var spirits: Array = []
@@ -21,6 +25,10 @@ var _ignited_cast_targets: Dictionary = {}
 var _field_grace_bonus: float = 0.0
 var ice
 var ice_status
+var lightning
+var wind
+var earth
+var spirit_school
 
 
 func configure(run) -> Dictionary:
@@ -41,6 +49,17 @@ func configure(run) -> Dictionary:
 	if not ice_result.ok:
 		return ice_result
 	ice_status = ice.status
+	lightning = LightningCombat.new()
+	var lightning_result: Dictionary = lightning.configure(run._lightning_source)
+	if not lightning_result.ok:
+		return lightning_result
+	wind = WindCombat.new()
+	earth = EarthCombat.new()
+	spirit_school = SpiritCombat.new()
+	for entry in [[wind, run._wind_source], [earth, run._earth_source], [spirit_school, run._spirit_source]]:
+		var school_result: Dictionary = entry[0].configure(entry[1])
+		if not school_result.ok:
+			return school_result
 	_run_ref = weakref(run)
 	_next_cast = 1
 	_next_zone = 1
@@ -90,6 +109,8 @@ func stop_room():
 		fire_status.clear()
 	if ice != null:
 		ice.stop_room()
+	for module in school_modules():
+		module.stop_room()
 	var run = _run_ref.get_ref() if _run_ref != null else null
 	if run != null:
 		for spell in run.spells: spell.erase("growth_echo_count")
@@ -104,6 +125,8 @@ func get_snapshot() -> Dictionary:
 		"fire_reignite_pending": fire_status.reignite_pending.duplicate(true) if fire_status != null else []}
 	if ice != null:
 		result.merge(ice.get_snapshot(run), true)
+	for module in school_modules():
+		result.merge(module.get_snapshot(run), true)
 	return result
 
 
@@ -122,6 +145,8 @@ func fire_spell_count(run) -> int:
 func before_damage_tick(run, dt: float) -> void:
 	if ice != null:
 		ice.before_tick(run, dt)
+	for module in school_modules():
+		module.before_tick(run, dt)
 	if run.phase != "combat" or run.paused or fire_status == null or absf(_last_status_time - float(run.time)) <= 0.000000001:
 		return
 	_last_status_time = float(run.time)
@@ -144,6 +169,8 @@ func remove_actor_status(actor_id: int) -> void:
 		fire_status.remove_actor(actor_id)
 	if ice != null:
 		ice.status.remove_actor(actor_id)
+	for module in school_modules():
+		module.remove_actor_status(actor_id)
 
 
 func detonate_burn(run, actor: Dictionary, multiplier: float, natural: bool = false, cast_id: Variant = -1) -> float:
@@ -207,6 +234,8 @@ func update(run, dt: float):
 	_update_spirits(run, dt)
 	_update_zones(run, dt)
 	ice.update_existing(run, dt)
+	for module in school_modules():
+		module.update_existing(run, dt)
 	# Existing impacts and zones consume only fuel already present at their
 	# hit; a same-step delayed G04 re-ignition is applied before new releases.
 	fire_status.flush_reignites(run)
@@ -219,6 +248,9 @@ func update(run, dt: float):
 		var reduction = float(run._base.fire_synergy.cooldown_reduction) if is_fire_spell(str(spell.id)) and fire_spell_count(run) >= int(run._base.fire_synergy.distinct_spells) else 0.0
 		if ice.is_ice_spell(str(spell.id)):
 			reduction += ice.cooldown_bonus(run)
+		else:
+			var module = spell_module(str(spell.id), str(stats.get("school", "")))
+			if module != null: reduction += module.cooldown_bonus(run)
 		if run.has_method("artifact_cooldown_reduction"):
 			reduction += run.artifact_cooldown_reduction()
 		if run.has_method("gem_core"): reduction = run._gem_combat.cooldown_reduction(reduction)
@@ -231,7 +263,13 @@ func update(run, dt: float):
 		if spell.cast_remaining > 0.0:
 			spell.cast_remaining = maxf(0.0, float(spell.cast_remaining) - dt)
 			if spell.cast_remaining <= 0.000001:
-				var target = ice.finish_target(run, spell, stats) if ice.is_ice_spell(str(spell.id)) else legal_target(run, spell, stats)
+				var target: Dictionary = {}
+				if ice.is_ice_spell(str(spell.id)):
+					target = ice.finish_target(run, spell, stats)
+				elif spell_module(str(spell.id), str(stats.get("school", ""))) != null:
+					target = spell_module(str(spell.id), str(stats.school)).finish_target(run, spell, stats)
+				else:
+					target = legal_target(run, spell, stats)
 				if not target.is_empty():
 					_cast(run, spell, stats, target, true, 1.0)
 				else:
@@ -251,6 +289,9 @@ func legal_target(run, spell: Dictionary, stats: Dictionary = {}) -> Dictionary:
 		stats = stats_for(spell)
 	if ice != null and ice.is_ice_spell(str(spell.id)):
 		return ice.legal_target(run, spell, stats)
+	var module = spell_module(str(spell.id), str(stats.get("school", "")))
+	if module != null:
+		return module.legal_target(run, spell, stats)
 	if stats.kind == "passive" or run.phase != "combat" or run.player.health <= 0.0:
 		return {}
 	if stats.kind == "shield":
@@ -308,6 +349,12 @@ func _cast(run, spell: Dictionary, stats: Dictionary, target: Dictionary, natura
 		run.casts += 1
 	if ice != null and ice.is_ice_spell(str(spell.id)):
 		ice.cast(run, spell, stats, target, context)
+		if natural and run.has_method("on_spell_cast"):
+			run.on_spell_cast(spell, target, context)
+		return
+	var module = spell_module(str(spell.id), str(stats.get("school", "")))
+	if module != null:
+		module.cast(run, spell, stats, target, context)
 		if natural and run.has_method("on_spell_cast"):
 			run.on_spell_cast(spell, target, context)
 		return
@@ -606,7 +653,7 @@ func _update_zones(run, dt: float):
 			zone.tick_remaining -= elapsed
 			if zone.tick_remaining <= 0.000001:
 				zone.tick_remaining += float(zone.interval)
-				if run.has_method("gem_record_shape"): run.gem_record_shape({"kind": "area", "pos": zone.pos, "radius": zone.radius}, float(zone.coefficient), zone.context)
+				if run.has_method("gem_record_shape"): run.gem_record_shape({"kind": "area", "pos": zone.pos, "radius": zone.radius, "shared_spell": zone.spell_id, "shared_interval": zone.interval}, float(zone.coefficient), zone.context)
 				for actor in run.actors:
 					if actor.health <= 0.0 or actor.pos.distance_to(zone.pos) > float(zone.radius) + float(actor.radius):
 						continue
@@ -714,3 +761,25 @@ func _has_live_enemy(run) -> bool:
 		if actor.health > 0.0:
 			return true
 	return false
+
+
+func school_module(school: String):
+	match school:
+		"ice": return ice
+		"lightning": return lightning
+		"wind": return wind
+		"earth": return earth
+		"spirit": return spirit_school
+	return null
+
+
+func school_modules() -> Array:
+	var result: Array = []
+	for module in [lightning, wind, earth, spirit_school]:
+		if module != null: result.append(module)
+	return result
+
+
+func spell_module(id: String, school: String):
+	# Archived F04 keeps its original standalone summon lifecycle.
+	return null if id == "F04" else school_module(school)

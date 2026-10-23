@@ -91,7 +91,7 @@ func handle_request(action:String,payload:String):
 		"start_room": start_first_room()
 		"start_route": start_courtyard_route()
 		"route_school":
-			if payload in ["fire","ice"]:
+			if payload in ["fire","ice","lightning","wind","earth","spirit"]:
 				route_school=payload
 				refresh()
 		"navigate": navigate(payload)
@@ -148,10 +148,69 @@ func handle_request(action:String,payload:String):
 
 func _handle_gem_request(action:String,payload:String):
 	var result:Dictionary={"ok":true}
+	var changed:bool=false
 	match action:
-		"gem_select": selected=payload
-		"gem_tool":ui.gem_tool=payload if payload in ["reforge", "salvage"] else ""
-		"gem_lock":result=meta.request_lock_gem(payload)
+		"gem_tab":
+			if payload not in ["cores","attributes","craft"]:return
+			ui.gem_tab=payload
+			ui.gem_page=0
+		"gem_select":
+			selected=payload
+			ui.gem_tab="cores" if payload.begins_with("core:") else "attributes"
+		"gem_tool":ui.gem_tool=payload if payload in ["reforge","salvage","retype"] else ""
+		"gem_main_stat":
+			if not meta.gems.rules.affixes.has(payload):return
+			ui.gem_main_stat=payload
+		"gem_craft_rarity":
+			if payload not in ["green","blue","purple"]:return
+			ui.gem_craft_rarity=payload
+		"gem_core_unlock":
+			result=meta.request_unlock_core(payload)
+			if result.ok:selected="core:"+payload
+			changed=true
+		"gem_core_equip":
+			result=meta.request_equip_core(payload)
+			if result.ok:selected="core:"+payload
+			changed=true
+		"gem_attribute_starter":
+			result=meta.claim_starter_attribute(payload)
+			if result.ok:
+				selected=str(result.get("gem_id",result.get("gem",{}).get("id","")))
+			changed=true
+		"gem_craft":
+			var parts=payload.split(":",true,1)
+			if parts.size()!=2:return
+			result=meta.request_craft_gem(parts[0],parts[1])
+			if result.ok:
+				selected=str(result.get("gem_id",result.get("gem",{}).get("id","")))
+				ui.gem_tab="attributes"
+			changed=true
+		"gem_upgrade":
+			result=meta.request_upgrade_gem(selected)
+			changed=true
+		"gem_raise":
+			if not payload.is_valid_int():return
+			result=meta.request_raise_gem_affix(selected,int(payload))
+			changed=true
+		"gem_convert":
+			result=meta.request_convert_gem(selected,payload)
+			changed=true
+		"gem_retype_open":
+			if not payload.is_valid_int() or int(payload)<=0:return
+			ui.gem_line_index=int(payload)
+			ui.gem_tool="retype"
+		"gem_retype_stat":
+			if not meta.gems.rules.affixes.has(payload):return
+			ui.gem_retype_stat=payload
+		"gem_retype":
+			var parts=payload.split(":",true,1)
+			if parts.size()!=2 or not parts[0].is_valid_int():return
+			result=meta.request_retype_gem(selected,int(parts[0]),parts[1])
+			if result.ok:ui.gem_tool="reforge"
+			changed=true
+		"gem_lock":
+			result=meta.request_lock_gem(payload)
+			changed=true
 		"gem_batch_preview":
 			ui.gem_salvage_ids.clear()
 			var state:Dictionary=meta.get_state().gem_state
@@ -167,30 +226,27 @@ func _handle_gem_request(action:String,payload:String):
 				selected=""
 				ui.gem_tool=""
 				ui.gem_salvage_ids.clear()
+			changed=true
 		"gem_reforge":
-			var mode:String="core" if payload=="core" else "affix"
-			if mode=="affix" and not payload.is_valid_int():return
-			result=meta.request_reforge(selected,mode,-1 if mode=="core" else int(payload))
+			if not payload.is_valid_int() or int(payload)<=0:return
+			result=meta.request_reforge(selected,"affix",int(payload))
 			if result.ok:ui.gem_tool=""
+			changed=true
 		"gem_resolve":
 			var parts=payload.split(":",true,1)
 			if parts.size()!=2 or not parts[0].is_valid_int() or parts[1] not in ["old","new"]:return
 			result=meta.resolve_reforge(int(parts[0]),parts[1]=="new")
 			if result.ok:ui.gem_tool="reforge"
-		"gem_filter":
-			if payload not in ["all","gold"]:return
-			ui.gem_filter=payload
-			ui.gem_page=0
+			changed=true
 		"gem_page":
 			if not payload.is_valid_int():return
 			ui.gem_page=maxi(0,int(payload))
 		"gem_rules":ui.gem_show_rules=true
 		"gem_rules_section":ui.gem_rules_section=payload if payload in ["draw","work"] else "draw"
 		"gem_rules_close":ui.gem_show_rules=false
-		"gem_results_close":ui.gem_results.clear()
-		"gem_starter":
-			result=meta.claim_starter_gem(payload)
-			if result.ok:selected=str(result.gem_id)
+		"gem_results_close":
+			ui.gem_results.clear()
+			ui.gem_tab="attributes"
 		"gem_draw":
 			if not ui.gem_results.is_empty() or ui.gem_show_rules or payload not in ["1","10"]:return
 			result=meta.request_draw_gems(int(payload))
@@ -198,12 +254,14 @@ func _handle_gem_request(action:String,payload:String):
 				ui.gem_results=result.gems.duplicate(true)
 				selected=str(result.gems[-1].id)
 				ui.gem_page=0
+			changed=true
 		"gem_equip":
 			var parts=payload.split(":",true,1)
 			if parts.size()!=2 or not parts[0].is_valid_int():return
 			result=meta.request_equip_gem(int(parts[0]),parts[1])
+			changed=true
 		_:return
-	refresh(("分解完成，获得%d宝石精粹" % int(result.essence_gained)) if result.ok and result.has("essence_gained") else ("已保存" if result.ok and action in ["gem_equip","gem_starter","gem_lock","gem_resolve"] else str(result.get("error",""))))
+	refresh(("分解完成，获得%d宝石精粹"%int(result.essence_gained)) if result.ok and result.has("essence_gained") else ("已保存" if result.ok and changed else str(result.get("error",""))))
 func _unhandled_input(event):
 	if event is InputEventKey and event.echo:return
 	if event.is_action_pressed("fullscreen"):

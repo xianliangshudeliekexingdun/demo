@@ -35,19 +35,19 @@ func run() -> int:
 	var catalog = m.get_catalog()
 	var initial = m.get_state()
 	check(initial.dust == 0, "new account has zero dust")
-	check(initial.levels.size() == 5, "five unique items")
+	check(initial.levels.size() == 9, "six catalysts plus three inherited gem definitions")
 	check(initial.equipped == {"catalyst": "", "gem": ""}, "new account has empty equipment")
 	check(initial.free_claimed == {"catalyst": false, "gem": false}, "two independent free choices")
 	check(initial.settlement_serial == 0, "no invented settlement")
 	for level in initial.levels.values():
 		check(level == 0, "new account items locked")
-	check(m.get_items("catalyst").size() == 2 and m.get_items("gem").size() == 3, "all items listed")
+	check(m.get_items("catalyst").size() == 6 and m.get_items("gem").size() == 3, "all items listed")
 	for kind in ["catalyst", "gem"]:
 		for item in m.get_items(kind):
 			check(item.free and item.can_unlock and item.cost == 0, "first choice is free: " + item.id)
 			check(item.name == catalog["catalysts" if kind == "catalyst" else "gems"][item.id].name, "name from source: " + item.id)
 	for item in m.get_items("catalyst"):
-		check(item.effect_by_level == catalog.catalyst_weight_by_level, "weights from source: " + item.id)
+		check(item.effect_by_level == catalog.spell_sampling.catalyst_affinity_by_level, "priority from shared sampling source: " + item.id)
 		for i in range(item.related_spells.size()):
 			check(item.related_spell_names[i] == catalog.spells[item.related_spells[i]].name, "related spell name from source")
 	var external = m.get_catalog()
@@ -100,7 +100,7 @@ func run() -> int:
 	check(m.load_state().ok, "earned-currency fixture loads")
 	check(m.request_upgrade("catalyst", "MC04").ok, "level one upgrades")
 	check(m.get_state().levels.MC04 == 2 and m.get_state().dust == 80, "first upgrade deducts twenty once")
-	check(near(m.get_item_status("catalyst", "MC04").effect_value, catalog.catalyst_weight_by_level[1]), "level two uses total multiplier")
+	check(near(m.get_item_status("catalyst", "MC04").effect_value, catalog.spell_sampling.catalyst_affinity_by_level[1]), "level two uses priority strength")
 	check(m.request_upgrade("catalyst", "MC04").ok, "level two upgrades")
 	check(m.get_state().levels.MC04 == 3 and m.get_state().dust == 40, "second upgrade deducts forty once")
 	check(not m.request_upgrade("catalyst", "MC04").ok, "max level rejected")
@@ -127,6 +127,7 @@ func run() -> int:
 			fixture.equipped.gem = gem_id
 			fixture.free_claimed.gem = true
 			fixture.version = Meta.PREVIOUS_SAVE_VERSION
+			for id in Meta.NEW_CATALYST_IDS: fixture.levels.erase(id)
 			fixture.erase("gem_state")
 			_store_fixture(test_path, fixture)
 			check(m.load_state().ok, "gem tier fixture loads")
@@ -336,7 +337,7 @@ func _legacy_catalyst_migration_tests(m, test_path: String, initial: Dictionary)
 	check(FileAccess.get_file_as_string(test_path) == old_bytes, "legacy save is not rewritten on read")
 	var state = m.get_state()
 	check(state.version == Meta.SAVE_VERSION, "migrated state uses current save version")
-	check(state.levels == {"MC04": 1, "MC05": 0, "MG01": 0, "MG02": 0, "MG03": 1}, "legacy fire level moves to MC04 and ice starts locked")
+	check(state.levels == {"MC04": 1, "MC05": 0, "MC06": 0, "MC07": 0, "MC08": 0, "MC09": 0, "MG01": 0, "MG02": 0, "MG03": 1}, "legacy fire level moves to MC04 and ice starts locked")
 	check(state.equipped == {"catalyst": "MC04", "gem": "MG03"}, "legacy equipped catalyst becomes fire catalyst")
 	check(state.free_claimed == {"catalyst": true, "gem": true}, "legacy free choice stays claimed")
 	check(state.dust == 2 and state.run_serial == 2 and state.settlement_serial == 1, "legacy currency and run bookkeeping survive")

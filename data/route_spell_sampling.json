@@ -1,0 +1,19 @@
+{
+  "version": "six-school-sampling-v1-20261021",
+  "method": "school_priority_mixture",
+  "offer_size": 3,
+  "catalyst_affinity_by_level": [
+    0.28,
+    0.4,
+    0.52
+  ],
+  "owned_upgrade_weight": 2.0,
+  "baseline_spell_weight": 1.0,
+  "unique_within_offer": true,
+  "eligibility_before_weighting": true,
+  "affects_initial_offer": false,
+  "affects_artifact_quality": false,
+  "new_or_upgrade_quota": false,
+  "reroll": false,
+  "pity": false
+}

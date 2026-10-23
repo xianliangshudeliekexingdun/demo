@@ -8,6 +8,8 @@ const SpellCombat = preload("res://scripts/core/route_spell_combat.gd")
 const ArtifactCombat = preload("res://scripts/core/route_artifacts.gd")
 const RouteShop = preload("res://scripts/core/route_shop.gd")
 const GemCombat = preload("res://scripts/core/route_gem_combat.gd")
+const SpellSampling = preload("res://scripts/core/route_spell_sampling.gd")
+var _spell_sampling = SpellSampling.new()
 var _gem_combat = GemCombat.new()
 
 var room_index: int = 1
@@ -37,6 +39,10 @@ var artifact_claimed_rooms: Array = []
 var _artifact_reward_rooms: Array = []
 var route_school: String = "fire"
 var _ice_source: Dictionary = {}
+var _lightning_source: Dictionary = {}
+var _wind_source: Dictionary = {}
+var _earth_source: Dictionary = {}
+var _spirit_source: Dictionary = {}
 var pending_replacement: Dictionary = {}
 var _replacement_serial: int = 0
 var _reward_claimed_revision: int = -1
@@ -57,14 +63,37 @@ func configure(run_snapshot: Dictionary = {}, seed_value: int = 20261017) -> Dic
 		return result
 	_gem_combat.configure(self, run_snapshot)
 	_configured = false
+	var sampling_read: Dictionary = _read_json(SpellSampling.SOURCE)
+	if not sampling_read.ok: return sampling_read
+	var sampling_result: Dictionary = _spell_sampling.configure(sampling_read.data)
+	if not sampling_result.ok: return sampling_result
 	route_school = str(run_snapshot.get("route_school", "fire"))
-	if route_school not in ["fire", "ice"]:
-		return {"ok": false, "error": "本路线仅开放火系或冰系起手。"}
+	if route_school not in ["fire", "ice", "lightning", "wind", "earth", "spirit"]:
+		return {"ok": false, "error": "本路线仅开放火、冰、雷、风、岩、灵契六系起手。"}
 	var ice_read: Dictionary = _read_json("res://data/ice_spells_v1.json")
 	if not ice_read.ok or not ice_read.data.get("spells") is Dictionary or not ice_read.data.get("mechanics") is Dictionary:
 		return {"ok": false, "error": "正式冰系运行数据无效。"}
 	_ice_source = ice_read.data.duplicate(true)
 	_base.spells.merge(_ice_source.spells.duplicate(true), true)
+	var lightning_read: Dictionary = _read_json("res://data/lightning_spells_v1.json")
+	if not lightning_read.ok or not lightning_read.data.get("spells") is Dictionary or not lightning_read.data.get("mechanics") is Dictionary:
+		return {"ok": false, "error": "正式雷系运行数据无效。"}
+	_lightning_source = lightning_read.data.duplicate(true)
+	for id in _lightning_source.spells:
+		if _base.spells.has(id):
+			return {"ok": false, "error": "正式雷系法术ID重复：" + str(id)}
+	_base.spells.merge(_lightning_source.spells.duplicate(true), true)
+	for school in ["wind", "earth", "spirit"]:
+		var source_read: Dictionary = _read_json("res://data/" + school + "_spells_v1.json")
+		if not source_read.ok or not source_read.data.get("spells") is Dictionary or not source_read.data.get("mechanics") is Dictionary:
+			return {"ok": false, "error": "正式法术运行数据无效：" + school}
+		var source: Dictionary = source_read.data.duplicate(true)
+		for id in source.spells:
+			if _base.spells.has(id):
+				return {"ok": false, "error": "正式法术ID重复：" + str(id)}
+		_base.spells.merge(source.spells.duplicate(true), true)
+		_base[school + "_mechanics"] = source.mechanics.duplicate(true)
+		set("_" + school + "_source", source)
 	var growth_read: Dictionary = _read_json(SpellGrowth.SOURCE)
 	if not growth_read.ok:
 		return growth_read
@@ -75,6 +104,7 @@ func configure(run_snapshot: Dictionary = {}, seed_value: int = 20261017) -> Dic
 	for id in _ice_source.spells:
 		_ice_source.spells[id] = _base.spells[id].duplicate(true)
 	_base["ice_mechanics"] = _ice_source.mechanics.duplicate(true)
+	_base["lightning_mechanics"] = _lightning_source.mechanics.duplicate(true)
 	_route_catalog = RouteCatalog.new()
 	result = _route_catalog.load_catalog()
 	if not result.ok:
@@ -178,6 +208,21 @@ func get_snapshot() -> Dictionary:
 		snapshot.combat_stats["ice_defense"] = _spell_combat.ice.defense_bonus()
 		snapshot.combat_stats["ice_crit_rate"] = float(player.crit_rate)
 		snapshot.combat_stats["ice_crit_multiplier"] = float(player.crit_multiplier) + float(snapshot.combat_stats.get("crit_multiplier_add", 0.0))
+		snapshot.combat_stats["lightning_bonus"] = _spell_combat.lightning.school_bonus(self)
+		snapshot.combat_stats["formal_lightning_count"] = _spell_combat.lightning.spell_count(self)
+		snapshot.combat_stats["lightning_synergy_active"] = _spell_combat.lightning.spell_count(self) >= int(_base.lightning_mechanics.resonance.distinct_spells)
+		snapshot.combat_stats["lightning_cooldown_reduction"] = minf(float(_base.limits.cooldown_reduction), artifact_cooldown_reduction() + _spell_combat.lightning.cooldown_bonus(self))
+		snapshot.combat_stats["lightning_crit_rate"] = float(player.crit_rate)
+		snapshot.combat_stats["lightning_crit_multiplier"] = float(player.crit_multiplier) + float(snapshot.combat_stats.get("crit_multiplier_add", 0.0))
+	if _spell_combat != null:
+		for school in ["wind", "earth", "spirit"]:
+			var module = _spell_combat.school_module(school)
+			var count: int = module.spell_count(self)
+			snapshot.combat_stats[school + "_bonus"] = module.school_bonus(self)
+			snapshot.combat_stats["formal_" + school + "_count"] = count
+			snapshot.combat_stats[school + "_synergy_active"] = count >= int(_base[school + "_mechanics"].resonance.distinct_spells)
+			snapshot.combat_stats[school + "_cooldown_reduction"] = minf(float(_base.limits.cooldown_reduction), artifact_cooldown_reduction() + module.cooldown_bonus(self))
+		snapshot.combat_stats["earth_defense"] = _spell_combat.earth.defense_bonus(self)
 	snapshot["artifact_choices"] = artifact_choices.duplicate(true)
 	snapshot["artifact_claimed_rooms"] = artifact_claimed_rooms.duplicate()
 	snapshot["reward_pickup"] = reward_pickup.duplicate(true)
@@ -216,8 +261,53 @@ func eligible_reward_ids() -> Array:
 		if not bool(_base.spells[id].get("active", true)):
 			continue
 		var owned: Dictionary = _owned_spell(str(id))
+		var requirements: Array = _base.spells[id].get("required_any_spells", [])
+		if owned.is_empty() and not requirements.is_empty():
+			var eligible: bool = false
+			for source_id in requirements:
+				if not _owned_spell(str(source_id)).is_empty(): eligible = true
+			if not eligible: continue
 		if owned.is_empty() or int(owned.level) < int(_base.limits.spell_level):
 			result.append(id)
+	return result
+
+
+func _sampling_ownership() -> Dictionary:
+	var result: Dictionary = {}
+	for spell in spells: result[str(spell.id)] = int(spell.level)
+	return result
+
+
+func _sampling_catalyst() -> Dictionary:
+	var id: String = str(_equipment.get("equipment", {}).get("catalyst", ""))
+	var level: int = int(_equipment.get("levels", {}).get(id, 0))
+	if not _meta.catalysts.has(id) or level < 1 or level > 3: return {"school": "", "level": 0}
+	return {"school": str(_meta.catalysts[id].school), "level": level}
+
+
+func reward_probabilities() -> Dictionary:
+	if _spell_sampling.rules.is_empty(): return {}
+	var catalyst: Dictionary = _sampling_catalyst()
+	return _spell_sampling.probabilities(eligible_reward_ids(), _base.spells, _sampling_ownership(), catalyst.school, catalyst.level)
+
+
+func reward_weight(spell_id: String) -> float:
+	if _spell_sampling.rules.is_empty(): return super.reward_weight(spell_id)
+	var chances: Dictionary = reward_probabilities()
+	# A relative weight with mean one, for compatibility with offer metadata.
+	# Actual drawing recalculates the full conditional probability after removal.
+	return float(chances.get(spell_id, 0.0)) * chances.size()
+
+
+func _sample_rewards() -> Array:
+	var catalyst: Dictionary = _sampling_catalyst()
+	var drawn: Array = _spell_sampling.sample(eligible_reward_ids(), _base.spells, _sampling_ownership(), catalyst.school, catalyst.level, _rng)
+	var result: Array = []
+	for entry in drawn:
+		var choice: Dictionary = _choice(str(entry.id))
+		choice["draw_probability"] = float(entry.draw_probability)
+		choice["sampling_version"] = str(_spell_sampling.rules.version)
+		result.append(choice)
 	return result
 
 
@@ -324,6 +414,9 @@ func _refresh_reward_spell_parameters() -> void:
 			reduction += float(_base.fire_synergy.cooldown_reduction)
 		elif _spell_combat.ice.is_ice_spell(str(spell.id)):
 			reduction += _spell_combat.ice.cooldown_bonus(self)
+		else:
+			var module = _spell_combat.spell_module(str(spell.id), str(stats.get("school", "")))
+			if module != null: reduction += module.cooldown_bonus(self)
 		reduction = _gem_combat.cooldown_reduction(reduction)
 		spell.cooldown = maxf(float(_base.limits.minimum_cooldown), base_cd * (1.0 - minf(reduction, float(_base.limits.cooldown_reduction)))) if base_cd > 0.0 else 0.0
 		spell.windup = float(stats.get("windup", 0.0))
@@ -343,11 +436,20 @@ func _complete_spell_reward(spell_id: String, old_id: String = "", slot_index: i
 	_emit("reward_skipped" if skipped else "reward", {"pos": player.pos, "spell_id": spell_id, "replaced_spell_id": old_id, "slot_index": slot_index, "room_index": room_index}, 0.8)
 
 
+func _initial_spell_ids() -> Array:
+	if route_school == "ice":
+		return _spell_combat.ice.mechanics.initial_ids
+	var module = _spell_combat.school_module(route_school)
+	if module != null:
+		return module.mechanics.initial_ids
+	return _spell_combat.runtime.fire.initial_ids
+
+
 func initial_choices() -> Array:
 	var result: Array = []
 	if not _configured or _spell_combat == null:
 		return result
-	var ids: Array = _spell_combat.ice.mechanics.initial_ids if route_school == "ice" else _spell_combat.runtime.fire.initial_ids
+	var ids: Array = _initial_spell_ids()
 	for id in ids:
 		var choice: Dictionary = _choice(str(id), true)
 		choice.weight = float(_meta.spell_sampling_assumptions.baseline_spell_weight)
@@ -358,7 +460,7 @@ func initial_choices() -> Array:
 func choose_initial(spell_id: String) -> bool:
 	if not _configured or paused or phase != "choosing":
 		return false
-	var ids: Array = _spell_combat.ice.mechanics.initial_ids if route_school == "ice" else _spell_combat.runtime.fire.initial_ids
+	var ids: Array = _initial_spell_ids()
 	if spell_id not in ids:
 		return false
 	spells.append(_new_spell(spell_id))
@@ -810,19 +912,25 @@ func _check_clear():
 
 
 func _update_enemies(dt: float):
+	advance_ice_control(dt)
+	_spell_combat.earth.after_player_motion(self)
+	_spell_combat.wind.record_player_motion(self, player.previous, player.pos, dt)
 	_enemy_combat.update(self, dt)
 
 
 func advance_ice_control(dt: float) -> void:
 	if _spell_combat != null and _spell_combat.ice != null:
 		_spell_combat.ice.before_tick(self, dt)
+		for module in _spell_combat.school_modules(): module.before_tick(self, dt)
 
 
 func get_ice_control_state(actor: Dictionary) -> Dictionary:
 	if _spell_combat == null or _spell_combat.ice == null:
 		return {}
 	var status = _spell_combat.ice.status
-	return {"frozen": status.is_frozen(int(actor.id)), "frozen_time": status.frozen_frame_time(int(actor.id)), "slow": status.slow_amount(actor)}
+	var hard_control: bool = _spell_combat.earth.actor_stunned(actor)
+	var movement: float = _spell_combat.wind.movement_multiplier(actor)
+	return {"frozen": status.is_frozen(int(actor.id)) or hard_control, "frozen_time": status.frozen_frame_time(int(actor.id)), "slow": maxf(status.slow_amount(actor), 1.0 - movement)}
 
 
 func _update_spells(dt: float):
@@ -859,24 +967,31 @@ func get_spell_stats(spell: Dictionary) -> Dictionary:
 
 
 func resolve_spell_hit(actor: Dictionary, coefficient: float, context: Dictionary) -> Dictionary:
-	if actor.health <= 0.0 or phase != "combat":
+	if actor.health <= 0.0 or phase != "combat" or paused:
 		return {"damage": 0.0, "critical": false}
+	var old_burn: int = _spell_combat.fire_status.burn_token(self, actor) if gem_core() == "inferno" else -1
 	var artifact_bonus: Dictionary = _artifact_combat.modify_damage_context(self, actor, context)
 	var fire: bool = _is_fire_damage(context)
-	var ice_damage: bool = str(context.get("school", "")) == "ice"
 	var rate := maxf(0.0, float(player.crit_rate) + (_artifact_combat.fire_crit_rate_bonus() + _spell_combat.crit_rate_bonus() if fire else 0.0))
 	var roll := _rng.randf()
 	var critical := rate >= 1.0 or roll < rate
 	var multiplier: float = float(player.crit_multiplier) + (_spell_combat.crit_multiplier_bonus() if fire else 0.0) + float(context.get("crit_multiplier_bonus", 0.0)) + float(artifact_bonus.get("crit_multiplier_add", 0.0))
-	var field: float = _spell_combat.field_attack_bonus() if ice_damage else float(context.get("field_bonus", 0.0))
+	var field: float = _spell_combat.field_attack_bonus() if str(context.get("school", "fire")) != "fire" else float(context.get("field_bonus", 0.0))
 	var damage := float(player.attack) * (1.0 + field) * coefficient * float(context.get("damage_scale", 1.0)) * float(context.get("gem_body_scale", 1.0))
 	if fire:
 		damage *= 1.0 + _fire_damage_bonus()
-	elif ice_damage:
-		damage *= 1.0 + _spell_combat.ice.school_bonus(self)
+	else:
+		var module = _spell_combat.school_module(str(context.get("school", "")))
+		if module != null: damage *= 1.0 + module.school_bonus(self)
 	damage *= float(artifact_bonus.damage_multiplier)
 	if fire:
 		damage *= 1.0 + _spell_combat.growth.fire_vulnerability(self, actor)
+	else:
+		var module = _spell_combat.school_module(str(context.get("school", "")))
+		if module != null and module.has_method("target_vulnerability"): damage *= 1.0 + module.target_vulnerability(actor)
+	damage *= _gem_combat.outgoing_multiplier(self)
+	if gem_core() == "echo" and bool(context.get("natural", false)) and bool(context.get("gem_echo_eligible", false)) and _gem_combat.body(context):
+		damage *= float(_gem_combat.spec.immediate_multiplier)
 	var uncritical: float = damage
 	if critical:
 		damage *= multiplier
@@ -885,6 +1000,7 @@ func resolve_spell_hit(actor: Dictionary, coefficient: float, context: Dictionar
 	var before := float(actor.health)
 	damage_enemy(actor, planned, str(context.get("spell_id", "")))
 	var result := {"damage": before - maxf(0.0, float(actor.health)), "critical": critical}
+	_gem_combat.fire_body_hit(self, actor, float(result.damage), context, old_burn)
 	_artifact_combat.on_hit(self, actor, context, result)
 	_spell_combat.growth.on_hit(self, actor, context, result)
 	return result
@@ -898,6 +1014,7 @@ func resolve_fire_status_hit(actor: Dictionary, coefficient: float, kind: String
 	var bonus: Dictionary = _artifact_combat.modify_damage_context(self, actor, context)
 	var damage: float = float(player.attack) * coefficient * (1.0 + _spell_combat.field_attack_bonus()) * (1.0 + _fire_damage_bonus()) * float(bonus.damage_multiplier)
 	damage *= 1.0 + _spell_combat.growth.fire_vulnerability(self, actor)
+	damage *= _gem_combat.outgoing_multiplier(self)
 	var before: float = float(actor.health)
 	# Status damage has neither a critical RNG draw nor an on-hit callback.
 	damage_enemy(actor, damage, kind)
@@ -912,9 +1029,26 @@ func resolve_ice_derived_hit(actor: Dictionary, coefficient: float, context: Dic
 	var bonus: Dictionary = _artifact_combat.modify_damage_context(self, actor, metadata)
 	var damage: float = float(player.attack) * (1.0 + _spell_combat.field_attack_bonus()) * coefficient * float(metadata.get("damage_scale", 1.0))
 	damage *= (1.0 + _spell_combat.ice.school_bonus(self)) * float(bonus.damage_multiplier)
+	damage *= _gem_combat.outgoing_multiplier(self)
 	var before: float = float(actor.health)
 	# No RNG or on-hit callback: the finite parent transaction owns all effects.
 	damage_enemy(actor, damage, str(metadata.get("kind", "ice_shatter")))
+	return before - maxf(0.0, float(actor.health))
+
+
+func resolve_lightning_derived_hit(actor: Dictionary, coefficient: float, context: Dictionary = {}) -> float:
+	if phase != "combat" or paused or actor.is_empty() or float(actor.get("health", 0.0)) <= 0.0 or coefficient <= 0.0:
+		return 0.0
+	var metadata: Dictionary = context.duplicate(true)
+	metadata.merge({"school": "lightning", "natural": false, "lightning_direct": false}, true)
+	var bonus: Dictionary = _artifact_combat.modify_damage_context(self, actor, metadata)
+	var damage: float = float(player.attack) * (1.0 + _spell_combat.field_attack_bonus()) * coefficient * float(metadata.get("damage_scale", 1.0))
+	damage *= (1.0 + _spell_combat.lightning.school_bonus(self)) * float(bonus.damage_multiplier)
+	damage *= 1.0 + _spell_combat.lightning.target_vulnerability(actor)
+	damage *= _gem_combat.outgoing_multiplier(self)
+	var before: float = float(actor.health)
+	# The finite parent owns all status/proc effects. No critical RNG or on-hit reentry.
+	damage_enemy(actor, damage, str(metadata.get("kind", "lightning_derived")))
 	return before - maxf(0.0, float(actor.health))
 
 
@@ -950,11 +1084,11 @@ func damage_player(amount: float, damage_kind: String = "direct") -> bool:
 
 func damage_enemy(actor: Dictionary, amount: float, spell_id: String = ""):
 	var was_alive := not actor.is_empty() and float(actor.get("health", 0.0)) > 0.0
-	super.damage_enemy(actor, amount * _gem_combat.outgoing_multiplier(self), spell_id)
+	super.damage_enemy(actor, amount, spell_id)
 	if was_alive and bool(actor.get("boss", false)):
 		_enemy_combat.bosses.sync_health(_enemy_combat, self, actor)
 	if was_alive and float(actor.health) <= 0.0 and _artifact_combat != null:
-		_gem_combat.actor_died(self, actor)
+		_gem_combat.actor_died(self, actor, not spell_id.begins_with("gem_"))
 		actor["ice_frozen"] = false
 		if _spell_combat != null:
 			_spell_combat.remove_actor_status(int(actor.id))
@@ -962,7 +1096,7 @@ func damage_enemy(actor: Dictionary, amount: float, spell_id: String = ""):
 
 
 func resolve_fixed_item_hit(actor: Dictionary, amount: float, item_id: String) -> float:
-	if phase != "combat" or actor.is_empty() or float(actor.health) <= 0.0 or amount <= 0.0:
+	if phase != "combat" or paused or actor.is_empty() or float(actor.health) <= 0.0 or amount <= 0.0:
 		return 0.0
 	var before := float(actor.health)
 	damage_enemy(actor, amount, item_id)
@@ -984,7 +1118,6 @@ func artifact_cooldown_reduction() -> float:
 func artifact_burn_parameters(parameters: Dictionary) -> Dictionary:
 	var grown: Dictionary = _spell_combat.growth.burn_parameters(self, parameters) if _spell_combat != null else parameters.duplicate(true)
 	var result: Dictionary = _artifact_combat.burn_parameters(grown) if _artifact_combat != null else grown
-	if gem_core() == "inferno": result.coefficient = float(_gem_combat.spec.tick_coefficient_per_layer)
 	return result
 
 func gem_core() -> String:
@@ -993,9 +1126,17 @@ func gem_core() -> String:
 func gem_planned_damage(actor: Dictionary, coefficient: float, school: String) -> float:
 	var context: Dictionary = {"school": school, "natural": false, "kind": "gem", "spell_id": "gem_" + school}
 	var bonus: Dictionary = _artifact_combat.modify_damage_context(self, actor, context)
-	var school_bonus: float = _fire_damage_bonus() if school == "fire" else _spell_combat.ice.school_bonus(self)
+	var school_bonus: float = 0.0
+	if school == "fire": school_bonus = _fire_damage_bonus()
+	elif school == "ice": school_bonus = _spell_combat.ice.school_bonus(self)
+	else:
+		var module = _spell_combat.school_module(school)
+		if module != null: school_bonus = module.school_bonus(self)
 	if school == "thermal": school_bonus = maxf(_fire_damage_bonus(), _spell_combat.ice.school_bonus(self))
 	if school == "fire": bonus.damage_multiplier *= 1.0 + _spell_combat.growth.fire_vulnerability(self, actor)
+	else:
+		var module = _spell_combat.school_module(school)
+		if module != null and module.has_method("target_vulnerability"): bonus.damage_multiplier *= 1.0 + module.target_vulnerability(actor)
 	return float(player.attack) * (1.0 + _spell_combat.field_attack_bonus()) * coefficient * (1.0 + school_bonus) * float(bonus.damage_multiplier)
 
 func gem_derived_hit(actor: Dictionary, coefficient: float, school: String, source: String) -> float:
@@ -1006,6 +1147,7 @@ func gem_after_spell_status(actor: Dictionary, context: Dictionary) -> void:
 	_gem_combat.after_spell_status(self, actor, context)
 
 func gem_record_shape(shape: Dictionary, coefficient: float, context: Dictionary) -> void:
+	if bool(context.get("natural", false)) and _gem_combat.body(context): context["gem_echo_eligible"] = true
 	_gem_combat.echo.record(self, shape, coefficient, context)
 
 
@@ -1053,3 +1195,36 @@ func artifact_spirit_sync(target: Dictionary, coefficient: float) -> bool:
 
 func interrupt_enemy_by_push(actor: Dictionary, pos: Vector2):
 	_enemy_combat.interrupt_by_push(actor, pos)
+
+
+func resolve_school_derived_hit(actor: Dictionary, coefficient: float, context: Dictionary = {}) -> float:
+	if phase != "combat" or paused or actor.is_empty() or float(actor.get("health", 0.0)) <= 0.0 or coefficient <= 0.0:
+		return 0.0
+	var metadata: Dictionary = context.duplicate(true)
+	metadata["natural"] = false
+	var school: String = str(metadata.get("school", ""))
+	var module = _spell_combat.school_module(school)
+	if module == null: return 0.0
+	var bonus: Dictionary = _artifact_combat.modify_damage_context(self, actor, metadata)
+	var damage: float = float(player.attack) * (1.0 + _spell_combat.field_attack_bonus()) * coefficient * float(metadata.get("damage_scale", 1.0))
+	damage *= (1.0 + module.school_bonus(self) + float(metadata.get("summon_school_bonus", 0.0))) * float(bonus.damage_multiplier)
+	damage *= 1.0 + module.target_vulnerability(actor)
+	damage *= _gem_combat.outgoing_multiplier(self)
+	if bool(metadata.get("can_crit", false)):
+		var roll: float = _rng.randf()
+		if roll < float(player.crit_rate):
+			damage *= float(player.crit_multiplier) + float(bonus.get("crit_multiplier_add", 0.0))
+	var before: float = float(actor.health)
+	# A finite parent owns the event; these hits never enter ordinary body callbacks.
+	damage_enemy(actor, damage, str(metadata.get("kind", "school_derived")))
+	return before - maxf(0.0, float(actor.health))
+
+
+func resolve_summon_hit(actor: Dictionary, coefficient: float, context: Dictionary = {}) -> float:
+	var metadata: Dictionary = context.duplicate(true)
+	metadata.merge({"school": "spirit", "kind": "summon", "natural": false, "can_crit": true}, true)
+	return resolve_school_derived_hit(actor, coefficient, metadata)
+
+
+func enemy_projectile_speed_multiplier(pos: Vector2) -> float:
+	return _spell_combat.wind.projectile_speed_multiplier(self, pos) if _spell_combat != null else 1.0

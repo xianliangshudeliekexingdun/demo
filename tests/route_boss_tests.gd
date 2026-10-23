@@ -432,10 +432,10 @@ func dual_rewards() -> void:
 	# The existing shield-conversion core still converts the cap increase once,
 	# while the new seal's explicit no-refill rule also holds for this build.
 	var converted = Route.new()
-	check(converted.configure({"gem_core": "aegis", "player": {"health": 195.0, "shield": 362.5}}).ok, "real converted-life snapshot configures")
+	check(converted.configure({"gem_core": "aegis", "player": {"health": 210.0, "shield": 298.0}}).ok, "real converted-life snapshot configures")
 	converted.player.health = 100.0
 	converted.player.shield = 80.0
 	converted._artifact_combat._owned.append("BGT15")
 	converted._artifact_combat.apply_acquisition(converted, "BGT15")
-	check(near(converted.player.max_health, 227.5) and near(converted.player.max_shield, 406.25), "seal flat life converts exactly once through existing core")
+	check(near(converted.player.max_health, 245.0) and near(converted.player.max_shield, 331.0), "seal flat life converts exactly once through existing core")
 	check(near(converted.player.health, 100.0) and near(converted.player.shield, 80.0), "seal never refills current life or shield with conversion core")

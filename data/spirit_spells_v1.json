@@ -1,0 +1,524 @@
+{
+  "version": "formal-spirit-runtime-20261021",
+  "status": "approved_implementation",
+  "design_source": "docs/游戏设计/灵契法术成长.md",
+  "school": "spirit",
+  "mechanics": {
+    "initial_ids": [
+      "S01",
+      "S02",
+      "S03"
+    ],
+    "summon_sources": [
+      "S02",
+      "S03",
+      "S04"
+    ],
+    "total_attack_unit_capacity": 4,
+    "mark_duration": 4,
+    "mark_normal_pet_spirit_damage_bonus": 0.15,
+    "resonance": {
+      "school_damage_bonus": 0.15,
+      "distinct_spells": 3,
+      "school_cdr": 0.1
+    },
+    "leash_distance": 10,
+    "unit_radius": 0.12,
+    "follow_speed": 8,
+    "spawn_distance": 0.65,
+    "minimum_attack_windup": 0.15,
+    "navigation_margin": 0.04,
+    "path_replan_distance": 0.4,
+    "control_slow_caps": {
+      "normal": 0.45,
+      "elite": 0.25,
+      "fixed_strong": 0.15
+    },
+    "event_order": [
+      "normal_hits_including_expiry",
+      "expiry_unregister",
+      "delayed_command_recheck",
+      "new_releases"
+    ],
+    "snapshots": "出生固定等级/系数/间隔/几何/寿命/追加倍率；命中读当前攻击/临时攻击/通用/灵契桶/暴击",
+    "archived_compatibility_ids": [
+      "F04",
+      "B04",
+      "P01",
+      "G02"
+    ]
+  },
+  "effects": {
+    "summon": 0.5,
+    "hit": 0.25,
+    "burst": 0.55,
+    "shield": 0.5,
+    "mark": 0.3,
+    "command": 0.3,
+    "beam": 0.2,
+    "attack_windup": 0.15,
+    "chain": 0.3
+  },
+  "spells": {
+    "S01": {
+      "name": "契印灵矢",
+      "school": "spirit",
+      "active": true,
+      "kind": "direct",
+      "windup": 0.2,
+      "cooldown": 1.35,
+      "range": 8,
+      "levels": [
+        {
+          "coefficient": 1.1,
+          "range": 8,
+          "projectile_speed": 16,
+          "projectile_radius": 0.12,
+          "target_cap": 1,
+          "mark_duration": 4,
+          "cooldown": 1.35
+        },
+        {
+          "coefficient": 1.5,
+          "range": 8,
+          "projectile_speed": 16,
+          "projectile_radius": 0.12,
+          "target_cap": 2,
+          "mark_duration": 4,
+          "cooldown": 1.35
+        },
+        {
+          "coefficient": 1.5,
+          "range": 9,
+          "projectile_speed": 16,
+          "projectile_radius": 0.12,
+          "target_cap": 3,
+          "mark_duration": 6,
+          "cooldown": 1.35
+        }
+      ]
+    },
+    "S02": {
+      "name": "契灵召唤",
+      "school": "spirit",
+      "active": true,
+      "kind": "spirit",
+      "windup": 0.35,
+      "cooldown": 12,
+      "range": 8,
+      "levels": [
+        {
+          "coefficient": 1.0,
+          "capacity": 1,
+          "summon_per_cast": 1,
+          "duration": 12,
+          "attack_interval": 1.25,
+          "attack_delay": 1.25,
+          "attack_windup": 0.15,
+          "range": 8,
+          "beam_width": 0.18,
+          "target_cap": 1,
+          "cooldown": 12
+        },
+        {
+          "coefficient": 1.595,
+          "capacity": 1,
+          "summon_per_cast": 1,
+          "duration": 14,
+          "attack_interval": 1.1,
+          "attack_delay": 1.1,
+          "attack_windup": 0.15,
+          "range": 8,
+          "beam_width": 0.18,
+          "target_cap": 1,
+          "cooldown": 12
+        },
+        {
+          "coefficient": 1.595,
+          "capacity": 2,
+          "summon_per_cast": 2,
+          "duration": 16,
+          "attack_interval": 1.1,
+          "attack_delay": 1.1,
+          "attack_windup": 0.15,
+          "range": 8,
+          "beam_width": 0.18,
+          "target_cap": 3,
+          "cooldown": 12
+        }
+      ],
+      "summon_family": "ranged"
+    },
+    "S03": {
+      "name": "灵刃侍从",
+      "school": "spirit",
+      "active": true,
+      "kind": "spirit",
+      "windup": 0.3,
+      "cooldown": 10,
+      "range": 8,
+      "levels": [
+        {
+          "coefficient": 1.2,
+          "capacity": 1,
+          "summon_per_cast": 1,
+          "duration": 10,
+          "attack_interval": 1.1,
+          "attack_delay": 0.55,
+          "attack_windup": 0.15,
+          "search_range": 6,
+          "attack_range": 1.0,
+          "move_speed": 8,
+          "cleave_angle_degrees": 0,
+          "cleave_radius": 1.0,
+          "target_cap": 1,
+          "cooldown": 10
+        },
+        {
+          "coefficient": 1.65,
+          "capacity": 1,
+          "summon_per_cast": 1,
+          "duration": 12,
+          "attack_interval": 1.0,
+          "attack_delay": 0.55,
+          "attack_windup": 0.15,
+          "search_range": 8,
+          "attack_range": 1.0,
+          "move_speed": 10,
+          "cleave_angle_degrees": 0,
+          "cleave_radius": 1.0,
+          "target_cap": 1,
+          "cooldown": 10
+        },
+        {
+          "coefficient": 1.65,
+          "capacity": 1,
+          "summon_per_cast": 1,
+          "duration": 12,
+          "attack_interval": 1.0,
+          "attack_delay": 0.55,
+          "attack_windup": 0.15,
+          "search_range": 8,
+          "attack_range": 1.0,
+          "move_speed": 10,
+          "cleave_angle_degrees": 90,
+          "cleave_radius": 1.2,
+          "target_cap": 3,
+          "cooldown": 10
+        }
+      ],
+      "summon_family": "melee"
+    },
+    "S04": {
+      "name": "巡空灵鹰",
+      "school": "spirit",
+      "active": true,
+      "kind": "spirit",
+      "windup": 0.3,
+      "cooldown": 9,
+      "range": 8,
+      "levels": [
+        {
+          "coefficient": 0.9,
+          "capacity": 1,
+          "summon_per_cast": 1,
+          "duration": 8,
+          "attack_interval": 1.6,
+          "attack_delay": 0.45,
+          "attack_windup": 0.15,
+          "sweep_length": 3,
+          "sweep_width": 0.6,
+          "target_cap": 2,
+          "search_range": 8,
+          "attack_range": 3,
+          "move_speed": 10,
+          "cooldown": 9
+        },
+        {
+          "coefficient": 1.2,
+          "capacity": 1,
+          "summon_per_cast": 1,
+          "duration": 10,
+          "attack_interval": 1.4,
+          "attack_delay": 0.45,
+          "attack_windup": 0.15,
+          "sweep_length": 3,
+          "sweep_width": 0.6,
+          "target_cap": 3,
+          "search_range": 8,
+          "attack_range": 3,
+          "move_speed": 10,
+          "cooldown": 9
+        },
+        {
+          "coefficient": 1.2,
+          "capacity": 1,
+          "summon_per_cast": 1,
+          "duration": 10,
+          "attack_interval": 1.4,
+          "attack_delay": 0.45,
+          "attack_windup": 0.15,
+          "sweep_length": 3,
+          "sweep_width": 0.6,
+          "target_cap": 4,
+          "search_range": 8,
+          "attack_range": 3,
+          "move_speed": 10,
+          "cooldown": 9
+        }
+      ],
+      "summon_family": "hawk"
+    },
+    "S05": {
+      "name": "群灵号令",
+      "school": "spirit",
+      "active": true,
+      "kind": "spirit_guard",
+      "windup": 0.3,
+      "cooldown": 8,
+      "range": 8,
+      "levels": [
+        {
+          "command_coefficient": 0.6,
+          "command_delay": 0.2,
+          "range": 8,
+          "command_unit_cap": 4,
+          "targets_per_unit": 1,
+          "can_crit": false,
+          "cooldown": 8
+        },
+        {
+          "command_coefficient": 1.0625,
+          "command_delay": 0.2,
+          "range": 8,
+          "command_unit_cap": 4,
+          "targets_per_unit": 1,
+          "can_crit": false,
+          "cooldown": 8
+        },
+        {
+          "command_coefficient": 1.375,
+          "command_delay": 0.2,
+          "range": 8,
+          "command_unit_cap": 4,
+          "targets_per_unit": 1,
+          "can_crit": false,
+          "cooldown": 8
+        }
+      ],
+      "prerequisite_ids": [
+        "S02",
+        "S03",
+        "S04"
+      ],
+      "required_any_spells": [
+        "S02",
+        "S03",
+        "S04"
+      ]
+    },
+    "S06": {
+      "name": "归灵爆发",
+      "school": "spirit",
+      "active": true,
+      "kind": "area",
+      "windup": 0.4,
+      "cooldown": 6,
+      "range": 8,
+      "levels": [
+        {
+          "base_coefficient": 2.0,
+          "consume_bonus_coefficient": 2.8,
+          "radius": 2.0,
+          "range": 8,
+          "target_cap": 6,
+          "consume_unit_cap": 1,
+          "consume_max_remaining": 6,
+          "cooldown": 6
+        },
+        {
+          "base_coefficient": 2.6,
+          "consume_bonus_coefficient": 4.42,
+          "radius": 2.4,
+          "range": 8,
+          "target_cap": 6,
+          "consume_unit_cap": 1,
+          "consume_max_remaining": 6,
+          "cooldown": 6
+        },
+        {
+          "base_coefficient": 2.6,
+          "consume_bonus_coefficient": 5.2,
+          "radius": 2.4,
+          "range": 8,
+          "target_cap": 6,
+          "consume_unit_cap": 1,
+          "consume_max_remaining": 6,
+          "cooldown": 6
+        }
+      ]
+    },
+    "S07": {
+      "name": "契约法阵",
+      "school": "spirit",
+      "active": true,
+      "kind": "spirit_guard",
+      "windup": 0.45,
+      "cooldown": 12,
+      "range": 8,
+      "levels": [
+        {
+          "duration": 4,
+          "radius": 2.5,
+          "extension_per_unit": 2,
+          "lifetime_extension_cap": 4,
+          "new_unit_first_attack_delay_reduction": 0.15,
+          "minimum_first_attack_delay": 0.2,
+          "field_cap": 1,
+          "range": 8,
+          "cooldown": 12
+        },
+        {
+          "duration": 5,
+          "radius": 3.0,
+          "extension_per_unit": 3,
+          "lifetime_extension_cap": 4,
+          "new_unit_first_attack_delay_reduction": 0.2,
+          "minimum_first_attack_delay": 0.2,
+          "field_cap": 1,
+          "range": 8,
+          "cooldown": 12
+        },
+        {
+          "duration": 6,
+          "radius": 3.5,
+          "extension_per_unit": 6,
+          "lifetime_extension_cap": 6,
+          "new_unit_first_attack_delay_reduction": 0.25,
+          "minimum_first_attack_delay": 0.2,
+          "field_cap": 1,
+          "range": 8,
+          "cooldown": 12
+        }
+      ],
+      "prerequisite_ids": [
+        "S02",
+        "S03",
+        "S04"
+      ],
+      "required_any_spells": [
+        "S02",
+        "S03",
+        "S04"
+      ]
+    },
+    "S08": {
+      "name": "灵缚锁链",
+      "school": "spirit",
+      "active": true,
+      "kind": "direct",
+      "windup": 0.25,
+      "cooldown": 5,
+      "range": 8,
+      "levels": [
+        {
+          "coefficient": 1.2,
+          "range": 8,
+          "base_slow": 0.15,
+          "marked_slow": 0.3,
+          "slow_duration": 2,
+          "target_cap": 1,
+          "secondary_radius": 2.5,
+          "can_apply_mark": false,
+          "mark_duration": 4,
+          "cooldown": 5
+        },
+        {
+          "coefficient": 1.65,
+          "range": 8,
+          "base_slow": 0.15,
+          "marked_slow": 0.4,
+          "slow_duration": 2.5,
+          "target_cap": 1,
+          "secondary_radius": 2.5,
+          "can_apply_mark": false,
+          "mark_duration": 4,
+          "cooldown": 5
+        },
+        {
+          "coefficient": 1.65,
+          "range": 8,
+          "base_slow": 0.15,
+          "marked_slow": 0.4,
+          "slow_duration": 3,
+          "target_cap": 2,
+          "secondary_radius": 2.5,
+          "can_apply_mark": true,
+          "mark_duration": 4,
+          "cooldown": 5
+        }
+      ]
+    },
+    "S09": {
+      "name": "护主灵",
+      "school": "spirit",
+      "active": true,
+      "kind": "shield",
+      "windup": 0.3,
+      "cooldown": 12,
+      "range": 8,
+      "levels": [
+        {
+          "shield_restore": 25,
+          "shield_per_alive_unit": 5,
+          "bonus_unit_cap": 3,
+          "has_attack_unit": false,
+          "cooldown": 12
+        },
+        {
+          "shield_restore": 52,
+          "shield_per_alive_unit": 5,
+          "bonus_unit_cap": 3,
+          "has_attack_unit": false,
+          "cooldown": 12
+        },
+        {
+          "shield_restore": 52,
+          "shield_per_alive_unit": 5,
+          "bonus_unit_cap": 3,
+          "has_attack_unit": false,
+          "cooldown": 9
+        }
+      ]
+    },
+    "S10": {
+      "name": "灵契研习",
+      "school": "spirit",
+      "active": true,
+      "kind": "passive",
+      "windup": 0,
+      "cooldown": 0,
+      "range": 0,
+      "levels": [
+        {
+          "spirit_damage_bonus": 0.15,
+          "mark_normal_attack_bonus_add": 0,
+          "cooldown": 0,
+          "mark_duration_add": 0
+        },
+        {
+          "spirit_damage_bonus": 0.25,
+          "mark_normal_attack_bonus_add": 0,
+          "cooldown": 0,
+          "mark_duration_add": 1
+        },
+        {
+          "spirit_damage_bonus": 0.35,
+          "mark_normal_attack_bonus_add": 0.05,
+          "cooldown": 0,
+          "mark_duration_add": 2
+        }
+      ]
+    }
+  }
+}

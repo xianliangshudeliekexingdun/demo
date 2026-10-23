@@ -4,7 +4,12 @@ extends RefCounted
 
 const META_PATH = "res://data/balance_candidates/meta_growth_v1.json"
 const Gems = preload("res://scripts/core/magic_gems.gd")
-const SAVE_VERSION = "meta-progression-4"
+const SpellSampling = preload("res://scripts/core/route_spell_sampling.gd")
+const SAVE_VERSION = "meta-progression-6"
+const EIGHT_CORE_SAVE_VERSION = "meta-progression-5"
+const TWO_CATALYST_SAVE_VERSION = "meta-progression-4"
+const TWO_CATALYST_LEVEL_IDS = ["MC04", "MC05", "MG01", "MG02", "MG03"]
+const NEW_CATALYST_IDS = ["MC06", "MC07", "MC08", "MC09"]
 const FIXED_GEM_SAVE_VERSION = "meta-progression-3"
 const PREVIOUS_SAVE_VERSION = "meta-progression-2"
 const LEGACY_SAVE_VERSION = "meta-progression-1"
@@ -18,6 +23,8 @@ var error: String = ""
 var _meta: Dictionary = {}
 var _base: Dictionary = {}
 var _ice_base: Dictionary = {}
+var _school_sources: Dictionary = {}
+var _sampling: Dictionary = {}
 var _economy: Dictionary = {}
 var _state: Dictionary = {}
 var _run_snapshot: Dictionary = {}
@@ -51,6 +58,8 @@ func load_state() -> Dictionary:
 	var ice_error = _load_ice_source()
 	if not ice_error.is_empty():
 		return _fail("局外参数错误：" + ice_error)
+	var extra_error: String = _load_formal_school_sources()
+	if not extra_error.is_empty(): return _fail("局外参数错误：" + extra_error)
 	var catalog_error = _validate_catalog()
 	if not catalog_error.is_empty():
 		return _fail("局外参数错误：" + catalog_error)
@@ -67,16 +76,31 @@ func load_state() -> Dictionary:
 			save_data = _migrate_legacy_state(save_data)
 			if save_data.is_empty():
 				return _fail("已有存档损坏，进度未覆盖：旧触媒存档无法迁移。")
-		elif save_version == PREVIOUS_SAVE_VERSION:
-			save_data = _migrate_gem_state(save_data)
-		elif save_version == FIXED_GEM_SAVE_VERSION:
-			if not save_data.get("gem_state") is Dictionary: return _fail("已有宝石存档无法迁移，原文件未覆盖。")
-			var migrated: Dictionary = gems.migrate_v3(save_data.get("gem_state", {}))
-			if migrated.is_empty(): return _fail("已有宝石存档无法迁移，原文件未覆盖。")
-			save_data["gem_state"] = migrated
+		elif save_version in [PREVIOUS_SAVE_VERSION, FIXED_GEM_SAVE_VERSION, TWO_CATALYST_SAVE_VERSION]:
+			# Only a complete, recognized five-item old schema may gain the four
+			# new locked catalysts. Missing old fields remain corruption errors.
+			if not _has_complete_previous_levels(save_data):
+				return _fail("已有存档损坏，进度未覆盖：旧物品等级集合无效。")
+			save_data = _add_new_locked_catalysts(save_data)
+			if save_version == PREVIOUS_SAVE_VERSION:
+				save_data = _migrate_gem_state(save_data)
+			elif save_version == FIXED_GEM_SAVE_VERSION:
+				if not save_data.get("gem_state") is Dictionary: return _fail("已有宝石存档无法迁移，原文件未覆盖。")
+				var migrated: Dictionary = gems.migrate_v3(save_data.get("gem_state", {}))
+				if migrated.is_empty(): return _fail("已有宝石存档无法迁移，原文件未覆盖。")
+				save_data["gem_state"] = migrated
+				save_data.version = SAVE_VERSION
+			else:
+				save_data.version = SAVE_VERSION
+		elif save_version == EIGHT_CORE_SAVE_VERSION:
 			save_data.version = SAVE_VERSION
 		elif save_version != SAVE_VERSION:
 			return _fail("已有存档损坏，进度未覆盖：不支持的存档版本。")
+		if not save_data.get("gem_state") is Dictionary: return _fail("已有宝石存档损坏，原文件未覆盖。")
+		if not gems.is_modern(save_data.gem_state):
+			var old_error: String = _validate_state(save_data)
+			if not old_error.is_empty(): return _fail("已有宝石存档无法迁移：" + old_error)
+			save_data = _migrate_current_gems(save_data)
 		var state_error = _validate_state(save_data)
 		if not state_error.is_empty():
 			return _fail("已有存档损坏，进度未覆盖：" + state_error)
@@ -90,12 +114,20 @@ func load_state() -> Dictionary:
 		if not _state.last_settlement.is_empty():
 			for field in ["run_serial", "dust_earned", "settlement_serial"]:
 				_state.last_settlement[field] = int(_state.last_settlement[field])
+			if _state.last_settlement.has("essence_earned"): _state.last_settlement.essence_earned = int(_state.last_settlement.essence_earned)
 			for index in range(_state.last_settlement.cleared_rooms.size()):
 				_state.last_settlement.cleared_rooms[index] = int(_state.last_settlement.cleared_rooms[index])
 		for item_id in _state.levels:
 			_state.levels[item_id] = int(_state.levels[item_id])
 		for field in ["serial", "draws", "gold_misses", "rare_misses", "essence", "salvaged", "work_serial"]:
 			_state.gem_state[field] = int(_state.gem_state[field])
+		if gems.is_modern(_state.gem_state):
+			for field in ["schema_version", "core_choice_credits", "starter_attributes_claimed", "cumulative_cleared"]:
+				_state.gem_state[field] = int(_state.gem_state[field])
+			for index in _state.gem_state.milestone_claimed.size():
+				_state.gem_state.milestone_claimed[index] = int(_state.gem_state.milestone_claimed[index])
+			for field in ["old_gold_misses", "pity_dust_credit", "duplicate_core_essence"]:
+				if _state.gem_state.migration.has(field): _state.gem_state.migration[field] = int(_state.gem_state.migration[field])
 		for gem in _state.gem_state.inventory:
 			gem.serial = int(gem.serial)
 			for line in gem.affixes:
@@ -130,7 +162,7 @@ func _migrate_gem_state(source: Dictionary) -> Dictionary:
 		var level: int = int(source.get("levels", {}).get(id, 0))
 		if level <= 0 or level > int(_meta.progression.max_level): continue
 		_add_legacy_gem(state, str(id), level)
-		if str(source.get("equipped", {}).get("gem", "")) == id: state.slots[0] = "gem-%d" % int(state.serial)
+		if str(source.get("equipped", {}).get("gem", "")) == id: state.slots[1] = "gem-%d" % int(state.serial)
 	result["gem_state"] = state
 	return result
 
@@ -150,10 +182,11 @@ func claim_starter_gem(id: String) -> Dictionary:
 	candidate.levels[id] = 1
 	candidate.free_claimed.gem = true
 	var uid: String = _add_legacy_gem(candidate.gem_state, id, 1)
-	var empty_slot: int = candidate.gem_state.slots.find("")
+	var empty_slot: int = -1
+	for index in range(1,4):
+		if str(candidate.gem_state.slots[index]).is_empty(): empty_slot = index; break
 	if empty_slot >= 0: candidate.gem_state.slots[empty_slot] = uid
-	var equipped_core: Dictionary = gems.find(candidate.gem_state, str(candidate.gem_state.slots[0]))
-	candidate.equipped.gem = str(equipped_core.get("legacy_id", ""))
+	_sync_legacy_equipped(candidate)
 	var result: Dictionary = _commit(candidate)
 	if result.ok: result["gem_id"] = uid
 	return result
@@ -161,21 +194,163 @@ func claim_starter_gem(id: String) -> Dictionary:
 func get_gems() -> Array:
 	return _state.get("gem_state", {}).get("inventory", []).duplicate(true)
 
-func request_equip_gem(slot: int, id: String = "") -> Dictionary:
-	if not _loaded or is_in_run(): return _fail("本局结束后可调整宝石。")
-	if not _state.gem_state.pending_reforge.is_empty(): return _fail("请先选择当前改良结果。")
-	if slot < 0 or slot >= int(gems.rules.slots): return _fail("未知宝石槽。")
-	if not id.is_empty() and gems.find(_state.gem_state, id).is_empty(): return _fail("只能装备已经持有的宝石。")
+func _gem_request_error() -> String:
+	if not _loaded: return "存档尚未成功读取。"
+	if is_in_run(): return "本局结束后可调整宝石。"
+	if not _state.gem_state.pending_reforge.is_empty(): return "请先选择当前改良结果。"
+	if not gems.is_modern(_state.gem_state): return "请先处理旧版改良候选。"
+	return ""
+
+func _migrate_current_gems(candidate: Dictionary) -> Dictionary:
+	if gems.is_modern(candidate.gem_state) or not candidate.gem_state.pending_reforge.is_empty(): return candidate
+	candidate.gem_state = gems.migrate_legacy(candidate.gem_state)
+	candidate.dust = int(candidate.dust) + int(candidate.gem_state.migration.pity_dust_credit)
+	_sync_legacy_equipped(candidate)
+	return candidate
+
+func _sync_legacy_equipped(candidate: Dictionary) -> void:
+	candidate.equipped.gem = ""
+	for slot in range(1,4):
+		var gem: Dictionary = gems.find(candidate.gem_state,str(candidate.gem_state.slots[slot]))
+		if gem.has("legacy_id"):
+			candidate.equipped.gem = str(gem.legacy_id)
+			break
+
+func request_unlock_core(id: String) -> Dictionary:
+	var invalid: String = _gem_request_error()
+	if not invalid.is_empty(): return _fail(invalid)
+	if not gems.rules.cores.has(id): return _fail("未知核心。")
+	if id in _state.gem_state.unlocked_cores: return _fail("该核心已解锁，可免费装备。")
 	var candidate: Dictionary = _state.duplicate(true)
-	# A held instance moves between slots; it can never supply attributes twice.
-	for index in int(gems.rules.slots):
-		if candidate.gem_state.slots[index] == id: candidate.gem_state.slots[index] = ""
+	if not bool(candidate.gem_state.core_claimed): candidate.gem_state.core_claimed = true
+	elif int(candidate.gem_state.core_choice_credits)>0: candidate.gem_state.core_choice_credits -= 1
+	else:
+		var cost: int = int(gems.rules.core_unlock_cost)
+		if int(candidate.dust)<cost: return _fail("魔尘不足。")
+		candidate.dust -= cost
+	candidate.gem_state.unlocked_cores.append(id)
+	if str(candidate.gem_state.slots[0]).is_empty(): candidate.gem_state.slots[0] = "core:"+id
+	return _commit(candidate)
+
+func request_equip_core(id: String) -> Dictionary:
+	return request_equip_gem(0,"" if id.is_empty() else "core:"+id)
+
+func claim_starter_attribute(stat: String) -> Dictionary:
+	var invalid: String = _gem_request_error()
+	if not invalid.is_empty(): return _fail(invalid)
+	if not gems.rules.affixes.has(stat): return _fail("未知主属性。")
+	if int(_state.gem_state.starter_attributes_claimed)>=int(gems.rules.starter_attribute_count): return _fail("三枚起始属性宝石已领取。")
+	var candidate: Dictionary = _state.duplicate(true)
+	var rng = RandomNumberGenerator.new()
+	rng.state = int(candidate.gem_state.rng_state)
+	var gem: Dictionary = gems.create(candidate.gem_state,"green",stat,rng,false,"starter")
+	candidate.gem_state.starter_attributes_claimed += 1
+	for slot in range(1,4):
+		if str(candidate.gem_state.slots[slot]).is_empty(): candidate.gem_state.slots[slot] = gem.id; break
+	var result: Dictionary = _commit(candidate)
+	if result.ok: result["gem_id"] = gem.id
+	return result
+
+func request_equip_gem(slot: int, id: String = "") -> Dictionary:
+	var invalid: String = _gem_request_error()
+	if not invalid.is_empty(): return _fail(invalid)
+	if slot<0 or slot>=int(gems.rules.slots): return _fail("未知宝石槽。")
+	if slot==0:
+		if not id.is_empty() and (not id.begins_with("core:") or id.trim_prefix("core:") not in _state.gem_state.unlocked_cores): return _fail("核心槽只接受已解锁核心。")
+	elif not id.is_empty() and (id.begins_with("core:") or gems.find(_state.gem_state,id).is_empty()): return _fail("属性槽只接受持有的属性宝石。")
+	var candidate: Dictionary = _state.duplicate(true)
+	for index in range(1,4):
+		if candidate.gem_state.slots[index]==id: candidate.gem_state.slots[index] = ""
 	candidate.gem_state.slots[slot] = id
-	var core: Dictionary = gems.find(candidate.gem_state, str(candidate.gem_state.slots[0]))
-	candidate.equipped.gem = str(core.get("legacy_id", ""))
+	_sync_legacy_equipped(candidate)
+	return _commit(candidate)
+
+func request_craft_gem(rarity: String, stat: String) -> Dictionary:
+	var invalid: String = _gem_request_error()
+	if not invalid.is_empty(): return _fail(invalid)
+	if not gems.rules.workshop.craft_costs.has(rarity) or not gems.rules.affixes.has(stat): return _fail("制作类型无效。")
+	var cost: int = int(gems.rules.workshop.craft_costs[rarity])
+	if int(_state.gem_state.essence)<cost: return _fail("宝石精粹不足。")
+	var candidate: Dictionary = _state.duplicate(true)
+	var rng = RandomNumberGenerator.new()
+	rng.state = int(candidate.gem_state.rng_state)
+	var gem: Dictionary = gems.create(candidate.gem_state,rarity,stat,rng,false,"craft")
+	candidate.gem_state.rng_state = str(rng.state)
+	candidate.gem_state.essence -= cost
+	var result: Dictionary = _commit(candidate)
+	if result.ok: result["gem_id"] = gem.id
+	return result
+
+func _work_gem(id: String) -> Dictionary:
+	var gem: Dictionary = gems.find(_state.gem_state,id)
+	return gem if not gem.is_empty() and not bool(gem.locked) and str(gem.rarity) in ["green","blue","purple"] else {}
+
+func request_upgrade_gem(id: String) -> Dictionary:
+	var invalid: String = _gem_request_error()
+	if not invalid.is_empty(): return _fail(invalid)
+	var gem: Dictionary = _work_gem(id)
+	if gem.is_empty() or not gems.rules.workshop.upgrade_costs.has(gem.rarity): return _fail("请选择未锁定的绿／蓝属性宝石；旧石请先预览转换。")
+	var cost: int = int(gems.rules.workshop.upgrade_costs[gem.rarity])
+	if int(_state.gem_state.essence)<cost: return _fail("宝石精粹不足。")
+	var candidate: Dictionary = _state.duplicate(true)
+	var rng = RandomNumberGenerator.new()
+	rng.state = int(candidate.gem_state.rng_state)
+	for item in candidate.gem_state.inventory:
+		if item.id!=id: continue
+		var pool: Array = gems.rules.affixes.keys()
+		for affix in item.affixes: pool.erase(str(affix.stat))
+		item.affixes.append(gems.line(str(pool[rng.randi_range(0,pool.size()-1)]),1,false))
+		item.rarity = "blue" if item.rarity=="green" else "purple"
+	candidate.gem_state.rng_state = str(rng.state)
+	candidate.gem_state.essence -= cost
+	return _commit(candidate)
+
+func request_raise_gem_affix(id: String, index: int) -> Dictionary:
+	var invalid: String = _gem_request_error()
+	if not invalid.is_empty(): return _fail(invalid)
+	var gem: Dictionary = _work_gem(id)
+	if gem.is_empty() or index<0 or index>=gem.affixes.size(): return _fail("请选择未锁定的新式属性行。")
+	var tier: int = int(gem.affixes[index].tier)
+	if tier>=3: return _fail("该行已到III档。")
+	var costs: Array = gems.rules.workshop.main_tier_costs if index==0 else gems.rules.workshop.side_tier_costs
+	var cost: int = int(costs[tier-1])
+	if int(_state.gem_state.essence)<cost: return _fail("宝石精粹不足。")
+	var candidate: Dictionary = _state.duplicate(true)
+	for item in candidate.gem_state.inventory:
+		if item.id==id: item.affixes[index] = gems.line(str(item.affixes[index].stat),tier+1,index==0)
+	candidate.gem_state.essence -= cost
+	return _commit(candidate)
+
+func request_retype_gem(id: String, index: int, stat: String) -> Dictionary:
+	var invalid: String = _gem_request_error()
+	if not invalid.is_empty(): return _fail(invalid)
+	var gem: Dictionary = _work_gem(id)
+	if gem.is_empty() or index<=0 or index>=gem.affixes.size() or not gems.rules.affixes.has(stat): return _fail("只能定向重塑一条新式副属性。")
+	for affix in gem.affixes:
+		if affix.stat==stat: return _fail("新副属性不得重复当前、主属性或另一副属性。")
+	var cost: int = int(gems.rules.workshop.direct_retype_cost)
+	if int(_state.gem_state.essence)<cost: return _fail("宝石精粹不足。")
+	var candidate: Dictionary = _state.duplicate(true)
+	for item in candidate.gem_state.inventory:
+		if item.id==id: item.affixes[index] = gems.line(stat,int(item.affixes[index].tier),false)
+	candidate.gem_state.essence -= cost
+	return _commit(candidate)
+
+func request_convert_gem(id: String, stat: String) -> Dictionary:
+	var invalid: String = _gem_request_error()
+	if not invalid.is_empty(): return _fail(invalid)
+	var gem: Dictionary = gems.find(_state.gem_state,id)
+	if gem.is_empty() or bool(gem.locked): return _fail("请选择未锁定的过渡属性石。")
+	var converted: Dictionary = gems.converted(gem,stat)
+	if converted.is_empty(): return _fail("主属性必须选自该过渡石已有词条；传承石保持原值。")
+	var candidate: Dictionary = _state.duplicate(true)
+	for index in candidate.gem_state.inventory.size():
+		if candidate.gem_state.inventory[index].id==id: candidate.gem_state.inventory[index] = converted
 	return _commit(candidate)
 
 func request_draw_gems(count: int) -> Dictionary:
+	var invalid: String = _gem_request_error()
+	if not invalid.is_empty(): return _fail(invalid)
 	if not _loaded or is_in_run(): return _fail("本局结束后可抽取宝石。")
 	if not _state.gem_state.pending_reforge.is_empty(): return _fail("请先选择当前改良结果。")
 	if count not in [1, 10]: return _fail("只支持单次或十次抽取。")
@@ -193,6 +368,8 @@ func request_draw_gems(count: int) -> Dictionary:
 	return result
 
 func request_lock_gem(id: String) -> Dictionary:
+	var invalid: String = _gem_request_error()
+	if not invalid.is_empty(): return _fail(invalid)
 	if not _loaded or is_in_run(): return _fail("本局结束后可锁定宝石。")
 	if not _state.gem_state.pending_reforge.is_empty(): return _fail("请先选择当前改良结果。")
 	var candidate: Dictionary = _state.duplicate(true)
@@ -203,6 +380,8 @@ func request_lock_gem(id: String) -> Dictionary:
 	return _fail("宝石已不存在。")
 
 func request_salvage_gems(ids: Array) -> Dictionary:
+	var invalid: String = _gem_request_error()
+	if not invalid.is_empty(): return _fail(invalid)
 	if not _loaded or is_in_run(): return _fail("本局结束后可分解宝石。")
 	if not _state.gem_state.pending_reforge.is_empty(): return _fail("请先选择当前改良结果。")
 	if ids.is_empty(): return _fail("没有可分解的宝石。")
@@ -214,7 +393,7 @@ func request_salvage_gems(ids: Array) -> Dictionary:
 		if gem.is_empty() or gem.has("legacy_id"): return _fail("传承宝石或未持有的宝石不能分解。")
 		if bool(gem.locked) or id in _state.gem_state.slots: return _fail("已装备或锁定的宝石不能分解。")
 		seen.append(id)
-		gain += int(gems.rules.workshop.salvage_yields[gem.rarity])
+		gain += gems.salvage_yield(gem)
 	var candidate: Dictionary = _state.duplicate(true)
 	candidate.gem_state.inventory = candidate.gem_state.inventory.filter(func(gem): return gem.id not in seen)
 	candidate.gem_state.essence += gain
@@ -224,25 +403,20 @@ func request_salvage_gems(ids: Array) -> Dictionary:
 	return result
 
 func request_reforge(id: String, mode: String, index: int = -1) -> Dictionary:
-	if not _loaded or is_in_run(): return _fail("本局结束后可改良宝石。")
-	if not _state.gem_state.pending_reforge.is_empty(): return _fail("请先选择当前改良结果。")
-	var gem: Dictionary = gems.find(_state.gem_state, id)
-	if gem.is_empty() or gem.has("legacy_id"): return _fail("传承宝石或未持有的宝石不能改良。")
-	if bool(gem.locked): return _fail("请先解锁这枚宝石。")
-	if mode not in ["affix", "core"]: return _fail("未知改良方式。")
-	if mode == "core" and gem.rarity != "gold": return _fail("只有金色宝石可改良核心。")
-	if mode == "affix" and (index < 0 or index >= gem.affixes.size()): return _fail("请选择要改良的词条。")
-	var cost: int = int(gems.rules.workshop.core_cost) if mode == "core" else int(gems.rules.workshop.affix_costs[gem.rarity])
-	if int(_state.gem_state.essence) < cost: return _fail("宝石精粹不足。")
+	var invalid: String = _gem_request_error()
+	if not invalid.is_empty(): return _fail(invalid)
+	var gem: Dictionary = _work_gem(id)
+	if mode!="affix" or gem.is_empty() or index<=0 or index>=gem.affixes.size(): return _fail("随机重铸仅更换未锁定新式宝石的一条副属性，保持档位。")
+	var cost: int = int(gems.rules.workshop.random_retype_cost)
+	if int(_state.gem_state.essence)<cost: return _fail("宝石精粹不足。")
 	var candidate: Dictionary = _state.duplicate(true)
 	var rng = RandomNumberGenerator.new()
 	rng.state = int(candidate.gem_state.rng_state)
-	var outcome: Variant = gems.roll_core(str(gem.core), rng) if mode == "core" else gems.roll_affix(gem, index, rng)
+	var outcome: Dictionary = gems.roll_affix(gem,index,rng)
 	candidate.gem_state.essence -= cost
 	candidate.gem_state.work_serial += 1
 	candidate.gem_state.rng_state = str(rng.state)
-	candidate.gem_state.pending_reforge = {"gem_id": id, "mode": mode, "index": -1 if mode == "core" else index, "candidate": outcome,
-		"old": gem.core if mode == "core" else gem.affixes[index].duplicate(true), "cost": cost, "token": int(candidate.gem_state.work_serial)}
+	candidate.gem_state.pending_reforge = {"gem_id":id,"mode":"affix","index":index,"candidate":outcome,"old":gem.affixes[index].duplicate(true),"cost":cost,"token":int(candidate.gem_state.work_serial)}
 	return _commit(candidate)
 
 func resolve_reforge(token: int, adopt: bool) -> Dictionary:
@@ -256,6 +430,7 @@ func resolve_reforge(token: int, adopt: bool) -> Dictionary:
 			if pending.mode == "core": gem.core = pending.candidate
 			else: gem.affixes[int(pending.index)] = pending.candidate.duplicate(true)
 	candidate.gem_state.pending_reforge = {}
+	candidate = _migrate_current_gems(candidate)
 	return _commit(candidate)
 
 func is_in_run() -> bool:
@@ -268,6 +443,7 @@ func get_catalog() -> Dictionary:
 	if _meta.is_empty() or _base.is_empty():
 		return {}
 	var catalog = _meta.duplicate(true)
+	catalog["spell_sampling"] = _sampling.duplicate(true)
 	catalog["spells"] = _spell_catalog()
 	catalog["player"] = _base.player.duplicate(true)
 	return catalog
@@ -304,12 +480,13 @@ func get_item_status(kind: String, item_id: String) -> Dictionary:
 		"blocked_reason": "本局结束后可调整装备。" if is_in_run() else (error if not _loaded else ""),
 	}, true)
 	if kind == "catalyst":
-		item["effect_by_level"] = _meta.catalyst_weight_by_level.duplicate()
+		item["effect_kind"] = "school_priority"
+		item["effect_by_level"] = _sampling.catalyst_affinity_by_level.duplicate()
 		item["related_spell_names"] = []
 		var spells = _spell_catalog()
 		for spell_id in item.related_spells:
 			item.related_spell_names.append(spells[spell_id].name)
-		item["effect_value"] = 1.0 if level == 0 else _meta.catalyst_weight_by_level[level - 1]
+		item["effect_value"] = 0.0 if level == 0 else _sampling.catalyst_affinity_by_level[level - 1]
 	else:
 		item["effect_by_level"] = item.flat_by_level.duplicate()
 		item["effect_value"] = 0 if level == 0 else item.flat_by_level[level - 1]
@@ -361,7 +538,7 @@ func request_equip(kind: String, item_id: String = "") -> Dictionary:
 		var id: String = item_id
 		for gem in get_gems():
 			if str(gem.get("legacy_id", "")) == item_id: id = str(gem.id)
-		return request_equip_gem(0, id)
+		return request_equip_gem(1, id)
 	if not _loaded:
 		return _fail("存档尚未成功读取。")
 	if is_in_run():
@@ -389,6 +566,7 @@ func get_preview_stats() -> Dictionary:
 	return stats
 
 func begin_run() -> Dictionary:
+	if _loaded and not gems.is_modern(_state.gem_state): return _fail("请先到宝石工坊选择旧版改良结果，完成资产继承后再出发。")
 	if not _loaded:
 		return _fail("存档尚未成功读取。")
 	if is_in_run():
@@ -398,6 +576,7 @@ func begin_run() -> Dictionary:
 	return {"ok": true, "error": "", "snapshot": get_run_snapshot()}
 
 func begin_playable_run(reward_scope: String = "legacy") -> Dictionary:
+	if _loaded and not gems.is_modern(_state.gem_state): return _fail("请先到宝石工坊选择旧版改良结果，完成资产继承后再出发。")
 	if reward_scope not in ["legacy", "route45"]: return _fail("未知结算范围。")
 	if not _loaded:
 		return _fail("存档尚未成功读取。")
@@ -463,10 +642,18 @@ func settle_playable_run(run_id: String, cleared_rooms: Array) -> Dictionary:
 	if scope == "route45" and rooms.size() > int(gems.rules.route_income.max_room): return _fail("清房超出当前路线范围。")
 	var dust_earned = _dust_for_rooms(rooms, scope)
 	candidate.dust += dust_earned
+	var essence_earned: int = 0
+	if gems.is_modern(candidate.gem_state):
+		candidate.gem_state.cumulative_cleared += rooms.size()
+		for milestone in gems.rules.milestone_essence:
+			if int(candidate.gem_state.cumulative_cleared)>=int(milestone.cleared) and int(milestone.cleared) not in candidate.gem_state.milestone_claimed:
+				candidate.gem_state.milestone_claimed.append(int(milestone.cleared))
+				essence_earned += int(milestone.essence)
+		candidate.gem_state.essence += essence_earned
 	candidate.settlement_serial += 1
 	candidate.last_settlement = {
 		"run_id": run_id, "run_serial": int(_state.run_serial),
-		"cleared_rooms": rooms, "dust_earned": dust_earned,
+		"cleared_rooms": rooms, "dust_earned": dust_earned, "essence_earned": essence_earned,
 		"settlement_serial": int(candidate.settlement_serial),
 		"reward_scope": scope,
 	}
@@ -625,6 +812,8 @@ func _spell_catalog() -> Dictionary:
 		spells = _base.spells.duplicate(true)
 	if _ice_base.get("spells") is Dictionary:
 		spells.merge(_ice_base.spells.duplicate(true), true)
+	for source in _school_sources.values():
+		spells.merge(source.spells.duplicate(true), true)
 	return spells
 
 func _catalyst_id_for_school(school: String) -> String:
@@ -634,11 +823,12 @@ func _catalyst_id_for_school(school: String) -> String:
 	return ""
 
 func _legacy_catalyst_cost(level: int) -> int:
+	var prices: Dictionary = _meta.legacy_catalyst_refund_costs
 	var cost = 0
 	if level >= 1:
-		cost += int(_meta.progression.unlock_cost)
+		cost += int(prices.unlock_cost)
 	for current in range(1, level):
-		cost += int(_meta.progression.upgrade_cost_by_current_level.get(str(current), 0))
+		cost += int(prices.upgrade_cost_by_current_level.get(str(current), 0))
 	return cost
 
 func _migrate_legacy_state(candidate: Dictionary) -> Dictionary:
@@ -695,6 +885,7 @@ func _migrate_legacy_state(candidate: Dictionary) -> Dictionary:
 			continue
 		refund += _legacy_catalyst_cost(int(levels[item_id]))
 	var migrated_levels: Dictionary = {}
+	for item_id in _meta.catalysts: migrated_levels[item_id] = 0
 	migrated_levels[fire_id] = fire_level
 	migrated_levels[ice_id] = 0
 	for item_id in LEGACY_GEM_IDS:
@@ -774,6 +965,10 @@ func _validate_catalog() -> String:
 	for weight in _meta.catalyst_weight_by_level:
 		if not (weight is int or weight is float) or not is_finite(float(weight)) or weight <= 0:
 			return "触媒权重无效。"
+	var legacy_prices: Variant = _meta.get("legacy_catalyst_refund_costs")
+	if not legacy_prices is Dictionary or not _is_integer(legacy_prices.get("unlock_cost")) or not legacy_prices.get("upgrade_cost_by_current_level") is Dictionary: return "旧触媒退款价格无效。"
+	for current in range(1, int(progression.max_level)):
+		if not _is_integer(legacy_prices.upgrade_cost_by_current_level.get(str(current))): return "旧触媒退款升级价格无效。"
 	if _meta.catalysts.is_empty() or _meta.gems.is_empty():
 		return "物品图鉴为空。"
 	var spells: Dictionary = _spell_catalog()
@@ -790,15 +985,21 @@ func _validate_catalog() -> String:
 		if seen_schools.has(school):
 			return "同一学派触媒重复：" + school
 		seen_schools.append(school)
-		if item.related_spells.is_empty():
-			return "触媒关联法术为空：" + item_id
+		if item.related_spells.size() != 10:
+			return "触媒需要完整十术：" + item_id
+		var seen_spells: Dictionary = {}
 		for spell_id in item.related_spells:
+			if not spell_id is String or seen_spells.has(spell_id): return "触媒关联法术重复或无效：" + str(item_id)
+			seen_spells[spell_id] = true
 			if not spells.has(spell_id) or not spells[spell_id].get("name") is String:
 				return "触媒关联法术不存在：" + str(spell_id)
 			if str(spells[spell_id].get("school", "")) != school:
 				return "触媒关联法术学派不一致：" + str(spell_id)
 			if not bool(spells[spell_id].get("active", true)):
 				return "触媒关联法术未启用：" + str(spell_id)
+		for spell_id in spells:
+			if str(spells[spell_id].get("school", "")) == school and bool(spells[spell_id].get("active", true)) and str(spell_id) != "F04" and not seen_spells.has(spell_id):
+				return "触媒遗漏本系法术：" + str(spell_id)
 	for school in supported_schools:
 		if not seen_schools.has(school):
 			return "缺少 " + school + " 学派触媒。"
@@ -890,4 +1091,61 @@ func _validate_state(candidate: Dictionary) -> String:
 		var equipped_id: String = candidate.equipped[kind]
 		if not equipped_id.is_empty() and (not _items(kind).has(equipped_id) or int(candidate.levels[equipped_id]) == 0):
 			return "装备引用未解锁物品。"
-	return gems.validate(candidate.get("gem_state"), _meta.gems, candidate.levels)
+	var gem_error: String = gems.validate(candidate.get("gem_state"), _meta.gems, candidate.levels)
+	if not gem_error.is_empty(): return gem_error
+	if not settlement.is_empty() and settlement.has("essence_earned"):
+		if not _is_integer(settlement.essence_earned): return "最近结算精粹无效。"
+		var expected_essence: int = 0
+		var after: int = int(candidate.gem_state.get("cumulative_cleared",0))
+		var before: int = after-settlement.cleared_rooms.size()
+		for milestone in gems.rules.milestone_essence:
+			if before<int(milestone.cleared) and after>=int(milestone.cleared): expected_essence += int(milestone.essence)
+		if int(settlement.essence_earned)!=expected_essence: return "最近结算精粹与里程凭证不匹配。"
+	return ""
+
+
+func _has_complete_previous_levels(candidate: Dictionary) -> bool:
+	var levels: Variant = candidate.get("levels")
+	if not levels is Dictionary or levels.size() != TWO_CATALYST_LEVEL_IDS.size(): return false
+	for item_id in TWO_CATALYST_LEVEL_IDS:
+		if not _is_integer(levels.get(item_id)) or float(levels[item_id]) > float(_meta.progression.max_level): return false
+	return true
+
+
+func _add_new_locked_catalysts(candidate: Dictionary) -> Dictionary:
+	var result: Dictionary = candidate.duplicate(true)
+	for item_id in NEW_CATALYST_IDS: result.levels[item_id] = 0
+	return result
+
+
+func _load_formal_school_sources() -> String:
+	_school_sources.clear()
+	_sampling.clear()
+	var paths: Variant = _meta.get("formal_school_parameters")
+	if not paths is Dictionary or paths.size() != 4: return "缺少正式四系法术引用。"
+	var known: Dictionary = _base.get("spells", {}).duplicate(true)
+	known.merge(_ice_base.get("spells", {}), true)
+	for school in ["lightning", "wind", "earth", "spirit"]:
+		if not paths.get(school) is String or str(paths[school]).is_empty(): return "缺少法术引用：" + school
+		var path: String = str(paths[school])
+		if not path.begins_with("res://"): path = META_PATH.get_base_dir().path_join(path)
+		var loaded: Dictionary = _read_json(path)
+		if not loaded.ok: return str(loaded.error)
+		if not loaded.data.get("spells") is Dictionary or loaded.data.spells.size() != 10: return "正式法术引用无效：" + school
+		for id in loaded.data.spells:
+			if known.has(id) or str(loaded.data.spells[id].get("school", "")) != school: return "正式法术ID重复或学派错误：" + str(id)
+			known[id] = true
+		_school_sources[school] = loaded.data.duplicate(true)
+	var sampling_path: Variant = _meta.get("spell_sampling_parameters")
+	if not sampling_path is String or str(sampling_path).is_empty(): return "缺少六系抽取参数引用。"
+	var sampling_read: Dictionary = _read_json(str(sampling_path))
+	if not sampling_read.ok: return str(sampling_read.error)
+	_sampling = sampling_read.data.duplicate(true)
+	var sampling_validation: Dictionary = SpellSampling.new().configure(_sampling)
+	if not sampling_validation.ok: return str(sampling_validation.error)
+	if not _sampling.get("version") is String or not _sampling.get("catalyst_affinity_by_level") is Array or _sampling.catalyst_affinity_by_level.size() != int(_meta.progression.max_level): return "六系触媒倾向等级数量无效。"
+	var previous: float = -1.0
+	for affinity in _sampling.catalyst_affinity_by_level:
+		if not (affinity is int or affinity is float) or not is_finite(float(affinity)) or float(affinity) < 0.0 or float(affinity) >= 1.0 or float(affinity) <= previous: return "六系触媒倾向必须逐级提高且小于100%。"
+		previous = float(affinity)
+	return ""

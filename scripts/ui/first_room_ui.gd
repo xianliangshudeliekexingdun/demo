@@ -9,6 +9,7 @@ const RoomProgress=preload("res://scripts/ui/room_progress.gd")
 const SLOT_TEXTURE=preload("res://assets/ui/frames_v1/spell_slot.tres")
 const ShopUI=preload("res://scripts/ui/route_shop_ui.gd")
 const BossBar=preload("res://scripts/ui/route_boss_bar.gd")
+const GemIcon=preload("res://scripts/ui/gem_icon.gd")
 var _boss_bar:Control
 var _shop_ui:Control
 var root:Control
@@ -45,6 +46,7 @@ var _generic_status:Label
 var _display_catalog:Dictionary={}
 var _attribute_summary=""
 var _gem_status:Label
+var _gem_icon:Control
 const GemNames=preload("res://scripts/core/magic_gems.gd")
 var _gem_names=GemNames.new()
 var _choice_room_revision:int=-1
@@ -131,7 +133,12 @@ func _build_hud():
 	currency_label=T.label(counters,"",Rect2(16,4,220,36),20,T.GOLD)
 	timer_label=T.label(counters,"",Rect2(16,43,220,28),17,T.MUTED)
 	timer_label.mouse_filter=Control.MOUSE_FILTER_PASS
-	_gem_status=T.label(root,"",Rect2(38,106,484,30),18,T.CYAN)
+	_gem_icon=GemIcon.new()
+	_gem_icon.position=Vector2(36,105)
+	_gem_icon.size=Vector2(30,30)
+	_gem_icon.rarity="gold"
+	root.add_child(_gem_icon)
+	_gem_status=T.paragraph(root,"",Rect2(74,106,420,58),17,T.CYAN)
 	_gem_status.mouse_filter=Control.MOUSE_FILTER_PASS
 	_boss_bar=BossBar.new()
 	_boss_bar.position=Vector2(510,108)
@@ -170,6 +177,45 @@ func _build_hud():
 	artifact_bar.visible=false
 	_generic_status=T.label(root,"",Rect2(432,682,742,24),15,T.CYAN)
 	_generic_status.name="GenericItemStatus"
+func gem_status_text(s:Dictionary) -> String:
+	var gems:Dictionary=s.get("gems",{})
+	var id:String=str(gems.get("core",""))
+	var spec:Dictionary=_gem_names.rules.cores.get(id,{})
+	if spec.is_empty():return ""
+	var school:Dictionary=gems.get("schools",{})
+	var text:String="核心 · "+str(spec.name)
+	match id:
+		"inferno":
+			var ticks:int=0
+			var amount:float=0.0
+			for entry in gems.get("embers",{}).values():
+				ticks=maxi(ticks,int(entry.get("ticks",0)))
+				amount+=float(entry.get("amount",0))
+			text+=" · %d靶 · 余烬%.0f · 最高%d/%d跳"%[gems.get("embers",{}).size(),amount,ticks,int(spec.ticks_required)]
+		"coffin":
+			var amount:float=0.0
+			for entry in gems.get("coffin_reserves",{}).values():amount+=float(entry.get("amount",0))
+			text+=" · 封存 %.0f · %d靶"%[amount,gems.get("coffin_reserves",{}).size()]
+		"lightning":
+			var charges:int=int(school.get("lightning_charges",0))
+			text+=" · %d/%d荷 · 储雷%.0f%s"%[charges,int(spec.charge_count),float(school.get("lightning_stored",0))," · 待放电" if charges>=int(spec.charge_count) else ""]
+		"wind":text+=" · 风势%d/%d · 气流%.1f秒"%[int(school.get("wind_layers",0)),int(spec.max_stacks),maxf(0,float(school.get("wind_flow_until",0))-float(gems.get("clock",0)))]
+		"earth":
+			if int(school.get("earth_anchor_id",-1))<0:text+=" · 等待真实构装"
+			elif float(school.get("earth_leave_remaining",0))>0:text+=" · 离阵宽限%.1f秒"%float(school.earth_leave_remaining)
+			elif bool(school.get("earth_mature",false)):text+=" · 已成熟 · 脉冲%.1f秒"%float(school.get("earth_pulse_remaining",0))
+			else:text+=" · 驻留%d%%"%roundi(clampf(float(school.get("earth_progress",0)),0,1)*100)
+		"spirit":
+			var points:int=int(school.get("spirit_points",0))
+			text+=" · 协同%d/%d%s"%[points,int(spec.charge_count)," · 下次普攻合奏" if points>=int(spec.charge_count) else ""]
+		"fracture","echo":text+=" · 待兑现 %d"%int(gems.get("pending_count",0))
+		"sacrifice":
+			var p:Dictionary=s.get("player",{})
+			var fraction:float=float(p.get("health",0))/maxf(1,float(p.get("max_health",1)))
+			text+=" · 缺血增伤＋%.0f%%%s"%[(1-clampf(fraction,0,1))*float(spec.damage_per_missing_fraction)*100," · 自耗停止" if fraction<=float(spec.drain_floor_fraction) else ""]
+		"aegis":text+=" · 治疗转盾 · 满盾不储存"
+	return text
+
 func refresh(s:Dictionary):
 	if _finished:return
 	var p:Dictionary=s.player
@@ -178,12 +224,14 @@ func refresh(s:Dictionary):
 	var gem_state:Dictionary=s.get("gems",{})
 	var core_id:String=str(gem_state.get("core",""))
 	_gem_status.visible=_gem_names.rules.cores.has(core_id)
+	_gem_icon.visible=_gem_status.visible
 	if _gem_status.visible:
-		var cooldown:float=float(gem_state.get("cooldown_remaining",0.0))
-		_gem_status.text="核心 · "+str(_gem_names.rules.cores[core_id].name)+( " · %.1f秒"%cooldown if cooldown>0.0 else "")
-		if core_id=="stride": _gem_status.text+=" · 蓄势%d%%" % roundi(float(gem_state.get("stride_fraction",0.0))*100.0)
+		_gem_icon.item_id="core:"+core_id
+		_gem_icon.queue_redraw()
+		_gem_status.text=gem_status_text(s)
+		_gem_status.add_theme_color_override("font_color",GemIcon.tint_for(core_id))
 		_gem_status.tooltip_text=_gem_names.core_description(core_id)
-	_vitals.tooltip_text=_attribute_summary+"\n暴击率无额外封顶；达到100%时必定暴击。\n火系栏包含炎法精通和火焰魔法书；熔核中心专属加成另计。\n燃烧与引爆不暴击。冷却缩减不影响吟唱、召唤物攻击间隔与宝物间隔。"
+	_vitals.tooltip_text=_attribute_summary+"\n暴击率无额外封顶；达到100%时必定暴击。六系本体沿用全局暴击，火系另含炎法精通。\n风系补压／交剪、岩系明确回响和契灵普攻可暴击；派生不触发普通本体命中链。\n燃烧、引爆、非暴击电弧与灵契号令不暴击。冷却缩减不影响吟唱、召唤物攻击间隔与宝物间隔。"
 	_generic_status.text=_generic_status_text(s)
 	health_label.text="莉奈    生命  %d / %d"%[p.health,p.max_health]
 	shield_label.text="护盾  %d / %d"%[p.shield,p.max_shield]
@@ -242,7 +290,7 @@ func refresh(s:Dictionary):
 		cooldown_labels[i].visible=true
 		if slot_icons[i].spell_id!=str(spell.id):
 			slot_icons[i].spell_id=str(spell.id)
-			slot_icons[i].tint=Color("f1b579")
+			slot_icons[i].tint=Catalog.school_color(str(Catalog.describe_spell(str(spell.id)).get("school","fire")))
 			slot_icons[i].queue_redraw()
 		spell_labels[i].text=str(spell.name)
 		var remaining=float(spell.get("remaining",0))
@@ -459,18 +507,19 @@ func _choice_modal(s:Dictionary,kind:String):
 		var id=str(choice.id)
 		var level=1 if kind=="choosing" else int(choice.get("next_level",1))
 		var data:Dictionary=Catalog.describe_spell(id,level,s.has("room_total"))
-		var card=_make_choice_card(Vector2(card_start+i*304,246),"room_initial" if kind=="choosing" else "room_reward",id,T.GOLD)
+		var color=Catalog.school_color(str(data.get("school","fire")))
+		var card=_make_choice_card(Vector2(card_start+i*304,246),"room_initial" if kind=="choosing" else "room_reward",id,color)
 		var p:Control=card.face
 		T.label(p,("起始法术" if kind=="choosing" else ("替换学习" if full_slots and level==1 else "新法术" if level==1 else "法术升级"))+" · "+str(data.get("element","")),Rect2(26,30,172,26),16,T.CYAN)
 		T.label(p,"Ⅰ" if level==1 else "Ⅱ" if level==2 else "Ⅲ",Rect2(230,30,28,26),17,T.GOLD)
-		T.icon(p,id,Rect2(104,58,72,72),Color("f1b579"))
+		T.icon(p,id,Rect2(104,58,72,72),color)
 		var name_label=T.label(p,str(data.name),Rect2(20,130,240,36),25)
 		name_label.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 		var role=T.label(p,str(data.role),Rect2(22,169,236,26),16,T.GOLD)
 		role.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 		T.paragraph(p,str(data.summary),Rect2(22,205,236,64),18,T.TEXT)
 		T.label(p,"获得 · 1级" if level==1 else "%d级 → %d级"%[level-1,level],Rect2(22,274,236,24),16,T.CYAN)
-		T.paragraph(p,str(data.upgrade_text) if level>1 else str(data.description),Rect2(22,304,236,126),17,T.MUTED)
+		T.paragraph(p,str(data.upgrade_text) if level>1 else str(data.get("card_description",data.description)),Rect2(22,304,236,126),17,T.MUTED)
 		card.hit.tooltip_text=str(data.name)+"\n"+str(data.description)+"\n"+str(data.boundary)
 	if kind=="reward" and bool(s.get("can_skip_spell_reward",false)):
 		var revision=_choice_room_revision
@@ -516,12 +565,12 @@ func _replacement_modal(pending:Dictionary):
 	preview.name="ReplacementNewSpell"
 	preview.position=Vector2(252,266)
 	modal.add_child(preview)
-	preview.setup("replacement_preview",id,T.CYAN if data.get("school","")=="ice" else T.GOLD)
+	preview.setup("replacement_preview",id,Catalog.school_color(str(data.get("school","fire"))))
 	preview.reveal_immediately()
 	preview.hit.disabled=true
 	var face:Control=preview.face
 	T.label(face,"待学法术 · 1级",Rect2(26,30,228,26),16,T.CYAN)
-	T.icon(face,id,Rect2(104,58,72,72))
+	T.icon(face,id,Rect2(104,58,72,72),Catalog.school_color(str(data.get("school","fire"))))
 	var name_label=T.label(face,new_name,Rect2(20,130,240,36),25)
 	name_label.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 	var role=T.label(face,str(data.get("role","")),Rect2(22,169,236,26),16,T.GOLD)
@@ -555,7 +604,7 @@ func _replacement_modal(pending:Dictionary):
 		socket.mouse_filter=Control.MOUSE_FILTER_IGNORE
 		button.add_child(socket)
 		socket.size=Vector2(100,92)
-		T.icon(button,old_id,Rect2(61,42,58,58))
+		T.icon(button,old_id,Rect2(61,42,58,58),Catalog.school_color(str(Catalog.describe_spell(old_id).get("school","fire"))))
 		var slot_label=T.label(button,"第%d槽 · %d级"%[index+1,old_level],Rect2(10,5,160,24),16,T.MUTED)
 		slot_label.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 		var old_label=T.label(button,old_name,Rect2(8,118,164,28),20,T.TEXT)
@@ -682,10 +731,14 @@ func _attribute_text(s:Dictionary)->String:
 	var cap=float(limits.get("cooldown_reduction",0.0))
 	var global_multiplier=float(p.get("crit_multiplier",base.get("player",{}).get("crit_multiplier",0.0)))+float(stats.get("crit_multiplier_add",0.0))
 	var ice_reduction=float(stats.get("ice_cooldown_reduction",stats.get("cooldown_reduction_add",0.0)))
-	return "攻击%s · 防御%s · 减伤%s／飞弹%s\n全局暴击%s×%s · 火%s×%s · 冰%s×%s\n冷却火%s／冰%s（最高%s）· 移速%s · 增伤%s"%[
+	var lightning_reduction=float(stats.get("lightning_cooldown_reduction",stats.get("cooldown_reduction_add",0.0)))
+	var wind_reduction=float(stats.get("wind_cooldown_reduction",stats.get("cooldown_reduction_add",0.0)))
+	var earth_reduction=float(stats.get("earth_cooldown_reduction",stats.get("cooldown_reduction_add",0.0)))
+	var spirit_reduction=float(stats.get("spirit_cooldown_reduction",stats.get("cooldown_reduction_add",0.0)))
+	return "攻击%s · 防御%s · 减伤%s／飞弹%s\n全局暴击%s×%s · 火%s×%s\n冷却火%s／冰%s／雷%s\n冷却风%s／岩%s／灵契%s（最高%s）\n移速%s · 通用增伤%s\n本系增伤：火%s／冰%s／雷%s\n风%s／岩%s／灵契%s"%[
 		Catalog._number(p.get("attack",0)),Catalog._number(stats.get("defense",0)),Catalog._percent(stats.get("damage_reduction",0)),Catalog._percent(stats.get("projectile_damage_reduction",0)),
-		Catalog._percent(p.get("crit_rate",0)),Catalog._number(global_multiplier),Catalog._percent(stats.get("fire_crit_rate",p.get("crit_rate",0))),Catalog._number(stats.get("fire_crit_multiplier",global_multiplier)),Catalog._percent(stats.get("ice_crit_rate",p.get("crit_rate",0))),Catalog._number(stats.get("ice_crit_multiplier",global_multiplier)),Catalog._percent(minf(cap,reduction)),Catalog._percent(minf(cap,ice_reduction)),Catalog._percent(cap),
-		Catalog._number(float(p.get("move_speed",0))*float(stats.get("move_speed_multiplier",1))),Catalog._percent(stats.get("generic_damage_bonus",0))]
+		Catalog._percent(p.get("crit_rate",0)),Catalog._number(global_multiplier),Catalog._percent(stats.get("fire_crit_rate",p.get("crit_rate",0))),Catalog._number(stats.get("fire_crit_multiplier",global_multiplier)),Catalog._percent(minf(cap,reduction)),Catalog._percent(minf(cap,ice_reduction)),Catalog._percent(minf(cap,lightning_reduction)),Catalog._percent(minf(cap,wind_reduction)),Catalog._percent(minf(cap,earth_reduction)),Catalog._percent(minf(cap,spirit_reduction)),Catalog._percent(cap),
+		Catalog._number(float(p.get("move_speed",0))*float(stats.get("move_speed_multiplier",1))),Catalog._percent(stats.get("generic_damage_bonus",0)),Catalog._percent(stats.get("fire_bonus",0)),Catalog._percent(stats.get("ice_bonus",0)),Catalog._percent(stats.get("lightning_bonus",0)),Catalog._percent(stats.get("wind_bonus",0)),Catalog._percent(stats.get("earth_bonus",0)),Catalog._percent(stats.get("spirit_bonus",0))]
 
 func _generic_status_text(s:Dictionary)->String:
 	var state:Dictionary=s.get("generic_items",{})

@@ -1,0 +1,529 @@
+{
+  "version": "formal-earth-runtime-20261021",
+  "status": "approved_implementation",
+  "design_source": "docs/游戏设计/岩系法术成长.md",
+  "school": "earth",
+  "mechanics": {
+    "initial_ids": [
+      "R01",
+      "R02",
+      "R03"
+    ],
+    "resonance": {
+      "distinct_spells": 3,
+      "school_damage_bonus": 0.15,
+      "school_cdr": 0.1
+    },
+    "construct_sources": [
+      "R03",
+      "R04",
+      "R09"
+    ],
+    "construct_global_cap": 3,
+    "construct_cap_per_spell": 1,
+    "construct_max_lifetime": 15,
+    "control_coefficients": {
+      "normal": 1,
+      "elite": 0.35,
+      "fixed_strong": 0
+    },
+    "control_class_by_type": {
+      "EL01": "elite",
+      "EL02": "elite",
+      "EL02_GUARD": "fixed_strong"
+    },
+    "geometry_epsilon": 1e-06,
+    "shard_angles_degrees": [
+      -30,
+      0,
+      30
+    ],
+    "fracture_angles_degrees": [
+      -60,
+      60
+    ],
+    "derived_can_crit": true,
+    "termination_history_cap": 32
+  },
+  "effects": {
+    "hit": 0.3,
+    "impact": 0.55,
+    "wave": 0.4,
+    "construct": 0.3,
+    "consume": 0.45,
+    "echo": 0.4,
+    "shield": 0.45,
+    "stun": 0.3
+  },
+  "spells": {
+    "R01": {
+      "name": "碎岩矢",
+      "starter": true,
+      "windup": 0.25,
+      "targeting": "最近8m无遮挡敌，重矢主击后沿原行进方向±30度/0度发三碎片；主击致死仍可从有效命中处散片",
+      "occlusion": "主矢/碎片各被首个障碍截停；碎片不再伤主击目标，同cast各次目标最多吃一片；各片穿透按实际碰撞",
+      "shard_speed": 12,
+      "shards_class": "本术次级直接分量；不计自然次数，不再生成碎片",
+      "shard_delay": 0.05,
+      "school": "earth",
+      "kind": "direct",
+      "active": true,
+      "cooldown": 1.5,
+      "levels": [
+        {
+          "main": 1.5,
+          "range": 8,
+          "speed": 12,
+          "width": 0.45,
+          "shard": 0.5,
+          "shard_count": 3,
+          "shard_range": 3,
+          "shard_width": 0.25,
+          "shard_pierce": 1,
+          "shard_target_cap": 3,
+          "cooldown": 1.5,
+          "shard_delay": 0.05,
+          "shard_speed": 12
+        },
+        {
+          "main": 2,
+          "range": 8,
+          "speed": 12,
+          "width": 0.55,
+          "shard": 0.65,
+          "shard_count": 3,
+          "shard_range": 3.5,
+          "shard_width": 0.44999999999999996,
+          "shard_pierce": 1,
+          "shard_target_cap": 3,
+          "cooldown": 1.5,
+          "shard_delay": 0.05,
+          "shard_speed": 12
+        },
+        {
+          "main": 2,
+          "range": 8,
+          "speed": 12,
+          "width": 0.55,
+          "shard": 0.65,
+          "shard_count": 3,
+          "shard_range": 3.5,
+          "shard_width": 0.44999999999999996,
+          "shard_pierce": 2,
+          "shard_target_cap": 6,
+          "cooldown": 1.5,
+          "shard_delay": 0.05,
+          "shard_speed": 12
+        }
+      ]
+    },
+    "R02": {
+      "name": "震地波",
+      "starter": true,
+      "windup": 0.25,
+      "targeting": "半径内有合法敌人时吟唱；释放时以玩家当前位置为圆心发推进波前；同敌一次",
+      "occlusion": "中心至目标线段不能穿实体障碍，波前实际经过才命中；三级实际命中距离≥2.5m才系数+100个百分点，不凭最远圆覆盖全场",
+      "creates_construct": false,
+      "school": "earth",
+      "kind": "area",
+      "active": true,
+      "cooldown": 2.4,
+      "levels": [
+        {
+          "main": 1.6,
+          "radius": 4,
+          "speed": 7,
+          "wave_width": 0.6,
+          "outer_threshold": 2.5,
+          "outer_bonus": 0,
+          "cooldown": 2.4,
+          "range": 4
+        },
+        {
+          "main": 2.2,
+          "radius": 4.8,
+          "speed": 9.5,
+          "wave_width": 0.7,
+          "outer_threshold": 2.5,
+          "outer_bonus": 0,
+          "cooldown": 2.4,
+          "range": 4.8
+        },
+        {
+          "main": 2.2,
+          "radius": 4.8,
+          "speed": 9.5,
+          "wave_width": 0.7,
+          "outer_threshold": 2.5,
+          "outer_bonus": 1,
+          "cooldown": 2.4,
+          "range": 4.8
+        }
+      ]
+    },
+    "R03": {
+      "name": "岩棱坠击",
+      "starter": true,
+      "windup": 0.35,
+      "target_range": 8,
+      "targeting": "吟唱锁最近无遮挡敌位置；落点固定；落击合法地面即建立非阻路支点，即使敌移走也成立",
+      "construct_created_at": "main impact; lifetime starts then",
+      "occlusion": "落点和各受击者间无遮挡；不从墙外/门外建立支点",
+      "replacement": "新落击到地时先以replacement结束旧R03支点再建；不因相邻坐标视为另一来源；三级裂波是落击预排本体后续，不依赖支点仍在，不制造额外构造",
+      "after_may_crit": true,
+      "school": "earth",
+      "kind": "direct",
+      "active": true,
+      "cooldown": 4,
+      "levels": [
+        {
+          "main": 2.2,
+          "radius": 1.25,
+          "delay": 0.3,
+          "construct_duration": 6,
+          "after": 0,
+          "after_delay": 0,
+          "after_radius": 0,
+          "cooldown": 4,
+          "range": 8
+        },
+        {
+          "main": 3,
+          "radius": 1.55,
+          "delay": 0.3,
+          "construct_duration": 10,
+          "after": 0,
+          "after_delay": 0,
+          "after_radius": 0,
+          "cooldown": 4,
+          "range": 8
+        },
+        {
+          "main": 3,
+          "radius": 1.55,
+          "delay": 0.3,
+          "construct_duration": 10,
+          "after": 1.2,
+          "after_delay": 0.6,
+          "after_radius": 2.2,
+          "cooldown": 4,
+          "range": 8
+        }
+      ]
+    },
+    "R04": {
+      "name": "地脉石柱",
+      "starter": false,
+      "windup": 0.4,
+      "target_range": 8,
+      "targeting": "释放锁最近无遮挡敌位置，建固定非阻路输出柱；末跳含到期同刻",
+      "occlusion": "柱心到敌逐条遮挡，无敌离区空跳不算命中；不追敌/不吸仇恨",
+      "replacement": "同ID只1，新建先移除旧柱；旧到点伤害先结，再处理替换；销毁不补末跳或爆炸",
+      "damage_class": "本体持续区域；可暴击，不直接暴击链；自然cast仅第一次有效命中检查GT01；脉冲不另计自然施法",
+      "school": "earth",
+      "kind": "area",
+      "active": true,
+      "cooldown": 9,
+      "levels": [
+        {
+          "tick": 0.6,
+          "radius": 2,
+          "duration": 6,
+          "interval": 1,
+          "first_tick": 1,
+          "cooldown": 9,
+          "range": 8
+        },
+        {
+          "tick": 0.8,
+          "radius": 2.4,
+          "duration": 7,
+          "interval": 0.8,
+          "first_tick": 0.8,
+          "cooldown": 9,
+          "range": 8
+        },
+        {
+          "tick": 0.8,
+          "radius": 2.4,
+          "duration": 7,
+          "interval": 0.8,
+          "first_tick": 0,
+          "cooldown": 9,
+          "range": 8
+        }
+      ]
+    },
+    "R05": {
+      "name": "岩甲术",
+      "starter": false,
+      "windup": 0.5,
+      "targeting": "战斗有活敌且缺盾才吟唱，释放再查；满盾取消，无CD/自然计数",
+      "occlusion": "自身回复，无敌人直射需求",
+      "restore_order": "RB05固定+15与RP03条件固定+10 -> GT01等回复增幅 -> 实际缺盾裁定",
+      "extra_casts": "可真实回盾但不触发职业自然事件；不得以伤害倍率放大回复",
+      "school": "earth",
+      "kind": "shield",
+      "active": true,
+      "cooldown": 12,
+      "levels": [
+        {
+          "shield_restore": 35,
+          "cooldown": 12,
+          "range": 0
+        },
+        {
+          "shield_restore": 50,
+          "cooldown": 12,
+          "range": 0
+        },
+        {
+          "shield_restore": 65,
+          "cooldown": 9,
+          "range": 0
+        }
+      ]
+    },
+    "R06": {
+      "name": "坍岩令",
+      "starter": false,
+      "windup": 0.35,
+      "requires_any": [
+        "R03",
+        "R04",
+        "R09"
+      ],
+      "construct_select_range": 9,
+      "targeting": "候选需持构造来源；仅从9m内仍在场、爆心半径有活敌且无遮挡的构造选剩余寿命最短者，同剩余按稳定ID；吟唱完成重选合法者，无则取消等待",
+      "consume": "成功释放时原子性将所选构造置consumption并移除，随后按固定中心预排震击；只消费1，不能消费同刻已经到期/替换对象",
+      "no_prerequisite_fallback": "不具当前场上构造时等待，不空施/不起CD/不计P04；已有施法的震击可在构造已移除后正常落地",
+      "after_may_crit": true,
+      "after_class": "派生余波，不再消费/职业链/GT01",
+      "school": "earth",
+      "kind": "direct",
+      "active": true,
+      "cooldown": 6,
+      "levels": [
+        {
+          "main": 3.5,
+          "radius": 2.4,
+          "delay": 0.2,
+          "after": 0,
+          "after_delay": 0,
+          "cooldown": 6,
+          "range": 9
+        },
+        {
+          "main": 5.75,
+          "radius": 2.8,
+          "delay": 0.2,
+          "after": 0,
+          "after_delay": 0,
+          "cooldown": 6,
+          "range": 9
+        },
+        {
+          "main": 5.75,
+          "radius": 2.8,
+          "delay": 0.2,
+          "after": 1.5,
+          "after_delay": 0.4,
+          "cooldown": 6,
+          "range": 9
+        }
+      ],
+      "required_any_spells": [
+        "R03",
+        "R04",
+        "R09"
+      ],
+      "prerequisite_ids": [
+        "R03",
+        "R04",
+        "R09"
+      ]
+    },
+    "R07": {
+      "name": "地脉共振",
+      "starter": false,
+      "windup": 0.3,
+      "target_range": 8,
+      "anchor_search_range": 6,
+      "targeting": "释放锁最近无遮挡敌位置，基础震击立即成立；从距基础落点6m内且到落点无遮挡构造按距离选1/1/2个；回响在各自锚点圆心发生，不传递到第三锚点",
+      "echo_selection": "释放固定所选构造ID/位置；回响到点源已消失则该份取消；不改为新的构造、不移除构造、不重置寿命",
+      "echo_timing": "首回响+.25s，三级第二+.5s且70%；各自对同敌一次，可真实重叠但不能把两个表现算同一个构造两次",
+      "fallback": "无构造仍基础120/160/160%",
+      "echo_may_crit": true,
+      "echo_class": "派生区域，无直接链/GT01/自然计数",
+      "school": "earth",
+      "kind": "area",
+      "active": true,
+      "cooldown": 5,
+      "levels": [
+        {
+          "main": 1.2,
+          "main_radius": 1.8,
+          "echo": 1,
+          "echo_radius": 2.4,
+          "echo_delay": 0.25,
+          "echo_construct_cap": 1,
+          "second_echo": 0,
+          "cooldown": 5,
+          "range": 8,
+          "anchor_search_range": 6
+        },
+        {
+          "main": 1.6,
+          "main_radius": 2.2,
+          "echo": 1.4,
+          "echo_radius": 2.4,
+          "echo_delay": 0.25,
+          "echo_construct_cap": 1,
+          "second_echo": 0,
+          "cooldown": 5,
+          "range": 8,
+          "anchor_search_range": 8
+        },
+        {
+          "main": 1.6,
+          "main_radius": 2.2,
+          "echo": 1.4,
+          "echo_radius": 2.4,
+          "echo_delay": 0.25,
+          "echo_construct_cap": 2,
+          "second_echo": 0.7,
+          "cooldown": 5,
+          "range": 8,
+          "anchor_search_range": 8
+        }
+      ]
+    },
+    "R08": {
+      "name": "山崩落击",
+      "starter": false,
+      "windup": 0.65,
+      "target_range": 9,
+      "targeting": "吟唱开始锁当前生命最高可见敌位置；完成不追踪，长预兆后落击",
+      "occlusion": "爆心到受击敌逐条遮挡；三级从主爆边缘沿相对施法起点方向±60度向外发两条裂隙，不伤已被主爆击中的敌；裂隙每敌最多1击、各遇墙截停",
+      "fracture_delay": 0.1,
+      "fracture_speed": 10,
+      "stun_rule": "硬控时长乘k一次，免硬控者仍受伤；不取消明示免打断招式；不制造构造",
+      "fracture_class": "本术次级直接分量，不生成更多裂隙",
+      "school": "earth",
+      "kind": "direct",
+      "active": true,
+      "cooldown": 7.5,
+      "levels": [
+        {
+          "main": 5,
+          "radius": 2.5,
+          "delay": 0.7,
+          "stun": 0.35,
+          "fracture": 0,
+          "fracture_length": 0,
+          "fracture_width": 0,
+          "cooldown": 7.5,
+          "range": 9,
+          "fracture_delay": 0.1,
+          "fracture_speed": 10
+        },
+        {
+          "main": 6.5,
+          "radius": 2.8,
+          "delay": 0.45,
+          "stun": 0.5,
+          "fracture": 0,
+          "fracture_length": 0,
+          "fracture_width": 0,
+          "cooldown": 7.5,
+          "range": 9,
+          "fracture_delay": 0.1,
+          "fracture_speed": 10
+        },
+        {
+          "main": 6.5,
+          "radius": 2.8,
+          "delay": 0.45,
+          "stun": 0.5,
+          "fracture": 1.25,
+          "fracture_length": 3,
+          "fracture_width": 0.5,
+          "cooldown": 7.5,
+          "range": 9,
+          "fracture_delay": 0.1,
+          "fracture_speed": 10
+        }
+      ]
+    },
+    "R09": {
+      "name": "护阵石碑",
+      "starter": false,
+      "windup": 0.35,
+      "enemy_presence_range": 10,
+      "targeting": "10m内有活敌才于释放时玩家合法脚下建唯一固定非阻路石碑；防御仅玩家在范围且玩家到碑无遮挡时获得",
+      "occlusion": "围墙隔断增益，不穿墙支持",
+      "replacement": "同ID只1；自然到期/消费/替换立即移除该碑防御及离阵保留；三级grace只因真实走出覆盖触发，不借删除保留；不回血回盾",
+      "school": "earth",
+      "kind": "earth_guard",
+      "active": true,
+      "cooldown": 10,
+      "levels": [
+        {
+          "radius": 3,
+          "duration": 6,
+          "defense": 20,
+          "exit_grace": 0,
+          "cooldown": 10,
+          "range": 10
+        },
+        {
+          "radius": 3.5,
+          "duration": 7,
+          "defense": 30,
+          "exit_grace": 0,
+          "cooldown": 10,
+          "range": 10
+        },
+        {
+          "radius": 3.5,
+          "duration": 7,
+          "defense": 45,
+          "exit_grace": 1.5,
+          "cooldown": 10,
+          "range": 10
+        }
+      ]
+    },
+    "R10": {
+      "name": "岩法研习",
+      "starter": false,
+      "windup": 0,
+      "effect": "常驻岩伤同桶增加；三级当前真实护盾>0时防御+15，归零即时失效；不恢复盾、不提高盾上限",
+      "qualification": "占槽计岩共鸣，不吟唱不计自然施法",
+      "school": "earth",
+      "kind": "passive",
+      "active": true,
+      "cooldown": 0,
+      "levels": [
+        {
+          "earth_bonus": 0.15,
+          "shielded_defense": 0,
+          "cooldown": 0,
+          "range": 0
+        },
+        {
+          "earth_bonus": 0.25,
+          "shielded_defense": 0,
+          "cooldown": 0,
+          "range": 0
+        },
+        {
+          "earth_bonus": 0.35,
+          "shielded_defense": 15,
+          "cooldown": 0,
+          "range": 0
+        }
+      ]
+    }
+  }
+}

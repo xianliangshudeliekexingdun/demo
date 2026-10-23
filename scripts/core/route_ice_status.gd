@@ -86,7 +86,9 @@ func advance(run, dt: float) -> void:
 		if float(actor.health) > 0.0:
 			alive[int(actor.id)] = actor
 	for actor_id in states.keys():
-		if not alive.has(actor_id):
+		# A preceding core terminal may kill another frozen actor and remove its state.
+		if not states.has(actor_id): continue
+		if not alive.has(actor_id) or float(alive[actor_id].health) <= 0.0:
 			states.erase(actor_id)
 			continue
 		var state: Dictionary = states[actor_id]

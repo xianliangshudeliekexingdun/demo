@@ -129,7 +129,7 @@ func _run_suite(script: Script, label: String):
 		_write_report("route_boundary_results.json" if deferred else "natural_route_results.json", {"checks": int(suite.checks), "failures": found, "metrics": suite.metrics, "natural_routes_deferred": deferred})
 
 func _write_report(filename: String, result: Dictionary):
-	var directory := "res://build/qa/reward-pickup-20261017"
+	var directory := "res://build/qa/current-main-suite"
 	for argument in OS.get_cmdline_user_args():
 		if str(argument).begins_with("--qa-out="):
 			var requested: String = str(argument).trim_prefix("--qa-out=")

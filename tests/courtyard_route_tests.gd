@@ -58,6 +58,8 @@ func clear_fixture(battle):
 func choose_growth(battle) -> bool:
 	if battle.phase != "reward": return false
 	var rank: Array = ["F01", "F08", "F07", "F03", "F11", "F02", "F10", "F06", "F05", "F09", "I01", "I02", "I03", "I05", "I10", "I07", "I08", "I09", "I06", "I04"]
+	for id in battle.eligible_reward_ids():
+		if id not in rank: rank.append(id)
 	# Resolve every actual book: upgrade held spells first; preserve a full
 	# loadout via the explicit skip only when every offered spell is new.
 	for owned_only in [true, false]:
@@ -121,13 +123,18 @@ func configuration_and_sources():
 	check(battle.phase == "choosing" and battle.clear_count == 0 and battle.cleared_rooms.is_empty(), "choice is not clear")
 	check(battle.initial_choices().map(func(choice): return choice.id) == ["F01", "F03", "F08"], "formal fire starters replace archived spirit in Route only")
 	check(not battle.choose_initial("F10"), "support not silently added as starter")
-	check(battle.eligible_reward_ids().size() == 20, "twenty implemented fire and ice spells eligible")
+	check(battle.eligible_reward_ids().size() == 57, "sixty implemented spells minus three unmet source prerequisites")
 	var standalone = First.new()
 	check(standalone.configure().ok, "original single room configures")
 	check(battle.player == standalone.player, "baseline player attributes unchanged")
 	var original_base: Dictionary=battle._base.duplicate(true)
 	original_base.erase("ice_mechanics")
+	original_base.erase("lightning_mechanics")
+	for school in ["wind", "earth", "spirit"]: original_base.erase(school + "_mechanics")
+	for id in original_base.spells.keys():
+		if str(original_base.spells[id].get("school", "")) in ["wind", "earth"] or str(id).begins_with("S"): original_base.spells.erase(id)
 	for id in ["I01","I02","I03","I04","I05","I06","I07","I08","I09","I10"]: original_base.spells.erase(id)
+	for id in ["L01","L02","L03","L04","L05","L06","L07","L08","L09","L10"]: original_base.spells.erase(id)
 	for id in original_base.spells:
 		original_base.spells[id].erase("growth_version")
 		original_base.spells[id].levels = standalone._base.spells[id].levels.duplicate(true)
@@ -289,7 +296,7 @@ func reward_and_clear_boundaries():
 		spell.level = int(exhausted._base.limits.spell_level)
 		exhausted._refresh_spell(spell)
 		exhausted.spells.append(spell)
-	check(exhausted.eligible_reward_ids().size() == 12, "eight maxed slots retain twelve unowned replacement candidates")
+	check(exhausted.eligible_reward_ids().size() == 49, "eight maxed slots retain forty-nine currently qualified unowned replacement candidates")
 	clear_fixture(exhausted)
 	check(exhausted.phase == "pickup" and not exhausted.portal.usable and exhausted.reward_choices.size() == 3, "maxed loadout still places the real three-card book")
 	check(touch_reward(exhausted), "replacement fixture physically opens the maxed-loadout book")
