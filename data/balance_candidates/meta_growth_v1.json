@@ -1,225 +1,197 @@
 {
-  "version": "meta-growth-v3-six-schools-20261021",
-  "status": "active_six_school_catalysts_20261021",
-  "base_parameters": "first_run_v1.json",
-  "ice_parameters": "res://data/ice_spells_v1.json",
-  "economy_parameters": "run_economy_v1.json",
-  "artifact_parameters": "fire_artifacts_v1.json",
-  "currency": {
-    "name": "魔尘",
-    "initial": 0,
-    "persistent": true,
-    "gold_conversion": false,
-    "room_dust_by_stage": {
-      "early": 1,
-      "middle": 2,
-      "late": 3
-    },
-    "boss_bonus_by_id": {
-      "BOSS01": 5,
-      "BOSS02": 10,
-      "BOSS03": 15
-    },
-    "credit_at_normal_run_end": true,
-    "normal_abandon_keeps_cleared_rewards": true,
-    "forced_close_loses_unsettled_rewards": true
-  },
-  "progression": {
-    "max_level": 3,
-    "first_choice_free_per_kind": true,
-    "free_choice_level": 1,
-    "unlock_level": 1,
-    "unlock_cost": 20,
-    "upgrade_cost_by_current_level": {
-      "1": 20,
-      "2": 40
-    },
-    "failure_chance": 0,
-    "copies_required": 0,
-    "upgrade_in_run": false,
-    "refund": false,
-    "completed_growth_keeps_surplus_currency": true
-  },
-  "equipment": {
-    "catalyst_slots": 1,
-    "gem_slots": 1,
-    "free_swap_outside_run": true,
-    "locked_during_run": true,
-    "snapshot_at_run_start": true,
-    "can_unequip": true
-  },
-  "spell_sampling_assumptions": {
-    "baseline_spell_weight": 1.0,
-    "offer_size": 3,
-    "unique_within_offer": true,
-    "eligibility_before_weighting": true,
-    "affects_initial_offer": false,
-    "affects_owned_spell_upgrades": true,
-    "affects_artifact_quality": false
-  },
-  "catalyst_weight_by_level": [
-    1.5,
-    1.75,
-    2.0
-  ],
-  "catalyst_schools": [
-    "fire",
-    "ice",
-    "lightning",
-    "wind",
-    "earth",
-    "spirit"
-  ],
-  "catalysts": {
-    "MC04": {
-      "name": "火法术触媒",
-      "school": "fire",
-      "related_spells": [
-        "F01",
-        "F02",
-        "F03",
-        "F05",
-        "F06",
-        "F07",
-        "F08",
-        "F09",
-        "F10",
-        "F11"
-      ]
-    },
-    "MC05": {
-      "name": "冰法术触媒",
-      "school": "ice",
-      "related_spells": [
-        "I01",
-        "I02",
-        "I03",
-        "I04",
-        "I05",
-        "I06",
-        "I07",
-        "I08",
-        "I09",
-        "I10"
-      ]
-    },
-    "MC06": {
-      "name": "雷法术触媒",
-      "school": "lightning",
-      "related_spells": [
-        "L01",
-        "L02",
-        "L03",
-        "L04",
-        "L05",
-        "L06",
-        "L07",
-        "L08",
-        "L09",
-        "L10"
-      ]
-    },
-    "MC07": {
-      "name": "风法术触媒",
-      "school": "wind",
-      "related_spells": [
-        "W01",
-        "W02",
-        "W03",
-        "W04",
-        "W05",
-        "W06",
-        "W07",
-        "W08",
-        "W09",
-        "W10"
-      ]
-    },
-    "MC08": {
-      "name": "岩法术触媒",
-      "school": "earth",
-      "related_spells": [
-        "R01",
-        "R02",
-        "R03",
-        "R04",
-        "R05",
-        "R06",
-        "R07",
-        "R08",
-        "R09",
-        "R10"
-      ]
-    },
-    "MC09": {
-      "name": "灵契法术触媒",
-      "school": "spirit",
-      "related_spells": [
-        "S01",
-        "S02",
-        "S03",
-        "S04",
-        "S05",
-        "S06",
-        "S07",
-        "S08",
-        "S09",
-        "S10"
-      ]
-    }
-  },
-  "gems": {
-    "MG01": {
-      "name": "生机宝石",
-      "stat": "health",
-      "flat_by_level": [
-        20,
-        40,
-        60
-      ]
-    },
-    "MG02": {
-      "name": "护壁宝石",
-      "stat": "shield",
-      "flat_by_level": [
-        4,
-        7,
-        10
-      ]
-    },
-    "MG03": {
-      "name": "强攻宝石",
-      "stat": "attack",
-      "flat_by_level": [
-        3,
-        6,
-        10
-      ]
-    }
-  },
-  "scope": {
-    "rarities": false,
-    "random_affixes": false,
-    "duplicate_items": false,
-    "synthesis": false,
-    "salvage": false,
-    "reroll": false,
-    "inventory_grid": false,
-    "mid_run_resume": false,
-    "cloud_save": false
-  },
-  "formal_school_parameters": {
-    "lightning": "res://data/lightning_spells_v1.json",
-    "wind": "res://data/wind_spells_v1.json",
-    "earth": "res://data/earth_spells_v1.json",
-    "spirit": "res://data/spirit_spells_v1.json"
-  },
-  "spell_sampling_parameters": "res://data/route_spell_sampling.json",
-  "legacy_catalyst_refund_costs": {
-    "unlock_cost": 20,
-    "upgrade_cost_by_current_level": {
-      "1": 20,
-      "2": 40
-    }
-  }
+	"version": "meta-growth-v3-six-schools-20261021",
+	"status": "active_six_school_catalysts_20261021",
+	"base_parameters": "first_run_v1.json",
+	"ice_parameters": "res://data/ice_spells_v1.json",
+	"economy_parameters": "run_economy_v1.json",
+	"artifact_parameters": "fire_artifacts_v1.json",
+	"currency": {
+		"name": "魔尘",
+		"initial": 0,
+		"persistent": true,
+		"gold_conversion": false,
+		"room_dust_by_stage": {
+			"early": 1,
+			"middle": 2,
+			"late": 3
+		},
+		"boss_bonus_by_id": {
+			"BOSS01": 5,
+			"BOSS02": 10,
+			"BOSS03": 15
+		},
+		"credit_at_normal_run_end": true,
+		"normal_abandon_keeps_cleared_rewards": true,
+		"forced_close_loses_unsettled_rewards": true
+	},
+	"progression": {
+		"max_level": 3,
+		"first_choice_free_per_kind": true,
+		"free_choice_level": 1,
+		"unlock_level": 1,
+		"unlock_cost": 20,
+		"upgrade_cost_by_current_level": {
+			"1": 20,
+			"2": 40
+		},
+		"failure_chance": 0,
+		"copies_required": 0,
+		"upgrade_in_run": false,
+		"refund": false,
+		"completed_growth_keeps_surplus_currency": true
+	},
+	"equipment": {
+		"catalyst_slots": 1,
+		"gem_slots": 4,
+		"free_swap_outside_run": true,
+		"locked_during_run": true,
+		"snapshot_at_run_start": true,
+		"can_unequip": true
+	},
+	"spell_sampling_assumptions": {
+		"baseline_spell_weight": 1.0,
+		"offer_size": 3,
+		"unique_within_offer": true,
+		"eligibility_before_weighting": true,
+		"affects_initial_offer": false,
+		"affects_owned_spell_upgrades": true,
+		"affects_artifact_quality": false
+	},
+	"catalyst_weight_by_level": [
+		1.5,
+		1.75,
+		2.0
+	],
+	"catalyst_schools": [
+		"fire",
+		"ice",
+		"lightning",
+		"wind",
+		"earth",
+		"spirit"
+	],
+	"catalysts": {
+		"MC04": {
+			"name": "火法术触媒",
+			"school": "fire",
+			"related_spells": [
+				"F01",
+				"F02",
+				"F03",
+				"F05",
+				"F06",
+				"F07",
+				"F08",
+				"F09",
+				"F10",
+				"F11"
+			]
+		},
+		"MC05": {
+			"name": "冰法术触媒",
+			"school": "ice",
+			"related_spells": [
+				"I01",
+				"I02",
+				"I03",
+				"I04",
+				"I05",
+				"I06",
+				"I07",
+				"I08",
+				"I09",
+				"I10"
+			]
+		},
+		"MC06": {
+			"name": "雷法术触媒",
+			"school": "lightning",
+			"related_spells": [
+				"L01",
+				"L02",
+				"L03",
+				"L04",
+				"L05",
+				"L06",
+				"L07",
+				"L08",
+				"L09",
+				"L10"
+			]
+		},
+		"MC07": {
+			"name": "风法术触媒",
+			"school": "wind",
+			"related_spells": [
+				"W01",
+				"W02",
+				"W03",
+				"W04",
+				"W05",
+				"W06",
+				"W07",
+				"W08",
+				"W09",
+				"W10"
+			]
+		},
+		"MC08": {
+			"name": "岩法术触媒",
+			"school": "earth",
+			"related_spells": [
+				"R01",
+				"R02",
+				"R03",
+				"R04",
+				"R05",
+				"R06",
+				"R07",
+				"R08",
+				"R09",
+				"R10"
+			]
+		},
+		"MC09": {
+			"name": "灵契法术触媒",
+			"school": "spirit",
+			"related_spells": [
+				"S01",
+				"S02",
+				"S03",
+				"S04",
+				"S05",
+				"S06",
+				"S07",
+				"S08",
+				"S09",
+				"S10"
+			]
+		}
+	},
+	"gems": {},
+	"scope": {
+		"rarities": false,
+		"random_affixes": false,
+		"duplicate_items": false,
+		"synthesis": false,
+		"salvage": false,
+		"reroll": false,
+		"inventory_grid": false,
+		"mid_run_resume": false,
+		"cloud_save": false
+	},
+	"formal_school_parameters": {
+		"lightning": "res://data/lightning_spells_v1.json",
+		"wind": "res://data/wind_spells_v1.json",
+		"earth": "res://data/earth_spells_v1.json",
+		"spirit": "res://data/spirit_spells_v1.json"
+	},
+	"spell_sampling_parameters": "res://data/route_spell_sampling.json",
+	"legacy_catalyst_refund_costs": {
+		"unlock_cost": 20,
+		"upgrade_cost_by_current_level": {
+			"1": 20,
+			"2": 40
+		}
+	}
 }

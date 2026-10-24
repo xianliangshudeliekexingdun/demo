@@ -39,6 +39,7 @@ var gem_main_stat="attack"
 var gem_craft_rarity="green"
 var gem_line_index=1
 var gem_retype_stat="shield"
+var gem_reroll_locks:Array=[]
 
 func _ready():
 	root=Control.new()

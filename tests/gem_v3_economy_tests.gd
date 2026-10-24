@@ -1,307 +1,491 @@
 extends RefCounted
-## Production account transactions with isolated user://tests saves only.
+## v4 gem economy: draw, equip, reforge and salvage with isolated accounts only.
 const Meta = preload("res://scripts/core/meta_progression.gd")
 const Gems = preload("res://scripts/core/magic_gems.gd")
 const ROOT = "user://tests/meta_progression/gem_v3/"
 const OUT = "res://build/qa/gem-v3-implementation-20261022/economy/"
 var checks: int = 0
 var failures: Array = []
-var result: Dictionary = {}
 var paths: Array = []
 
 func check(ok: bool, label: String) -> void:
 	checks += 1
 	if not ok:
 		failures.append(label)
-		push_error("Gem v3 economy: "+label)
+		push_error("Gem v3 economy: " + label)
 
 func save(path: String, value: Dictionary) -> void:
 	assert(path.begins_with(ROOT) and ".." not in path)
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(path.get_base_dir()))
-	FileAccess.open(path,FileAccess.WRITE).store_string(JSON.stringify(value))
+	var file = FileAccess.open(path, FileAccess.WRITE)
+	check(file != null, "isolated fixture opens")
+	if file != null:
+		file.store_string(JSON.stringify(value))
+		file.close()
 	if path not in paths: paths.append(path)
 
-func account(name: String):
-	var path: String = ROOT+name+".json"
-	if FileAccess.file_exists(path): DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
-	paths.append(path)
-	var meta = Meta.new(path)
-	check(meta.load_state().ok,"isolated account loads "+name)
-	var seeded: Dictionary = meta.get_state()
+func seed_state(seed_value: int = 20261022) -> String:
 	var rng = RandomNumberGenerator.new()
-	rng.seed = 20261022
-	seeded.gem_state.rng_state = str(rng.state)
-	save(path,seeded)
-	check(meta.load_state().ok,"fixed-seed fixture reloads "+name)
+	rng.seed = seed_value
+	return str(rng.state)
+
+func line(lib, stat: String, tier: int, main: bool) -> Dictionary:
+	return lib.line(stat, tier, main)
+
+func gem(lib, serial: int, rarity: String, stats: Array, core: String = "", tiers: Array = []) -> Dictionary:
+	var affixes: Array = []
+	var gold: bool = rarity == "gold"
+	for index in stats.size():
+		var tier: int = int(tiers[index]) if index < tiers.size() else 1
+		affixes.append(lib.line(str(stats[index]), tier, not gold and index == 0))
+	return {"id": "gem-%d" % serial, "serial": serial, "rarity": rarity, "affixes": affixes, "core": core, "locked": false, "origin": "draw"}
+
+func account(name: String):
+	var path: String = ROOT + name + ".json"
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(path.get_base_dir()))
+	if FileAccess.file_exists(path): DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+	if path not in paths: paths.append(path)
+	var meta = Meta.new(path)
+	check(meta.load_state().ok, "isolated account loads " + name)
+	var seeded: Dictionary = meta.get_state()
+	seeded.gem_state.rng_state = seed_state()
+	save(path, seeded)
+	check(meta.load_state().ok, "fixed-seed fixture reloads " + name)
 	return meta
 
 func funded(meta, dust: int = 1000, essence: int = 1000) -> void:
 	var state: Dictionary = meta.get_state()
 	state.dust = dust
 	state.gem_state.essence = essence
-	save(meta.save_path,state)
-	check(meta.load_state().ok,"funded fixture reloads")
+	save(meta.save_path, state)
+	check(meta.load_state().ok, "funded fixture reloads")
 
-func transactions() -> void:
-	var meta = account("transactions")
-	check(meta.gems.rules.cores.size()==10 and meta.gems.rules.affixes.size()==8,"ten cores and eight attributes from runtime data")
-	var original_gate: float = float(meta.gems.rules.cores.lightning.charge_gate)
-	meta.gems.rules.cores.lightning.charge_gate = .73
-	check("0.73秒充荷门" in meta.gems.core_description("lightning"),"core description derives changed runtime numeric field")
-	meta.gems.rules.cores.lightning.charge_gate = original_gate
-	check("最多6层" in meta.gems.legacy_core_description("inferno") and "每4跳" in meta.gems.core_description("inferno"),"old paid choice describes old mechanism separately from new core")
-	check(meta.request_unlock_core("inferno").ok and meta.get_state().dust==0,"first directed core free and equipped")
-	check(meta.gems.core_id(meta.get_state().gem_state)=="inferno","virtual core slot resolves")
-	check(not meta.request_unlock_core("inferno").ok and not meta.request_unlock_core("unknown").ok,"duplicate/unknown core rejected")
-	for stat in ["attack","attack","cdr"]: check(meta.claim_starter_attribute(stat).ok,"self chosen starter supports repeated main "+stat)
-	check(not meta.claim_starter_attribute("shield").ok,"exactly three starter attributes")
+func install(meta, gems: Array, dust: int = 0, essence: int = 0, slots: Array = [], gold_misses: int = 0, rare_misses: int = 0) -> Dictionary:
 	var state: Dictionary = meta.get_state()
-	check(meta.gems.totals(state.gem_state).attack==8 and meta.gems.totals(state.gem_state).cdr==.02,"starting main values count exactly once")
-	check(not meta.request_equip_gem(0,str(state.gem_state.slots[1])).ok and not meta.request_equip_gem(1,"core:inferno").ok,"core and attribute slot types enforced")
-	funded(meta)
-	var before: Dictionary = meta.get_state()
-	check(meta.request_unlock_core("wind").ok and meta.get_state().dust==int(before.dust)-30,"second specified core costs30")
-	check(meta.request_equip_core("wind").ok,"unlocked core switches free")
-	for id in meta.gems.rules.cores:
-		if id not in meta.get_state().gem_state.unlocked_cores: check(meta.request_unlock_core(str(id)).ok,"all ten core directions obtainable "+str(id))
-	before = meta.get_state()
-	var ten: Dictionary = meta.request_draw_gems(10)
-	check(ten.ok and ten.gems.size()==10 and meta.get_state().dust==int(before.dust)-50,"ten draw exact price and count")
-	var purple: bool = false
-	for gem in ten.gems:
-		purple = purple or gem.rarity=="purple"
-		check(gem.rarity in ["green","blue","purple"] and str(gem.core).is_empty(),"draw pool excludes cores")
-		for index in gem.affixes.size(): check(gem.affixes[index].role==("main" if index==0 else "side"),"generated main/side roles")
-	check(purple,"ten draw guarantees purple")
-	var singles = account("singles")
-	save(singles.save_path,before)
-	check(singles.load_state().ok,"same RNG fixture")
-	for index in 10: check(singles.request_draw_gems(1).ok,"single draw commits")
-	check(singles.get_state()==meta.get_state(),"ten equals ten singles including RNG and pity")
-	var reload = Meta.new(meta.save_path)
-	check(reload.load_state().ok and reload.get_state()==meta.get_state(),"restart preserves all gem progress")
-	var run: Dictionary = meta.begin_playable_run("route45")
-	check(run.ok and run.snapshot.gem_core=="wind","run locks chosen core snapshot")
-	before = meta.get_state()
-	check(not meta.request_unlock_core("earth").ok and not meta.request_craft_gem("green","health").ok and not meta.request_equip_core("aegis").ok and meta.get_state()==before,"in-run transactions blocked without spending")
-	check(meta.settle_playable_run(run.run_id,[]).ok,"empty run settles without milestones")
-	var blocked: String = ROOT+"block"
-	FileAccess.open(blocked,FileAccess.WRITE).store_string("not a directory")
-	paths.append(blocked)
-	meta.save_path = blocked+"/invalid.json"
-	before = meta.get_state()
-	check(not meta.request_craft_gem("purple","attack").ok and meta.get_state()==before,"failed save preserves expense RNG and instance")
-	meta.save_path = ROOT+"transactions.json"
-
-func workshop() -> void:
-	var meta = account("workshop")
-	funded(meta)
-	var craft: Dictionary = meta.request_craft_gem("green","attack")
-	check(craft.ok and meta.get_state().gem_state.essence==997,"craft green3 chooses main")
-	var id: String = str(craft.gem_id)
-	var original: Dictionary = meta.gems.find(meta.get_state().gem_state,id)
-	check(original.affixes==[meta.gems.line("attack",1,true)],"craft all initial rows I")
-	check(meta.request_raise_gem_affix(id,0).ok and meta.request_raise_gem_affix(id,0).ok and not meta.request_raise_gem_affix(id,0).ok,"main deterministic tier8/16 and III cap")
-	check(meta.get_state().gem_state.essence==973,"main exact tier cost")
-	check(meta.request_upgrade_gem(id).ok and meta.request_upgrade_gem(id).ok,"green8 then blue20 to purple")
-	var gem: Dictionary = meta.gems.find(meta.get_state().gem_state,id)
-	check(gem.rarity=="purple" and gem.affixes[0]==meta.gems.line("attack",3,true) and gem.affixes[1].tier==1 and gem.affixes[2].tier==1,"upgrade preserves old tier and adds I side")
-	check(meta.get_state().gem_state.essence==945 and not meta.request_upgrade_gem(id).ok,"upgrade exact cost and max cap")
-	check(meta.request_raise_gem_affix(id,1).ok and meta.request_raise_gem_affix(id,1).ok and meta.get_state().gem_state.essence==927,"side deterministic tier6/12")
-	var before: Dictionary = meta.get_state()
-	check(not meta.request_reforge(id,"affix",0).ok and meta.get_state()==before,"main cannot randomly change")
-	check(meta.request_reforge(id,"affix",1).ok,"side random retype opens durable choice")
-	var pending: Dictionary = meta.get_state().gem_state.pending_reforge
-	check(pending.cost==5 and pending.candidate.tier==3 and pending.candidate.stat!=pending.old.stat,"random type reforge costs5 and preserves tier")
-	var reload = Meta.new(meta.save_path)
-	check(reload.load_state().ok and reload.get_state()==meta.get_state(),"pending choice and RNG persist restart")
-	before = reload.get_state()
-	check(not reload.request_craft_gem("purple","health").ok and reload.get_state()==before,"pending blocks second spend without mutation")
-	var old_values: Dictionary = reload.gems.totals(before.gem_state)
-	var held_run: Dictionary = reload.begin_playable_run("route45")
-	check(held_run.ok and held_run.snapshot.gem_bonuses==old_values,"modern pending may start with original equipped values")
-	check(not reload.resolve_reforge(int(pending.token),true).ok and reload.get_state().gem_state.pending_reforge==pending,"in-run pending cannot alter the frozen equipment")
-	check(reload.settle_playable_run(held_run.run_id,[]).ok,"pending run settles and unlocks original choice")
-	check(reload.resolve_reforge(int(pending.token),false).ok,"keep original consumes paid choice once")
-	check(reload.gems.find(reload.get_state().gem_state,id).affixes[1]==pending.old and reload.get_state().gem_state.essence==922,"keep original no refund and unchanged row")
-	check(not reload.resolve_reforge(int(pending.token),true).ok,"choice token cannot repeat")
-	gem = reload.gems.find(reload.get_state().gem_state,id)
-	var desired: String = ""
-	for stat in reload.gems.rules.affixes:
-		var used: bool = false
-		for affix in gem.affixes: used = used or affix.stat==stat
-		if not used: desired = str(stat); break
-	check(reload.request_retype_gem(id,1,desired).ok,"direct type choice succeeds")
-	gem = reload.gems.find(reload.get_state().gem_state,id)
-	check(gem.affixes[1]==reload.gems.line(desired,3,false) and reload.get_state().gem_state.essence==897,"direct25 preserves III value")
-	check(reload.request_lock_gem(id).ok and not reload.request_raise_gem_affix(id,2).ok and not reload.request_salvage_gems([id]).ok,"lock protects upgrade and salvage")
-	check(reload.request_lock_gem(id).ok and reload.request_equip_gem(1,id).ok and not reload.request_salvage_gems([id]).ok,"equipped protects salvage")
-	check(reload.request_equip_gem(1,"").ok,"unequip attribute")
-	check(reload.request_salvage_gems([id]).essence_gained==10,"purple base salvage10 no tier refund")
-	check(reload.get_state().gem_state.essence==907,"workshop complete ledger")
-	for rarity in ["green","blue","purple"]:
-		craft = reload.request_craft_gem(rarity,"health")
-		check(craft.ok,"direct craft each quality "+rarity)
-		gem = reload.gems.find(reload.get_state().gem_state,str(craft.gem_id))
-		var used: Array = []
-		for affix in gem.affixes:
-			check(affix.tier==1 and affix.stat not in used,"craft initial tiers and no duplicate type")
-			used.append(affix.stat)
-
-func milestones() -> void:
-	var meta = account("milestones")
-	for count in [0,15,15,30]:
-		var run: Dictionary = meta.begin_playable_run("route45")
-		var rooms: Array = []
-		for index in count: rooms.append(index+1)
-		var settle: Dictionary = meta.settle_playable_run(run.run_id,rooms)
-		check(settle.ok,"real clear ledger settles "+str(count))
-		var before: Dictionary = meta.get_state()
-		check(meta.settle_playable_run(run.run_id,rooms).already_settled and meta.get_state()==before,"same settlement is idempotent")
-	check(meta.get_state().gem_state.cumulative_cleared==60 and meta.get_state().gem_state.essence==24,"split clears grant exactly24 once")
-	check(meta.get_state().gem_state.milestone_claimed==[15,30],"milestone receipt stores both thresholds")
-	var merged = account("milestone_merged")
-	var run: Dictionary = merged.begin_playable_run("route45")
-	var rooms: Array = []
-	for index in 30: rooms.append(index+1)
-	check(merged.settle_playable_run(run.run_id,rooms).essence_earned==24,"merged30 grants same24")
-	check(merged.begin_run().ok and merged.end_run().ok and merged.get_state().gem_state.cumulative_cleared==30,"preview never progresses milestones")
-	var failed = account("milestone_failed_save")
-	run = failed.begin_playable_run("route45")
-	var before: Dictionary = failed.get_state()
-	var blocker: String = ROOT+"milestone_blocker"
-	FileAccess.open(blocker,FileAccess.WRITE).store_string("not a directory")
-	paths.append(blocker)
-	failed.save_path = blocker+"/save.json"
-	check(not failed.settle_playable_run(run.run_id,rooms).ok and failed.get_state()==before and failed.is_in_run(),"failed settlement preserves unclaimed milestones and active token")
-	failed.save_path = ROOT+"milestone_failed_save.json"
-	check(failed.settle_playable_run(run.run_id,rooms).essence_earned==24 and failed.get_state().gem_state.essence==24,"failed settlement retry credits exactly once")
-
-func old_gem(serial: int, core: String = "", rarity: String = "gold") -> Dictionary:
-	var lib = Gems.new()
-	var affixes: Array = []
-	for stat in ["attack","health","shield"].slice(0,int(lib.rules.legacy_affix_counts[rarity])):
-		var line: Dictionary = lib.line(str(stat),1,false)
-		line.erase("role")
-		affixes.append(line)
-	return {"id":"gem-%d"%serial,"serial":serial,"rarity":rarity,"core":core,"affixes":affixes,"locked":serial==1}
-
-func old_state(meta) -> Dictionary:
-	var state: Dictionary = meta.get_state()
-	state.version = Meta.EIGHT_CORE_SAVE_VERSION
-	state.gem_state = {"inventory":[],"slots":["","","",""],"serial":0,"draws":0,"gold_misses":0,"rare_misses":0,"first_gold":true,"rng_state":"1234567","essence":0,"salvaged":0,"work_serial":0,"pending_reforge":{}}
-	return state
-
-func migration() -> void:
-	var meta = account("migration")
-	var source: Dictionary = old_state(meta)
-	for core in ["inferno","reactor","stride","inferno"]:
-		source.gem_state.serial += 1
-		source.gem_state.draws += 1
-		source.gem_state.inventory.append(old_gem(int(source.gem_state.serial),core))
-	source.gem_state.first_gold = false
-	source.gem_state.slots = ["gem-1","gem-2","gem-3","gem-4"]
-	save(meta.save_path,source)
-	var bytes: String = FileAccess.get_file_as_string(meta.save_path)
-	check(meta.load_state().ok,"v5 eight-core save migrates in memory")
-	check(FileAccess.get_file_as_string(meta.save_path)==bytes,"read migration does not rewrite old file")
-	var state: Dictionary = meta.get_state()
-	check(state.version==Meta.SAVE_VERSION and state.gem_state.inventory.size()==4,"migration keeps every attribute asset")
-	check(state.gem_state.unlocked_cores==["inferno"] and state.gem_state.core_choice_credits==2 and state.gem_state.essence==20,"removed directions grant choices and repeated core20")
-	check(state.gem_state.slots[0]=="core:inferno" and state.gem_state.inventory[0].locked and state.gem_state.inventory[0].affixes==source.gem_state.inventory[0].affixes,"old active direction and original attributes lock preserved")
-	check(not state.gem_state.core_claimed and state.gem_state.starter_attributes_claimed==0,"new starter package does not consume migration choices")
-	check(meta.request_unlock_core("wind").ok and meta.get_state().gem_state.core_choice_credits==2,"free first new core preserves two choice credits")
-	check(meta.request_unlock_core("earth").ok and meta.request_unlock_core("spirit").ok and meta.get_state().gem_state.core_choice_credits==0,"removed-core choices redeem exactly twice")
-	var before: Dictionary = meta.get_state()
-	var loaded: Dictionary = meta.load_state()
-	check(loaded.ok and meta.get_state()==before,"committed migration reload gives no repeated compensation")
-	check(meta.request_lock_gem("gem-1").ok and meta.request_convert_gem("gem-1","health").ok,"optional old stone conversion")
-	var converted: Dictionary = meta.gems.find(meta.get_state().gem_state,"gem-1")
-	check(converted.rarity=="purple" and converted.affixes[0]==meta.gems.line("health",1,true) and converted.affixes[1].value==2,"conversion chosen existing main doubled, sides preserved")
-	check(not meta.request_convert_gem("gem-2","cdr").ok,"conversion cannot invent a previously absent type")
-	var pending = account("legacy_pending")
-	source = old_state(pending)
-	source.gem_state.inventory = [old_gem(1,"inferno")]
-	source.gem_state.serial = 1; source.gem_state.draws = 1; source.gem_state.first_gold = false
-	source.gem_state.work_serial = 1; source.gem_state.essence = 17
-	source.gem_state.pending_reforge = {"gem_id":"gem-1","mode":"core","index":-1,"old":"inferno","candidate":"reactor","cost":60,"token":1}
-	save(pending.save_path,source)
-	check(pending.load_state().ok and pending.get_state().gem_state.pending_reforge==source.gem_state.pending_reforge,"old paid core candidate remains exact")
-	check(not pending.begin_playable_run().ok and not pending.request_unlock_core("wind").ok,"old pending must resolve before migration or play")
-	check(pending.resolve_reforge(1,true).ok,"adopt original old candidate then migrate")
-	state = pending.get_state()
-	check(state.gem_state.core_choice_credits==1 and state.gem_state.essence==17 and state.gem_state.inventory[0].transition_core=="reactor","old choice no redraw no new fee, chosen removed direction becomes entitlement")
-	var pity = account("legacy_pity")
-	source = old_state(pity)
-	for index in 9: source.gem_state.inventory.append(old_gem(index+1,"","green"))
-	source.gem_state.serial=9; source.gem_state.draws=9; source.gem_state.gold_misses=9; source.gem_state.rare_misses=9
-	save(pity.save_path,source)
-	check(pity.load_state().ok and pity.get_state().dust==27 and pity.get_state().gem_state.rare_misses==9,"old first-gold progress converts proportional dust and purple pity remains")
-	check(pity.request_draw_gems(1).gems[0].rarity=="purple","inherited tenth purple guarantee")
-	var bad: Dictionary = pity.get_state()
-	bad.gem_state.slots[0] = str(bad.gem_state.inventory[0].id)
-	save(pity.save_path,bad)
-	bytes = FileAccess.get_file_as_string(pity.save_path)
-	check(not Meta.new(pity.save_path).load_state().ok and FileAccess.get_file_as_string(pity.save_path)==bytes,"invalid modern core slot rejected without overwriting")
-	for version in [Meta.FIXED_GEM_SAVE_VERSION,Meta.TWO_CATALYST_SAVE_VERSION]:
-		var older = account("older_"+version)
-		source = old_state(older)
-		source.version = version
-		for id in Meta.NEW_CATALYST_IDS: source.levels.erase(id)
-		source.gem_state.inventory = [old_gem(1,"inferno")]
-		source.gem_state.serial=1; source.gem_state.draws=1; source.gem_state.first_gold=false
-		source.gem_state.slots[0]="gem-1"
-		if version==Meta.FIXED_GEM_SAVE_VERSION:
-			source.gem_state.inventory[0].core="layers"
-			for affix in source.gem_state.inventory[0].affixes:
-				affix.value=older.gems.rules.affixes[affix.stat].gold
-				affix.erase("tier")
-			for key in ["essence","salvaged","work_serial","pending_reforge"]: source.gem_state.erase(key)
-		save(older.save_path,source)
-		check(older.load_state().ok and older.gems.core_id(older.get_state().gem_state)=="inferno","older v3/v4 reaches ten-core schema "+version)
-	var affix_pending = account("legacy_affix_pending")
-	source = old_state(affix_pending)
-	source.gem_state.inventory = [old_gem(1,"inferno")]
-	source.gem_state.serial=1; source.gem_state.draws=1; source.gem_state.first_gold=false
-	source.gem_state.work_serial=1; source.gem_state.essence=19
-	var old_line: Dictionary = source.gem_state.inventory[0].affixes[0].duplicate(true)
-	var new_line: Dictionary = {"stat":"defense","tier":3,"value":affix_pending.gems.rules.affixes.defense.tiers[2]}
-	source.gem_state.pending_reforge={"gem_id":"gem-1","mode":"affix","index":0,"old":old_line,"candidate":new_line,"cost":3,"token":1}
-	save(affix_pending.save_path,source)
-	check(affix_pending.load_state().ok and affix_pending.resolve_reforge(1,true).ok,"old paid affix candidate can be adopted before migration")
-	state = affix_pending.get_state()
-	check(state.gem_state.essence==19 and state.gem_state.inventory[0].affixes[0]==new_line and state.gem_state.rng_state==source.gem_state.rng_state,"old affix adopted exact value tier RNG with no new fee")
-
-func sampling() -> void:
-	var lib = Gems.new()
-	for seed_value in 8:
-		var state: Dictionary = lib.fresh()
-		var rng = RandomNumberGenerator.new()
-		rng.seed = seed_value
-		var gap: int = 0
-		for index in 100:
-			var gem: Dictionary = lib.sample(state,rng)
-			gap = 0 if gem.rarity=="purple" else gap+1
-			check(gap<10 and gem.rarity!="gold","actual draw ten guarantee seed%d index%d"%[seed_value,index])
-			var used: Array = []
-			for i in gem.affixes.size():
-				var affix: Dictionary = gem.affixes[i]
-				check(affix.stat not in used and affix==lib.line(str(affix.stat),int(affix.tier),i==0),"production affix exact runtime tier and uniqueness")
-				used.append(affix.stat)
+	state.dust = dust
+	state.settlement_serial = 0
+	state.run_serial = 0
+	state.last_settlement = {}
+	state.gem_state.inventory = gems.duplicate(true)
+	state.gem_state.slots = slots.duplicate() if slots.size() == 4 else ["", "", "", ""]
+	state.gem_state.serial = gems.size()
+	state.gem_state.draws = gems.size()
+	state.gem_state.salvaged = 0
+	state.gem_state.essence = essence
+	state.gem_state.work_serial = 0
+	state.gem_state.pending_reforge = {}
+	state.gem_state.gold_misses = gold_misses
+	state.gem_state.rare_misses = rare_misses
+	state.gem_state.cumulative_cleared = 0
+	state.gem_state.milestone_claimed = []
+	save(meta.save_path, state)
+	check(meta.load_state().ok, "gem fixture reloads " + meta.error)
+	return meta.get_state()
 
 func run() -> int:
-	transactions()
-	workshop()
-	milestones()
-	migration()
-	sampling()
+	rules_and_creation()
+	sampling_and_pity()
+	draw_economy()
+	equipment_economy()
+	reforge_economy()
+	salvage_economy()
+	milestone_economy()
+	regression_economy()
 	for path in paths:
 		if FileAccess.file_exists(path): DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUT))
-	result = {"checks":checks,"failures":failures.size(),"failed_cases":failures,"scope":"production account/RNG/workshop/migration isolated fixtures; no interactive gameplay or real account"}
+	var result: Dictionary = {"checks":checks, "failures":failures.size(), "failed_cases":failures,
+		"scope":"v4 draw/equip/reforge/salvage account economy with isolated fixtures; no UI, combat, pixels or real account"}
 	result["source_sha256"] = {}
-	for path in ["data/magic_gems_v1.json","scripts/core/magic_gems.gd","scripts/core/meta_progression.gd","tests/gem_v3_economy_tests.gd"]:
-		result.source_sha256[path] = FileAccess.get_sha256("res://"+path)
-	FileAccess.open(OUT+"results.json",FileAccess.WRITE).store_string(JSON.stringify(result,"\t"))
-	print("GEM_V3_ECONOMY "+JSON.stringify(result))
+	for path in ["data/magic_gems_v1.json", "scripts/core/magic_gems.gd", "scripts/core/meta_progression.gd", "tests/gem_v3_economy_tests.gd"]:
+		result.source_sha256[path] = FileAccess.get_sha256("res://" + path)
+	var file = FileAccess.open(OUT + "results.json", FileAccess.WRITE)
+	if file != null:
+		file.store_string(JSON.stringify(result, "\t"))
+		file.close()
+	print("GEM_V3_ECONOMY " + JSON.stringify({"checks":checks, "failures":failures.size(), "failed_cases":failures}))
 	return checks if failures.is_empty() else -failures.size()
+
+func rules_and_creation() -> void:
+	var lib = Gems.new()
+	check(int(lib.rules.slots) == 4, "four gem slots from runtime data")
+	check(int(lib.rules.draw_cost) == 5, "draw costs five dust")
+	check(int(lib.rules.base_weights.green) == 50 and int(lib.rules.base_weights.blue) == 33 and int(lib.rules.base_weights.purple) == 15 and int(lib.rules.gold_weight) == 2, "rarity weights are 50/33/15/2")
+	check(int(lib.rules.pity.purple_or_better) == 10 and int(lib.rules.pity.gold) == 50, "purple and gold pity are ten and fifty")
+	check(int(lib.rules.affix_counts.green) == 1 and int(lib.rules.affix_counts.blue) == 2 and int(lib.rules.affix_counts.purple) == 3 and int(lib.rules.affix_counts.gold) == 3, "affix counts are one, two, three and three")
+	check(int(lib.rules.reforge.base) == 20 and int(lib.rules.reforge.per_lock) == 15 and int(lib.rules.reforge.max_locks) == 3, "reforge pricing is 20 plus 15 per lock with three locks")
+	check(int(lib.rules.salvage_yields.green) == 1 and int(lib.rules.salvage_yields.blue) == 3 and int(lib.rules.salvage_yields.purple) == 10 and int(lib.rules.salvage_yields.gold) == 10, "salvage yields are 1/3/10/10")
+	check(lib.rules.affixes.size() == 8 and lib.rules.cores.size() == 10, "eight attributes and ten keystones from data")
+	var rng = RandomNumberGenerator.new()
+	rng.seed = 7
+	var state: Dictionary = lib.fresh()
+	var gold: Dictionary = lib.create(state, "gold", "attack", rng, false, "craft")
+	check(gold.rarity == "gold" and str(gold.core) in lib.rules.cores, "created gold carries one known keystone")
+	check(gold.affixes.size() == 3, "created gold has three attributes")
+	for affix in gold.affixes:
+		check(affix.role == "side", "gold attributes have no main role")
+		check(affix.value == lib.rules.affixes[affix.stat].tiers[int(affix.tier) - 1], "gold attributes use side tiers")
+	check(gold.affixes[0].stat != gold.affixes[1].stat and gold.affixes[1].stat != gold.affixes[2].stat and gold.affixes[0].stat != gold.affixes[2].stat, "gold attributes stay unique")
+	for rarity in ["green", "blue", "purple"]:
+		var gem_state: Dictionary = lib.fresh()
+		var created: Dictionary = lib.create(gem_state, rarity, "health", rng, false, "craft")
+		check(created.rarity == rarity and created.affixes.size() == int(lib.rules.affix_counts[rarity]), "created quality has its affix count: " + rarity)
+		check(str(created.core).is_empty(), "coloured creation carries no keystone: " + rarity)
+		check(created.affixes[0].role == "main" and created.affixes[0].stat == "health", "chosen main stat is first: " + rarity)
+		check(created.affixes[0].value == lib.rules.affixes.health.main_tiers[0], "main line uses main tier source: " + rarity)
+		for index in range(1, created.affixes.size()):
+			check(created.affixes[index].role == "side" and created.affixes[index].value == lib.rules.affixes[created.affixes[index].stat].tiers[int(created.affixes[index].tier) - 1], "side line uses side tier source: " + rarity)
+	check(lib.rules.affixes.attack.tiers != lib.rules.affixes.attack.main_tiers, "main and side tier tables are distinct")
+	var random_state: Dictionary = lib.fresh()
+	var random_gold: Dictionary = lib.create(random_state, "gold", "", rng, true, "craft")
+	for affix in random_gold.affixes:
+		check(int(affix.tier) in [1, 2, 3] and affix.value == lib.rules.affixes[affix.stat].tiers[int(affix.tier) - 1], "random tiers still follow the side table")
+	state.draws = state.serial
+	random_state.draws = random_state.serial
+	check(lib.validate(state).is_empty(), "directly created gold is a valid record")
+	check(lib.validate(random_state).is_empty(), "directly created random gold is a valid record")
+	check(lib.title({}) == "空槽", "empty slot title is explicit")
+	var text_state: Dictionary = lib.fresh()
+	var text_gold: Dictionary = lib.create(text_state, "gold", "", rng, false, "craft")
+	var text_purple: Dictionary = lib.create(text_state, "purple", "health", rng, false, "craft")
+	check(lib.title(text_gold).ends_with("宝石") and lib.title(text_gold).begins_with(str(lib.rules.cores[text_gold.core].name)), "gold title names its keystone")
+	check(lib.title(text_purple).begins_with("紫色"), "coloured title names its quality")
+	check(lib.affix_text(text_gold).find("主 · ") < 0 and lib.affix_text(text_purple).find("主 · ") >= 0, "affix text exposes main role only for coloured gems")
+	check(lib.lockable_count(text_gold) == 4 and lib.lockable_count(text_purple) == 3, "lockable parts follow quality")
+	check(lib.effect_of(text_gold) == str(text_gold.core) and lib.effect_of(text_purple).is_empty(), "only gold exposes a keystone effect")
+	check(lib.salvage_value(text_purple) == lib.salvage_yield(text_purple) and lib.salvage_value(text_purple) == 10, "salvage accessors agree")
+
+func sampling_and_pity() -> void:
+	var lib = Gems.new()
+	var state: Dictionary = lib.fresh()
+	var rng = RandomNumberGenerator.new()
+	rng.seed = 11
+	var counts: Dictionary = {"green": 0, "blue": 0, "purple": 0, "gold": 0}
+	var purple_gap: int = 0
+	var gold_gap: int = 0
+	for index in 500:
+		var drawn: Dictionary = lib.sample(state, rng)
+		var rarity: String = str(drawn.rarity)
+		counts[rarity] = int(counts[rarity]) + 1
+		purple_gap = 0 if rarity in ["purple", "gold"] else purple_gap + 1
+		gold_gap = 0 if rarity == "gold" else gold_gap + 1
+		check(purple_gap < 10, "no ten-draw streak without purple or better")
+		check(gold_gap < 50, "no fifty-draw streak without gold")
+		var used: Array = []
+		for affix in drawn.affixes:
+			check(affix.stat not in used, "sampled attributes stay unique")
+			used.append(affix.stat)
+	check(int(counts.green) > int(counts.blue) and int(counts.blue) > int(counts.purple) and int(counts.purple) > int(counts.gold), "common qualities outnumber rarer ones")
+	check(int(counts.purple) >= 10 and int(counts.gold) >= 1, "pity keeps purple and gold reachable")
+	var total: int = 0
+	for key in counts: total += int(counts[key])
+	check(total == 500, "sample ledger counts every draw")
+	var forced_purple: Dictionary = lib.fresh()
+	forced_purple.rare_misses = 9
+	forced_purple.draws = 9
+	var purple: Dictionary = lib.sample(forced_purple, rng)
+	check(purple.rarity == "purple" and int(forced_purple.rare_misses) == 0 and int(forced_purple.gold_misses) == 1, "ninth purple miss forces purple and advances gold pity")
+	var forced_gold: Dictionary = lib.fresh()
+	forced_gold.gold_misses = 49
+	forced_gold.rare_misses = 4
+	forced_gold.draws = 49
+	var gold: Dictionary = lib.sample(forced_gold, rng)
+	check(gold.rarity == "gold" and int(forced_gold.gold_misses) == 0 and int(forced_gold.rare_misses) == 0, "forty-ninth gold miss forces gold and resets both counters")
+	var streak: Dictionary = lib.fresh()
+	var streak_rare: bool = false
+	for index in 10:
+		var gem: Dictionary = lib.sample(streak, rng)
+		streak_rare = streak_rare or gem.rarity in ["purple", "gold"]
+	check(streak_rare, "fresh ten draw contains purple or better")
+	check(lib.validate(streak).is_empty(), "sampling account stays valid")
+
+func draw_economy() -> void:
+	var meta = account("draws")
+	funded(meta, 100, 0)
+	var before: Dictionary = meta.get_state()
+	var one: Dictionary = meta.request_draw_gems(1)
+	check(one.ok and one.gems.size() == 1 and int(meta.get_state().dust) == 95, "single draw spends exactly five")
+	check(meta.get_state().gem_state.inventory.size() == 1 and int(meta.get_state().gem_state.draws) == 1 and int(meta.get_state().gem_state.serial) == 1, "single draw records one instance")
+	var ten: Dictionary = meta.request_draw_gems(10)
+	check(ten.ok and ten.gems.size() == 10 and int(meta.get_state().dust) == 45, "ten draw spends exactly fifty")
+	check(meta.get_state().gem_state.inventory.size() == 11 and int(meta.get_state().gem_state.draws) == 11, "ten draw records ten instances")
+	check(str(ten.gems[-1].rarity) in ["purple", "gold"], "ten draw guarantees purple or better")
+	check(meta.gems.validate(meta.get_state().gem_state).is_empty(), "drawn account is valid")
+	install(meta, [], 100, 0)
+	var singles_path: String = ROOT + "draw_singles.json"
+	save(singles_path, meta.get_state())
+	var singles = Meta.new(singles_path)
+	check(singles.load_state().ok, "same-RNG singles account loads")
+	check(meta.request_draw_gems(10).ok, "ten draw commits")
+	for index in 10: check(singles.request_draw_gems(1).ok, "single draw commits")
+	check(singles.get_state() == meta.get_state(), "ten singles equal one ten draw including pity and RNG")
+	before = meta.get_state()
+	var disk: String = FileAccess.get_file_as_string(meta.save_path)
+	for count in [0, 2, 3, 9, 11, -1]:
+		check(not meta.request_draw_gems(count).ok, "unsupported draw count rejected " + str(count))
+	check(meta.get_state() == before and FileAccess.get_file_as_string(meta.save_path) == disk, "rejected draws preserve account and disk")
+	install(meta, [], 4, 0)
+	check(not meta.request_draw_gems(1).ok and int(meta.get_state().dust) == 4, "insufficient dust rejected without spending")
+	var gold_stone: Array = [gem(meta.gems, 1, "gold", ["attack", "health", "shield"], "inferno", [1, 1, 1])]
+	install(meta, gold_stone, 100, 100, ["gem-1", "", "", ""])
+	check(meta.request_reroll_gem("gem-1", ["core"]).ok, "reroll candidate opened")
+	before = meta.get_state()
+	check(not meta.request_draw_gems(1).ok and meta.get_state() == before, "unresolved candidate blocks a draw")
+	var token: int = int(meta.get_state().gem_state.pending_reforge.token)
+	check(meta.resolve_reforge(token, false).ok, "candidate discarded")
+	check(meta.request_draw_gems(1).ok, "draw works again after resolving")
+	var blocked: String = ROOT + "blocked_draw"
+	var blocker = FileAccess.open(blocked, FileAccess.WRITE)
+	blocker.store_string("not a directory")
+	blocker.close()
+	paths.append(blocked)
+	install(meta, [], 100, 0)
+	var fixture: Dictionary = meta.get_state()
+	meta.save_path = blocked + "/save.json"
+	var memory: Dictionary = meta.get_state()
+	check(not meta.request_draw_gems(1).ok and meta.get_state() == memory, "failed save does not charge or advance RNG")
+	meta.save_path = ROOT + "draws.json"
+	check(meta.request_draw_gems(1).ok and int(meta.get_state().dust) == 95, "draw retry commits once")
+	check(int(meta.get_state().gem_state.draws) == 1, "failed attempt left no phantom instance")
+
+func equipment_economy() -> void:
+	var meta = account("equipment")
+	var lib = meta.gems
+	var loadout: Array = [
+		gem(lib, 1, "green", ["attack"], "", [1]),
+		gem(lib, 2, "blue", ["health", "shield"], "", [1, 1]),
+		gem(lib, 3, "purple", ["attack", "defense", "cdr"], "", [1, 1, 1]),
+		gem(lib, 4, "gold", ["speed", "crit_rate", "crit_multiplier"], "inferno", [1, 1, 1]),
+	]
+	install(meta, loadout)
+	for index in 4:
+		check(meta.request_equip_gem(index, "gem-%d" % (index + 1)).ok, "slot " + str(index) + " equips")
+	check(meta.get_state().gem_state.slots == ["gem-1", "gem-2", "gem-3", "gem-4"], "all four slots can hold different qualities")
+	var totals: Dictionary = lib.totals(meta.get_state().gem_state)
+	check(totals.attack == 8.0 and totals.health == 20.0 and totals.shield == 4.0, "equipped flat totals match tier sources")
+	check(near(float(totals.defense), 2.0) and near(float(totals.cdr), 0.01), "secondary totals match tier sources")
+	var stats: Dictionary = meta.get_preview_stats()
+	check(stats.health == 320.0 and stats.shield == 104.0 and stats.attack == 108.0, "preview stats add equipped totals once")
+	check(meta.request_equip_gem(1, "gem-1").ok, "same instance can be moved")
+	check(meta.get_state().gem_state.slots == ["", "gem-1", "gem-3", "gem-4"], "moving clears the previous slot")
+	check(meta.request_equip_gem(2, "gem-1").ok and meta.get_state().gem_state.slots[1].is_empty(), "same instance never occupies two slots")
+	var before: Dictionary = meta.get_state()
+	for slot in [-1, 4, 99]:
+		check(not meta.request_equip_gem(slot, "gem-2").ok, "invalid slot rejected " + str(slot))
+	check(not meta.request_equip_gem(0, "gem-99").ok and meta.get_state() == before, "unowned gem cannot be equipped")
+	check(meta.request_equip_gem(0, "gem-1").ok and meta.request_equip_gem(1, "gem-2").ok, "restore slots")
+	check(meta.request_equip_gem(2, "gem-3").ok and meta.request_equip_gem(3, "gem-4").ok, "restore four slots")
+	var duplicate: Array = [
+		gem(lib, 1, "gold", ["attack", "health", "shield"], "inferno", [1, 2, 3]),
+		gem(lib, 2, "gold", ["attack", "health", "shield"], "inferno", [3, 2, 1]),
+		gem(lib, 3, "gold", ["attack", "health", "shield"], "wind", [1, 1, 1]),
+	]
+	install(meta, duplicate, 0, 0, ["gem-1", "gem-2", "gem-3", ""])
+	check(lib.active_effects(meta.get_state().gem_state) == ["inferno", "wind"], "one copy per keystone acts")
+	check(lib.first_effect(meta.get_state().gem_state) == "inferno", "the lowest slot decides the first effect")
+	check(lib.duplicate_effects(meta.get_state().gem_state) == ["inferno"], "duplicate keystone is reported")
+	check(lib.totals(meta.get_state().gem_state).attack == 8.0, "inactive duplicates still contribute attributes")
+	check(meta.request_equip_gem(3, "gem-1").ok and lib.first_effect(meta.get_state().gem_state) == "inferno", "moving the leading copy keeps one active effect")
+	var snapshot = meta.begin_run()
+	check(snapshot.ok and snapshot.snapshot.gem_core == "inferno" and int(snapshot.snapshot.gem_effects) == 2, "run snapshot counts distinct active effects")
+	check(snapshot.snapshot.gem_cores == ["inferno", "wind"] and snapshot.snapshot.gem_slots.size() == 4, "run snapshot freezes slots and effect list")
+	before = meta.get_state()
+	check(not meta.request_equip_gem(0, "").ok and not meta.request_draw_gems(1).ok and not meta.request_salvage_gems(["gem-3"]).ok, "run blocks equipment, draw and salvage")
+	check(meta.get_state() == before, "blocked run actions preserve account")
+	check(meta.end_run().ok, "preview ends")
+	var aegis: Array = [gem(lib, 1, "gold", ["attack", "health", "shield"], "aegis", [1, 1, 1])]
+	install(meta, aegis, 0, 0, ["gem-1", "", "", ""])
+	var converted: Dictionary = meta.get_preview_stats()
+	check(near(float(converted.health), 217.0) and near(float(converted.shield), 308.6), "aegis converts thirty percent of life into shield")
+
+func reforge_economy() -> void:
+	var meta = account("reforge")
+	var lib = meta.gems
+	var purple: Array = [gem(lib, 1, "purple", ["attack", "health", "shield"], "", [2, 3, 1])]
+	install(meta, purple, 0, 200)
+	check(meta.reforge_cost("gem-1", []) == 20 and meta.reforge_cost("gem-1", [0]) == 35 and meta.reforge_cost("gem-1", [0, 1]) == 50, "cost starts at twenty and grows by fifteen per lock")
+	check(meta.reforge_cost("gem-1", [0, 1, 2]) == 65 and meta.reforge_cost("missing", []) == -1, "three locks cost sixty-five and unknown gems have no price")
+	check(not meta.request_reroll_gem("gem-1", [0, 1, 2]).ok, "cannot lock every attribute")
+	check(not meta.request_reroll_gem("gem-1", [0, 1, 2, 3]).ok, "more than three locks rejected")
+	check(not meta.request_reroll_gem("gem-1", [3]).ok, "attribute index out of range rejected")
+	check(not meta.request_reroll_gem("gem-1", ["core"]).ok, "coloured gem cannot lock a keystone")
+	check(not meta.request_reroll_gem("missing", []).ok, "missing gem cannot be rerolled")
+	install(meta, purple, 0, 34)
+	check(not meta.request_reroll_gem("gem-1", [0]).ok and int(meta.get_state().gem_state.essence) == 34, "insufficient essence rejected before paying")
+	# Gold has no main line, so all four parts are legitimate lock targets.
+	var gold: Array = [gem(lib, 1, "gold", ["attack", "health", "shield"], "inferno", [1, 2, 3])]
+	install(meta, gold, 0, 200)
+	check(not meta.request_reroll_gem("gem-1", ["core", 0, 1, 2]).ok, "four locks are rejected")
+	var two: Dictionary = meta.request_reroll_gem("gem-1", [0, 1])
+	check(two.ok and int(meta.get_state().gem_state.essence) == 150 and int(two.candidate.cost) == 50, "two locks cost fifty once")
+	var pending: Dictionary = meta.get_state().gem_state.pending_reforge
+	check(pending.locks == [0, 1] and pending.candidate.affixes.size() == 3, "candidate records its locks")
+	check(pending.candidate.affixes[0] == pending.old.affixes[0] and pending.candidate.affixes[1] == pending.old.affixes[1], "locked attributes never change")
+	check(pending.candidate.affixes != pending.old.affixes, "at least one unlocked attribute is rerolled")
+	check(lib.validate(meta.get_state().gem_state).is_empty(), "pending candidate is a valid record")
+	var before: Dictionary = meta.get_state()
+	check(not meta.request_draw_gems(1).ok and not meta.request_lock_gem("gem-1").ok and not meta.request_salvage_gems(["gem-1"]).ok and not meta.request_equip_gem(0, "gem-1").ok, "pending candidate blocks other transactions")
+	check(not meta.request_reroll_gem("gem-1", []).ok and meta.get_state() == before, "pending candidate blocks a second reroll")
+	var token: int = int(pending.token)
+	check(not meta.resolve_reforge(token + 1, true).ok, "unknown token rejected")
+	check(meta.resolve_reforge(token, true).ok, "adopt commits once")
+	check(meta.get_state().gem_state.pending_reforge.is_empty(), "adoption clears the candidate")
+	var adopted: Dictionary = lib.find(meta.get_state().gem_state, "gem-1")
+	check(adopted.affixes == pending.candidate.affixes, "adopted attributes equal the candidate")
+	check(not meta.resolve_reforge(token, false).ok, "token cannot be reused")
+	var reloaded = Meta.new(meta.save_path)
+	check(reloaded.load_state().ok and reloaded.get_state() == meta.get_state(), "adopted account persists")
+	meta = reloaded
+	var current_core: String = lib.effect_of(lib.find(meta.get_state().gem_state, "gem-1"))
+	var core: Dictionary = meta.request_reroll_gem("gem-1", ["core"])
+	check(core.ok and int(meta.get_state().gem_state.essence) == 115 and core.candidate.candidate.core == current_core, "locked keystone survives at one lock cost")
+	var core_token: int = int(meta.get_state().gem_state.pending_reforge.token)
+	check(meta.resolve_reforge(core_token, true).ok and lib.effect_of(lib.find(meta.get_state().gem_state, "gem-1")) == current_core, "locked keystone adoption keeps the effect")
+	var free: Dictionary = meta.request_reroll_gem("gem-1", [])
+	check(free.ok and int(meta.get_state().gem_state.essence) == 95 and free.candidate.candidate.core != current_core, "unlocked keystone changes at base cost")
+	var free_token: int = int(meta.get_state().gem_state.pending_reforge.token)
+	check(meta.resolve_reforge(free_token, true).ok and lib.effect_of(lib.find(meta.get_state().gem_state, "gem-1")) != current_core, "unlocked keystone adoption replaces the effect")
+	var three: Dictionary = meta.request_reroll_gem("gem-1", [0, 1, 2])
+	check(three.ok and int(meta.get_state().gem_state.essence) == 30 and int(three.candidate.cost) == 65, "three locks are the maximum")
+	check(three.candidate.candidate.affixes == lib.find(meta.get_state().gem_state, "gem-1").affixes, "three-lock candidate keeps every attribute")
+	var three_token: int = int(meta.get_state().gem_state.pending_reforge.token)
+	check(meta.resolve_reforge(three_token, true).ok, "three-lock adoption commits")
+	var keep: Dictionary = meta.request_reroll_gem("gem-1", [])
+	check(keep.ok and int(meta.get_state().gem_state.essence) == 10, "final reroll charges again")
+	var keep_token: int = int(meta.get_state().gem_state.pending_reforge.token)
+	var old_affixes: Array = meta.get_state().gem_state.pending_reforge.old.affixes
+	check(meta.resolve_reforge(keep_token, false).ok, "keep-old commits")
+	check(lib.find(meta.get_state().gem_state, "gem-1").affixes == old_affixes and int(meta.get_state().gem_state.essence) == 10, "keep-old changes nothing and refunds nothing")
+	check(lib.validate(meta.get_state().gem_state).is_empty(), "rerolled account is valid")
+	var blocked: String = ROOT + "blocked_reforge"
+	var blocker = FileAccess.open(blocked, FileAccess.WRITE)
+	blocker.store_string("not a directory")
+	blocker.close()
+	paths.append(blocked)
+	install(meta, gold, 0, 100)
+	meta.save_path = blocked + "/save.json"
+	before = meta.get_state()
+	check(not meta.request_reroll_gem("gem-1", ["core"]).ok and meta.get_state() == before, "failed save does not charge a reroll")
+	meta.save_path = ROOT + "reforge.json"
+	check(meta.request_reroll_gem("gem-1", ["core"]).ok and int(meta.get_state().gem_state.essence) == 65, "reroll retry charges once")
+
+func salvage_economy() -> void:
+	var meta = account("salvage")
+	var lib = meta.gems
+	var gems: Array = [
+		gem(lib, 1, "green", ["attack"], "", [1]),
+		gem(lib, 2, "blue", ["health", "shield"], "", [1, 1]),
+		gem(lib, 3, "purple", ["attack", "defense", "cdr"], "", [1, 1, 1]),
+		gem(lib, 4, "gold", ["speed", "crit_rate", "crit_multiplier"], "inferno", [1, 1, 1]),
+	]
+	install(meta, gems, 0, 0, ["gem-1", "", "", ""])
+	var before: Dictionary = meta.get_state()
+	check(not meta.request_salvage_gems([]).ok, "empty salvage rejected")
+	check(not meta.request_salvage_gems(["gem-1"]).ok and meta.get_state() == before, "equipped gem protected")
+	check(not meta.request_salvage_gems(["gem-2", "gem-2"]).ok and meta.get_state() == before, "duplicate entry rejected")
+	check(not meta.request_salvage_gems(["gem-99"]).ok, "unowned gem rejected")
+	check(meta.request_salvage_gems(["gem-2"]).essence_gained == 3 and int(meta.get_state().gem_state.essence) == 3, "blue yields three")
+	check(meta.request_lock_gem("gem-3").ok and not meta.request_salvage_gems(["gem-3"]).ok, "locked gem protected")
+	check(meta.request_lock_gem("gem-3").ok and meta.request_salvage_gems(["gem-3"]).essence_gained == 10, "purple yields ten once unlocked")
+	check(meta.request_salvage_gems(["gem-4"]).essence_gained == 10 and int(meta.get_state().gem_state.essence) == 23, "gold yields ten")
+	check(meta.request_equip_gem(0, "").ok and meta.request_salvage_gems(["gem-1"]).essence_gained == 1, "green yields one after unequipping")
+	check(int(meta.get_state().gem_state.essence) == 24 and meta.get_state().gem_state.inventory.is_empty(), "all qualities yield 1/3/10/10")
+	check(int(meta.get_state().gem_state.salvaged) == 4 and int(meta.get_state().gem_state.serial) == 4, "salvage ledger counts removed instances")
+	check(lib.validate(meta.get_state().gem_state).is_empty(), "fully salvaged account is valid")
+	var pair: Array = [
+		gem(lib, 1, "green", ["attack"], "", [1]),
+		gem(lib, 2, "green", ["health"], "", [1]),
+		gem(lib, 3, "green", ["shield"], "", [1]),
+	]
+	install(meta, pair, 0, 7)
+	var batch: Dictionary = meta.request_salvage_gems(["gem-1", "gem-2"])
+	check(batch.ok and batch.essence_gained == 2 and int(meta.get_state().gem_state.essence) == 9, "batch salvage sums yields")
+	check(meta.request_salvage_gems(["gem-3"]).essence_gained == 1 and int(meta.get_state().gem_state.essence) == 10, "last salvage completes the batch")
+	var guard: Array = [
+		gem(lib, 1, "green", ["attack"], "", [1]),
+		gem(lib, 2, "gold", ["attack", "health", "shield"], "wind", [1, 1, 1]),
+	]
+	install(meta, guard, 0, 40)
+	check(meta.request_reroll_gem("gem-2", ["core"]).ok, "reroll candidate opened")
+	check(not meta.request_salvage_gems(["gem-1"]).ok, "candidate protects salvage")
+	var token: int = int(meta.get_state().gem_state.pending_reforge.token)
+	check(meta.resolve_reforge(token, false).ok, "candidate discarded")
+	check(meta.request_salvage_gems(["gem-1"]).essence_gained == 1, "salvage works after resolving")
+	var reopened = Meta.new(meta.save_path)
+	check(reopened.load_state().ok and reopened.get_state() == meta.get_state(), "salvage survives reload")
+
+func milestone_economy() -> void:
+	var meta = account("milestones")
+	var first = meta.begin_playable_run("route45")
+	check(first.ok, "first route45 run starts")
+	var rooms: Array = []
+	for index in 15: rooms.append(index + 1)
+	var settled: Dictionary = meta.settle_playable_run(first.run_id, rooms)
+	check(settled.ok and int(settled.essence_earned) == 12, "fifteen cleared rooms grant twelve essence")
+	check(int(meta.get_state().gem_state.cumulative_cleared) == 15 and int(meta.get_state().gem_state.essence) == 12, "cumulative clears and essence credited")
+	check(int(meta.get_state().gem_state.milestone_claimed[0]) == 15 and meta.get_state().gem_state.milestone_claimed.size() == 1, "milestone receipt stored once")
+	check(int(meta.get_state().dust) == 15, "route45 dust follows the early-room rate")
+	var before: Dictionary = meta.get_state()
+	check(meta.settle_playable_run(first.run_id, rooms).already_settled and meta.get_state() == before, "repeat settlement is read-only")
+	var second = meta.begin_playable_run("route45")
+	var settled_again: Dictionary = meta.settle_playable_run(second.run_id, rooms)
+	check(settled_again.ok and int(settled_again.essence_earned) == 12 and int(meta.get_state().gem_state.essence) == 24, "second milestone grants another twelve")
+	check(int(meta.get_state().gem_state.cumulative_cleared) == 30 and meta.get_state().gem_state.milestone_claimed.size() == 2, "both milestone thresholds claimed")
+	var preview_before: Dictionary = meta.get_preview_stats()
+	check(meta.begin_run().ok and meta.end_run().ok, "preview run starts and ends")
+	check(int(meta.get_state().gem_state.cumulative_cleared) == 30 and int(meta.get_state().gem_state.essence) == 24, "preview never progresses milestones")
+	check(meta.get_preview_stats() == preview_before, "preview leaves prepared stats unchanged")
+	var failed = account("milestone_failed")
+	var run = failed.begin_playable_run("route45")
+	var blocked: String = ROOT + "blocked_milestone"
+	var blocker = FileAccess.open(blocked, FileAccess.WRITE)
+	blocker.store_string("not a directory")
+	blocker.close()
+	paths.append(blocked)
+	var memory: Dictionary = failed.get_state()
+	failed.save_path = blocked + "/save.json"
+	check(not failed.settle_playable_run(run.run_id, rooms).ok and failed.get_state() == memory and failed.is_in_run(), "failed settlement keeps the run uncredited")
+	failed.save_path = ROOT + "milestone_failed.json"
+	check(failed.settle_playable_run(run.run_id, rooms).essence_earned == 12 and int(failed.get_state().gem_state.essence) == 12, "settlement retry credits exactly once")
+
+func regression_economy() -> void:
+	# A coloured gem keeps its doubled main line through a reroll.
+	var meta = account("regression")
+	var lib = meta.gems
+	var purple: Array = [gem(lib, 1, "purple", ["attack", "health", "shield"], "", [2, 1, 1])]
+	install(meta, purple, 0, 200)
+	var locked_main: Dictionary = meta.request_reroll_gem("gem-1", [0])
+	check(locked_main.ok, "coloured gem rerolls while locking its main attribute")
+	var pending_main: Dictionary = meta.get_state().gem_state.pending_reforge
+	check(pending_main.candidate.affixes[0] == pending_main.old.affixes[0], "locked main stays identical")
+	check(str(pending_main.candidate.affixes[0].role) == "main", "main role survives a reroll")
+	check(meta.resolve_reforge(int(pending_main.token), true).ok, "coloured reroll adopts")
+	var adopted: Dictionary = lib.find(meta.get_state().gem_state, "gem-1")
+	check(str(adopted.affixes[0].role) == "main", "adopted main keeps its role")
+	check(int(adopted.affixes[0].value) == int(lib.rules.affixes[adopted.affixes[0].stat].main_tiers[int(adopted.affixes[0].tier)-1]), "adopted main keeps the doubled value")
+	check(lib.validate(meta.get_state().gem_state).is_empty(), "rerolled coloured gem is a valid record")
+
+	# Integer locks must survive a restart before the candidate resolves.
+	var gold: Array = [gem(lib, 1, "gold", ["attack", "health", "shield"], "inferno", [1, 2, 3])]
+	install(meta, gold, 0, 200)
+	check(meta.request_reroll_gem("gem-1", [0]).ok, "gold reroll with one integer lock")
+	var reopened = Meta.new(meta.save_path)
+	check(reopened.load_state().ok, "pending candidate reloads with an integer lock")
+	var stored: Dictionary = reopened.get_state().gem_state.pending_reforge
+	check(stored.locks == [0] and stored.locks[0] is int, "stored lock is still an integer")
+	check(reopened.resolve_reforge(int(stored.token), true).ok, "reloaded candidate can be adopted")
+	check(lib.validate(reopened.get_state().gem_state).is_empty(), "adopted reloaded candidate is valid")
+
+	# A claimed milestone must not make the save unreadable on reload.
+	var climbed = account("milestone_reload")
+	var run = climbed.begin_playable_run("route45")
+	var rooms: Array = []
+	for room in range(1, 16): rooms.append(room)
+	check(climbed.settle_playable_run(run.run_id, rooms).ok, "fifteen rooms settle")
+	check(climbed.get_state().gem_state.milestone_claimed.size() == 1, "milestone receipt written")
+	var again = Meta.new(climbed.save_path)
+	check(again.load_state().ok, "save with a claimed milestone reloads")
+	check(int(again.get_state().gem_state.essence) == 12 and again.get_state().gem_state.milestone_claimed.size() == 1, "claimed milestone survives reload")
+
+func near(a: float, b: float) -> bool:
+	return absf(a - b) < 0.0001

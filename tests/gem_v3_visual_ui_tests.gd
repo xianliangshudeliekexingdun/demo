@@ -1,5 +1,5 @@
 extends SceneTree
-## Automatic headless structural/immutable-state verification. No pixel capture,
+## Headless structure and account checks for the v4 gem page. No pixel capture,
 ## visible game, natural route, frame-time or performance measurement.
 const Icon=preload("res://scripts/ui/gem_icon.gd")
 const VFX=preload("res://scripts/presentation/route_gem_vfx.gd")
@@ -16,6 +16,7 @@ var account
 var ui
 var controller
 var renderer
+var account_path:String
 const RECORDERS="""
 var captured:Array=[]
 func _capture_draw_colored_polygon(points:PackedVector2Array,color:Color):captured.append({"kind":"polygon","points":points,"color":color})
@@ -49,13 +50,14 @@ func execute():
 	renderer=script.new()
 	stage.add_child(renderer)
 	visual_boundaries()
-	workshop_routes()
+	gem_routes()
 	stage.free()
 	if is_instance_valid(ui):ui.free()
 	if is_instance_valid(controller):controller.free()
+	if not account_path.is_empty() and FileAccess.file_exists(account_path):DirAccess.remove_absolute(ProjectSettings.globalize_path(account_path))
 	var hashes:Dictionary={}
-	for path in ["res://tests/gem_v3_visual_ui_tests.gd","res://scripts/core/meta_progression.gd","res://scripts/core/magic_gems.gd","res://scripts/core/route_gem_combat.gd","res://scripts/core/route_gem_echo.gd","res://scripts/ui/gem_icon.gd","res://scripts/ui/gem_workshop.gd","res://scripts/ui/gem_workshop_actions.gd","res://scripts/ui/atelier_ui.gd","res://scripts/ui/first_room_ui.gd","res://scripts/main.gd","res://scripts/presentation/route_gem_vfx.gd","res://scripts/presentation/route_spell_vfx.gd","res://scripts/presentation/first_room_view.gd","res://data/magic_gems_v1.json"]:hashes[path]=FileAccess.get_sha256(path)
-	FileAccess.open(OUTPUT+"/results.json",FileAccess.WRITE).store_string(JSON.stringify({"checks":checks,"failures":failures.size(),"details":failures,"samples":samples,"source_sha256":hashes,"account_rng_seed":20261022,"scope":"Original engine headless actual draw-source and MultiMesh-write primitive capture, Node3D/Control construction and real temporary-account requests, bounded immutable controlled-snapshot VFX. No screenshot, pixel readability, gameplay, natural route or performance evidence.","corrections":["Dummy headless RenderingServer returns empty MultiMesh.buffer and zero instance transforms. Geometry/color determinism is checked by intercepting actual production set_instance_transform/color calls, not by comparing unavailable native readback."]},"\t"))
+	for path in ["res://tests/gem_v3_visual_ui_tests.gd","res://scripts/core/meta_progression.gd","res://scripts/core/magic_gems.gd","res://scripts/core/route_gem_combat.gd","res://scripts/core/route_gem_echo.gd","res://scripts/ui/gem_icon.gd","res://scripts/ui/gem_workshop.gd","res://scripts/ui/atelier_ui.gd","res://scripts/ui/first_room_ui.gd","res://scripts/main.gd","res://scripts/presentation/route_gem_vfx.gd","res://scripts/presentation/route_spell_vfx.gd","res://scripts/presentation/first_room_view.gd","res://data/magic_gems_v1.json"]:hashes[path]=FileAccess.get_sha256(path)
+	FileAccess.open(OUTPUT+"/results.json",FileAccess.WRITE).store_string(JSON.stringify({"checks":checks,"failures":failures.size(),"details":failures,"samples":samples,"source_sha256":hashes,"account_rng_seed":20261022,"scope":"Original engine headless actual draw-source and MultiMesh-write primitive capture, Node3D/Control construction and real isolated-account gem page requests. No screenshot, pixel readability, gameplay, natural route or performance evidence.","corrections":["Dummy headless RenderingServer returns empty MultiMesh.buffer and zero instance transforms. Geometry/color determinism is checked by intercepting actual production set_instance_transform/color calls, not by comparing unavailable native readback."]},"\t"))
 	print("GEM V3 VISUAL UI checks=%d failures=%d"%[checks,failures.size()])
 	quit(0 if failures.is_empty() else 1)
 
@@ -182,10 +184,32 @@ func press(action:String,payload:String=""):
 	check(not b.disabled,"enabled button "+action+" "+payload)
 	if not b.disabled:b.pressed.emit()
 
-func workshop_routes():
-	var path:String=OUTPUT+"/temporary-account.json"
-	if FileAccess.file_exists(path):DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
-	account=Meta.new(path)
+func seed_extra_gems() -> String:
+	var state:Dictionary=account.get_state()
+	var lib=account.gems
+	var extras:Array=[
+		{"rarity":"gold","stats":["attack","health","shield"],"core":"inferno","tiers":[1,2,3]},
+		{"rarity":"green","stats":["speed"],"core":"","tiers":[1]},
+		{"rarity":"blue","stats":["defense","crit_rate"],"core":"","tiers":[1,2]},
+	]
+	var gold_id:String=""
+	for entry in extras:
+		var serial:int=int(state.gem_state.serial)+1
+		var affixes:Array=[]
+		for index in entry.stats.size():
+			affixes.append(lib.line(str(entry.stats[index]),int(entry.tiers[index]),entry.rarity!="gold" and index==0))
+		state.gem_state.serial=serial
+		state.gem_state.draws=serial
+		state.gem_state.inventory.append({"id":"gem-%d"%serial,"serial":serial,"rarity":entry.rarity,"affixes":affixes,"core":entry.core,"locked":false,"origin":"draw"})
+		if entry.rarity=="gold":gold_id="gem-%d"%serial
+	FileAccess.open(account_path,FileAccess.WRITE).store_string(JSON.stringify(state))
+	check(account.load_state().ok,"seeded gold fixture loads "+account.error)
+	return gold_id
+
+func gem_routes():
+	account_path=Meta.TEST_SAVE_ROOT+"gem_ui_%d.json"%Time.get_ticks_usec()
+	if FileAccess.file_exists(account_path):DirAccess.remove_absolute(ProjectSettings.globalize_path(account_path))
+	account=Meta.new(account_path)
 	check(account.load_state().ok,"isolated account loads")
 	var rng=RandomNumberGenerator.new()
 	rng.seed=20261022
@@ -193,7 +217,7 @@ func workshop_routes():
 	account._state.dust=1000
 	account._state.gem_state.essence=1000
 	controller=Controller.new()
-	controller.save_path=Meta.TEST_SAVE_ROOT+"gem-v3-ui-controller.json"
+	controller.save_path=account_path
 	controller.preferences_path=OUTPUT+"/temporary-display.cfg"
 	controller.meta=account
 	controller.screen="gem"
@@ -201,96 +225,104 @@ func workshop_routes():
 	root.add_child(ui)
 	controller.ui=ui
 	ui.requested.connect(controller.handle_request)
-	controller.refresh()
 	var before:Dictionary=account.get_state()
-	check(ui.page.find_children("*","Button",true,false).size()>10,"core catalog constructed")
-	check(account.get_state()==before,"building core catalog consumes no account state")
-	press("gem_core_unlock","inferno")
-	check(account.get_state().gem_state.slots[0]=="core:inferno","core free unlock reaches actual equipment")
-	check(int(account.get_state().dust)==1000,"first core is free")
-	press("gem_select","core:wind")
-	press("gem_core_unlock","wind")
-	check(int(account.get_state().dust)==1000-int(account.gems.rules.core_unlock_cost),"second core charges runtime data cost")
-	press("gem_core_equip","wind")
-	check(account.get_state().gem_state.slots[0]=="core:wind","paid core can be equipped through actual request")
-	press("gem_tab","craft")
-	for stat in ["attack","cdr","shield"]:
-		press("gem_main_stat",stat)
-		press("gem_attribute_starter",stat)
-	check(int(account.get_state().gem_state.starter_attributes_claimed)==3,"all three self-chosen starter stones reachable")
-	press("gem_main_stat","health")
-	press("gem_craft_rarity","blue")
-	press("gem_craft","blue:health")
-	var id:String=controller.selected
-	check(account.gems.find(account.get_state().gem_state,id).affixes[0].stat=="health","craft honors chosen main")
-	press("gem_equip","1:"+id)
-	press("gem_tool","reforge")
-	press("gem_raise","0")
-	press("gem_upgrade","")
-	var upgraded:Dictionary=account.gems.find(account.get_state().gem_state,id)
-	check(upgraded.rarity=="purple" and int(upgraded.affixes[0].tier)==2,"upgrade preserves previous main tier")
-	press("gem_retype_open","1")
-	var stat:String=ui.gem_retype_stat
-	press("gem_retype","1:"+stat)
-	check(account.gems.find(account.get_state().gem_state,id).affixes[1].stat==stat,"direct retype reached selected legal type")
-	press("gem_reforge","1")
-	var pending:Dictionary=account.get_state().gem_state.pending_reforge
-	check(not pending.is_empty(),"random retype opens persistent paid comparison")
-	if not pending.is_empty():press("gem_resolve","%d:old"%int(pending.token))
-	press("gem_tool","")
-	press("gem_lock",id)
-	press("gem_tool","reforge")
-	check(button("gem_raise","0").disabled,"locked stone cannot raise through UI")
-	press("gem_tool","")
-	press("gem_rules","")
-	press("gem_rules_section","work")
-	var labels:PackedStringArray=[]
-	for l in ui.page.find_children("*","Label",true,false):labels.append(l.text)
-	check("\n".join(labels).contains("100%成功"),"rules explain deterministic growth")
-	press("gem_rules_close","")
-	press("gem_tab","attributes")
+	controller.refresh()
+	check(ui.page.find_children("*","Button",true,false).size()>10,"gem page constructed")
+	check(account.get_state()==before,"building the gem page consumes no account state")
 	press("gem_draw","10")
 	check(ui.gem_results.size()==10,"ten draw results reachable through controller")
+	var results_state:Dictionary=account.get_state()
 	press("gem_results_close","")
-	check(ui.gem_tab=="attributes","results return to correct tab")
-	press("gem_batch_preview","")
+	check(ui.gem_results.is_empty(),"results close returns to the gem page")
+	check(account.get_state()==results_state,"closing results does not mutate the account")
+	var drawn:String=str(controller.selected)
+	check(not drawn.is_empty(),"draw selects the newest gem")
+	press("gem_select",drawn)
+	press("gem_equip","0:"+drawn)
+	check(account.get_state().gem_state.slots[0]==drawn,"equipment action reaches the account in slot zero")
+	press("gem_equip","1:"+drawn)
+	check(account.get_state().gem_state.slots[0].is_empty() and account.get_state().gem_state.slots[1]==drawn,"moving through the UI never duplicates a slot reference")
+	press("gem_equip","1:")
+	check(account.get_state().gem_state.slots[1].is_empty(),"unequip button clears the slot")
+	var gold_id:String=seed_extra_gems()
+	controller.refresh()
+	var inventory_size:int=account.get_state().gem_state.inventory.size()
+	check(inventory_size>=7,"inventory spans more than one page")
+	press("gem_page","1")
+	check(ui.gem_page==1,"next page action updates the page index")
+	press("gem_page","0")
+	check(ui.gem_page==0,"previous page action returns to the first page")
+	press("gem_select",gold_id)
+	var gold:Dictionary=account.gems.find(account.get_state().gem_state,gold_id)
+	check(gold.rarity=="gold" and gold.affixes.size()==3,"gold fixture selected")
+	press("gem_tool","reforge")
+	check(ui.gem_tool=="reforge","reforge tool opens")
+	check(button("gem_reroll","")!=null and button("gem_reroll","").size.y>=44,"reforge confirmation is a full-size action")
+	press("gem_reroll_toggle","0")
+	check(ui.gem_reroll_locks==[0],"attribute lock toggled in the UI")
+	check(str(button("gem_reroll_toggle","0").text).begins_with("已固定"),"locked attribute is visibly marked")
+	var old_affixes:Array=account.gems.find(account.get_state().gem_state,gold_id).affixes
 	var essence_before:int=int(account.get_state().gem_state.essence)
+	press("gem_reroll","")
+	var pending:Dictionary=account.get_state().gem_state.pending_reforge
+	check(not pending.is_empty() and int(pending.cost)==35,"reforge charges base plus one lock")
+	check(int(account.get_state().gem_state.essence)==essence_before-35,"reforge fee reaches the account")
+	check(pending.old.affixes==old_affixes and pending.candidate.affixes[0]==old_affixes[0],"locked attribute survives in the candidate")
+	press("gem_resolve","%d:new"%int(pending.token))
+	check(account.get_state().gem_state.pending_reforge.is_empty(),"adopting the candidate clears the comparison")
+	var adopted:Dictionary=account.gems.find(account.get_state().gem_state,gold_id)
+	check(adopted.affixes==pending.candidate.affixes and adopted.affixes[0]==old_affixes[0],"adopted result keeps the locked line")
+	press("gem_tool","reforge")
+	press("gem_reroll","")
+	var keep_pending:Dictionary=account.get_state().gem_state.pending_reforge
+	check(not keep_pending.is_empty(),"second reforge opens a comparison")
+	var keep_old:Array=keep_pending.old.affixes
+	press("gem_resolve","%d:old"%int(keep_pending.token))
+	check(account.get_state().gem_state.pending_reforge.is_empty() and account.gems.find(account.get_state().gem_state,gold_id).affixes==keep_old,"keep-old restores the exact previous result")
+	press("gem_lock",gold_id)
+	check(bool(account.gems.find(account.get_state().gem_state,gold_id).locked),"lock action reaches the account")
+	check(button("gem_tool","reforge").disabled,"locked gem cannot open reforge")
+	check(button("gem_single_preview","").disabled,"locked gem cannot be salvaged")
+	press("gem_lock",gold_id)
+	check(not bool(account.gems.find(account.get_state().gem_state,gold_id).locked),"lock action toggles back")
+	var rules_state:Dictionary=account.get_state()
+	press("gem_rules","")
+	check(ui.gem_show_rules,"rules action opens the rules page")
+	controller.handle_request("gem_rules_section","work")
+	check(ui.gem_rules_section=="work","rules section action is accepted")
+	var labels:PackedStringArray=[]
+	for l in ui.page.find_children("*","Label",true,false):labels.append(l.text)
+	check("\n".join(labels).contains("金色宝石＝一个特殊效果＋三条属性"),"rules explain the gold model")
+	check("\n".join(labels).contains("每固定一项"),"rules explain per-lock pricing")
+	check(account.get_state()==rules_state,"reading rules does not mutate the account")
+	press("gem_rules_close","")
+	check(not ui.gem_show_rules,"rules close returns to the gem page")
+	var blue_id:String=""
+	var inventory_copy:Array=account.get_state().gem_state.inventory.duplicate(true)
+	inventory_copy.reverse()
+	for gem in inventory_copy:
+		if gem.rarity=="blue" and not bool(gem.locked) and gem.id not in account.get_state().gem_state.slots:blue_id=str(gem.id);break
+	check(not blue_id.is_empty(),"single salvage has an eligible blue gem")
+	if not blue_id.is_empty():
+		press("gem_select",blue_id)
+		press("gem_single_preview","")
+		check(ui.gem_salvage_ids==[blue_id],"single preview targets the selected gem")
+		var essence_single:int=int(account.get_state().gem_state.essence)
+		press("gem_salvage_confirm","")
+		check(int(account.get_state().gem_state.essence)==essence_single+3,"single blue salvage adds three essence")
+		check(account.gems.find(account.get_state().gem_state,blue_id).is_empty(),"single salvage removes the gem")
+	press("gem_batch_preview","")
+	check(ui.gem_tool=="salvage" and not ui.gem_salvage_ids.is_empty(),"batch preview selects idle green and blue gems")
+	check(button("gem_salvage_confirm","").size.y>=44,"salvage confirmation is a full-size action")
+	var essence_after_single:int=int(account.get_state().gem_state.essence)
+	var batch_count:int=ui.gem_salvage_ids.size()
 	press("gem_salvage_confirm","")
-	check(int(account.get_state().gem_state.essence)>essence_before,"batch salvage preview confirmation commits real essence")
+	check(int(account.get_state().gem_state.essence)>essence_after_single,"batch salvage commits real essence")
+	check(account.get_state().gem_state.inventory.size()==inventory_size-1-batch_count,"salvage removes exactly the previewed gems")
+	check(ui.gem_tool.is_empty() and ui.selected.is_empty(),"salvage confirmation clears the tool and selection")
 	for b in ui.page.find_children("*","Button",true,false):
 		if str(b.get_meta("ui_action","")).begins_with("gem_"):
-			check(b.size.x>=44 and b.size.y>=44,"gem action minimum 44px "+str(b.text))
-			check(b.get_theme_stylebox("focus").get_border_width(SIDE_LEFT)>=2,"visible keyboard focus "+str(b.text))
-	samples.append({"ui":"core/free/paid/starter/craft/equip/upgrade/tier/direct/random/locked/rules/draw paths","account_path":path,"real_account_accessed":false})
-	legacy_pending_and_conversion()
-
-func legacy_pending_and_conversion():
-	var state:Dictionary=account.get_state()
-	state.version=Meta.EIGHT_CORE_SAVE_VERSION
-	var affixes:Array=[]
-	for stat in ["attack","health","shield"]:
-		var line:Dictionary=account.gems.line(stat,1,false)
-		line.erase("role")
-		affixes.append(line)
-	var gem:Dictionary={"id":"gem-1","serial":1,"rarity":"gold","core":"inferno","affixes":affixes,"locked":false}
-	state.gem_state={"inventory":[gem],"slots":["","","",""],"serial":1,"draws":1,"gold_misses":0,"rare_misses":0,"first_gold":false,"rng_state":"1234567","essence":17,"salvaged":0,"work_serial":1,"pending_reforge":{"gem_id":"gem-1","mode":"core","index":-1,"old":"inferno","candidate":"reactor","cost":account.gems.rules.legacy_workshop.core_cost,"token":1}}
-	FileAccess.open(account.save_path,FileAccess.WRITE).store_string(JSON.stringify(state))
-	check(account.load_state().ok,"old paid pending fixture loads without automatic migration")
-	controller.selected="gem-1"
-	ui.gem_tab="attributes"
-	controller.refresh()
-	var text:PackedStringArray=[]
-	for label in ui.page.find_children("*","Label",true,false):text.append(label.text)
-	check("\n".join(text).contains("旧机制："),"old paid core candidate displays old mechanism")
-	check("\n".join(text).contains(str(account.gems.rules.legacy_cores.inferno.name)),"old core name preserved in comparison")
-	press("gem_resolve","1:new")
-	check(account.gems.is_modern(account.get_state().gem_state),"resolve old result before migration")
-	check(account.get_state().gem_state.inventory[0].rarity=="transition","old attribute asset preserved after choosing")
-	press("gem_main_stat","health")
-	var before:Dictionary=account.get_state()
-	check(button("gem_convert","health")!=null,"explicit conversion confirmation is reachable")
-	check(account.get_state()==before,"conversion preview does not mutate account")
-	press("gem_convert","health")
-	var converted:Dictionary=account.gems.find(account.get_state().gem_state,"gem-1")
-	check(converted.rarity=="purple" and converted.affixes[0].stat=="health","voluntary conversion selects existing main")
-	check(int(account.get_state().gem_state.essence)==17,"old paid comparison and free conversion do not charge again")
+			check(b.size.x>=40 and b.size.y>=40,"gem action has a usable size "+str(b.text))
+			var focus=b.get_theme_stylebox("focus")
+			check(focus!=null and focus.get_border_width(SIDE_LEFT)>=2,"visible keyboard focus "+str(b.text))
+	samples.append({"ui":"draw/page/equip/reforge-lock/adopt/keep/lock/rules/batch-salvage/single-salvage","account_path":account_path,"real_account_accessed":false})

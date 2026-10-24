@@ -1,5 +1,5 @@
 extends SceneTree
-## Six-school catalyst transactions and strict legacy migration; isolated saves only.
+## Six-school catalyst transactions plus v4 gem account shape; isolated saves only.
 const Meta = preload("res://scripts/core/meta_progression.gd")
 const ExistingSuite = preload("res://tests/meta_progression_tests.gd")
 const IDS = ["MC04", "MC05", "MC06", "MC07", "MC08", "MC09"]
@@ -42,8 +42,7 @@ func execute():
 	checks += existing.checks
 	if prior_failures > 0: failures.append("existing meta suite failed: %d" % prior_failures)
 	catalog_and_transactions()
-	v4_migration_and_corruption()
-	v3_and_v2_migration()
+	gem_transactions_and_corruption()
 	shared_sampling_validation()
 	for path in paths:
 		if FileAccess.file_exists(path): DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
@@ -51,7 +50,7 @@ func execute():
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(out))
 	FileAccess.open(out + "/results.json", FileAccess.WRITE).store_string(JSON.stringify({"checks": checks, "failures": failures.size(), "details": failures,
 		"includes_existing_meta_checks": existing.checks, "source_sha256": {"meta": FileAccess.get_sha256(Meta.META_PATH), "sampling": FileAccess.get_sha256("res://data/route_spell_sampling.json"), "implementation": FileAccess.get_sha256("res://scripts/core/meta_progression.gd")},
-		"scope": "Native six catalyst catalog/transactions, complete v1-v4 migration and corruption preservation in isolated test saves. No real account writes, combat, pixels or final economic balance."}, "\t"))
+		"scope": "Native six catalyst catalog/transactions and v4 gem account transactions plus malformed-current-schema preservation in isolated test saves. No migration, real account writes, combat, pixels or final economic balance."}, "\t"))
 	print("SIX CATALYSTS checks=%d failures=%d" % [checks, failures.size()])
 	quit(0 if failures.is_empty() else 1)
 
@@ -72,7 +71,7 @@ func catalog_and_transactions():
 				all_ids[spell_id] = true
 		check(all_ids.size() == 60, "formal sixty covered once")
 		check(m.request_unlock("catalyst", id).ok and m.get_state().equipped.catalyst == id, "free first choice any school " + id)
-		check(m.get_state().dust == 0 and m.get_state().free_claimed.catalyst and not m.get_state().free_claimed.gem, "one catalyst entitlement independent of gems " + id)
+		check(m.get_state().dust == 0 and m.get_state().free_claimed.catalyst and m.get_state().free_claimed.size() == 1, "one catalyst entitlement independent of gems " + id)
 		for other_id in IDS:
 			if other_id != id: check(not m.get_item_status("catalyst", other_id).free and not m.request_unlock("catalyst", other_id).ok, "later schools cost dust " + other_id)
 		var funded: Dictionary = m.get_state()
@@ -95,82 +94,101 @@ func catalog_and_transactions():
 		var reloaded = Meta.new(m.save_path)
 		check(reloaded.load_state().ok and reloaded.get_state() == m.get_state(), "six school transactions survive reload " + id)
 
-func v4_migration_and_corruption():
+func gem_transactions_and_corruption():
 	var m = account()
-	check(m.request_unlock("catalyst", "MC05").ok and m.claim_starter_gem("MG02").ok, "v4 real entitlements prepared")
+	check(m.request_unlock("catalyst", "MC05").ok, "free catalyst prepared")
 	var funding: Dictionary = m.get_state()
 	funding.dust = 500
 	funding.gem_state.essence = 1000
 	store_fixture(m.save_path, funding)
-	check(m.load_state().ok and m.request_upgrade("catalyst", "MC05").ok, "v4 upgrade state prepared")
+	check(m.load_state().ok, "funded gem account loads")
+	check(m.request_upgrade("catalyst", "MC05").ok, "catalyst upgrade prepared")
 	var drawn: Dictionary = m.request_draw_gems(10)
-	check(drawn.ok and drawn.gems.size() == 10, "v4 RNG/pity/instances prepared")
-	check(m.request_lock_gem(str(drawn.gems[0].id)).ok, "v4 gem lock prepared")
-	check(m.request_equip_gem(1, str(drawn.gems[0].id)).ok, "v4 equipped random instance prepared")
-	check(m.request_reforge(str(drawn.gems[1].id), "affix", 0).ok, "v4 pending candidate prepared")
-	var old: Dictionary = m.get_state()
-	old.version = Meta.TWO_CATALYST_SAVE_VERSION
-	for id in Meta.NEW_CATALYST_IDS: old.levels.erase(id)
-	store_fixture(m.save_path, old)
-	var bytes: String = FileAccess.get_file_as_string(m.save_path)
-	var migrated = Meta.new(m.save_path)
-	check(migrated.load_state().ok, "complete genuine v4 item shape migrates")
-	var state: Dictionary = migrated.get_state()
-	check(state.version == Meta.SAVE_VERSION and state.levels.size() == 9, "v4 upgrades to explicit v5")
-	check(state.gem_state == old.gem_state, "v4 RNG pity locks equipment essence and pending candidate byte-equivalent data")
-	for field in ["dust", "equipped", "free_claimed", "run_serial", "settlement_serial", "last_settlement"]: check(state[field] == old[field], "v4 preserves " + field)
-	for id in Meta.TWO_CATALYST_LEVEL_IDS: check(state.levels[id] == old.levels[id], "v4 preserves level " + id)
-	for id in Meta.NEW_CATALYST_IDS: check(state.levels[id] == 0 and not migrated.get_item_status("catalyst", id).free, "new school locked without another free choice " + id)
-	check(FileAccess.get_file_as_string(m.save_path) == bytes, "v4 read never rewrites original bytes")
-	check(migrated.resolve_reforge(int(state.gem_state.pending_reforge.token), false).ok, "next authorized transaction can commit migrated save")
-	check(JSON.parse_string(FileAccess.get_file_as_string(m.save_path)).version == Meta.SAVE_VERSION, "successful transaction writes v5")
+	check(drawn.ok and drawn.gems.size() == 10, "ten gems drawn through the account")
+	check(m.get_state().gem_state.inventory.size() == 10 and int(m.get_state().dust) == 430, "draw ledger and balance follow the transaction")
+	var first: String = str(drawn.gems[0].id)
+	check(m.request_lock_gem(first).ok and bool(m.gems.find(m.get_state().gem_state, first).locked), "gem lock toggled")
+	check(m.request_equip_gem(1, first).ok and m.get_state().gem_state.slots[1] == first, "instance equipped into slot one")
+	check(not m.request_salvage_gems([first]).ok, "equipped gem is salvage protected")
+	var state: Dictionary = m.get_state()
+	var lib = m.gems
+	var gold_serial: int = int(state.gem_state.serial) + 1
+	state.gem_state.serial = gold_serial
+	state.gem_state.draws = gold_serial
+	var affixes: Array = [lib.line("attack", 1, false), lib.line("health", 2, false), lib.line("shield", 3, false)]
+	state.gem_state.inventory.append({"id": "gem-%d" % gold_serial, "serial": gold_serial, "rarity": "gold", "affixes": affixes, "core": "inferno", "locked": false, "origin": "draw"})
+	store_fixture(m.save_path, state)
+	check(m.load_state().ok, "valid gold fixture loads " + m.error)
+	var gold_id: String = "gem-%d" % gold_serial
+	var reroll: Dictionary = m.request_reroll_gem(gold_id, ["core"])
+	check(reroll.ok and int(m.get_state().gem_state.essence) == 965, "gold reroll charges base plus one lock")
+	var token: int = int(m.get_state().gem_state.pending_reforge.token)
+	check(m.resolve_reforge(token, false).ok and m.get_state().gem_state.pending_reforge.is_empty(), "reroll candidate resolved without adopting")
+	var salvage_id: String = ""
+	for gem in m.get_state().gem_state.inventory:
+		if gem.rarity in ["green", "blue"] and not bool(gem.locked) and gem.id not in m.get_state().gem_state.slots:
+			salvage_id = str(gem.id)
+			break
+	check(not salvage_id.is_empty(), "an idle coloured gem is available")
+	if not salvage_id.is_empty():
+		var salvaged: Dictionary = m.request_salvage_gems([salvage_id])
+		check(salvaged.ok and int(salvaged.essence_gained) in [1, 3], "idle gem salvages for its quality yield")
+	check(lib.validate(m.get_state().gem_state).is_empty(), "transaction account stays valid")
+	var reloaded = Meta.new(m.save_path)
+	check(reloaded.load_state().ok and reloaded.get_state() == m.get_state(), "gem transactions survive reload")
+	var valid: Dictionary = m.get_state()
+	var invalid: Dictionary = valid.duplicate(true)
+	invalid.gem_state.pending_reforge = {"gem_id": str(drawn.gems[2].id), "mode": "affix", "token": 0, "locks": [], "cost": 20, "old": {}, "candidate": {}}
 	var invalids: Array = []
-	for id in Meta.TWO_CATALYST_LEVEL_IDS:
-		var bad: Dictionary = old.duplicate(true)
-		bad.levels.erase(id)
-		invalids.append(bad)
+	invalids.append(invalid)
 	for field in ["dust", "free_claimed", "equipped", "gem_state"]:
-		var bad: Dictionary = old.duplicate(true)
+		var bad: Dictionary = valid.duplicate(true)
 		bad.erase(field)
 		invalids.append(bad)
-	var bad: Dictionary = old.duplicate(true)
-	bad.levels.MC06 = 0
-	invalids.append(bad)
-	bad = old.duplicate(true)
-	bad.levels.MC05 = 1.5
-	invalids.append(bad)
-	bad = old.duplicate(true)
-	bad.equipped.catalyst = "MC06"
-	invalids.append(bad)
-	bad = old.duplicate(true)
-	bad.levels.UNKNOWN = 0
-	invalids.append(bad)
-	bad = state.duplicate(true)
+	var bad: Dictionary = valid.duplicate(true)
 	bad.levels.erase("MC06")
 	invalids.append(bad)
-	for invalid in invalids:
-		store_fixture(m.save_path, invalid)
-		bytes = FileAccess.get_file_as_string(m.save_path)
-		var broken = Meta.new(m.save_path)
-		check(not broken.load_state().ok and not broken.is_loaded(), "malformed old/new schema is rejected")
-		check(FileAccess.get_file_as_string(m.save_path) == bytes, "malformed schema stays byte-identical")
-
-func v3_and_v2_migration():
-	for version in [Meta.PREVIOUS_SAVE_VERSION, Meta.FIXED_GEM_SAVE_VERSION]:
-		var m = account()
-		var old: Dictionary = m.get_state()
-		old.version = version
-		for id in Meta.NEW_CATALYST_IDS: old.levels.erase(id)
-		if version == Meta.PREVIOUS_SAVE_VERSION: old.erase("gem_state")
-		else:
-			for key in ["essence", "salvaged", "work_serial", "pending_reforge"]: old.gem_state.erase(key)
-		store_fixture(m.save_path, old)
+	bad = valid.duplicate(true)
+	bad.levels.MC05 = 1.5
+	invalids.append(bad)
+	bad = valid.duplicate(true)
+	bad.equipped.catalyst = "MC06"
+	invalids.append(bad)
+	bad = valid.duplicate(true)
+	bad.levels.UNKNOWN = 0
+	invalids.append(bad)
+	bad = valid.duplicate(true)
+	bad.gem_state.slots = ["", "", ""]
+	invalids.append(bad)
+	bad = valid.duplicate(true)
+	bad.gem_state.slots[0] = str(drawn.gems[0].id)
+	bad.gem_state.slots[1] = str(drawn.gems[0].id)
+	invalids.append(bad)
+	bad = valid.duplicate(true)
+	bad.gem_state.draws = int(bad.gem_state.draws) + 1
+	invalids.append(bad)
+	bad = valid.duplicate(true)
+	bad.gem_state.inventory[-1].core = "unknown"
+	invalids.append(bad)
+	bad = valid.duplicate(true)
+	var coloured_index: int = 0
+	for index in bad.gem_state.inventory.size():
+		if str(bad.gem_state.inventory[index].rarity) != "gold":
+			coloured_index = index
+			break
+	bad.gem_state.inventory[coloured_index].affixes[0].role = "side"
+	invalids.append(bad)
+	bad = valid.duplicate(true)
+	bad.gem_state.cumulative_cleared = 15
+	invalids.append(bad)
+	for broken_save in invalids:
+		store_fixture(m.save_path, broken_save)
 		var bytes: String = FileAccess.get_file_as_string(m.save_path)
-		check(m.load_state().ok, "complete old two catalyst schema migrates " + version)
-		check(m.get_state().version == Meta.SAVE_VERSION and m.get_state().levels.size() == 9, "older migration reaches v5 " + version)
-		check(m.get_state().dust == 0 and not m.get_state().free_claimed.catalyst, "older unused entitlement preserved " + version)
-		check(FileAccess.get_file_as_string(m.save_path) == bytes, "older migration read remains non-writing " + version)
-
+		var broken = Meta.new(m.save_path)
+		check(not broken.load_state().ok and not broken.is_loaded(), "malformed current schema is rejected")
+		check(FileAccess.get_file_as_string(m.save_path) == bytes, "malformed schema stays byte-identical")
+	store_fixture(m.save_path, valid)
+	check(Meta.new(m.save_path).load_state().ok, "valid account restored after malformed fixtures")
 
 func shared_sampling_validation():
 	var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/route_spell_sampling.json"))
