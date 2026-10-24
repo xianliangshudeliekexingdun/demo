@@ -32,11 +32,12 @@ func group(label: String, action: Callable) -> void:
 func actor(id: int, pos: Vector2, hp: float = 100000.0) -> Dictionary:
 	return {"id": id, "type_id": "M01", "pos": pos, "previous": pos, "health": hp, "max_health": hp, "radius": 0.3, "phase": "chase", "push_resistance": 0.0}
 
-func fresh(core: String = "", count: int = 1):
+func fresh(core = "", count: int = 1):
 	var b = Fixture.new()
-	var snapshot: Dictionary = {"gem_core": core}
-	if core == "aegis": snapshot.player = {"health": 210.0, "shield": 298.0}
-	check(b.configure(snapshot, 20261022).ok and b.choose_initial("F01"), "actual route configures " + core)
+	var cores: Array = core if core is Array else ([] if str(core).is_empty() else [str(core)])
+	var snapshot: Dictionary = {"gem_cores": cores.duplicate(true), "gem_core": str(cores[0]) if not cores.is_empty() else ""}
+	if "aegis" in cores: snapshot.player = {"health": 210.0, "shield": 298.0}
+	check(b.configure(snapshot, 20261022).ok and b.choose_initial("F01"), "actual route configures " + str(cores))
 	b._spawn_done = true
 	b.spawn_warnings.clear()
 	b.spells.clear()
@@ -303,6 +304,27 @@ func boundaries() -> void:
 		b._stop_combat()
 		check(b._gem_combat.pending.is_empty() and b._gem_combat.reserves.is_empty() and b._gem_combat.embers.is_empty(), "room termination clears temporary resources " + core)
 
+func multi_core_cases() -> void:
+	var b = fresh(["inferno", "lightning", "earth", "spirit"])
+	var combat = b._gem_combat
+	check(combat.cores == ["inferno", "lightning", "earth", "spirit"], "all four keystones configure together")
+	check(combat.has("inferno") and combat.has("spirit") and not combat.has("echo"), "membership answers each effect")
+	check(combat.schools.sets.size() == 3, "three school state machines run side by side")
+	var snap: Dictionary = combat.snapshot()
+	check(snap.cores.size() == 4 and snap.schools.size() == 3, "snapshot lists every active effect and school")
+	check(b.has_gem_effect("earth") and not b.has_gem_effect("echo"), "run answers effect membership")
+	check(combat.first_core() == "inferno" and combat.core == "inferno", "first equipped effect stays the readable default")
+	advance(b, 0.5)
+	check(b.actors.size() >= 1, "four effects advance without dropping actors")
+
+	var dup = fresh(["inferno", "inferno", "echo"])
+	check(dup._gem_combat.cores == ["inferno", "echo"], "duplicate keystones collapse to the first copy")
+
+	var mixed = fresh(["echo", "aegis", "sacrifice"])
+	check(mixed._gem_combat.cores.size() == 3, "coloured effects and global modifiers coexist")
+	check(float(mixed._gem_combat.raw_health) > float(mixed.player.max_health), "aegis converts life once beside other effects")
+	check(mixed.has_gem_effect("echo") and mixed.has_gem_effect("sacrifice"), "echo is active even when it is not the first slot")
+
 func run() -> int:
 	group("fire_real_burn_tokens", fire_cases)
 	group("ice_window_termination", ice_cases)
@@ -310,6 +332,7 @@ func run() -> int:
 	group("life_and_fixed_damage", life_cases)
 	group("persistent_replay_shared_gate", echo_area_cases)
 	group("phase_and_room_boundaries", boundaries)
+	group("multiple_keystones", multi_core_cases)
 	DirAccess.make_dir_recursive_absolute(OUT)
 	var result: Dictionary = {"checks":checks,"failures":failures,"groups":groups,"native_core":true,"interactive":false,"natural_route":false,"pixel_validation":false}
 	FileAccess.open(OUT+"results.json",FileAccess.WRITE).store_string(JSON.stringify(result,"\t"))

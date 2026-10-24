@@ -179,7 +179,8 @@ func _build_hud():
 	_generic_status.name="GenericItemStatus"
 func gem_status_text(s:Dictionary) -> String:
 	var gems:Dictionary=s.get("gems",{})
-	var id:String=str(gems.get("core",""))
+	var ids:Array=gems.get("cores",[])
+	var id:String=str(ids[0]) if not ids.is_empty() else str(gems.get("core",""))
 	var spec:Dictionary=_gem_names.rules.cores.get(id,{})
 	if spec.is_empty():return ""
 	var school:Dictionary=gems.get("schools",{})
@@ -216,21 +217,28 @@ func gem_status_text(s:Dictionary) -> String:
 		"aegis":text+=" · 治疗转盾 · 满盾不储存"
 	return text
 
+func _effects_tooltip(ids: Array) -> String:
+	var lines: PackedStringArray = []
+	for id in ids: lines.append(_gem_names.core_description(str(id)))
+	return "\n\n".join(lines)
+
 func refresh(s:Dictionary):
 	if _finished:return
 	var p:Dictionary=s.player
 	_boss_bar.refresh(s)
 	_attribute_summary=_attribute_text(s)
 	var gem_state:Dictionary=s.get("gems",{})
-	var core_id:String=str(gem_state.get("core",""))
+	var core_ids:Array=gem_state.get("cores",[])
+	if core_ids.is_empty() and not str(gem_state.get("core","")).is_empty(): core_ids=[str(gem_state.get("core",""))]
+	var core_id:String=str(core_ids[0]) if not core_ids.is_empty() else ""
 	_gem_status.visible=_gem_names.rules.cores.has(core_id)
 	_gem_icon.visible=_gem_status.visible
 	if _gem_status.visible:
 		_gem_icon.item_id="core:"+core_id
 		_gem_icon.queue_redraw()
-		_gem_status.text=gem_status_text(s)
+		_gem_status.text=gem_status_text(s)+("   ／ 效果×%d"%core_ids.size() if core_ids.size()>1 else "")
 		_gem_status.add_theme_color_override("font_color",GemIcon.tint_for(core_id))
-		_gem_status.tooltip_text=_gem_names.core_description(core_id)
+		_gem_status.tooltip_text=_effects_tooltip(core_ids)
 	_vitals.tooltip_text=_attribute_summary+"\n暴击率无额外封顶；达到100%时必定暴击。六系本体沿用全局暴击，火系另含炎法精通。\n风系补压／交剪、岩系明确回响和契灵普攻可暴击；派生不触发普通本体命中链。\n燃烧、引爆、非暴击电弧与灵契号令不暴击。冷却缩减不影响吟唱、召唤物攻击间隔与宝物间隔。"
 	_generic_status.text=_generic_status_text(s)
 	health_label.text="莉奈    生命  %d / %d"%[p.health,p.max_health]

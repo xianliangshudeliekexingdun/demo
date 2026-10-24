@@ -316,7 +316,7 @@ func _attack(run, unit: Dictionary, target: Dictionary) -> void:
 
 
 func _normal_noncritical_plan(run, actor: Dictionary, coefficient: float, context: Dictionary) -> float:
-	if not run.has_method("gem_core") or run.gem_core() != "spirit": return 0.0
+	if not run.has_method("gem_core") or not run.has_gem_effect("spirit"): return 0.0
 	# Match the existing normal-pet plan once, including its live mark condition,
 	# while deliberately omitting critical RNG. The fixed core payout is already valued.
 	var metadata: Dictionary = context.duplicate(true)

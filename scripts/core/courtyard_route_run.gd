@@ -969,7 +969,7 @@ func get_spell_stats(spell: Dictionary) -> Dictionary:
 func resolve_spell_hit(actor: Dictionary, coefficient: float, context: Dictionary) -> Dictionary:
 	if actor.health <= 0.0 or phase != "combat" or paused:
 		return {"damage": 0.0, "critical": false}
-	var old_burn: int = _spell_combat.fire_status.burn_token(self, actor) if gem_core() == "inferno" else -1
+	var old_burn: int = _spell_combat.fire_status.burn_token(self, actor) if has_gem_effect("inferno") else -1
 	var artifact_bonus: Dictionary = _artifact_combat.modify_damage_context(self, actor, context)
 	var fire: bool = _is_fire_damage(context)
 	var rate := maxf(0.0, float(player.crit_rate) + (_artifact_combat.fire_crit_rate_bonus() + _spell_combat.crit_rate_bonus() if fire else 0.0))
@@ -990,8 +990,8 @@ func resolve_spell_hit(actor: Dictionary, coefficient: float, context: Dictionar
 		var module = _spell_combat.school_module(str(context.get("school", "")))
 		if module != null and module.has_method("target_vulnerability"): damage *= 1.0 + module.target_vulnerability(actor)
 	damage *= _gem_combat.outgoing_multiplier(self)
-	if gem_core() == "echo" and bool(context.get("natural", false)) and bool(context.get("gem_echo_eligible", false)) and _gem_combat.body(context):
-		damage *= float(_gem_combat.spec.immediate_multiplier)
+	if has_gem_effect("echo") and bool(context.get("natural", false)) and bool(context.get("gem_echo_eligible", false)) and _gem_combat.body(context):
+		damage *= float(_gem_combat.spec_of("echo").immediate_multiplier)
 	var uncritical: float = damage
 	if critical:
 		damage *= multiplier
@@ -1121,7 +1121,11 @@ func artifact_burn_parameters(parameters: Dictionary) -> Dictionary:
 	return result
 
 func gem_core() -> String:
-	return _gem_combat.core
+	return _gem_combat.first_core()
+
+## Duplicate effects are filtered by the account, so each id is at most once.
+func has_gem_effect(id: String) -> bool:
+	return _gem_combat.has(id)
 
 func gem_planned_damage(actor: Dictionary, coefficient: float, school: String) -> float:
 	var context: Dictionary = {"school": school, "natural": false, "kind": "gem", "spell_id": "gem_" + school}

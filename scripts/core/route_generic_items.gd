@@ -142,7 +142,7 @@ func eligible(run, item: Dictionary) -> bool:
 		"permanent_crit_rate":
 			return float(run.player.crit_rate) + 0.000001 >= float(item.minimum_crit_rate)
 		"combat_shield_recovery_and_player_damage":
-			var recovery: bool = has_item("GU11") or has_item("GU16") or (run.has_method("gem_core") and run.gem_core() == "aegis" and (has_item("GU14") or has_item("GT04")))
+			var recovery: bool = has_item("GU11") or has_item("GU16") or (run.has_method("gem_core") and run.has_gem_effect("aegis") and (has_item("GU14") or has_item("GT04")))
 			var player_damage: bool = false
 			for spell in run.spells:
 				var kind: String = str(_base.spells.get(str(spell.id), {}).get("kind", ""))
@@ -319,8 +319,8 @@ func state_snapshot() -> Dictionary:
 func _restore_health(run, amount: float, source: String) -> float:
 	if not _active(run) or amount <= 0.0:
 		return 0.0
-	if source != "GU09" and run.has_method("gem_core") and run.gem_core() == "aegis":
-		var shield: float = restore_player_shield(run, amount * float(run._gem_combat.spec.combat_health_restore_conversion), source)
+	if source != "GU09" and run.has_method("gem_core") and run.has_gem_effect("aegis"):
+		var shield: float = restore_player_shield(run, amount * float(run._gem_combat.spec_of("aegis").combat_health_restore_conversion), source)
 		_emit(run, "item_shield_restore", {"artifact_id": source, "pos": run.player.pos, "amount": shield, "gem_core": "aegis"})
 		return shield
 	var actual: float = minf(amount, maxf(0.0, float(run.player.max_health) - float(run.player.health)))

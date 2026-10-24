@@ -587,7 +587,7 @@ func _eligible(run, item: Dictionary) -> bool:
 		elif str(item.get("requirement", "")) == "combat_shield_recovery_and_player_damage":
 			var can_damage: bool = false
 			var can_restore: bool = has_artifact("GU11") or has_artifact("GU16") or has_artifact("IG03")
-			if run.has_method("gem_core") and run.gem_core() == "aegis" and (has_artifact("GU14") or has_artifact("GT04")): can_restore = true
+			if run.has_method("gem_core") and run.has_gem_effect("aegis") and (has_artifact("GU14") or has_artifact("GT04")): can_restore = true
 			for spell in run.spells:
 				if str(spell.id) in _runtime.offensive_player_spells:
 					can_damage = true

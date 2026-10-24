@@ -78,7 +78,9 @@ func damage(run, source: String, actor_id: int = -1) -> float:
 	for hit in run.hit_log:
 		if str(hit.source) == source and (actor_id < 0 or int(hit.id) == actor_id): total += float(hit.amount)
 	return total
-func core_state(run): return run._gem_combat.schools
+func core_state(run):
+	var router = run._gem_combat.schools
+	return router.sets.get(run.gem_core(), router)
 func charge_lightning(run, values: Array = [100.0, 100.0, 100.0, 100.0]) -> void:
 	var helper = core_state(run)
 	for index in values.size():

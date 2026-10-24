@@ -16,7 +16,7 @@ func clear() -> void:
 	_next_record = 1
 
 func record(run, shape: Dictionary, coefficient: float, context: Dictionary) -> void:
-	if run.gem_core() != "echo" or not bool(context.get("natural", false)) or not run._gem_combat.body(context) or coefficient <= 0.0: return
+	if not run.has_gem_effect("echo") or not bool(context.get("natural", false)) or not run._gem_combat.body(context) or coefficient <= 0.0: return
 	var school: String = str(context.get("school", "fire"))
 	var school_bonus: float = 0.0
 	if school == "fire":
