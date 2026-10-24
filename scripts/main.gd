@@ -33,14 +33,32 @@ func _ready():
 	Engine.max_fps=60
 	if save_path=="user://meta_progression_v1.json": load_preferences()
 	meta=Meta.new(save_path)
-	var result=meta.load_state()
-	if not result.ok: load_error=str(result.error)
+	var startup_notice=load_meta_state()
 	var content=Catalog.load_catalog()
 	if not content.ok: load_error="；".join(content.errors)
 	ui=Suite.new()
 	add_child(ui)
 	ui.requested.connect(handle_request)
-	refresh(load_error)
+	refresh(startup_notice)
+
+# A save from a newer build cannot be read here. Its bytes are kept, moved aside
+# once, and a valid account is created instead of blocking every screen.
+func load_meta_state() -> String:
+	load_error=""
+	var result=meta.load_state()
+	if result.ok: return ""
+	if not result.has("incompatible_version"):
+		load_error=str(result.error)
+		return ""
+	var quarantine:Dictionary=meta.quarantine_incompatible_save()
+	if not quarantine.ok:
+		load_error=str(result.error)+str(quarantine.error)
+		return ""
+	var retry=meta.load_state()
+	if not retry.ok:
+		load_error=str(retry.error)
+		return ""
+	return "旧存档来自更新版本（%s），已备份为 %s，并新建了进度。" % [str(quarantine.version),str(quarantine.path).get_file()]
 
 # The retained trial controllers use this input binding helper as well.
 func configure_input():

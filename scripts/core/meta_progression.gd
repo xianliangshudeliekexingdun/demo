@@ -6,6 +6,7 @@ const META_PATH = "res://data/balance_candidates/meta_growth_v1.json"
 const Gems = preload("res://scripts/core/magic_gems.gd")
 const SpellSampling = preload("res://scripts/core/route_spell_sampling.gd")
 const SAVE_VERSION = "meta-progression-6"
+const SAVE_VERSION_TAG = "meta-progression-"
 const EIGHT_CORE_SAVE_VERSION = "meta-progression-5"
 const TWO_CATALYST_SAVE_VERSION = "meta-progression-4"
 const TWO_CATALYST_LEVEL_IDS = ["MC04", "MC05", "MG01", "MG02", "MG03"]
@@ -20,6 +21,7 @@ const TEST_SAVE_ROOT = "user://tests/meta_progression/"
 
 var save_path: String
 var error: String = ""
+var incompatible_save_version: String = ""
 var _meta: Dictionary = {}
 var _base: Dictionary = {}
 var _ice_base: Dictionary = {}
@@ -38,6 +40,7 @@ func load_state() -> Dictionary:
 	if not _run_snapshot.is_empty():
 		return _fail("本局结束前不能重新读取局外存档。")
 	_loaded = false
+	incompatible_save_version = ""
 	var result = _read_json(META_PATH)
 	if not result.ok:
 		return _fail(result.error)
@@ -95,6 +98,10 @@ func load_state() -> Dictionary:
 		elif save_version == EIGHT_CORE_SAVE_VERSION:
 			save_data.version = SAVE_VERSION
 		elif save_version != SAVE_VERSION:
+			# A file from a newer build is a version gap, not corruption. It stays
+			# untouched here; only an explicit quarantine may move it aside.
+			if _save_version_rank(save_version) > _save_version_rank(SAVE_VERSION):
+				return _fail("存档来自更新版本（%s），当前版本只支持 %s；原文件未覆盖。" % [save_version, SAVE_VERSION], save_version)
 			return _fail("已有存档损坏，进度未覆盖：不支持的存档版本。")
 		if not save_data.get("gem_state") is Dictionary: return _fail("已有宝石存档损坏，原文件未覆盖。")
 		if not gems.is_modern(save_data.gem_state):
@@ -773,9 +780,34 @@ func _valid_kind(kind: String) -> bool:
 func _items(kind: String) -> Dictionary:
 	return _meta.get("catalysts" if kind == "catalyst" else "gems", {})
 
-func _fail(message: String) -> Dictionary:
+func _fail(message: String, incompatible_version: String = "") -> Dictionary:
 	error = message
-	return {"ok": false, "error": message}
+	if incompatible_version.is_empty():
+		return {"ok": false, "error": message}
+	incompatible_save_version = incompatible_version
+	return {"ok": false, "error": message, "incompatible_version": incompatible_version}
+
+func _save_version_rank(value: String) -> int:
+	if not value.begins_with(SAVE_VERSION_TAG):
+		return -1
+	var suffix: String = value.trim_prefix(SAVE_VERSION_TAG)
+	return int(suffix) if suffix.is_valid_int() else -1
+
+## Moves a save written by a newer build aside so this build can start a valid
+## account. The original bytes are kept verbatim; nothing is overwritten.
+func quarantine_incompatible_save() -> Dictionary:
+	if incompatible_save_version.is_empty():
+		return {"ok": false, "error": "当前没有待隔离的更新版本存档。"}
+	if not FileAccess.file_exists(save_path):
+		return {"ok": false, "error": "存档文件已不存在，无需隔离。"}
+	var absolute: String = ProjectSettings.globalize_path(save_path)
+	var stamp: String = Time.get_datetime_string_from_system(false, true).replace("-", "").replace(":", "").replace(" ", "-")
+	var target: String = "%s.%s.bak-%s" % [absolute, incompatible_save_version, stamp]
+	if DirAccess.rename_absolute(absolute, target) != OK:
+		return {"ok": false, "error": "无法隔离更新版本存档，进度未覆盖。"}
+	var version: String = incompatible_save_version
+	incompatible_save_version = ""
+	return {"ok": true, "error": "", "path": target, "version": version}
 
 func _read_json(path: String) -> Dictionary:
 	var file = FileAccess.open(path, FileAccess.READ)
