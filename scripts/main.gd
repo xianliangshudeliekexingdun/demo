@@ -113,6 +113,15 @@ func handle_request(action:String,payload:String):
 				route_school=payload
 				refresh()
 		"navigate": navigate(payload)
+		"codex_tab":
+			if payload in ["spells","artifacts","gear"]:
+				ui.codex_tab=payload
+				selected=""
+				refresh()
+		"open_codex":
+			ui.codex_tab=payload if payload in ["spells","artifacts","gear"] else "spells"
+			selected=""
+			navigate("codex")
 		"back":
 			if screen=="gem" and not ui.gem_tool.is_empty():
 				ui.gem_tool=""
@@ -130,7 +139,7 @@ func handle_request(action:String,payload:String):
 			selected=payload
 			refresh()
 		"unlock","upgrade","equip":
-			var kind="catalyst" if screen=="catalyst" else "gem"
+			var kind="catalyst" if screen in ["catalyst","codex"] else "gem"
 			var result:Dictionary
 			if action=="unlock": result=meta.request_unlock(kind,payload)
 			elif action=="upgrade": result=meta.request_upgrade(kind,payload)
@@ -141,7 +150,8 @@ func handle_request(action:String,payload:String):
 			opening_spell=payload
 			navigate("hud")
 		"artifact_detail":
-			navigate("artifacts")
+			ui.codex_tab="artifacts"
+			navigate("codex")
 			selected=payload
 			refresh()
 		"supply_preview": refresh("每店一次免费补给；当前为界面预览，生命与金币未变更。")

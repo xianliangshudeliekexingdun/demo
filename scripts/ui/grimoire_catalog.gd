@@ -174,10 +174,14 @@ const ICE_ARTIFACT_SOURCE := "res://data/ice_artifacts_v1.json"
 const SpellGrowth = preload("res://scripts/core/route_spell_growth.gd")
 const BOSS_SOURCE := "res://data/route_boss_runtime.json"
 static var _catalog: Dictionary = {}
+static var _spells_cache: Array[Dictionary] = []
+static var _artifacts_cache: Array[Dictionary] = []
 
 
 static func load_catalog(force_reload: bool = false) -> Dictionary:
 	if _catalog.is_empty() or force_reload:
+		_spells_cache.clear()
+		_artifacts_cache.clear()
 		var result: Dictionary = {"errors": []}
 		for key in SOURCE_FILES:
 			var path: String = SOURCE_ROOT + str(SOURCE_FILES[key])
@@ -248,21 +252,27 @@ static func load_catalog(force_reload: bool = false) -> Dictionary:
 
 
 static func spells() -> Array[Dictionary]:
+	if not _spells_cache.is_empty(): return _spells_cache
 	var result: Array[Dictionary] = []
-	var source: Dictionary = load_catalog().get("base", {}).get("spells", {})
+	var catalog: Dictionary = load_catalog()
+	var source: Dictionary = catalog.get("base", {}).get("spells", {})
 	for id in source:
 		if bool(source[id].get("active", true)):
-			result.append(describe_spell(str(id), 1))
+			result.append(_describe_spell(catalog, str(id), 1))
+	_spells_cache = result
 	return result
 
 
 static func artifacts() -> Array[Dictionary]:
+	if not _artifacts_cache.is_empty(): return _artifacts_cache
 	var result: Array[Dictionary] = []
-	var source: Dictionary = load_catalog().get("artifact_source", {}).get("items", {})
+	var catalog: Dictionary = load_catalog()
+	var source: Dictionary = catalog.get("artifact_source", {}).get("items", {})
 	for scope in ["generic", "fire", "ice"]:
 		for id in source:
 			if str(source[id].get("scope", "")) == scope and bool(source[id].get("active", true)):
-				result.append(describe_artifact(str(id)))
+				result.append(_describe_artifact(catalog, str(id)))
+	_artifacts_cache = result
 	return result
 
 
@@ -272,7 +282,10 @@ static func spell_name(id: String) -> String:
 
 
 static func describe_spell(id: String, level: int = 1, route_growth: bool = true) -> Dictionary:
-	var catalog := load_catalog()
+	return _describe_spell(load_catalog(), id, level, route_growth)
+
+
+static func _describe_spell(catalog: Dictionary, id: String, level: int = 1, route_growth: bool = true) -> Dictionary:
 	var source: Dictionary = catalog.get("base", {}).get("spells", {}) if route_growth else catalog.get("legacy_spell_source", {})
 	if not source.has(id):
 		return {}
@@ -281,12 +294,12 @@ static func describe_spell(id: String, level: int = 1, route_growth: bool = true
 	if levels.is_empty():
 		return {}
 	var current_level := clampi(level, 1, levels.size())
-	var values: Dictionary = spell.duplicate(true)
+	var values: Dictionary = spell.duplicate(false)
 	values.merge(levels[current_level - 1], true)
 	values.erase("levels")
 	var level_details: Array[String] = []
 	for index in levels.size():
-		var level_values: Dictionary = spell.duplicate(true)
+		var level_values: Dictionary = spell.duplicate(false)
 		level_values.merge(levels[index], true)
 		level_details.append(_spell_effect(id, level_values))
 	var stats: Array[String] = []
@@ -313,7 +326,10 @@ static func describe_spell(id: String, level: int = 1, route_growth: bool = true
 
 
 static func describe_artifact(id: String) -> Dictionary:
-	var catalog := load_catalog()
+	return _describe_artifact(load_catalog(), id)
+
+
+static func _describe_artifact(catalog: Dictionary, id: String) -> Dictionary:
 	var items: Dictionary = catalog.get("artifact_source", {}).get("items", {})
 	if not items.has(id):
 		return {}

@@ -245,7 +245,7 @@ func refresh(s:Dictionary):
 	shield_label.text="护盾  %d / %d"%[p.shield,p.max_shield]
 	health_bar.value=clampf(float(p.health)/maxf(1,float(p.max_health)),0,1)
 	shield_bar.value=clampf(float(p.shield)/maxf(1,float(p.max_shield)),0,1)
-	timer_label.text="%02d:%02d    ·    遗迹庭院"%[int(s.time)/60,int(s.time)%60]
+	timer_label.text="%02d:%02d    ·    地下城"%[int(s.time)/60,int(s.time)%60]
 	currency_label.text="金币  %d    魔尘  %d"%[s.gold,s.dust]
 	var alive=0
 	for actor in s.actors:
@@ -256,9 +256,9 @@ func refresh(s:Dictionary):
 	objective.visible=not route
 	enemies_label.visible=not route
 	_sync_artifact_bar(s.get("artifacts",[]))
-	var objectives={"choosing":"选择起始法术", "combat":"遗迹庭院 · 击败所有敌人", "pickup":"前往门前领取奖励", "reward":"庭院已清 · 选择成长", "exit":"前往上方传送门", "complete":"首房试炼完成", "dead":"试炼结束"}
+	var objectives={"choosing":"选择起始法术", "combat":"地下城 · 击败所有敌人", "pickup":"前往门前领取奖励", "reward":"已清场 · 选择成长", "exit":"前往上方传送门", "complete":"首房试炼完成", "dead":"试炼结束"}
 	objective.text=objectives.get(phase,"")
-	enemies_label.text="存活敌人  %d / 2"%alive if phase=="combat" else "第一间 · 庭院入口"
+	enemies_label.text="存活敌人  %d / 2"%alive if phase=="combat" else "第一间 · 地下城入口"
 	if route:
 		var difficulty_band:Dictionary=s.get("difficulty_band",{})
 		var band_name=str(difficulty_band.get("name",""))
