@@ -10,6 +10,7 @@ const SLOT_TEXTURE=preload("res://assets/ui/frames_v1/spell_slot.tres")
 const ShopUI=preload("res://scripts/ui/route_shop_ui.gd")
 const BossBar=preload("res://scripts/ui/route_boss_bar.gd")
 const GemIcon=preload("res://scripts/ui/gem_icon.gd")
+const Loadout=preload("res://scripts/ui/loadout_summary.gd")
 var _boss_bar:Control
 var _shop_ui:Control
 var root:Control
@@ -46,6 +47,7 @@ var _generic_status:Label
 var _display_catalog:Dictionary={}
 var _attribute_summary=""
 var _gem_status:Label
+var _loadout_line:Label
 var _gem_icon:Control
 const GemNames=preload("res://scripts/core/magic_gems.gd")
 var _gem_names=GemNames.new()
@@ -112,10 +114,10 @@ func _build_hud():
 	portrait_frame.add_child(portrait)
 	# Assign after expand mode: the default texture minimum would retain 512px.
 	portrait.size=Vector2(58,58)
-	health_label=T.label(vitals,"",Rect2(82,2,318,26),17)
-	health_bar=make_bar(vitals,Rect2(82,31,316,10),Color("dc6178"))
-	shield_bar=make_bar(vitals,Rect2(82,48,316,7),Color("6acbe0"))
-	shield_label=T.label(vitals,"",Rect2(82,54,316,22),14,T.CYAN)
+	health_label=T.label(vitals,"",Rect2(82,1,318,28),19)
+	health_bar=make_bar(vitals,Rect2(82,32,316,12),Color("dc6178"))
+	shield_bar=make_bar(vitals,Rect2(82,50,316,8),Color("6acbe0"))
+	shield_label=T.label(vitals,"",Rect2(82,56,316,22),15,T.CYAN)
 	route_title_backdrop=T.panel(root,Rect2(594,16,412,82))
 	route_title_backdrop.add_theme_stylebox_override("panel",T.box(Color(0.035,0.055,0.09,0.92),Color(0.38,0.5,0.64,0.28),1,6))
 	route_title_backdrop.visible=false
@@ -140,6 +142,9 @@ func _build_hud():
 	root.add_child(_gem_icon)
 	_gem_status=T.paragraph(root,"",Rect2(74,106,420,58),17,T.CYAN)
 	_gem_status.mouse_filter=Control.MOUSE_FILTER_PASS
+	_loadout_line=T.paragraph(root,"",Rect2(74,166,432,40),13,Color("8d97ad"))
+	_loadout_line.name="LoadoutSummary"
+	_loadout_line.mouse_filter=Control.MOUSE_FILTER_PASS
 	_boss_bar=BossBar.new()
 	_boss_bar.position=Vector2(510,108)
 	root.add_child(_boss_bar)
@@ -239,11 +244,18 @@ func refresh(s:Dictionary):
 		_gem_status.text=gem_status_text(s)+("   ／ 效果×%d"%core_ids.size() if core_ids.size()>1 else "")
 		_gem_status.add_theme_color_override("font_color",GemIcon.tint_for(core_id))
 		_gem_status.tooltip_text=_effects_tooltip(core_ids)
-	_vitals.tooltip_text=_attribute_summary+"\n暴击率无额外封顶；达到100%时必定暴击。六系本体沿用全局暴击，火系另含炎法精通。\n风系补压／交剪、岩系明确回响和契灵普攻可暴击；派生不触发普通本体命中链。\n燃烧、引爆、非暴击电弧与灵契号令不暴击。冷却缩减不影响吟唱、召唤物攻击间隔与宝物间隔。"
+	var loadout_rows:Array=_loadout_rows(s)
+	_loadout_line.visible=not loadout_rows.is_empty() and bool(preferences.get("view_hints",true))
+	_loadout_line.text=_loadout_compact(loadout_rows)
+	_loadout_line.tooltip_text="出发时锁定的属性（基础 ＋ 宝石）\n"+_loadout_tooltip(loadout_rows)
+	_vitals.tooltip_text="护盾优先承受伤害，清场后补满。\n"+(_loadout_tooltip(loadout_rows) if not loadout_rows.is_empty() else _attribute_summary)
 	_generic_status.text=_generic_status_text(s)
 	health_label.text="莉奈    生命  %d / %d"%[p.health,p.max_health]
 	shield_label.text="护盾  %d / %d"%[p.shield,p.max_shield]
-	health_bar.value=clampf(float(p.health)/maxf(1,float(p.max_health)),0,1)
+	var health_fraction:=clampf(float(p.health)/maxf(1,float(p.max_health)),0,1)
+	health_bar.value=health_fraction
+	# Low life is a genuine state; the brighter bar only changes HUD emphasis.
+	health_bar.add_theme_stylebox_override("fill",T.box(Color("ff4f66") if health_fraction<=0.3 else Color("dc6178"),(Color("ff4f66") if health_fraction<=0.3 else Color("dc6178")).lightened(.15),1,3))
 	shield_bar.value=clampf(float(p.shield)/maxf(1,float(p.max_shield)),0,1)
 	timer_label.text="%02d:%02d    ·    地下城"%[int(s.time)/60,int(s.time)%60]
 	currency_label.text="金币  %d    魔尘  %d"%[s.gold,s.dust]
@@ -256,9 +268,17 @@ func refresh(s:Dictionary):
 	objective.visible=not route
 	enemies_label.visible=not route
 	_sync_artifact_bar(s.get("artifacts",[]))
-	var objectives={"choosing":"选择起始法术", "combat":"地下城 · 击败所有敌人", "pickup":"前往门前领取奖励", "reward":"已清场 · 选择成长", "exit":"前往上方传送门", "complete":"首房试炼完成", "dead":"试炼结束"}
+	var objectives={"choosing":"选择起始法术", "combat":"击败所有敌人", "pickup":"领取门前奖励", "reward":"清场 · 选择成长", "exit":"走进传送门", "complete":"旅途完成", "dead":"旅途结束"}
 	objective.text=objectives.get(phase,"")
-	enemies_label.text="存活敌人  %d / 2"%alive if phase=="combat" else "第一间 · 地下城入口"
+	enemies_label.text="剩余敌人  %d"%alive if phase=="combat" else "地下城入口"
+	# Route mode keeps the room header; the alive count returns below it unless
+	# the boss strip already occupies that row.
+	if route:
+		enemies_label.position=Vector2(558,104)
+		enemies_label.visible=phase=="combat" and not _boss_bar.visible
+	else:
+		enemies_label.position=Vector2(558,62)
+		enemies_label.visible=true
 	if route:
 		var difficulty_band:Dictionary=s.get("difficulty_band",{})
 		var band_name=str(difficulty_band.get("name",""))
@@ -274,12 +294,12 @@ func refresh(s:Dictionary):
 		timer_label.tooltip_text="战斗、房内行进和选择奖励均计入总时间；暂停不计时。\n战斗用时 %02d:%02d"%[int(s.get("combat_time",0))/60,int(s.get("combat_time",0))%60]
 	else:
 		timer_label.tooltip_text="当前独立首房计时仅累计战斗阶段。"
-	detail.text=("靠近门前的宝物箱\n领取后开启传送门" if s.get("reward_pickup",{}).get("kind","")=="artifact" else "靠近门前的法术书\n领取后开启传送门") if phase=="pickup" else ("护盾已补满\n生命保留当前值" if phase in ["reward","exit"] else "留意红色攻击预警\n石质掩体会阻挡直射")
+	detail.text=("走近宝物箱领取\n领完开启传送门" if s.get("reward_pickup",{}).get("kind","")=="artifact" else "走近法术书领取\n领完开启传送门") if phase=="pickup" else ("护盾已补满\n生命保留当前值" if phase in ["reward","exit"] else "留意红色预警\n石墙会挡住直射")
 	detail.visible=bool(preferences.get("view_hints",true)) and phase in ["combat","pickup"]
 	if phase=="pickup" and not s.get("boss_rewards",{}).is_empty():
-		detail.text="先领取法术书，再开必金宝箱\n两份奖励领完开启传送门" if not bool(s.boss_rewards.book_resolved) else "靠近门前金色宝箱\n必出合资格金色宝物"
+		detail.text="先取法术书，再开金色宝箱\n两份领完开启传送门" if not bool(s.boss_rewards.book_resolved) else "走近金色宝箱\n必得一件金色宝物"
 	if phase=="shop":
-		detail.text="靠近左侧柜台领取补给\n上方传送门继续旅途"
+		detail.text="左侧柜台领取补给\n上方传送门继续"
 		detail.visible=bool(preferences.get("view_hints",true))
 	for hint in hint_nodes:hint.visible=bool(preferences.get("view_hints",true)) and phase=="combat"
 	for i in range(8):
@@ -292,7 +312,7 @@ func refresh(s:Dictionary):
 			cooldown_labels[i].text=""
 			cooldown_labels[i].visible=false
 			slot_bars[i].value=0
-			slots[i].tooltip_text="尚未习得法术；清房时可以选择新法术。"
+			slots[i].tooltip_text="空槽。清场后可以选择新法术。"
 			continue
 		var spell:Dictionary=s.spells[i]
 		cooldown_labels[i].visible=true
@@ -305,8 +325,9 @@ func refresh(s:Dictionary):
 		var chant=float(spell.get("cast_remaining",0))
 		var passive=str(Catalog.SPELL_ROLES.get(str(spell.id),"")).begins_with("被动")
 		var status="被动" if passive else ("战后" if phase!="combat" else ("吟唱中" if chant>0 else ("冷却 %.1f秒"%remaining if remaining>0 else "就绪")))
-		cooldown_labels[i].text="%d级"%spell.level
-		slots[i].tooltip_text="%s · %d级\n%s\n%s"%[spell.name,spell.level,status,Catalog.SPELL_SUMMARIES.get(str(spell.id),"")]
+		spell_labels[i].add_theme_color_override("font_color",T.GOLD if passive else T.CYAN if chant>0 else T.MUTED if remaining>0 else T.TEXT)
+		cooldown_labels[i].text="%d 级"%spell.level
+		slots[i].tooltip_text="%s · %d 级\n%s\n%s"%[spell.name,spell.level,status,Catalog.SPELL_SUMMARIES.get(str(spell.id),"")]
 		slot_bars[i].value=1-clampf(remaining/maxf(.001,float(spell.get("cooldown",1))),0,1)
 		slot_bars[i].modulate=T.CYAN if chant>0 else Color.WHITE
 	var modal_kind="pause" if s.paused else phase if phase in ["choosing","reward","artifact","shopping"] else ""
@@ -316,7 +337,7 @@ func refresh(s:Dictionary):
 	if modal_kind!=last_modal:
 		last_modal=modal_kind
 		_clear_modal()
-		if modal_kind=="pause":_pause_modal(route)
+		if modal_kind=="pause":_pause_modal(s,route)
 		elif modal_kind.begins_with("replace:"):_replacement_modal(pending)
 		elif modal_kind=="artifact":_artifact_modal(s)
 		elif modal_kind=="shopping":
@@ -336,6 +357,7 @@ func _sync_artifact_bar(items:Array):
 	if signature==_artifact_signature:return
 	_artifact_signature=signature
 	artifact_bar.size.x=140+maxi(0,items.size()-1)*47
+	artifact_bar.position=Vector2(800.0-artifact_bar.size.x*0.5,711.0)
 	for child in artifact_bar.get_children():
 		artifact_bar.remove_child(child)
 		child.queue_free()
@@ -507,7 +529,11 @@ func _choice_modal(s:Dictionary,kind:String):
 	_new_modal()
 	_choice_room_revision=int(s.get("room_revision",-1))
 	var full_slots=kind=="reward" and s.get("spells",[]).size()>=8
-	_choice_heading("选择起始法术" if kind=="choosing" else "选择法术成长","选一张，开始试炼。法术会自动施放。" if kind=="choosing" else "槽位已满：新术可替换旧术，已学法术可升级。" if full_slots else "学习新法术，或强化已掌握的法术。")
+	var opening_note:String=""
+	if kind=="choosing":
+		var school:String=str(s.get("opening_school","fire"))
+		opening_note="本局学派 · %s · "%("未定（未装备触媒）" if school=="all" else Catalog.school_name(school)+("（触媒）" if str(s.get("opening_source",""))=="catalyst" else ""))
+	_choice_heading("选择起始法术" if kind=="choosing" else "选择法术成长",opening_note+("选一张起始法术，战斗中会自动施放。" if kind=="choosing" else "槽位已满：新术替换旧术，已学法术可升级。" if full_slots else "学习新法术，或强化已学法术。"))
 	var choices:Array=s.get("initial_choices",[{"id":"F01"},{"id":"F04"},{"id":"F08"}]) if kind=="choosing" else s.reward_choices
 	var card_start=800.0-(float(choices.size())*280.0+float(maxi(0,choices.size()-1))*24.0)*0.5
 	for i in range(choices.size()):
@@ -526,16 +552,16 @@ func _choice_modal(s:Dictionary,kind:String):
 		var role=T.label(p,str(data.role),Rect2(22,169,236,26),16,T.GOLD)
 		role.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 		T.paragraph(p,str(data.summary),Rect2(22,205,236,64),18,T.TEXT)
-		T.label(p,"获得 · 1级" if level==1 else "%d级 → %d级"%[level-1,level],Rect2(22,274,236,24),16,T.CYAN)
+		T.label(p,"获得 · 1 级" if level==1 else "%d 级 → %d 级"%[level-1,level],Rect2(22,274,236,24),16,T.CYAN)
 		T.paragraph(p,str(data.upgrade_text) if level>1 else str(data.get("card_description",data.description)),Rect2(22,304,236,126),17,T.MUTED)
 		card.hit.tooltip_text=str(data.name)+"\n"+str(data.description)+"\n"+str(data.boundary)
 	if kind=="reward" and bool(s.get("can_skip_spell_reward",false)):
 		var revision=_choice_room_revision
-		_reward_skip_button=T.button(modal,"保留构筑，放弃本次奖励",Rect2(550,746,500,48),func():_skip_spell_reward(revision),false,true)
+		_reward_skip_button=T.button(modal,"放弃本次奖励",Rect2(550,746,500,48),func():_skip_spell_reward(revision),false,true)
 		_reward_skip_button.name="SkipSpellReward"
 		_reward_skip_button.set_meta("choice_action","room_reward_skip")
 		_reward_skip_button.set_meta("room_revision",_choice_room_revision)
-		_reward_skip_button.tooltip_text="保留当前法术，放弃本次法术奖励并开启传送门。不会重抽。"
+		_reward_skip_button.tooltip_text="保留当前构筑并开启传送门；不会重新抽取。"
 		_reward_skip_button.mouse_entered.connect(func():_set_choice_keyboard(false))
 		_choice_buttons.append(_reward_skip_button)
 	_finish_choice_setup()
@@ -567,7 +593,7 @@ func _replacement_modal(pending:Dictionary):
 	var new_name=str(data.get("name",id))
 	var title=T.label(modal,"替换一个法术",Rect2(300,152,1000,48),32)
 	title.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
-	var intro=T.label(modal,"槽位已满。选择遗忘一项旧术，新学法术从1级开始。",Rect2(300,208,1000,30),19,T.MUTED)
+	var intro=T.label(modal,"槽位已满。选择一个旧法术遗忘，新法术从 1 级开始。",Rect2(300,208,1000,30),19,T.MUTED)
 	intro.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 	var preview=ChoiceCard.new()
 	preview.name="ReplacementNewSpell"
@@ -577,16 +603,16 @@ func _replacement_modal(pending:Dictionary):
 	preview.reveal_immediately()
 	preview.hit.disabled=true
 	var face:Control=preview.face
-	T.label(face,"待学法术 · 1级",Rect2(26,30,228,26),16,T.CYAN)
+	T.label(face,"待学法术 · 1 级",Rect2(26,30,228,26),16,T.CYAN)
 	T.icon(face,id,Rect2(104,58,72,72),Catalog.school_color(str(data.get("school","fire"))))
 	var name_label=T.label(face,new_name,Rect2(20,130,240,36),25)
 	name_label.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 	var role=T.label(face,str(data.get("role","")),Rect2(22,169,236,26),16,T.GOLD)
 	role.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 	T.paragraph(face,str(data.get("summary","")),Rect2(22,205,236,64),18,T.TEXT)
-	T.label(face,"替换后获得 · 1级",Rect2(22,274,236,24),16,T.CYAN)
+	T.label(face,"替换后获得 · 1 级",Rect2(22,274,236,24),16,T.CYAN)
 	T.paragraph(face,str(data.get("card_numeric",data.get("description",""))),Rect2(22,304,236,126),17,T.MUTED)
-	preview.tooltip_text=new_name+" · 1级\n"+str(data.get("description",""))+"\n"+str(data.get("boundary",""))
+	preview.tooltip_text=new_name+" · 1 级\n"+str(data.get("description",""))+"\n"+str(data.get("boundary",""))
 	preview.hit.tooltip_text=preview.tooltip_text
 	preview.mouse_filter=Control.MOUSE_FILTER_PASS
 	_replacement_target=T.label(modal,"先选一个旧槽，再确认替换",Rect2(574,250,774,32),20,T.GOLD)
@@ -603,7 +629,7 @@ func _replacement_modal(pending:Dictionary):
 		button.set_meta("replacement_slot_index",index)
 		button.set_meta("replacement_old_id",old_id)
 		button.set_meta("replacement_request_id",request_id)
-		button.tooltip_text="选择待替换法术：%s · %d级\n确认后学会%s · 1级。取消可返回原三张奖励，不会重抽。"%[old_name,old_level,new_name]
+		button.tooltip_text="选择要替换的法术：%s · %d 级\n确认后学会%s · 1 级。取消可返回原三张，不会重抽。"%[old_name,old_level,new_name]
 		var socket=TextureRect.new()
 		socket.texture=SLOT_TEXTURE
 		socket.expand_mode=TextureRect.EXPAND_IGNORE_SIZE
@@ -613,7 +639,7 @@ func _replacement_modal(pending:Dictionary):
 		button.add_child(socket)
 		socket.size=Vector2(100,92)
 		T.icon(button,old_id,Rect2(61,42,58,58),Catalog.school_color(str(Catalog.describe_spell(old_id).get("school","fire"))))
-		var slot_label=T.label(button,"第%d槽 · %d级"%[index+1,old_level],Rect2(10,5,160,24),16,T.MUTED)
+		var slot_label=T.label(button,"第 %d 槽 · %d 级"%[index+1,old_level],Rect2(10,5,160,24),16,T.MUTED)
 		slot_label.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 		var old_label=T.label(button,old_name,Rect2(8,118,164,28),20,T.TEXT)
 		old_label.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
@@ -660,7 +686,7 @@ func _select_replacement(index:int,move_focus:bool=true,expected_request_id:int=
 		_replacement_buttons[slot_index].add_theme_stylebox_override("normal",T.box(Color("30394e") if selected else Color("252d42"),T.GOLD if selected else T.LINE,2 if selected else 1))
 	var old:Dictionary=old_slots[index]
 	var old_name=Catalog.spell_name(str(old.id))
-	_replacement_target.text="确认替换：%s · %d级 → %s · 1级"%[old_name,int(old.get("level",1)),Catalog.spell_name(str(_replacement_pending.get("spell_id","")))]
+	_replacement_target.text="确认替换：%s · %d 级 → %s · 1 级"%[old_name,int(old.get("level",1)),Catalog.spell_name(str(_replacement_pending.get("spell_id","")))]
 	_replacement_confirm.text="确认替换「%s」"%old_name
 	_replacement_confirm.set_meta("replacement_slot_index",index)
 	_replacement_confirm.disabled=false
@@ -748,6 +774,52 @@ func _attribute_text(s:Dictionary)->String:
 		Catalog._percent(p.get("crit_rate",0)),Catalog._number(global_multiplier),Catalog._percent(stats.get("fire_crit_rate",p.get("crit_rate",0))),Catalog._number(stats.get("fire_crit_multiplier",global_multiplier)),Catalog._percent(minf(cap,reduction)),Catalog._percent(minf(cap,ice_reduction)),Catalog._percent(minf(cap,lightning_reduction)),Catalog._percent(minf(cap,wind_reduction)),Catalog._percent(minf(cap,earth_reduction)),Catalog._percent(minf(cap,spirit_reduction)),Catalog._percent(cap),
 		Catalog._number(float(p.get("move_speed",0))*float(stats.get("move_speed_multiplier",1))),Catalog._percent(stats.get("generic_damage_bonus",0)),Catalog._percent(stats.get("fire_bonus",0)),Catalog._percent(stats.get("ice_bonus",0)),Catalog._percent(stats.get("lightning_bonus",0)),Catalog._percent(stats.get("wind_bonus",0)),Catalog._percent(stats.get("earth_bonus",0)),Catalog._percent(stats.get("spirit_bonus",0))]
 
+func _loadout_rows(s:Dictionary)->Array:
+	var rows:Array=s.get("stat_breakdown",[])
+	return rows if rows is Array else []
+
+func _loadout_effects(s:Dictionary)->Array:
+	var gems:Dictionary=s.get("gems",{})
+	var ids:Array=gems.get("cores",[])
+	var result:Array=[]
+	for id in ids:
+		var spec:Dictionary=_gem_names.core_rule(str(id))
+		if spec.is_empty():continue
+		result.append({"id":str(id),"name":str(spec.get("name",id)),"tint":GemIcon.tint_for(str(id)),"description":_gem_names.core_description(str(id))})
+	return result
+
+const LOADOUT_SHORT={"attack":"攻","health":"生","shield":"盾","defense":"防","crit_rate":"暴","crit_multiplier":"暴伤","cdr":"冷却","speed":"移速"}
+
+func _loadout_compact(rows:Array)->String:
+	if rows.is_empty():return ""
+	var by_key:Dictionary={}
+	for row in rows:by_key[str(row.get("key",""))]=row
+	var parts:Array=[]
+	for key in ["attack","health","shield","defense"]:
+		if by_key.has(key):parts.append("%s %s"%[str(LOADOUT_SHORT[key]),Loadout.final_text(by_key[key])])
+	var line_one:String="装备 "+" · ".join(parts)
+	parts=[]
+	for key in ["crit_rate","crit_multiplier","cdr","speed"]:
+		if not by_key.has(key):continue
+		var row:Dictionary=by_key[key]
+		var value:String=Loadout.final_text(row)
+		if key=="speed" and float(row.get("final",0.0))>0.0:value="+"+value
+		parts.append("%s %s"%[str(LOADOUT_SHORT[key]),value])
+	return line_one+"\n"+" · ".join(parts)
+
+func _loadout_tooltip(rows:Array)->String:
+	var lines:Array=[]
+	for row in rows:
+		var text:String="%s  %s（%s）" % [str(row.get("label","")),Loadout.final_text(row),Loadout.sub_text(row)]
+		var cap:String=str(row.get("cap_label",""))
+		if not cap.is_empty():text+=" · "+cap
+		var note:String=str(row.get("note",""))
+		if not note.is_empty():text+=" · "+note
+		var extra:String=str(row.get("tooltip",""))
+		if not extra.is_empty():text+="\n"+extra
+		lines.append(text)
+	return "\n".join(lines)
+
 func _generic_status_text(s:Dictionary)->String:
 	var state:Dictionary=s.get("generic_items",{})
 	var stats:Dictionary=s.get("combat_stats",{})
@@ -780,17 +852,30 @@ func _acquisition_hint(id:String,description:Dictionary,s:Dictionary)->String:
 		return "\n当前生命条件："+("已满足，领取后生效" if active else "未满足")
 	return ""
 
-func _pause_modal(route:bool=false):
+func _pause_modal(s:Dictionary,route:bool=false):
 	_new_modal()
-	var p=T.panel(modal,Rect2(520,210,560,478),true)
-	T.icon(p,"F10",Rect2(42,29,68,68),T.CYAN)
-	T.label(p,"休息片刻",Rect2(127,28,390,66),38)
-	T.paragraph(p,"时间已暂停 · 结束后结算已清战斗房的魔尘。",Rect2(42,123,476,56),20)
-	var attributes=T.paragraph(p,_attribute_summary,Rect2(42,187,476,90),15,T.CYAN)
-	attributes.name="PausedAttributes"
-	btn(p,"继续试炼",Rect2(42,282,476,60),"room_resume","",true)
-	btn(p,"结束试玩",Rect2(42,364,476,56),"room_end")
-	T.label(p,"Esc 继续",Rect2(42,435,476,26),16,T.MUTED)
+	var p=T.panel(modal,Rect2(380,168,840,564),true)
+	T.icon(p,"F10",Rect2(40,26,64,64),T.CYAN)
+	T.label(p,"已暂停",Rect2(122,24,420,60),36)
+	T.paragraph(p,"结算按已清场的战斗房计算魔尘。",Rect2(42,96,756,40),19)
+	var divider=ColorRect.new()
+	divider.color=Color(T.GOLD,.3)
+	divider.position=Vector2(42,142)
+	divider.size=Vector2(756,1)
+	divider.mouse_filter=Control.MOUSE_FILTER_IGNORE
+	p.add_child(divider)
+	T.label(p,"本局装备",Rect2(42,152,300,24),18,T.GOLD)
+	var rows:Array=_loadout_rows(s)
+	if rows.is_empty():
+		var attributes=T.paragraph(p,_attribute_summary,Rect2(42,180,756,148),15,T.CYAN)
+		attributes.name="PausedAttributes"
+	else:
+		Loadout.stat_grid(p,Rect2(42,180,756,148),rows,4,Vector2(10,8))
+	T.label(p,"核心效果",Rect2(42,342,300,22),17,T.GOLD)
+	Loadout.effect_chips(p,Rect2(42,366,756,32),_loadout_effects(s),"未装备金色宝石")
+	btn(p,"继续",Rect2(42,414,362,56),"room_resume","",true)
+	btn(p,"结束本局",Rect2(436,414,362,56),"room_end")
+	T.label(p,"Esc 继续",Rect2(42,482,756,24),15,T.MUTED)
 	call_deferred("_focus_first")
 func show_result(summary:Dictionary,settlement:Dictionary,reason:String):
 	_finished=true
@@ -798,13 +883,13 @@ func show_result(summary:Dictionary,settlement:Dictionary,reason:String):
 	var p=T.panel(modal,Rect2(398,166,804,570),true)
 	var route=summary.get("scope","")=="early_route_map_trial"
 	var route_count:int=int(summary.get("room_total",0))
-	T.label(p,(("%d房路线试玩完成"%route_count) if route else "首房试玩完成") if reason=="complete" else "这段旅途暂告一段落",Rect2(42,30,720,66),38)
-	var description="你已穿过上方法阵，完成入场、战斗与成长。\n后续房间将在这个流程上继续制作。" if reason=="complete" else "已经清过的房间会保留魔尘收益。\n带上这次的经验，准备下一场试炼。"
+	T.label(p,(("%d 房 · 旅途完成"%route_count) if route else "旅途完成") if reason=="complete" else "这段旅途暂告一段落",Rect2(42,30,720,66),38)
+	var description="本局已经结束。" if reason=="complete" else "已清场的战斗房会保留魔尘。"
 	if route:
-		description="已完成%d房战斗路线。"%route_count if reason=="complete" else "本次战斗路线已经结束。"
-		description+="\n已清战斗房的魔尘会保留；商店不计清房或额外收益。"
+		description="本局已通过 %d 个战斗房。"%route_count if reason=="complete" else "本局已经结束。"
+		description+="\n魔尘按已清场计算；商店不计入。"
 	T.paragraph(p,description,Rect2(42,113,720,80),22)
-	var labels=["已清房间","击败敌人","路线用时" if route else "战斗时间","本局金币"]
+	var labels=["清场数","击败敌人","路线用时" if route else "战斗时间","本局金币"]
 	var values=[str(summary.get("clear_count",0)),str(summary.get("kills",0)),"%02d:%02d"%[int(summary.get("elapsed",0))/60,int(summary.get("elapsed",0))%60],str(summary.get("gold",0))]
 	for i in range(4):
 		var cell=T.panel(p,Rect2(42+i*184,227,168,99))
@@ -814,12 +899,12 @@ func show_result(summary:Dictionary,settlement:Dictionary,reason:String):
 		T.label(cell,labels[i],Rect2(16,10,136,28),17,T.MUTED)
 		T.label(cell,values[i],Rect2(16,41,136,44),29,T.GOLD)
 	if route:
-		T.label(p,"金币取得 %d  ·  消费 %d  ·  剩余 %d"%[int(summary.get("gold_earned",0)),int(summary.get("gold_spent",0)),int(summary.get("gold",0))],Rect2(42,335,720,28),18,T.GOLD)
+		T.label(p,"金币 获得 %d · 花费 %d · 剩余 %d"%[int(summary.get("gold_earned",0)),int(summary.get("gold_spent",0)),int(summary.get("gold",0))],Rect2(42,335,720,28),18,T.GOLD)
 	if settlement.get("ok",false):
 		T.label(p,"魔尘 +%d    ·    已保存到账户"%int(settlement.get("dust_earned",0)),Rect2(42,366,720,46),27,T.CYAN)
-		btn(p,"再次试玩",Rect2(42,467,338,60),"room_retry","",true)
+		btn(p,"再来一局",Rect2(42,467,338,60),"room_retry","",true)
 		btn(p,"返回准备",Rect2(422,467,338,60),"room_return")
 	else:
-		T.paragraph(p,str(settlement.get("error","保存失败，进度仍保留在本次试玩中。")),Rect2(42,354,720,74),21)
+		T.paragraph(p,str(settlement.get("error","保存失败；本局进度仍在，可重试。")),Rect2(42,354,720,74),21)
 		btn(p,"重试保存",Rect2(42,467,718,60),"room_save_retry","",true)
 	call_deferred("_focus_first")

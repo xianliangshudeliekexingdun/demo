@@ -108,7 +108,7 @@ func run():
 	check(game.room_run.get_snapshot()==frozen,"pause freezes all simulation state")
 	await snap("04-pause")
 	await key(KEY_D,true)
-	await click("继续试炼")
+	await click("继续")
 	var before:Vector2=game.room_run.player.pos
 	await tick(.2)
 	check(game.room_run.player.pos==before,"held movement blocked on resume")

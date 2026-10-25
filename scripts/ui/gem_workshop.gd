@@ -236,7 +236,7 @@ static func rules_page(ui) -> void:
 	var r: Dictionary=lib.rules
 	var panel=T.panel(ui.page,Rect2(168,228,1264,600),true)
 	T.label(panel,"宝石规则",Rect2(32,16,480,48),30,T.GOLD)
-	var text: String="四个槽位不限制品质，同一枚宝石只能占一个槽。\n金色宝石＝一个特殊效果＋三条属性；三条属性不分主副，全部按档位随机。\n\n品质概率：绿%s%%／蓝%s%%／紫%s%%／金%s%%。\n紫色保底 %d 抽内；金色硬保底 %d 抽内。\n档位Ⅰ／Ⅱ／Ⅲ：%s%%／%s%%／%s%%。\n\n金色宝石可以同时装备多枚；同名效果只让槽位最靠前的一枚生效，其余仍提供属性。\n\n精粹重洗：全洗 %d 精粹，每固定一项 +%d，最多固定 %d 项。\n分解产出：绿%d／蓝%d／紫%d／金%d 精粹。\n累计真实清房达里程可领一次性精粹。"%[
+	var text: String="四个槽位不限制品质，同一枚宝石只能占一个槽。\n金色宝石＝一个特殊效果＋三条属性；三条属性不分主副，全部按档位随机。\n\n品质概率：绿%s%%／蓝%s%%／紫%s%%／金%s%%。\n紫色保底 %d 抽内；金色硬保底 %d 抽内。\n档位Ⅰ／Ⅱ／Ⅲ：%s%%／%s%%／%s%%。\n\n金色宝石可以同时装备多枚；同名效果只让槽位最靠前的一枚生效，其余仍提供属性。\n\n精粹重洗：全洗 %d 精粹，每固定一项 +%d，最多固定 %d 项。\n分解产出：绿%d／蓝%d／紫%d／金%d 精粹。\n累计清场达到里程可领一次性精粹。"%[
 		r.base_weights.green,r.base_weights.blue,r.base_weights.purple,r.gold_weight,
 		int(r.pity.purple_or_better),int(r.pity.gold),
 		r.tier_weights[0],r.tier_weights[1],r.tier_weights[2],

@@ -38,6 +38,10 @@ var artifact_choices: Array = []
 var artifact_claimed_rooms: Array = []
 var _artifact_reward_rooms: Array = []
 var route_school: String = "fire"
+var opening_school: String = "fire"
+var opening_source: String = "legacy"
+var _opening_seed: int = 0
+var _opening_ids: Array = []
 var _ice_source: Dictionary = {}
 var _lightning_source: Dictionary = {}
 var _wind_source: Dictionary = {}
@@ -68,8 +72,9 @@ func configure(run_snapshot: Dictionary = {}, seed_value: int = 20261017) -> Dic
 	var sampling_result: Dictionary = _spell_sampling.configure(sampling_read.data)
 	if not sampling_result.ok: return sampling_result
 	route_school = str(run_snapshot.get("route_school", "fire"))
-	if route_school not in ["fire", "ice", "lightning", "wind", "earth", "spirit"]:
-		return {"ok": false, "error": "本路线仅开放火、冰、雷、风、岩、灵契六系起手。"}
+	var opening_result: Dictionary = _resolve_opening_source(run_snapshot)
+	if not bool(opening_result.get("ok", false)):
+		return opening_result
 	var ice_read: Dictionary = _read_json("res://data/ice_spells_v1.json")
 	if not ice_read.ok or not ice_read.data.get("spells") is Dictionary or not ice_read.data.get("mechanics") is Dictionary:
 		return {"ok": false, "error": "正式冰系运行数据无效。"}
@@ -125,6 +130,7 @@ func configure(run_snapshot: Dictionary = {}, seed_value: int = 20261017) -> Dic
 	result = _spell_combat.configure(self)
 	if not result.ok:
 		return result
+	_opening_ids = _resolve_opening_ids()
 	_artifact_combat = ArtifactCombat.new()
 	var artifact_read: Dictionary = _read_json(ROOT + "fire_artifacts_v1.json")
 	if not artifact_read.ok:
@@ -238,6 +244,7 @@ func get_snapshot() -> Dictionary:
 	snapshot["gold_earned"] = gold_earned
 	snapshot["gold_spent"] = gold_spent
 	snapshot["gems"] = _gem_combat.snapshot()
+	snapshot["stat_breakdown"] = _equipment.get("stat_breakdown", []).duplicate(true)
 	return snapshot
 
 
@@ -437,20 +444,83 @@ func _complete_spell_reward(spell_id: String, old_id: String = "", slot_index: i
 
 
 func _initial_spell_ids() -> Array:
-	if route_school == "ice":
+	return _opening_ids.duplicate()
+
+
+## The equipped catalyst owns the run's school. Account snapshots without one
+## open on the full basic-spell pool; fixtures without an equipment block keep
+## the historical fire default so old regression entries stay explicit.
+func _resolve_opening_source(run_snapshot: Dictionary) -> Dictionary:
+	var requested: String = str(run_snapshot.get("route_school", ""))
+	var catalyst: Dictionary = _sampling_catalyst()
+	if not str(catalyst.get("school", "")).is_empty():
+		opening_school = str(catalyst.school)
+		opening_source = "catalyst"
+		route_school = opening_school
+		return {"ok": true, "error": ""}
+	if run_snapshot.has("equipment"):
+		if requested.is_empty() or requested == "all":
+			opening_school = "all"
+			opening_source = "none"
+		elif requested in ["fire", "ice", "lightning", "wind", "earth", "spirit"]:
+			opening_school = requested
+			opening_source = "explicit"
+		else:
+			return {"ok": false, "error": "本路线仅开放火、冰、雷、风、岩、灵契六系起手。"}
+		route_school = opening_school
+		return {"ok": true, "error": ""}
+	if requested in ["fire", "ice", "lightning", "wind", "earth", "spirit"]:
+		opening_school = requested
+		opening_source = "explicit"
+	elif requested.is_empty():
+		opening_school = "fire"
+		opening_source = "legacy"
+	else:
+		return {"ok": false, "error": "本路线仅开放火、冰、雷、风、岩、灵契六系起手。"}
+	route_school = opening_school
+	return {"ok": true, "error": ""}
+
+
+func _school_initial_ids(school: String) -> Array:
+	if school == "ice":
 		return _spell_combat.ice.mechanics.initial_ids
-	var module = _spell_combat.school_module(route_school)
+	var module = _spell_combat.school_module(school)
 	if module != null:
 		return module.mechanics.initial_ids
 	return _spell_combat.runtime.fire.initial_ids
 
 
+func _resolve_opening_ids() -> Array:
+	if opening_school != "all":
+		return _school_initial_ids(opening_school).duplicate()
+	var pool: Array = []
+	var schools: Array = ["fire", "ice", "lightning", "wind", "earth", "spirit"]
+	for school in schools:
+		for id in _school_initial_ids(school):
+			if pool.has(str(id)):
+				continue
+			pool.append(str(id))
+	var rng := RandomNumberGenerator.new()
+	# A dedicated stream keeps reward sampling identical to a catalyst run.
+	rng.seed = _seed ^ 0x2545F4914F6CDD1D
+	var remaining: Array = range(pool.size())
+	var picked: Array = []
+	while picked.size() < mini(3, pool.size()) and not remaining.is_empty():
+		var at: int = rng.randi_range(0, remaining.size() - 1)
+		picked.append(int(remaining[at]))
+		remaining.remove_at(at)
+	picked.sort()
+	var result: Array = []
+	for index in picked:
+		result.append(str(pool[index]))
+	return result
+
+
 func initial_choices() -> Array:
 	var result: Array = []
-	if not _configured or _spell_combat == null:
+	if not _configured or _spell_combat == null or _opening_ids.is_empty():
 		return result
-	var ids: Array = _initial_spell_ids()
-	for id in ids:
+	for id in _opening_ids:
 		var choice: Dictionary = _choice(str(id), true)
 		choice.weight = float(_meta.spell_sampling_assumptions.baseline_spell_weight)
 		result.append(choice)
@@ -460,8 +530,7 @@ func initial_choices() -> Array:
 func choose_initial(spell_id: String) -> bool:
 	if not _configured or paused or phase != "choosing":
 		return false
-	var ids: Array = _initial_spell_ids()
-	if spell_id not in ids:
+	if spell_id not in _opening_ids:
 		return false
 	spells.append(_new_spell(spell_id))
 	phase = "combat"
@@ -503,7 +572,7 @@ func choose_artifact(artifact_id: String) -> bool:
 func _route_metadata() -> Dictionary:
 	return {
 		"scope": "early_route_map_trial", "account_rewards": not bool(_equipment.get("preview_only", true)),
-		"route_school": route_school,
+		"route_school": route_school, "opening_school": opening_school, "opening_source": opening_source,
 		"preview_only": bool(_equipment.get("preview_only", true)), "room_index": room_index, "room_total": room_total,
 		"room_name": str(_current_room.get("name", "")), "room_revision": room_revision,
 		"difficulty_band": _current_room.get("difficulty_band", {}).duplicate(true),

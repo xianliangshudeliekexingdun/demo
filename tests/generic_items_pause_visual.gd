@@ -64,9 +64,9 @@ func run():
 	await process_frame
 	check(DisplayServer.get_name()!="headless","actual rendered Main required")
 	check(game.load_error.is_empty(),"isolated actual Main loads")
-	if await click("开始冒险     ›") and await click("进入60房路线    ›") and await click("initial","room_initial"):
+	if await click("开始冒险     ›") and await click("出发    ›") and await click("initial","room_initial"):
 		for tick in 120: game._process(1.0/120.0)
-		if game.room_run.paused: await click("继续试炼")
+		if game.room_run.paused: await click("继续")
 		await click("暂停")
 		check(game.room_run.paused,"actual UI pause freezes current real combat")
 		var attributes=game.room_ui.root.find_child("PausedAttributes",true,false)
@@ -76,7 +76,7 @@ func run():
 			check(attributes.get_visible_line_count()==3,"all three actual text lines fit the label")
 			check(attributes.text.contains("战斗移速") and attributes.text.contains("通用增伤") and attributes.text.contains("上限60%"),"third line and current60pct cap remain complete")
 			check(game.room_ui.root.get_global_rect().encloses(attributes.get_global_rect()),"pause attributes stay within actual viewport")
-			var continue_buttons: Array=candidates("继续试炼")
+			var continue_buttons: Array=candidates("继续")
 			check(not continue_buttons.is_empty() and not attributes.get_global_rect().intersects(continue_buttons[0].get_global_rect()),"all attribute rows leave clear gap before real continue button")
 			var pause_descriptions: Array=game.room_ui.modal.find_children("*","Label",true,false).filter(func(label):return label.text.contains("暂停"))
 			check(pause_descriptions.size()==1,"pause has one concise rendered explanation")

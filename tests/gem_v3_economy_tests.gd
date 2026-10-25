@@ -266,6 +266,13 @@ func equipment_economy() -> void:
 	check(near(float(totals.defense), 2.0) and near(float(totals.cdr), 0.01), "secondary totals match tier sources")
 	var stats: Dictionary = meta.get_preview_stats()
 	check(stats.health == 320.0 and stats.shield == 104.0 and stats.attack == 108.0, "preview stats add equipped totals once")
+	var breakdown: Array = meta.get_stat_breakdown()
+	check(breakdown.size() == 8, "breakdown covers the eight display stats")
+	var rows: Dictionary = {}
+	for row in breakdown: rows[str(row.key)] = row
+	check(rows.size() == 8 and near(float(rows.attack.base), 100.0) and near(float(rows.attack.bonus), 8.0) and near(float(rows.attack.final), 108.0), "breakdown keeps base, gem and final apart")
+	check(near(float(rows.cdr.bonus), 0.01) and near(float(rows.cdr.cap), 0.6) and str(rows.cdr.cap_label) == "上限 60%", "cooldown row reports the sourced cap")
+	check(str(rows.defense.cap_label).begins_with("减伤") and near(float(rows.crit_rate.base), 0.05) and near(float(rows.crit_rate.cap), 1.0), "defence and crit rows carry their own limits")
 	check(meta.request_equip_gem(1, "gem-1").ok, "same instance can be moved")
 	check(meta.get_state().gem_state.slots == ["", "gem-1", "gem-3", "gem-4"], "moving clears the previous slot")
 	check(meta.request_equip_gem(2, "gem-1").ok and meta.get_state().gem_state.slots[1].is_empty(), "same instance never occupies two slots")
@@ -289,6 +296,7 @@ func equipment_economy() -> void:
 	var snapshot = meta.begin_run()
 	check(snapshot.ok and snapshot.snapshot.gem_core == "inferno" and int(snapshot.snapshot.gem_effects) == 2, "run snapshot counts distinct active effects")
 	check(snapshot.snapshot.gem_cores == ["inferno", "wind"] and snapshot.snapshot.gem_slots.size() == 4, "run snapshot freezes slots and effect list")
+	check(snapshot.snapshot.stat_breakdown.size() == 8, "run snapshot carries the prepared stat breakdown")
 	before = meta.get_state()
 	check(not meta.request_equip_gem(0, "").ok and not meta.request_draw_gems(1).ok and not meta.request_salvage_gems(["gem-3"]).ok, "run blocks equipment, draw and salvage")
 	check(meta.get_state() == before, "blocked run actions preserve account")
@@ -297,6 +305,9 @@ func equipment_economy() -> void:
 	install(meta, aegis, 0, 0, ["gem-1", "", "", ""])
 	var converted: Dictionary = meta.get_preview_stats()
 	check(near(float(converted.health), 217.0) and near(float(converted.shield), 308.6), "aegis converts thirty percent of life into shield")
+	var aegis_rows: Dictionary = {}
+	for row in meta.get_stat_breakdown(): aegis_rows[str(row.key)] = row
+	check(float(aegis_rows.health.bonus) < 0.0 and float(aegis_rows.shield.bonus) > 0.0, "aegis conversion stays visible instead of hiding in the final value")
 
 func reforge_economy() -> void:
 	var meta = account("reforge")

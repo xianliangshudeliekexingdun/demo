@@ -187,7 +187,7 @@ func resume_focus(label: String):
 	if game.room_run == null or not game.room_run.paused or not game.room_result_reason.is_empty():
 		return
 	focus_events.append({"label": label, "room": game.room_run.room_index, "phase": game.room_run.phase, "time": game.room_run.time})
-	await click("继续试炼")
+	await click("继续")
 	await release_movement()
 
 
@@ -471,7 +471,7 @@ func pause_exercise() -> bool:
 	await tick(0.4)
 	check(game.room_run.get_snapshot() == before, "pause freezes enemies projectiles spells and artifact timers")
 	await snap("08-mixed-combat-paused")
-	await click("继续试炼")
+	await click("继续")
 	var pos: Vector2 = game.room_run.player.pos
 	await tick(0.12)
 	check(game.room_run.player.pos == pos, "pause resume requires releasing held movement")
@@ -610,7 +610,7 @@ func run():
 		await finish()
 		return
 	check(game.screen == "prepare", "real home button reaches preparation")
-	await click("进入60房路线    ›")
+	await click("出发    ›")
 	check(game.room_run != null and game.room_run.phase == "choosing", "actual preparation starts new mixed route")
 	if game.room_run == null:
 		await finish()

@@ -7,9 +7,8 @@ const ArtifactIcon=preload("res://scripts/ui/artifact_icon.gd")
 const EquipmentIcon=preload("res://scripts/ui/equipment_icon.gd")
 const GemIcon=preload("res://scripts/ui/gem_icon.gd")
 const GemWorkshop=preload("res://scripts/ui/gem_workshop.gd")
+const Loadout=preload("res://scripts/ui/loadout_summary.gd")
 const RouteCatalog=preload("res://scripts/core/courtyard_route_catalog.gd")
-const PREVIEWS=["opening","hud","reward","chest","shop","pause","result"]
-const SCHOOLS=["fire","ice","lightning","wind","earth","spirit"]
 const SPELL_FILTERS=["all","fire","ice","lightning","wind","earth","spirit"]
 var root:Control
 var page:Control
@@ -18,8 +17,6 @@ var codex_tab="spells"
 var meta
 var catalog
 var selected=""
-var opening_spell="F01"
-var route_school="fire"
 var showcase
 var title_stage
 var detail_label:Label
@@ -93,7 +90,7 @@ func equipment_picture(parent:Node,id:String,rect:Rect2):
 	parent.add_child(icon)
 	return icon
 
-func render(next:String,progress,content,picked:String="",message:String="",spell_id:String="F01"):
+func render(next:String,progress,content,picked:String="",message:String=""):
 	_restore_focus=""
 	_restore_id=""
 	_list_scroll=0
@@ -109,7 +106,6 @@ func render(next:String,progress,content,picked:String="",message:String="",spel
 	meta=progress
 	catalog=content
 	selected=picked
-	opening_spell=spell_id
 	detail_label=null
 	if is_instance_valid(page):
 		root.remove_child(page)
@@ -131,7 +127,9 @@ func render(next:String,progress,content,picked:String="",message:String="",spel
 			"prepare": prepare()
 			"spells","artifacts": grimoire()
 			"settings": settings()
-			_: preview()
+			_:
+				push_warning("未知界面 %s，回到出发准备"%screen)
+				prepare()
 		footer()
 	if not message.is_empty():
 		if screen=="home":
@@ -155,26 +153,25 @@ func focus_first():
 			return
 func header():
 	btn(page,"‹  返回",Rect2(48,30,128,48),"back")
-	T.label(page,"莉奈大冒险  /  地下城",Rect2(204,30,600,48),22,T.GOLD)
+	T.label(page,"地下城",Rect2(204,30,600,48),22,T.GOLD)
 	var wallet=T.panel(page,Rect2(1288,30,256,48))
 	art(wallet,"gem",Rect2(10,4,40,40),T.CYAN)
 	T.label(wallet,"魔尘   %s"%meta.get_state().get("dust",0),Rect2(62,0,182,48),21)
 	var names={"catalyst":"法术触媒","gem":"魔法宝石","codex":"图鉴","prepare":"出发准备","spells":"法术藏书","artifacts":"宝物图鉴","settings":"设置"}
-	T.label(page,"界面预览" if screen in PREVIEWS else names.get(screen,"地下城"),Rect2(52,108,550,68),40)
+	T.label(page,names.get(screen,"地下城"),Rect2(52,108,550,68),40)
 	bar(page,Rect2(54,181,64,2),T.GOLD)
 	bar(page,Rect2(118,181,1426,1),Color(T.GOLD,.22))
-	if screen in PREVIEWS: T.label(page,"界面预览 · 不进行战斗、购买或发放收益",Rect2(54,194,1400,34),20,T.MUTED)
 func footer():
-	T.label(page,"莉奈大冒险",Rect2(52,851,240,34),18,T.GOLD)
-	T.label(page,"Tab 切换  ·  Enter 确认  ·  Esc 返回  ·  F11 全屏",Rect2(886,851,664,34),18,T.MUTED)
+	T.label(page,"莉奈大冒险",Rect2(52,851,240,34),16,T.GOLD)
 func add_showcase(rect:Rect2):
 	showcase=load("res://scenes/ui/lina_showcase.tscn").instantiate()
 	showcase.position=rect.position
 	showcase.size=rect.size
 	page.add_child(showcase)
 	# Keyboard alternatives to the portrait's drag interaction.
-	btn(page,"‹",Rect2(rect.position.x+80,rect.end.y-12,52,48),"rotate","-15")
-	btn(page,"›",Rect2(rect.end.x-132,rect.end.y-12,52,48),"rotate","15")
+	var arrow_y=rect.position.y+rect.size.y*0.42
+	btn(page,"‹",Rect2(rect.position.x+4,arrow_y,44,44),"rotate","-15").add_theme_font_size_override("font_size",24)
+	btn(page,"›",Rect2(rect.end.x-48,arrow_y,44,44),"rotate","15").add_theme_font_size_override("font_size",24)
 
 func ensure_stage():
 	if is_instance_valid(title_stage): return
@@ -271,7 +268,7 @@ func equipment():
 	var kind="catalyst" if screen in ["catalyst","codex"] else "gem"
 	var items=meta.get_items(kind)
 	if selected.is_empty() and not items.is_empty(): selected=str(items[0].id)
-	T.paragraph(page,"调谐六系触媒，提高偏好学派的出现倾向；起手学派可独立选择。" if kind=="catalyst" else "镶入一枚宝石，让下一次出发更有把握。",Rect2(54,198,1400,40),21)
+	T.paragraph(page,"装备一件触媒，提高对应学派在法术书中的出现倾向。" if kind=="catalyst" else "镶入一枚宝石，让下一次出发更有把握。",Rect2(54,198,1400,40),21)
 	if screen=="codex":
 		T.label(page,"本次装备   "+equipped_name(kind),Rect2(54,256,620,50),20,T.GOLD)
 	else:
@@ -326,7 +323,7 @@ func equipment():
 	var effects:Array=status.get("effect_by_level",[]) if kind=="catalyst" else chosen.flat_by_level
 	for i in range(effects.size()):
 		var col=T.panel(d,Rect2(32+i*166,348,156,70))
-		T.label(col,"%d级"%(i+1),Rect2(14,6,130,26),17,T.GOLD if int(status.level)==i+1 else T.MUTED)
+		T.label(col,"%d 级"%(i+1),Rect2(14,6,130,26),17,T.GOLD if int(status.level)==i+1 else T.MUTED)
 		T.label(col,("优先＋"+catalog._percent(effects[i])) if kind=="catalyst" else "+"+number(effects[i]),Rect2(14,30,130,32),22,T.TEXT)
 		if kind=="catalyst": col.tooltip_text=catalog.catalyst_reference_text(meta.get_catalog().get("spell_sampling",{}),i+1)
 	if int(status.level)==0:
@@ -337,7 +334,7 @@ func equipment():
 	var blocked=str(status.get("blocked_reason",""))
 	if blocked.is_empty() and int(status.level)<3 and not (status.can_unlock if int(status.level)==0 else status.can_upgrade): blocked="魔尘不足，还需要 %s 魔尘"%number(maxf(0,float(status.cost)-float(meta.get_state().get("dust",0))))
 	T.label(d,blocked if not blocked.is_empty() else "选择后自动保存",Rect2(32,432,492,28),17,T.GOLD if not blocked.is_empty() else T.MUTED)
-	T.label(page,"账号首选一件免费 · 装备一件触媒 · 最高三级",Rect2(56,816,850,38),19,T.MUTED)
+	T.label(page,"每账号首次解锁免费 · 同时只装备一件触媒 · 最高 3 级",Rect2(56,816,850,38),19,T.MUTED)
 
 static func catalyst_card_rect(index:int)->Rect2:
 	return Rect2(54+(index%3)*300,330+(index/3)*234,276,216)
@@ -354,21 +351,13 @@ func _catalyst_cards(items:Array):
 		equipment_picture(panel,str(item.id),Rect2(18,15,70,70))
 		T.label(panel,str(item.name),Rect2(102,20,158,38),22)
 		T.label(panel,"未解锁" if int(status.level)==0 else "等级 %d / 3%s"%[status.level," · 已装" if status.equipped else ""],Rect2(102,60,158,28),17,T.GOLD if status.equipped else T.MUTED)
-		var effect="未生效" if int(status.level)==0 else "本系优先＋"+catalog._percent(status.effect_value)
+		var effect="未生效" if int(status.level)==0 else "本系偏向 +"+catalog._percent(status.effect_value)
 		T.label(panel,effect,Rect2(18,103,240,34),22,tint)
 		var inspect=btn(panel,"查看与培养",Rect2(16,158,244,44),"select",str(item.id),selected==str(item.id))
 		inspect.set_meta("selection_id",str(item.id))
 		inspect.tooltip_text=catalog.catalyst_reference_text(meta.get_catalog().get("spell_sampling",{}),maxi(1,int(status.level)))
 
 
-func stats(parent:Node,rect:Rect2):
-	var values=meta.get_preview_stats()
-	var keys=["health","shield","attack"]
-	var names=["生命上限","护盾上限","攻击力"]
-	for i in range(3):
-		var x=rect.position.x+i*rect.size.x/3
-		T.label(parent,names[i],Rect2(x,rect.position.y,180,32),19,T.MUTED)
-		T.label(parent,number(values.get(keys[i],0)),Rect2(x,rect.position.y+40,180,60),38)
 func number(value)->String:
 	return str(int(value)) if is_equal_approx(float(value),roundf(float(value))) else String.num(float(value),2)
 func equipped_name(kind:String)->String:
@@ -390,6 +379,105 @@ func equipped_id(kind:String)->String:
 	for item in meta.get_items(kind):
 		if meta.get_item_status(kind,str(item.id)).equipped:return str(item.id)
 	return ""
+func equipped_catalyst() -> Dictionary:
+	for item in meta.get_items("catalyst"):
+		var status:Dictionary=meta.get_item_status("catalyst",str(item.id))
+		if bool(status.get("equipped",false)) and int(status.get("level",0))>=1:
+			return {"item":item,"status":status}
+	return {}
+
+func opening_preview() -> Dictionary:
+	var equipped:Dictionary=equipped_catalyst()
+	if not equipped.is_empty():
+		var school:String=str(equipped.item.get("school","fire"))
+		return {"school":school,"source":"catalyst","name":catalog.school_name(school),
+			"sub":"触媒「%s」Lv.%d · %s起始 · 法术书偏向 +%s" % [str(equipped.item.name),int(equipped.status.level),catalog.school_name(school),catalog._percent(float(equipped.status.get("effect_value",0.0)))]}
+	return {"school":"all","source":"none","name":"未定",
+		"sub":"未装备触媒 · 开局三选一随机"}
+
+func gem_effect_chips() -> Array:
+	var result:Array=[]
+	for id in meta.gems.active_effects(meta.get_state().gem_state):
+		var spec:Dictionary=meta.gems.core_rule(str(id))
+		result.append({"id":str(id),"name":str(spec.get("name",id)),"tint":GemIcon.tint_for(str(id)),"description":meta.gems.core_description(str(id))})
+	return result
+
+func _compact_affixes(gem:Dictionary) -> String:
+	var parts:Array=[]
+	var short={"attack":"攻","health":"生","shield":"盾","defense":"防","crit_rate":"暴击","crit_multiplier":"暴伤","cdr":"冷却","speed":"移速"}
+	for affix in gem.get("affixes",[]):
+		var stat:String=str(affix.get("stat","attack"))
+		var rule:Dictionary=meta.gems.rules.affixes.get(stat,{})
+		var value:float=float(affix.get("value",0.0))
+		var text:String=str(short.get(stat,str(rule.get("label",stat))))
+		match str(rule.get("unit","flat")):
+			"probability_add","fraction_add": text+="+%s%%"%number(value*100.0)
+			"multiplier_add": text+="+%s倍"%number(value)
+			_: text+="+%s"%number(value)
+		parts.append(text)
+	return " · ".join(parts)
+
+func link(parent:Node,text:String,rect:Rect2,action:String,payload:String=""):
+	var b=Button.new()
+	b.text=text
+	b.position=rect.position
+	b.size=rect.size
+	b.focus_mode=Control.FOCUS_ALL
+	b.mouse_default_cursor_shape=Control.CURSOR_POINTING_HAND
+	b.add_theme_font_size_override("font_size",15)
+	b.alignment=HORIZONTAL_ALIGNMENT_RIGHT
+	for state in ["font_color","font_hover_color","font_pressed_color","font_focus_color"]:
+		b.add_theme_color_override(state,T.GOLD)
+	b.add_theme_stylebox_override("normal",T.box(Color(0,0,0,0),Color(0,0,0,0),0))
+	b.add_theme_stylebox_override("hover",T.box(Color(T.GOLD,.16),Color(0,0,0,0),0))
+	b.add_theme_stylebox_override("pressed",T.box(Color(T.GOLD,.26),Color(0,0,0,0),0))
+	b.add_theme_stylebox_override("focus",T.box(Color(0,0,0,0),T.CYAN,2))
+	b.pressed.connect(func(): emit(action,payload))
+	b.set_meta("ui_action",action)
+	b.set_meta("ui_payload",payload)
+	parent.add_child(b)
+	return b
+
+func _gem_slot_card(parent:Node, rect:Rect2, index:int, gem:Dictionary, duplicate:bool) -> void:
+	var card=T.panel(parent,rect)
+	card.add_theme_stylebox_override("panel",T.box(Color("161c2c"),Color("2f3850"),1,6))
+	if gem.is_empty():
+		T.label(card,"＋",Rect2(14,18,32,44),26,Color("566076"))
+		T.label(card,"槽 %d · 空"%[index+1],Rect2(58,18,306,26),17,T.TEXT)
+		T.label(card,"点击装备",Rect2(58,46,306,20),12,T.MUTED)
+	else:
+		var quality:String=str(gem.get("rarity","green"))
+		var accent:Color=GemIcon.RARITY_COLORS.get(quality,T.TEXT)
+		var icon=GemIcon.new()
+		icon.set_gem(gem)
+		icon.position=Vector2(12,12)
+		icon.size=Vector2(38,38)
+		card.add_child(icon)
+		T.label(card,"槽 %d · %s"%[index+1,str(meta.gems.rules.rarity_names.get(quality,quality))],Rect2(60,5,306,16),12,accent)
+		var name_label:=T.label(card,meta.gems.title(gem),Rect2(60,22,306,23),16,T.TEXT)
+		name_label.tooltip_text=meta.gems.affix_text(gem)
+		T.label(card,_compact_affixes(gem),Rect2(60,45,306,17),12,Loadout.BONUS).tooltip_text=meta.gems.affix_text(gem)
+		var core:String=str(gem.get("core",""))
+		if core.is_empty():
+			T.label(card,"无核心效果",Rect2(60,63,306,17),12,Color("677087"))
+		elif duplicate:
+			T.label(card,"同名效果 · 不生效",Rect2(60,63,306,17),12,T.WARN)
+		else:
+			T.label(card,str(meta.gems.core_rule(core).get("name",core)),Rect2(60,63,306,17),12,GemIcon.tint_for(core))
+	var hit=Button.new()
+	hit.flat=true
+	hit.position=Vector2.ZERO
+	hit.size=rect.size
+	hit.focus_mode=Control.FOCUS_ALL
+	hit.mouse_default_cursor_shape=Control.CURSOR_POINTING_HAND
+	hit.add_theme_stylebox_override("normal",T.box(Color(0,0,0,0),Color(0,0,0,0),0))
+	hit.add_theme_stylebox_override("hover",T.box(Color(1,1,1,.045),Color(0,0,0,0),0,6))
+	hit.add_theme_stylebox_override("pressed",T.box(Color(1,1,1,.075),Color(0,0,0,0),0,6))
+	hit.add_theme_stylebox_override("focus",T.box(Color(0,0,0,0),T.CYAN,2,6))
+	hit.pressed.connect(func(): emit("navigate","gem"))
+	hit.tooltip_text="打开宝石工坊，替换槽 %d" % (index+1)
+	card.add_child(hit)
+
 func prepare():
 	var route_catalog=RouteCatalog.new()
 	var route_loaded:Dictionary=route_catalog.load_catalog()
@@ -397,35 +485,46 @@ func prepare():
 	var income:Dictionary=meta.gems.rules.route_income
 	var early_rooms:int=mini(route_count,int(income.early_end))
 	var completion_dust:int=early_rooms*int(income.early_dust)+(route_count-early_rooms)*int(income.later_dust)
-	art(page,"seal",Rect2(38,238,650,516),Color(T.CYAN,.45))
+	var opening:Dictionary=opening_preview()
+	art(page,"seal",Rect2(54,214,650,516),Color(T.CYAN,.45))
 	add_showcase(Rect2(80,200,598,532))
-	T.label(page,"莉奈",Rect2(172,770,138,44),32)
+	T.label(page,"莉奈",Rect2(172,770,100,44),32)
 	T.label(page,"见习魔法师",Rect2(282,775,300,36),21,T.GOLD)
-	var p=T.panel(page,Rect2(736,224,808,514))
-	T.label(p,"本局学派",Rect2(32,20,180,42),25,T.GOLD)
-	for index in SCHOOLS.size():
-		var school=SCHOOLS[index]
-		var school_button=btn(p,catalog.school_name(school)+"试炼",Rect2(230+(index%3)*182,20+(index/3)*54,172,44),"route_school",school,route_school==school)
-		school_button.set_meta("route_school",school)
-		school_button.tooltip_text="决定%d房路线的起始三选一；火、冰、雷、风、岩、灵契可混学。起手不要求同系触媒；装备触媒提高对应学派出现倾向，不保证必出。"%route_count
-	var catalyst=T.panel(p,Rect2(30,130,748,84))
-	equipment_picture(catalyst,equipped_id("catalyst"),Rect2(6,4,76,76))
-	T.label(catalyst,"法术触媒",Rect2(94,7,230,28),18,T.MUTED)
-	T.label(catalyst,equipped_name("catalyst"),Rect2(94,37,440,34),24)
-	btn(catalyst,"更换",Rect2(584,16,140,52),"open_codex","gear")
-	var gem=T.panel(p,Rect2(30,224,748,84))
-	equipment_picture(gem,equipped_id("gem"),Rect2(6,4,76,76))
-	T.label(gem,"魔法宝石 · 1核心＋3属性槽",Rect2(94,7,450,28),18,T.MUTED)
-	T.label(gem,equipped_name("gem"),Rect2(94,37,472,34),22)
-	btn(gem,"更换",Rect2(584,16,140,52),"navigate","gem")
-	bar(p,Rect2(32,326,744,1),Color(T.GOLD,.3))
-	stats(p,Rect2(32,344,744,96))
-	T.paragraph(p,"选择学派决定起手，六系可混学。\n装备触媒提高对应学派出现倾向，不保证必出。",Rect2(32,456,744,48),18,T.MUTED)
-	T.label(page,"%d房路线 · %s起手／六系混搭 · 清房结算魔尘，通关%d尘"%[route_count,catalog.school_name(route_school),completion_dust],Rect2(738,747,806,30),18,T.GOLD)
-	btn(page,"查看界面预览",Rect2(736,788,174,48),"navigate","opening")
-	var legacy_room_button=btn(page,"进入首房试玩    ›",Rect2(928,788,270,48),"start_room")
-	legacy_room_button.tooltip_text="独立首房保留旧版战斗规则；新宝石完整词条与核心效果请在%d房路线测试。"%route_count
-	btn(page,"进入%d房路线    ›"%route_count,Rect2(1216,788,328,48),"start_route","",true,not route_loaded.ok)
+	var p=T.panel(page,Rect2(736,196,808,566))
+	# 本局学派由触媒决定：这里只展示推导结果，不再提供第二套学派选择。
+	var tint:Color=catalog.school_color(str(opening.school)) if opening.source=="catalyst" else T.CYAN
+	T.panel(p,Rect2(18,16,56,56)).add_theme_stylebox_override("panel",T.box(Color(tint,.10),Color(tint,.38),1,8))
+	equipment_picture(p,equipped_id("catalyst"),Rect2(23,21,46,46))
+	T.label(p,"本局学派 · "+str(opening.name),Rect2(88,10,440,34),24,tint)
+	var source_label:=T.label(p,str(opening.sub),Rect2(90,44,478,22),13,T.MUTED)
+	source_label.tooltip_text="法术触媒装备哪一系，开局三选一就是该系的三张基础术；未装备时从六系基础术中随机三张。"
+	btn(p,"更换触媒",Rect2(608,20,182,44),"open_codex","gear")
+	bar(p,Rect2(18,96,772,1),Color(T.GOLD,.28))
+
+	var state:Dictionary=meta.get_state().gem_state
+	var duplicates:Dictionary={}
+	var first_slot:Dictionary={}
+	for index in 4:
+		var gem:Dictionary=meta.gems.find(state,str(state.slots[index]))
+		var effect:String=str(gem.get("core","")) if str(gem.get("rarity",""))=="gold" else ""
+		if effect.is_empty(): continue
+		duplicates[effect]=int(duplicates.get(effect,0))+1
+		if not first_slot.has(effect): first_slot[effect]=index
+
+	T.label(p,"出发装备 · 4 槽",Rect2(18,104,300,24),17,T.GOLD)
+	link(p,"宝石工坊  ›",Rect2(602,99,188,34),"navigate","gem")
+	for index in 4:
+		var gem:Dictionary=meta.gems.find(state,str(state.slots[index]))
+		var effect:String=str(gem.get("core","")) if str(gem.get("rarity",""))=="gold" else ""
+		var duplicated:bool=not effect.is_empty() and int(duplicates.get(effect,0))>1 and int(first_slot.get(effect,-1))!=index
+		_gem_slot_card(p,Rect2(18+float(index%2)*391.0,134+float(index/2)*92.0,381,84),index,gem,duplicated)
+
+	T.label(p,"属性总览",Rect2(18,318,300,24),17,T.GOLD)
+	Loadout.stat_grid(p,Rect2(18,346,772,164),meta.get_stat_breakdown(),4,Vector2(8,8))
+	Loadout.effect_chips(p,Rect2(18,522,772,32),gem_effect_chips(),"未装备金色宝石")
+
+	T.label(page,"%d 房 · 预计通关 +%d 魔尘"%[route_count,completion_dust],Rect2(738,776,470,56),19,T.GOLD)
+	btn(page,"出发    ›",Rect2(1216,776,328,56),"start_route","",true,not route_loaded.ok)
 
 func spell_text(id:String,level:int=1)->String:
 	var d:Dictionary=catalog.describe_spell(id,level)
@@ -433,10 +532,6 @@ func spell_text(id:String,level:int=1)->String:
 func artifact_text(id:String)->String:
 	var d:Dictionary=catalog.describe_artifact(id)
 	return str(d.get("rarity_name",""))+" · "+str(d.get("scope_name","宝物"))+"\n\n"+str(d.get("description",""))+"\n\n"+str(d.get("requirement",""))
-func choice_text(id:String)->String:
-	var d:Dictionary=catalog.describe_spell(id,1)
-	var stats:Array=d.get("stats",[])
-	return str(d.get("summary",""))+"\n\n"+(str(stats[0]) if not stats.is_empty() else str(d.get("role","")))
 func codex():
 	var tabs=[["spells","法术",catalog.spells().size()],["artifacts","宝物",catalog.artifacts().size()],["gear","装备",0]]
 	for i in range(tabs.size()):
@@ -467,7 +562,7 @@ func grimoire():
 		if str(item.id)==selected:selected_exists=true
 	if not selected_exists:selected=""
 	if selected.is_empty() and not items.is_empty(): selected=str(items[0].id)
-	T.label(page,"%d种法术 · 六系自由混搭，重复选择升至三级"%all_items.size() if is_spell else "通用宝物强化属性与循环 · 首领庭印提供通关成长 · 均不占法术槽",Rect2(54,198,1400,40),21,T.MUTED)
+	T.label(page,"%d 种法术 · 六系自由混搭，重复选择升到 3 级"%all_items.size() if is_spell else "通用宝物强化属性与循环 · 首领庭印提供成长 · 均不占法术槽",Rect2(54,198,1400,40),21,T.MUTED)
 	T.panel(page,Rect2(54,254,478,542))
 	var counts={"all":all_items.size(),"generic":0,"boss":0,"fire":0,"ice":0,"lightning":0,"wind":0,"earth":0,"spirit":0}
 	for item in all_items:
@@ -545,7 +640,7 @@ func _filter_spells(scope:String):
 	render(screen,meta,catalog)
 
 func settings():
-	T.label(page,"调整显示与战斗信息，设置会在本机保存。",Rect2(54,198,1400,40),21,T.MUTED)
+	T.label(page,"调整显示与战斗信息，设置保存在本机。",Rect2(54,198,1400,40),21,T.MUTED)
 	var p=T.panel(page,Rect2(54,256,934,550))
 	T.label(p,"画面显示",Rect2(32,22,830,44),28,T.GOLD)
 	T.label(p,"显示模式",Rect2(32,90,390,50),23)
@@ -567,71 +662,8 @@ func settings():
 		T.label(controls,commands[i][0],Rect2(32,94+i*52,194,42),20,T.MUTED)
 		T.label(controls,commands[i][1],Rect2(222,94+i*52,278,42),20)
 	bar(controls,Rect2(32,428,460,1),Color(T.GOLD,.3))
-	T.paragraph(controls,"莉奈播放已有骨骼待机动作。\n拖动旋转，双击模型复位。",Rect2(32,454,460,68),20,T.MUTED)
+	T.paragraph(controls,"拖动旋转，双击复位。",Rect2(32,454,460,68),20,T.MUTED)
 
-func preview_navigation():
-	var labels=["开局","局内","法术奖励","宝物箱","商店","暂停","结算"]
-	for i in range(PREVIEWS.size()): btn(page,labels[i],Rect2(54+i*215,752,199,50),"navigate",PREVIEWS[i],screen==PREVIEWS[i])
-func preview():
-	match screen:
-		"opening","reward": spell_choices()
-		"chest","shop": artifact_choices()
-		"hud","pause": hud_preview()
-		"result": result_preview()
-	preview_navigation()
-func spell_choices():
-	T.label(page,"选择起始法术" if screen=="opening" else "选择一份新的魔法",Rect2(54,242,1300,52),32)
-	var reward_examples={"fire":["F01","F11","F10"],"ice":["I01","I07","I09"],"lightning":["L03","L08","L09"],"wind":["W02","W08","W09"],"earth":["R03","R07","R09"],"spirit":["S01","S04","S09"]}
-	var ids=catalog.starter_ids(route_school) if screen=="opening" else reward_examples.get(route_school,reward_examples.fire)
-	for i in range(3):
-		var p=T.panel(page,Rect2(54+i*502,316,478,404),true)
-		art(p,"seal",Rect2(14,2,146,146),Color(T.GOLD,.35))
-		T.icon(p,ids[i],Rect2(32,20,110,110),catalog.school_color(route_school))
-		T.label(p,catalog.spell_name(str(ids[i])),Rect2(164,28,280,50),30)
-		T.label(p,"起始法术 · 一级" if screen=="opening" else "新法术 · 一级",Rect2(166,88,280,32),19,T.GOLD)
-		var info:Dictionary=catalog.describe_spell(ids[i],1)
-		bar(p,Rect2(30,149,418,1),Color(T.GOLD,.3))
-		T.label(p,str(info.role),Rect2(30,166,418,32),20,T.GOLD)
-		T.paragraph(p,str(info.summary),Rect2(30,212,418,84),20,T.TEXT)
-		T.label(p,str(info.stats[0]) if not info.stats.is_empty() else str(info.role),Rect2(30,300,418,32),18,T.MUTED)
-		btn(p,"选用并预览",Rect2(30,344,418,48),"choose_preview",ids[i],true)
-func artifact_choices():
-	if screen=="shop":
-		shop_preview()
-		return
-	var items=catalog.artifacts()
-	T.label(page,"遗迹商店" if screen=="shop" else "开启宝物箱",Rect2(54,242,1300,52),32)
-	for i in range(mini(3,items.size())):
-		var item=items[i]
-		var p=T.panel(page,Rect2(54+i*502,316,478,404))
-		art(p,"seal",Rect2(12,10,138,138),Color(Color(item.color),.25))
-		artifact_picture(p,str(item.id),str(item.rarity),Rect2(28,26,106,106))
-		T.label(p,str(item.name),Rect2(150,37,298,48),28)
-		T.label(p,"样例展品 · 不计入持有",Rect2(150,92,300,32),18,T.MUTED)
-		T.label(p,str(item.rarity_name)+"宝物",Rect2(30,148,418,32),19,T.MUTED)
-		T.paragraph(p,str(item.description),Rect2(30,194,418,126),20)
-		btn(p,"查看图鉴",Rect2(30,344,418,48),"artifact_detail",str(item.id))
-func shop_preview():
-	var economy:Dictionary=catalog.economy_summary()
-	T.label(page,"遗迹商店",Rect2(54,242,950,52),32)
-	T.label(page,"本局金币   —   /   商品样例",Rect2(1110,246,430,42),20,T.GOLD)
-	var items=catalog.artifacts()
-	for i in range(mini(3,items.size())):
-		var item=items[i]
-		var p=T.panel(page,Rect2(54+i*344,316,326,404))
-		artifact_picture(p,str(item.id),str(item.rarity),Rect2(18,22,86,86))
-		T.label(p,str(item.name),Rect2(114,25,196,46),25)
-		T.label(p,str(item.rarity_name)+"宝物",Rect2(114,75,196,32),19,T.MUTED)
-		var description=str(item.description)
-		if description.length()>52: description=description.left(51)+"…"
-		T.paragraph(p,description,Rect2(24,136,278,110),19)
-		T.label(p,"价格   %s 金币"%number(item.price),Rect2(24,290,278,32),23,T.GOLD)
-		btn(p,"查看商品",Rect2(24,344,278,48),"artifact_detail",str(item.id))
-	var supply=T.panel(page,Rect2(1100,316,444,404),true)
-	T.label(supply,"酒馆补给",Rect2(28,22,388,48),30)
-	T.paragraph(supply,str(economy.shop_supply_text),Rect2(28,98,388,110),21,T.TEXT)
-	T.paragraph(supply,str(economy.shop_rule_text),Rect2(28,224,388,94),19,T.MUTED)
-	btn(supply,"预览补给说明",Rect2(28,344,388,48),"supply_preview")
 func bar(parent:Node,rect:Rect2,color:Color):
 	var c=ColorRect.new()
 	c.position=rect.position
@@ -639,40 +671,3 @@ func bar(parent:Node,rect:Rect2,color:Color):
 	c.color=color
 	c.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	parent.add_child(c)
-func hud_preview():
-	var p=T.panel(page,Rect2(54,246,1490,474))
-	T.label(p,"遗迹庭院 · 首房",Rect2(30,18,800,42),28,T.GOLD)
-	var values=meta.get_run_snapshot().get("player",meta.get_preview_stats())
-	T.label(p,"生命  %s / %s"%[number(values.get("health",0)),number(values.get("health",0))],Rect2(30,82,430,32),21)
-	bar(p,Rect2(30,126,360,13),Color("d8637c"))
-	T.label(p,"护盾  %s / %s"%[number(values.get("shield",0)),number(values.get("shield",0))],Rect2(30,153,430,32),21)
-	bar(p,Rect2(30,197,360,10),T.CYAN)
-	art(p,"seal",Rect2(792,44,350,280),Color(T.CYAN,.45))
-	T.label(p,"局内界面预览",Rect2(566,100,650,52),30,T.GOLD)
-	T.label(p,"真实战斗请从准备页进入首房",Rect2(566,162,800,38),22,T.MUTED)
-	for i in range(8):
-		var slot=T.panel(p,Rect2(265+i*120,352,104,100))
-		if i==0:
-			T.icon(slot,opening_spell,Rect2(20,5,64,64),catalog.school_color(str(catalog.describe_spell(opening_spell).get("school","fire"))))
-			T.label(slot,"等级 1",Rect2(20,70,80,24),15,T.GOLD)
-		else: T.label(slot,"空槽",Rect2(25,31,70,34),18,T.MUTED)
-	T.label(p,"示例法术：%s · 此处不推进吟唱或冷却"%catalog.spell_name(opening_spell),Rect2(30,274,1300,35),20,T.MUTED)
-	if screen=="pause":
-		var dim=ColorRect.new()
-		dim.color=Color(.025,.04,.065,.88)
-		dim.position=Vector2(54,246)
-		dim.size=Vector2(1490,474)
-		page.add_child(dim)
-		var modal=T.panel(page,Rect2(500,298,600,358))
-		T.label(modal,"休息片刻",Rect2(42,24,516,62),40)
-		T.label(modal,"这是暂停界面预览。",Rect2(44,102,512,40),22,T.MUTED)
-		btn(modal,"继续预览",Rect2(42,186,516,58),"navigate","hud",true)
-		btn(modal,"返回准备",Rect2(42,264,516,52),"navigate","prepare")
-func result_preview():
-	var p=T.panel(page,Rect2(270,246,1060,474),true)
-	T.label(p,"旅途的回响",Rect2(44,24,970,68),42)
-	T.paragraph(p,"真实试炼将在这里结算清房与魔尘。\n当前为界面预览，余额保持不变。",Rect2(44,122,970,88),23,T.MUTED)
-	bar(p,Rect2(44,232,970,1),Color(T.GOLD,.3))
-	T.label(p,"本局魔尘     —",Rect2(44,262,700,44),27)
-	T.label(p,"已有魔尘     %s"%meta.get_state().get("dust",0),Rect2(44,320,700,44),27,T.GOLD)
-	btn(p,"返回藏书室",Rect2(700,388,314,58),"navigate","home",true)

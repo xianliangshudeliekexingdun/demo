@@ -2,7 +2,6 @@ extends Node2D
 const Meta=preload("res://scripts/core/meta_progression.gd")
 const Suite=preload("res://scripts/ui/atelier_ui.gd")
 const Catalog=preload("res://scripts/ui/grimoire_catalog.gd")
-const FirstRoom=preload("res://scripts/core/first_room_run.gd")
 const CourtyardRoute=preload("res://scripts/core/courtyard_route_run.gd")
 const RoomView=preload("res://scripts/presentation/first_room_view.gd")
 const RoomUI=preload("res://scripts/ui/first_room_ui.gd")
@@ -10,8 +9,7 @@ var meta
 var ui
 var screen="home"
 var selected=""
-var opening_spell="F01"
-var route_school="fire"
+var route_school="" # Compatibility mirror of the prepared run's opening school.
 var history:Array[String]=[]
 var save_path="user://meta_progression_v1.json"
 var load_error=""
@@ -72,8 +70,7 @@ func configure_input():
 			InputMap.action_add_event(action,event)
 func refresh(message:String=""):
 	ui.preferences=visual_options.duplicate(true)
-	ui.route_school=route_school
-	ui.render(screen,meta,Catalog,selected,message if load_error.is_empty() else load_error,opening_spell)
+	ui.render(screen,meta,Catalog,selected,message if load_error.is_empty() else load_error)
 func navigate(next:String,remember:bool=true):
 	if room_run!=null:
 		return
@@ -83,19 +80,7 @@ func navigate(next:String,remember:bool=true):
 	if not load_error.is_empty() and next!="home" and next!="settings":
 		refresh(load_error)
 		return
-	var entering_preview=next in Suite.PREVIEWS
-	if entering_preview and not meta.is_in_run():
-		var result=meta.begin_run()
-		if not result.ok:
-			refresh(str(result.error))
-			return
-	elif not entering_preview and meta.is_in_run(): meta.end_run()
-	var return_to_prepare=next=="prepare" and screen in Suite.PREVIEWS
-	if return_to_prepare:
-		for i in range(history.size()-1,-1,-1):
-			if history[i] in Suite.PREVIEWS or history[i]=="prepare": history.remove_at(i)
 	if next=="home": history.clear()
-	elif return_to_prepare: pass
 	elif remember and next!=screen: history.append(screen)
 	screen=next
 	selected=""
@@ -106,12 +91,7 @@ func handle_request(action:String,payload:String):
 		_handle_gem_request(action,payload)
 		return
 	match action:
-		"start_room": start_first_room()
 		"start_route": start_courtyard_route()
-		"route_school":
-			if payload in ["fire","ice","lightning","wind","earth","spirit"]:
-				route_school=payload
-				refresh()
 		"navigate": navigate(payload)
 		"codex_tab":
 			if payload in ["spells","artifacts","gear"]:
@@ -146,15 +126,6 @@ func handle_request(action:String,payload:String):
 			else: result=meta.request_equip(kind,payload)
 			selected=payload if not payload.is_empty() else selected
 			refresh("已保存" if result.ok else str(result.error))
-		"choose_preview":
-			opening_spell=payload
-			navigate("hud")
-		"artifact_detail":
-			ui.codex_tab="artifacts"
-			navigate("codex")
-			selected=payload
-			refresh()
-		"supply_preview": refresh("每店一次免费补给；当前为界面预览，生命与金币未变更。")
 		"detail_level":
 			var id=selected if not selected.is_empty() else "F01"
 			if is_instance_valid(ui.detail_label): ui.detail_label.text=ui.spell_text(id,int(payload))
@@ -263,13 +234,10 @@ func _unhandled_input(event):
 		else: handle_request("back","")
 		get_viewport().set_input_as_handled()
 
-func start_first_room():
-	_start_room(false)
-
 func start_courtyard_route():
-	_start_room(true)
+	_start_route()
 
-func _start_room(map_trial:bool):
+func _start_route():
 	if not load_error.is_empty():
 		refresh(load_error)
 		return
@@ -279,16 +247,16 @@ func _start_room(map_trial:bool):
 		if not end_result.ok:
 			refresh(str(end_result.error))
 			return
-	var result=meta.begin_playable_run("route45" if map_trial else "legacy")
+	var result=meta.begin_playable_run("route45")
 	if not result.ok:
 		refresh(str(result.error))
 		return
-	room_map_trial=map_trial
+	room_map_trial=true
 	room_run_id=str(result.get("run_id",""))
-	room_run=CourtyardRoute.new() if map_trial else FirstRoom.new()
+	room_run=CourtyardRoute.new()
 	var actual_seed=room_seed if room_seed>=0 else int(Time.get_unix_time_from_system()*1000)+Time.get_ticks_usec()
 	var run_snapshot:Dictionary=result.snapshot.duplicate(true)
-	if map_trial:run_snapshot["route_school"]=route_school
+	# The catalyst in this locked snapshot decides the opening school.
 	var configured=room_run.configure(run_snapshot,actual_seed)
 	if not configured.ok:
 		var cleanup=meta.settle_playable_run(room_run_id,[])
@@ -297,6 +265,7 @@ func _start_room(map_trial:bool):
 		room_run_id=""
 		refresh(str(configured.error) if cleanup.ok else str(cleanup.error))
 		return
+	route_school=str(room_run.opening_school)
 	room_accumulator=0
 	room_release_gate=true
 	room_result_reason=""
@@ -395,9 +364,8 @@ func _handle_room_request(action:String,payload):
 		"room_save_retry":_settle_room()
 		"room_retry":
 			if room_settlement.get("ok",false):
-				var retry_map_trial=room_map_trial
 				_destroy_room()
-				_start_room(retry_map_trial)
+				_start_route()
 		"room_return":
 			if room_settlement.get("ok",false):
 				_destroy_room()

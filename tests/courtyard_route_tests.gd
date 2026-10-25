@@ -107,6 +107,7 @@ func use_portal(battle) -> bool:
 
 func run() -> int:
 	configuration_and_sources()
+	opening_school_rule()
 	geometry_and_snapshots()
 	batch_boundaries()
 	transition_preserves_state()
@@ -149,6 +150,39 @@ func configuration_and_sources():
 		var timed = fresh()
 		for frame in fps: timed.step(1.0/float(fps))
 		check(near(timed.time,1) and near(timed.room_time,1), "same fixed simulation at %d FPS" % fps)
+
+func opening_school_rule():
+	var fire = Route.new()
+	check(fire.configure({"equipment":{"catalyst":"MC04"},"levels":{"MC04":1}},41).ok, "fire catalyst configures")
+	check(fire.opening_school == "fire" and fire.opening_source == "catalyst", "equipped catalyst owns the opening school")
+	check(fire.initial_choices().map(func(item): return str(item.id)) == ["F01","F03","F08"], "fire catalyst offers the fire basics")
+	var ice_over_fire = Route.new()
+	check(ice_over_fire.configure({"route_school":"fire","equipment":{"catalyst":"MC05"},"levels":{"MC05":2}},41).ok, "ice catalyst overrides stale school")
+	check(ice_over_fire.opening_school == "ice" and ice_over_fire.initial_choices().map(func(item): return str(item.id)) == ["I01","I02","I03"], "catalyst wins over a legacy school request")
+	var locked = Route.new()
+	check(locked.configure({"equipment":{"catalyst":""},"levels":{}},77).ok, "account snapshot without catalyst configures")
+	check(locked.opening_school == "all" and locked.opening_source == "none", "no catalyst opens the full basic pool")
+	var offered: Array = locked.initial_choices().map(func(item): return str(item.id))
+	check(offered.size() == 3 and offered[0] != offered[1] and offered[1] != offered[2] and offered[0] != offered[2], "full-pool opening draws three distinct spells")
+	var pool: Array = []
+	for school in ["fire","ice","lightning","wind","earth","spirit"]:
+		for id in locked._school_initial_ids(school): pool.append(str(id))
+	check(pool.size() == 18, "six schools contribute eighteen basic spells")
+	check(offered.all(func(id): return id in pool), "full-pool opening only offers basic spells")
+	var replay = Route.new()
+	check(replay.configure({"equipment":{"catalyst":""},"levels":{}},77).ok, "same seed configures again")
+	check(replay.initial_choices().map(func(item): return str(item.id)) == offered, "full-pool opening is deterministic for one seed")
+	var rejected = ""
+	for id in pool:
+		if id not in offered: rejected = id
+	check(not rejected.is_empty() and not locked.choose_initial(rejected), "unoffered basic spell cannot start the run")
+	check(locked.choose_initial(offered[0]) and locked.phase == "combat", "offered spell starts the run")
+	var explicit = Route.new()
+	check(explicit.configure({"route_school":"wind","equipment":{"catalyst":""},"levels":{}},77).ok and explicit.opening_school == "wind", "explicit school stays available for fixtures")
+	var invalid = Route.new()
+	check(not invalid.configure({"route_school":"void","equipment":{"catalyst":""},"levels":{}},77).ok, "unknown school still rejected")
+	var bare = Route.new()
+	check(bare.configure({},77).ok and bare.opening_school == "fire" and bare.opening_source == "legacy", "equipment-free fixtures keep the historical fire default")
 
 func geometry_and_snapshots():
 	var catalog = Catalog.new()
@@ -319,7 +353,9 @@ func account_boundary():
 	var started: Dictionary = meta.begin_run()
 	check(started.ok and started.snapshot.preview_only, "route equipment lock is non-account run")
 	var battle = Route.new()
-	check(battle.configure(started.snapshot,29).ok and battle.choose_initial("F01"), "actual prepared equipment accepted")
+	var prepared: bool = battle.configure(started.snapshot,29).ok
+	var first_offer: String = str(battle.initial_choices()[0].id) if prepared else ""
+	check(prepared and battle.choose_initial(first_offer), "actual prepared equipment accepted")
 	clear_fixture(battle)
 	check(battle.cleared_rooms == [1] and not meta.settle_playable_run("map-trial",battle.cleared_rooms).ok, "real clear cannot credit non-account run")
 	check(meta.end_run().ok and not meta.is_in_run(), "exit releases equipment lock")

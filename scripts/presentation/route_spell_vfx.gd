@@ -178,12 +178,12 @@ func _zone(zone: Dictionary):
 		_ground(pos, radius, 4, 0.32, 0.0, seed)
 	elif kind == "rain_ground":
 		_ground(pos, radius, 1, alpha * 0.90, 0.0, seed)
-		_flame_scatter(pos, radius * 0.83, 7, 0.45, alpha * 0.72, seed)
-		_sparks(pos, radius * 0.8, 0.8, 5, alpha * 0.6, seed, true)
+		_flame_scatter(pos, radius * 0.83, 7, 0.45, alpha * 0.58, seed)
+		_sparks(pos, radius * 0.8, 0.8, 5, alpha * 0.48, seed, true)
 	elif kind == "field":
 		_ground(pos, radius, 4, alpha, 0.0, seed)
 		_ground(pos, radius * 0.65, 1, alpha * 0.50, 0.0, seed)
-		_flame_scatter(pos, radius * 0.83, 6, 0.54, alpha * 0.75, seed)
+		_flame_scatter(pos, radius * 0.83, 6, 0.54, alpha * 0.58, seed)
 	elif kind == "vortex":
 		_ground(pos, radius, 1, alpha * 0.74, 0.0, seed)
 		var count = 4 if _reduced else 9
@@ -192,8 +192,8 @@ func _zone(zone: Dictionary):
 			var angle = phase * TAU * 1.7 + (0.0 if _reduced else _clock * 2.7)
 			var r = radius * (0.72 - phase * 0.32)
 			var p = pos + Vector2.from_angle(angle) * r
-			_flame(_point(p, 0.10 + phase * 1.25), Vector2(radius * 0.62, 0.65 + phase * 0.55), alpha * 0.76, seed + index)
-		_sparks(pos, radius * 0.8, 1.7, 6, alpha * 0.7, seed, true)
+			_flame(_point(p, 0.10 + phase * 1.25), Vector2(radius * 0.62, 0.65 + phase * 0.55), alpha * 0.58, seed + index)
+		_sparks(pos, radius * 0.8, 1.7, 6, alpha * 0.56, seed, true)
 	if not bool(zone.get("context", {}).get("natural", true)):
 		_ground(pos, radius * 0.22, 7, 0.4, 0.75, seed)
 	_footprints.append({"kind": kind, "pos": pos, "radius": radius})
@@ -235,7 +235,7 @@ func _burning(actor: Dictionary, burn: Dictionary):
 	var alpha = minf(1.0, float(burn.get("remaining", 0)) / 0.3)
 	var seed = float(actor.get("id", 0))
 	_ground(pos, radius * 1.05, 7, alpha * 0.36, 0.0, seed)
-	_flame_scatter(pos, radius * 0.7, 3, 0.38, alpha * 0.65, seed)
+	_flame_scatter(pos, radius * 0.7, 3, 0.38, alpha * 0.50, seed)
 	_footprints.append({"kind": "burning", "pos": pos, "actor_id": actor.get("id", -1), "remaining": burn.get("remaining", 0)})
 	_note("burning")
 
@@ -322,8 +322,9 @@ func _effect(effect: Dictionary, snapshot: Dictionary):
 			_sparks(to, maxf(width * 0.4, 0.12), 0.65, 4, alpha * 0.75, seed, false, progress)
 			_footprints.append({"kind": kind, "from": from, "to": to, "half_width": float(effect.get("radius", 0.0))})
 		"cast":
-			_ground(pos, 0.48, 7, alpha * 0.42, 0.0, seed)
-			_flame(_point(pos, 0.82), Vector2(0.22, 0.45), alpha * 0.47, seed)
+			# Chant feedback stays below impact art; the ring and motion still read.
+			_ground(pos, 0.48, 7, alpha * 0.30, 0.0, seed)
+			_flame(_point(pos, 0.82), Vector2(0.22, 0.45), alpha * 0.36, seed)
 		"bolt_hit", "rain_impact", "bomb_impact", "aftershock", "artifact_explosion":
 			if bool(effect.get("blocked", false)):
 				_sparks(pos, 0.28, 0.65, 5, alpha * 0.8, seed, false, progress)
@@ -331,6 +332,7 @@ func _effect(effect: Dictionary, snapshot: Dictionary):
 				var heavy = kind in ["bomb_impact", "artifact_explosion"]
 				_ground(pos, radius, 1, alpha * 0.85, 0.0, seed)
 				_ground(pos, radius * (0.38 + progress * 0.62), 3, alpha * 0.92, 0.0, seed)
+				_core(_point(pos, 0.46), Vector3.ONE * (0.18 + alpha * 0.16), Color("fff1c4"))
 				_flame_scatter(pos, radius * 0.68, 8 if heavy else 4, (1.15 if heavy else 0.62) * alpha + 0.12, alpha * 0.9, seed)
 				_sparks(pos, radius * 0.86, 1.8 if heavy else 0.85, 13 if heavy else 7, alpha * 0.9, seed, false, progress)
 			_footprints.append({"kind": kind, "pos": pos, "radius": radius})
@@ -370,7 +372,7 @@ func _effect(effect: Dictionary, snapshot: Dictionary):
 				_flame(_point(center + Vector2.from_angle(index * TAU / 3.0) * 0.35, 0.5 + progress * 0.7), Vector2(0.14, 0.85), alpha * 0.42, seed + index)
 		"artifact_patch":
 			if progress < 0.15:
-				_flame_scatter(pos, radius * 0.6, 5, 0.45, alpha * 0.7, seed)
+				_flame_scatter(pos, radius * 0.6, 5, 0.45, alpha * 0.55, seed)
 		"artifact_cooldown":
 			var center: Vector2 = snapshot.get("player", {}).get("pos", pos)
 			_ground(center, 0.80, 7, alpha * 0.73, 0.9, seed)

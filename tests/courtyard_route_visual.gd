@@ -150,7 +150,7 @@ func resume_external_focus(label: String):
 			held.append(code)
 	focus_events.append({"where": label, "room": game.room_run.room_index,
 		"phase": game.room_run.phase, "time": game.room_run.time})
-	await click("继续试炼")
+	await click("继续")
 	for code in [KEY_A, KEY_D, KEY_W, KEY_S]:
 		await key(code, false)
 	game._process(0)
@@ -256,7 +256,7 @@ func pause_exercise():
 	await tick(.7)
 	check(game.room_run.get_snapshot() == frozen and game.room_view.camera.transform.is_equal_approx(camera), "route pause freezes rules, pose drive and follow camera")
 	await snap("05-room-04-paused-1280", Vector2i(1280, 720))
-	await click("继续试炼")
+	await click("继续")
 	var before: Vector2 = game.room_run.player.pos
 	await tick(.15)
 	check(game.room_run.player.pos == before, "resume release gate blocks held W")
@@ -430,7 +430,7 @@ func run():
 		check(game.room_run.clear_count == 1, "abandon exercise first earns one true local clear")
 		await key(KEY_ESCAPE, true)
 		await key(KEY_ESCAPE, false)
-		await click("结束试玩")
+		await click("结束本局")
 		check(game.room_settlement.get("ok", false) and not game.meta.is_in_run(), "abandon actual route releases equipment lock")
 		check(game.meta.get_state() == account_before and FileAccess.get_file_as_string(SAVE) == save_bytes_before, "abandon after actual clear still cannot award account currency")
 	check(max_actor_error < .00001 and projection_samples > 1000, "actual actor tracks core position across fifteen camera/geometry revisions")

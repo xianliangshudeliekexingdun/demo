@@ -54,6 +54,27 @@ func build_room(room: Dictionary) -> Dictionary:
 	if room_id >= 10:
 		_stone_tint = Color("566176")
 		_trim_tint = Color("82745c")
+	# Authoring identity now also carries a restrained palette: masonry stays cool,
+	# while trim shifts warm or green so six templates are not only geometry.
+	match template_id:
+		"outer_court":
+			_stone_tint = Color("58657c" if room_id < 10 else "556173")
+			_trim_tint = Color("7a6f52" if room_id < 10 else "86795a")
+		"processional_court":
+			_stone_tint = Color("5b6480" if room_id < 10 else "57607b")
+			_trim_tint = Color("836f4d" if room_id < 10 else "8d7856")
+		"twin_pillars":
+			_stone_tint = Color("59677b" if room_id < 10 else "556379")
+			_trim_tint = Color("7d6f58" if room_id < 10 else "887a62")
+		"long_colonnade":
+			_stone_tint = Color("566179" if room_id < 10 else "525d75")
+			_trim_tint = Color("776f59" if room_id < 10 else "827a63")
+		"staggered_walls":
+			_stone_tint = Color("5d6478" if room_id < 10 else "596074")
+			_trim_tint = Color("6f6c52" if room_id < 10 else "7a775c")
+		"broken_forecourt":
+			_stone_tint = Color("555d72" if room_id < 10 else "51596e")
+			_trim_tint = Color("8a7551" if room_id < 10 else "947f5b")
 	match template_id:
 		"outer_court":
 			_outer_court()
@@ -378,8 +399,9 @@ void vertex() { stone_position = VERTEX; }
 void fragment() {
     vec3 tex = texture(approved_slate, stone_position.xz * 0.16).rgb;
     float weather = sin(stone_position.x * 3.1 + stone_position.z * 1.7 + stone_position.y * 3.3);
-    ALBEDO = COLOR.rgb * (1.0 + weather * 0.028) * mix(vec3(1.0), tex * 1.7, 0.15);
-    ROUGHNESS = 0.98;
+    ALBEDO = COLOR.rgb * (1.0 + weather * 0.026) * mix(vec3(1.0), tex * 1.7, 0.15);
+    ROUGHNESS = 0.96;
+    SPECULAR = 0.28;
 }
 """
 	var material := ShaderMaterial.new()

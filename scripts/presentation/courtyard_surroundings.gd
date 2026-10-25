@@ -292,7 +292,8 @@ void fragment() {
 	float grain = sin(stone_position.x * 21.3 + stone_position.y * 7.7 + sin(stone_position.z * 16.1)) * sin(stone_position.z * 28.7 + stone_position.y * 12.4);
 	float wash = sin(stone_position.x * 4.1 + stone_position.z * 2.7 + stone_position.y * 3.3);
 	ALBEDO = COLOR.rgb * (1.0 + grain * 0.018 + wash * 0.030) * mix(vec3(1.0), tex * 1.7, 0.12);
-	ROUGHNESS = 0.98;
+	ROUGHNESS = 0.97;
+	SPECULAR = 0.22;
 }
 """
 	var material := ShaderMaterial.new()
@@ -323,6 +324,7 @@ void fragment() {
 	vec3 soil = mix(vec3(0.72, 0.61, 0.48), vec3(0.48, 0.65, 0.51), smoothstep(0.42, 0.73, broad));
 	ALBEDO = COLOR.rgb * soil * (0.76 + broad * 0.27 + broken * 0.23 + fine * 0.08 + grain * 0.022);
 	ROUGHNESS = 1.0;
+	SPECULAR = 0.15;
 }
 """
 	var material := ShaderMaterial.new()

@@ -127,7 +127,7 @@ func run():
 	await process_frame
 	await click("返回准备")
 	check(game.screen=="prepare" and not game.meta.is_in_run(),"pause returns to preparation and unlocks equipment")
-	check(not game.history.any(func(s):return s in game.Suite.PREVIEWS),"return preparation removes preview history")
+	check(not game.history.any(func(s):return s in ["opening","hud","reward","chest","shop","pause","result"]),"return preparation keeps no preview history")
 	game.navigate("home")
 	check(game.history.is_empty(),"return home clears navigation history")
 	DisplayServer.window_set_size(Vector2i(1600,900))

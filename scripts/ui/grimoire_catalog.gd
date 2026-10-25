@@ -1166,16 +1166,16 @@ static func _increase(multiplier: Variant) -> String:
 
 
 static func catalyst_description(school:String, count:int, sampling:Dictionary)->String:
-	var text: String = "%s关联%d术，起手独立选择。\n\n优先强度是额外优先抽本系的比例，不是固定单卡概率。" % [school_name(school),count]
+	var text: String = "%s · %d 术\n起始法术从本系三张中选一。\n法术书出现本系的倾向随等级提高；同屏不重复，也不保证出现。" % [school_name(school),count]
 	if float(sampling.get("owned_upgrade_weight",1.0)) > 1.0:
-		text += "\n已学可升级法术权重×%s。" % _number(sampling.owned_upgrade_weight)
-	text += "满级／前置先过滤，同屏不重复，不保证必出。\n\n等级越高越集中本系；均衡混学可卸下触媒。"
+		text += "\n已学可升级法术权重 ×%s。" % _number(sampling.owned_upgrade_weight)
+	text += "\n需要均衡混学时，可以随时卸下。"
 	return text
 
 
 static func catalyst_reference_text(sampling:Dictionary, level:int)->String:
 	var values:Array=sampling.get("catalyst_affinity_by_level",[])
-	if level<1 or level>values.size(): return "未读取到触媒倾向参数。"
+	if level<1 or level>values.size(): return "未读取触媒倾向参数。"
 	var priority:float=float(values[level-1])
 	var first:float=1.0/6.0+(1.0-1.0/6.0)*priority
-	return "优先强度%s：每张先增加本系优先分量，剩余按合法池抽取。\n若本系10术、跨系50术均合法且同权，第一张本系概率为%s；实际概率随满级、前置和合法权重改变。\n不是必出本系或指定法术的保底。" % [_percent(priority),_percent(first)]
+	return "本系优先 %s：抽取每一张时先加入本系分量，其余按合法池分配。\n本系 10 术、跨系 50 术都可抽时，第一张为本系的概率约 %s。\n满级、前置与已学权重会改变结果；这是倾向，不是保底。" % [_percent(priority),_percent(first)]

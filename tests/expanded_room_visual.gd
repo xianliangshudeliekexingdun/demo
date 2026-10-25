@@ -113,7 +113,7 @@ func snap(label: String, resolution: Vector2i):
 	# production auto-pause protection and resume through its real UI only.
 	if not was_paused and game.room_run.paused and game.room_result_reason.is_empty():
 		resize_pause_events.append({"capture": label, "resolution": resolution, "phase": game.room_run.phase, "core_time": game.room_run.time})
-		await click("继续试炼")
+		await click("继续")
 		for code in [KEY_A, KEY_D, KEY_W, KEY_S]: await key(code, false)
 		game._process(0)
 	game._refresh_room(0)
@@ -248,7 +248,7 @@ func run():
 	await tick(.7)
 	check(game.room_run.get_snapshot() == paused_snapshot and game.room_view.camera.transform.is_equal_approx(paused_camera), "pause freezes movement and following camera even while W held")
 	await snap("04-paused-follow-camera-1280", Vector2i(1280, 720))
-	await click("继续试炼")
+	await click("继续")
 	var before_gate: Vector2 = game.room_run.player.pos
 	await tick(.15)
 	check(game.room_run.player.pos == before_gate, "resume still requires releasing held W")

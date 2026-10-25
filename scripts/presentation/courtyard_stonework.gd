@@ -163,11 +163,12 @@ void fragment() {
 	float weather = sin(p.x * 0.48 + sin(p.y * 0.31)) * cos(p.y * 0.39 - p.x * 0.13);
 	float wall = smoothstep(floor_size.x * 0.5 - 2.1, floor_size.x * 0.5, abs(p.x));
 	float route = 1.0 - smoothstep(1.3, 3.8, abs(p.x + sin(p.y * 0.27) * 0.28));
-	vec3 tint = mix(vec3(0.69, 0.75, 0.79), vec3(0.82, 0.83, 0.88), route * 0.68);
-	tint *= 1.0 + weather * 0.075;
-	tint = mix(tint, vec3(0.48, 0.57, 0.55), wall * (0.24 + weather * 0.09));
+	vec3 tint = mix(vec3(0.67, 0.74, 0.82), vec3(0.86, 0.83, 0.78), route * 0.62);
+	tint *= 1.0 + weather * 0.060;
+	tint = mix(tint, vec3(0.46, 0.56, 0.57), wall * (0.24 + weather * 0.08));
 	ALBEDO = stone * tint;
-	ROUGHNESS = 0.96;
+	ROUGHNESS = 0.94;
+	SPECULAR = 0.30;
 }
 """
 	var material := ShaderMaterial.new()
@@ -368,8 +369,9 @@ void vertex() { stone_position = VERTEX; }
 void fragment() {
 	float grain = sin(stone_position.x * 21.3 + stone_position.y * 7.7 + sin(stone_position.z * 16.1)) * sin(stone_position.z * 28.7 + stone_position.y * 12.4);
 	float wash = sin(stone_position.x * 4.1 + stone_position.z * 2.7 + stone_position.y * 3.3);
-	ALBEDO = COLOR.rgb * (1.0 + grain * 0.022 + wash * 0.035);
-	ROUGHNESS = 0.96;
+	ALBEDO = COLOR.rgb * (1.0 + grain * 0.020 + wash * 0.032);
+	ROUGHNESS = 0.95;
+	SPECULAR = 0.28;
 }
 """
 	var material := ShaderMaterial.new()

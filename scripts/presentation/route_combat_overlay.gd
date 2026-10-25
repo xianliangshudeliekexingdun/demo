@@ -29,6 +29,9 @@ static func draw(view, state: Dictionary):
 		var axis = (p - back).normalized()
 		var sf = _scale(view)
 		var physical_radius: float = maxf(2.6 * sf, p.distance_to(view.screen_position(pos + Vector2(float(projectile.get("radius", 0.18)), 0), 0.55)))
+		# A dark separation halo keeps the hostile shot readable over fire, gold
+		# trim and bright spell impacts without enlarging its real footprint.
+		_disc(view, p, physical_radius * 2.35, Color(0.05, 0.015, 0.035, 0.55))
 		_line(view, p - axis * 17.0 * sf, p, Color(ENEMY, 0.64), physical_radius * 1.5)
 		_disc(view, p, physical_radius * 1.8, Color(0.9, 0.2, 0.42, 0.14))
 		_disc(view, p, physical_radius, Color("e75d91"))

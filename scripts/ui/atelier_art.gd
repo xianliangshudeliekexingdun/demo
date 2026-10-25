@@ -8,10 +8,6 @@ func _draw():
 	if motif=="background":
 		draw_rect(Rect2(Vector2.ZERO,size),Color("0e1320"))
 		for i in range(18):draw_circle(Vector2(1130,410),490-i*23,Color(.14,.2,.29,.032))
-		for x in [782,1420]:
-			draw_rect(Rect2(x,170,58,570),Color("151d2b"))
-			draw_rect(Rect2(x-12,154,82,24),Color("202a3b"))
-			draw_line(Vector2(x+3,190),Vector2(x+3,738),Color("2a3444"),2)
 		draw_arc(Vector2(1130,400),320,PI,TAU,72,Color("202b3d"),34,true)
 		draw_arc(Vector2(1130,400),293,PI,TAU,72,Color("354054"),1,true)
 		for i in range(18):

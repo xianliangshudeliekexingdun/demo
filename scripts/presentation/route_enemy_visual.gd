@@ -106,7 +106,7 @@ static func sync(node: Node3D, actor: Dictionary, time: float):
 	if approved != null:
 		approved.modulate = tint
 	# A material overlay is a tint cue only; shared base materials stay immutable.
-	var overlay: Material = _material("hurt_overlay", Color(1.0, 0.58, 0.36, 0.38), true) if hurt else (_material("warn_overlay", Color(1.0, 0.28, 0.08, 0.17), true) if warning else null)
+	var overlay: Material = _material("hurt_overlay", Color(1.0, 0.58, 0.36, 0.42), true) if hurt else (_material("warn_overlay", Color(1.0, 0.28, 0.08, 0.22), true) if warning else null)
 	for child in shape.get_children():
 		if child is MeshInstance3D:
 			child.material_overlay = overlay
@@ -308,6 +308,16 @@ static func _material(id: String, color: Color, unlit: bool = false) -> Standard
 	var material = StandardMaterial3D.new()
 	material.albedo_color = color
 	material.roughness = 0.88
+	var id_lower := id.to_lower()
+	if not unlit:
+		if id_lower.contains("gold") or id_lower.contains("crown") or id_lower.contains("horn") or id_lower.contains("armor") or id_lower.contains("staff"):
+			# Metal trim and armour catch the warm key; bodies stay matte.
+			material.metallic = 0.38
+			material.roughness = 0.62
+		elif id_lower.contains("robe") or id_lower.contains("cloth") or id_lower.contains("petal") or id_lower.contains("leaf") or id_lower.contains("hide"):
+			material.roughness = 0.96
+		else:
+			material.roughness = 0.86
 	if unlit:
 		material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	if color.a < 1.0:

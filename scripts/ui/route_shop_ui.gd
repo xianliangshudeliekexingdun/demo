@@ -20,11 +20,11 @@ func build(snapshot: Dictionary) -> void:
 	var shop: Dictionary = snapshot.shop
 	var panel = T.panel(self, Rect2(214, 100, 1172, 704), true)
 	panel.name = "ShopPanel"
-	T.label(panel, "旅 途 商 店", Rect2(36, 22, 700, 50), 32, T.GOLD)
-	T.label(panel, "第 %d 房后  ·  每店最多购买一件宝物" % int(shop.after_room), Rect2(36, 77, 800, 28), 18, T.MUTED)
+	T.label(panel, "旅途商店", Rect2(36, 22, 700, 50), 32, T.GOLD)
+	T.label(panel, "第 %d 房之后 · 每店限购一件" % int(shop.after_room), Rect2(36, 77, 800, 28), 18, T.MUTED)
 	_balance = T.label(panel, "", Rect2(892, 29, 244, 40), 26, T.GOLD)
 	_balance.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	_supply = T.label(panel, "免费补给已领取：生命上限 +%s  ·  实际恢复 %s 生命" % [Catalog._number(shop.max_health_gain), Catalog._number(shop.health_restored)], Rect2(36, 117, 1098, 34), 19, T.CYAN)
+	_supply = T.label(panel, "补给已领取：生命上限 +%s · 回复 %s 生命" % [Catalog._number(shop.max_health_gain), Catalog._number(shop.health_restored)], Rect2(36, 117, 1098, 34), 19, T.CYAN)
 	_offers = shop.offers.duplicate(true)
 	var start: float = (1172.0 - float(_offers.size()) * 344.0 - float(maxi(0, _offers.size() - 1)) * 24.0) * 0.5
 	for index in _offers.size():
@@ -53,13 +53,13 @@ func build(snapshot: Dictionary) -> void:
 		buy.set_meta("shop_item_id", id)
 		_buy_buttons.append(buy)
 	if _offers.is_empty():
-		var empty = T.label(panel, "当前没有符合构筑条件的未持有宝物，补给已正常领取。", Rect2(54, 255, 1064, 80), 23, T.MUTED)
+		var empty = T.label(panel, "没有符合条件的宝物；补给已领取。", Rect2(54, 255, 1064, 80), 23, T.MUTED)
 		empty.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_status = T.label(panel, "", Rect2(36, 610, 776, 50), 18, T.CYAN)
 	var revision: int = _revision
 	_close = T.button(panel, "返回房间", Rect2(866, 610, 270, 52), func(): requested.emit("room_shop_close", {"room_revision": revision}), true)
 	_close.name = "CloseShop"
-	T.label(panel, "方向键 / Tab 选择  ·  Enter 确认  ·  Esc 暂停  ·  走进上方传送门继续旅途", Rect2(36, 674, 1100, 26), 15, T.MUTED)
+	T.label(panel, "方向键 / Tab 选择 · Enter 确认 · Esc 暂停 · 上方传送门继续", Rect2(36, 674, 1100, 26), 15, T.MUTED)
 	refresh(snapshot)
 
 
@@ -69,15 +69,15 @@ func refresh(snapshot: Dictionary) -> void:
 	var shop: Dictionary = snapshot.shop
 	_balance.text = "金币  %d" % int(snapshot.gold)
 	var purchased: String = str(shop.purchased_id)
-	_status.text = "本店已购 · 宝物已生效，可以继续前进。" if not purchased.is_empty() else "本店商品固定；不买也可以返回房间，走门继续。"
+	_status.text = "已购买 · 宝物已生效" if not purchased.is_empty() else "商品固定；可直接返回，走门继续。"
 	for index in _buy_buttons.size():
 		var offer: Dictionary = _offers[index]
 		var bought: bool = str(offer.id) == purchased
 		var affordable: bool = int(snapshot.gold) >= int(offer.price)
 		var button: Button = _buy_buttons[index]
 		button.disabled = not purchased.is_empty() or not affordable
-		button.text = "已购买 · %d 金币" % int(offer.price) if bought else "本店额度已用" if not purchased.is_empty() else "购买 · %d 金币" % int(offer.price) if affordable else "金币不足 · 需 %d" % int(offer.price)
-		button.tooltip_text = "本店最多购买一件宝物。" if not purchased.is_empty() else "购买后立即生效。" if affordable else "还差 %d 金币。" % (int(offer.price) - int(snapshot.gold))
+		button.text = "已购买 · %d 金币" % int(offer.price) if bought else "本店已购" if not purchased.is_empty() else "购买 · %d 金币" % int(offer.price) if affordable else "金币不足（需 %d）" % int(offer.price)
+		button.tooltip_text = "每店限购一件。" if not purchased.is_empty() else "购买后立即生效。" if affordable else "还差 %d 金币。" % (int(offer.price) - int(snapshot.gold))
 	_wire_focus()
 
 

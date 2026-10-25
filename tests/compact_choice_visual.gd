@@ -304,7 +304,7 @@ func run():
 	save_before = FileAccess.get_file_as_string(SAVE)
 	await click_text("开始冒险     ›")
 	check(game.screen == "prepare", "genuine home reaches preparation")
-	await click_text("进入60房路线    ›")
+	await click_text("出发    ›")
 	check(game.room_run != null and game.room_run.phase == "choosing", "genuine preparation opens route initial choice")
 	if game.room_run == null:
 		await finish()
@@ -345,7 +345,7 @@ func run():
 	# Rebuild an actual initial modal by pausing and resuming while it is flipping.
 	await key(KEY_ESCAPE)
 	check(game.room_run.paused and game.room_ui.last_modal == "pause", "Esc interrupts choice into genuine pause")
-	await click_text("继续试炼")
+	await click_text("继续")
 	var old_cards: Array = choices()
 	check(old_cards.size() == 3 and old_cards.all(func(button): return button.disabled), "resume creates a fresh protected flip")
 	await key(KEY_ESCAPE)
@@ -354,7 +354,7 @@ func run():
 	check(old_cards.all(func(button): return not is_instance_valid(button)), "closed flip releases former card nodes")
 	await snap("08-paused-entrance-cleanup")
 	# Time a fresh reveal without synchronous screenshots or extra input in flight.
-	await click_text("继续试炼")
+	await click_text("继续")
 	var timed_start: int = Time.get_ticks_msec()
 	while not enabled() and Time.get_ticks_msec() - timed_start < 650:
 		check(choices().all(func(button): return button.disabled), "timed flip never partially unlocks")
@@ -365,7 +365,7 @@ func run():
 	# Preference is changed in memory only, without saving user settings.
 	game.visual_options.reduced_motion = true
 	game.room_ui.set_visual_options(game.visual_options)
-	await click_text("继续试炼")
+	await click_text("继续")
 	check(enabled(), "reduced motion shows fully selectable cards immediately")
 	for button in choices(): check(button.get_parent().scale.is_equal_approx(Vector2.ONE), "reduced motion has no flipped scale")
 	check(game.room_run.get_snapshot() == initial_snapshot, "pause/resume and reduced motion preserve starting core")
@@ -386,8 +386,8 @@ func run():
 		check(game.room_ui.last_modal == "" and choices().is_empty(), "successful whole-card choice closes modal")
 		await snap("10-actual-whole-card-choice-combat")
 		await key(KEY_ESCAPE)
-		await click_text("结束试玩")
-		await click_text("再次试玩")
+		await click_text("结束本局")
+		await click_text("再来一局")
 		check(game.room_run.phase == "choosing" and enabled(), "genuine retry opens immediately with reduced motion")
 		await mouse_to(Vector2(800, 155))
 		await key(KEY_TAB)

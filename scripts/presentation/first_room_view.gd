@@ -318,23 +318,31 @@ func _build_world() -> void:
 	world.name = "CourtyardStage"
 	room_viewport.add_child(world)
 	var env_node := WorldEnvironment.new()
+	env_node.name = "CourtyardRenderEnvironment"
 	var env := Environment.new()
 	env.background_mode = Environment.BG_COLOR
-	env.background_color = Color("101620")
+	env.background_color = Color("0d141f")
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	env.ambient_light_color = Color("a1aecb")
-	env.ambient_light_energy = 0.23
+	env.ambient_light_color = Color("9aa9c4")
+	env.ambient_light_energy = 0.30
 	env.ssao_enabled = true
 	env.ssao_radius = 1.0
 	env.ssao_intensity = 1.25
 	# Local emissive planes and real lights retain the dark surround in this
 	# Compatibility viewport; the rendered A/B probe rejected global glow.
 	env.glow_enabled = false
-	env.tonemap_mode = Environment.TONE_MAPPER_LINEAR
+	env.tonemap_mode = Environment.TONE_MAPPER_FILMIC
+	env.tonemap_exposure = 1.05
+	# Restrained distance haze separates remote ruins without washing the arena.
+	# Danger footprints remain in the un-fogged readability overlay above it.
+	env.fog_enabled = true
+	env.fog_light_color = Color("182234")
+	env.fog_light_energy = 0.75
+	env.fog_density = 0.0045
 	env_node.environment = env
 	world.add_child(env_node)
-	_light(Vector3(-55, -24, 0), Color("d8dded"), 0.72, true)
-	_light(Vector3(-28, 140, 0), Color("6d8bb8"), 0.11, false)
+	_light(Vector3(-55, -24, 0), Color("ffe0b8"), 0.78, true)
+	_light(Vector3(-28, 140, 0), Color("7c9bca"), 0.16, false)
 	_stage = Node3D.new()
 	_stage.name = "Architecture"
 	world.add_child(_stage)
@@ -655,6 +663,9 @@ func _prepare_model(node: Node) -> void:
 			var source = node.get_active_material(i)
 			if source is StandardMaterial3D:
 				var copy := source.duplicate() as StandardMaterial3D
+				# The approved model keeps its textures and clips. Slightly tighter
+				# specular response separates Lina from the surrounding matte stone.
+				copy.roughness = minf(copy.roughness, 0.82)
 				node.set_surface_override_material(i, copy)
 				_lina_materials.append(copy)
 	for child in node.get_children():
@@ -677,7 +688,10 @@ func _mat(id: String, tint: Color, unlit: bool = false) -> StandardMaterial3D:
 		return _materials[id]
 	var m := StandardMaterial3D.new()
 	m.albedo_color = tint
-	m.roughness = 0.92
+	m.roughness = 0.90
+	if not unlit and (id.contains("gold") or id.contains("brass") or id.contains("metal")):
+		m.metallic = 0.45
+		m.roughness = 0.58
 	if unlit:
 		m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	if tint.a < 1.0:
@@ -847,6 +861,12 @@ func _draw_effect(effect: Dictionary) -> void:
 		"hurt", "damage":
 			var amount: float = float(effect.get("amount", 0.0))
 			var color := Color("ffbca0") if effect.kind == "hurt" else Color("fff0cd")
+			if effect.kind == "hurt":
+				# Shield loss and real health loss are already separate fields;
+				# the ring only reports which one the hit actually consumed.
+				var health_loss: float = float(effect.get("health_damage", 0.0))
+				var hurt_tint := Color("ff8f7c") if health_loss > 0.0 else Color("7fd7e8")
+				_ground_ring(pos, 0.42 + progress * 0.28, Color.TRANSPARENT, Color(hurt_tint, alpha * 0.72), 2)
 			if amount > 0 and bool(_visual_options.damage_numbers):
 				_center_text("%d" % int(round(amount)), p - Vector2(0, (45 + progress * 22) * scale_factor), 20, Color(color, alpha))
 		"death":

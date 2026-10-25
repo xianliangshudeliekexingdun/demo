@@ -22,6 +22,7 @@ var _economy: Dictionary = {}
 var _state: Dictionary = {}
 var _run_snapshot: Dictionary = {}
 var _loaded: bool = false
+var _display_limits: Dictionary = {}
 var gems = Gems.new()
 
 func _init(path: String = DEFAULT_SAVE_PATH):
@@ -369,6 +370,70 @@ func get_preview_stats() -> Dictionary:
 		stats.shield += converted * float(gems.rules.cores.aegis.shield_per_life)
 	return stats
 
+## Read-only breakdown for the preparation screen. "bonus" is the net change the
+## equipped gems make, so aegis conversions stay visible instead of hidden in the
+## final number. Caps come from the same data files the combat layer loads.
+func get_stat_breakdown() -> Array:
+	if _base.is_empty(): return []
+	var base: Dictionary = _base.get("player", {})
+	var final_stats: Dictionary = get_preview_stats()
+	var limits: Dictionary = _stat_display_limits()
+	var effects: Array = gems.active_effects(_state.gem_state)
+	var aegis_note: String = "含血晶屏障转换" if "aegis" in effects else ""
+	var rows: Array = []
+	rows.append(_stat_row("attack", "攻击力", "flat", base, final_stats, 0.0, ""))
+	rows.append(_stat_row("health", "生命上限", "flat", base, final_stats, 0.0, aegis_note))
+	rows.append(_stat_row("shield", "护盾上限", "flat", base, final_stats, 0.0, aegis_note))
+	var defense_row: Dictionary = _stat_row("defense", "防御", "flat", base, final_stats, 0.0, "")
+	var coefficient: float = float(limits.get("defense_coefficient", 0.0))
+	var reduction_cap: float = float(limits.get("maximum_damage_reduction", 0.0))
+	var defense: float = maxf(0.0, float(defense_row.final))
+	if coefficient > 0.0:
+		var reduction: float = defense / (coefficient + defense) if defense > 0.0 else 0.0
+		var shown: float = minf(reduction, reduction_cap) if reduction_cap > 0.0 else reduction
+		defense_row["cap_label"] = "减伤 " + _stat_percent(shown)
+		defense_row["tooltip"] = "防御 %s · 实际减伤 %s%s" % [_stat_number(defense), _stat_percent(shown), ("（综合减伤上限 %s）" % _stat_percent(reduction_cap)) if reduction_cap > 0.0 else ""]
+	rows.append(defense_row)
+	rows.append(_stat_row("crit_rate", "暴击率", "percent", base, final_stats, 1.0, ""))
+	rows.append(_stat_row("crit_multiplier", "暴击伤害", "multiplier", base, final_stats, 0.0, ""))
+	rows.append(_stat_row("cdr", "冷却缩减", "percent", base, final_stats, float(limits.get("cooldown_reduction", 0.0)), ""))
+	rows.append(_stat_row("speed", "战斗移速", "percent", base, final_stats, float(limits.get("move_speed_cap", 0.0)), ""))
+	return rows
+
+func _stat_row(key: String, label: String, unit: String, base: Dictionary, final_stats: Dictionary, cap: float, note: String) -> Dictionary:
+	var base_value: float = float(base.get(key, 0.0))
+	var final_value: float = float(final_stats.get(key, base_value))
+	var at_cap: bool = cap > 0.0 and final_value >= cap - 0.0001
+	return {
+		"key": key, "label": label, "unit": unit,
+		"base": base_value, "bonus": final_value - base_value, "final": final_value,
+		"cap": cap, "at_cap": at_cap, "note": note,
+		"cap_label": ("已达上限" if at_cap else "上限 " + _stat_percent(cap)) if cap > 0.0 else "",
+		"tooltip": "",
+	}
+
+func _stat_display_limits() -> Dictionary:
+	if not _display_limits.is_empty(): return _display_limits
+	var rules: Dictionary = {}
+	var read: Dictionary = _read_json("res://data/generic_artifacts_v1.json")
+	if bool(read.get("ok", false)) and read.get("data", {}) is Dictionary:
+		rules = read.data.get("rules", {})
+	var limits: Dictionary = _base.get("limits", {})
+	_display_limits = {
+		"defense_coefficient": float(rules.get("defense_coefficient", 0.0)),
+		"maximum_damage_reduction": float(rules.get("maximum_damage_reduction", 0.0)),
+		"move_speed_cap": float(rules.get("combat_move_speed_bonus_cap", 0.0)),
+		"cooldown_reduction": float(limits.get("cooldown_reduction", 0.0)),
+	}
+	return _display_limits
+
+static func _stat_number(value: float) -> String:
+	return str(int(roundf(value))) if is_equal_approx(value, roundf(value)) else String.num(value, 1)
+
+static func _stat_percent(value: float) -> String:
+	var percent: float = value * 100.0
+	return (_stat_number(percent) + "%")
+
 func begin_run() -> Dictionary:
 	if not _loaded:
 		return _fail("存档尚未成功读取。")
@@ -401,6 +466,7 @@ func _make_snapshot(preview_only: bool) -> Dictionary:
 		"equipment": _state.equipped.duplicate(true),
 		"levels": _state.levels.duplicate(true),
 		"player": get_preview_stats(),
+		"stat_breakdown": get_stat_breakdown(),
 		"meta_version": _meta.version,
 		"preview_only": preview_only,
 		"gem_slots": _state.gem_state.slots.duplicate(),

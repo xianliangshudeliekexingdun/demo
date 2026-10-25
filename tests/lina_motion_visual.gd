@@ -185,7 +185,7 @@ func run():
 	check(component.get_debug_state() == paused_motion, "paused animation clocks and blend weights remain frozen")
 	await snap("04-paused-pose")
 	await key(KEY_D, true)
-	await click("继续试炼")
+	await click("继续")
 	var before_gate: Vector2 = game.room_run.player.pos
 	await tick(.1)
 	check(game.room_run.player.pos == before_gate, "resume release gate still blocks held movement")

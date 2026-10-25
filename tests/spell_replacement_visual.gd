@@ -191,7 +191,7 @@ func resume_focus(label: String):
 	if game.room_run == null or not game.room_run.paused or not game.room_result_reason.is_empty():
 		return
 	focus_events.append({"label": label, "room": game.room_run.room_index, "phase": game.room_run.phase, "time": game.room_run.time})
-	await click("继续试炼")
+	await click("继续")
 	await release_movement()
 
 
@@ -461,7 +461,7 @@ func replacement_exercise(selected: int)->bool:
 	await tick(.3)
 	check(b.get_snapshot()==paused,"paused replacement freezes total and combat time")
 	await snap("replacement-05-paused-pending")
-	await click("继续试炼")
+	await click("继续")
 	check(not b.paused and not b.pending_replacement.is_empty() and int(ui_button("ConfirmSpellReplacement").get_meta("replacement_slot_index",-1))==slot,"resume returns same pending and selected slot")
 	await snap("replacement-06-resumed-selection")
 	await press_button("ConfirmSpellReplacement")
@@ -617,7 +617,7 @@ func pause_exercise() -> bool:
 	await tick(0.4)
 	check(game.room_run.get_snapshot() == before, "pause freezes enemies projectiles spells and artifact timers")
 	await snap("08-mixed-combat-paused")
-	await click("继续试炼")
+	await click("继续")
 	var pos: Vector2 = game.room_run.player.pos
 	await tick(0.12)
 	check(game.room_run.player.pos == pos, "pause resume requires releasing held movement")
@@ -758,7 +758,7 @@ func run():
 	check(game.screen == "prepare", "real home button reaches preparation")
 	check(await click("冰系试炼"), "actual preparation ice-school selector clicked")
 	check(game.route_school == "ice", "Main stores requested local ice school")
-	await click("进入60房路线    ›")
+	await click("出发    ›")
 	check(game.room_run != null and game.room_run.phase == "choosing", "actual preparation starts new mixed route")
 	if game.room_run == null:
 		await finish()
