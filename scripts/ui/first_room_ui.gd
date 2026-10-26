@@ -179,11 +179,13 @@ func _build_hud():
 		spell_labels[i].horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 		spell_labels[i].autowrap_mode=TextServer.AUTOWRAP_OFF
 		spell_labels[i].clip_text=false
-		spell_labels[i].add_theme_stylebox_override("normal",T.box(Color(.035,.05,.08,.92),Color(T.CYAN,.20),1,3))
 		spell_labels[i].visible=false
 		cooldown_labels.append(T.label(slot,"",Rect2(50,-19,34,18),13,T.GOLD))
 		cooldown_labels[i].name="SpellLevel%d"%(i+1)
-		cooldown_labels[i].add_theme_stylebox_override("normal",T.box(Color(.035,.05,.08,.94),Color.TRANSPARENT,0,3))
+		for text_label in [spell_labels[i],cooldown_labels[i]]:
+			text_label.add_theme_stylebox_override("normal",StyleBoxEmpty.new())
+			text_label.add_theme_color_override("font_outline_color",Color(.025,.035,.05,.96))
+			text_label.add_theme_constant_override("outline_size",2)
 		cooldown_labels[i].horizontal_alignment=HORIZONTAL_ALIGNMENT_RIGHT
 		cooldown_labels[i].visible=false
 		slot_bars.append(make_bar(slot,Rect2(9,76,66,4),T.GOLD))

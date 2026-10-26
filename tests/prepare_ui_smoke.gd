@@ -12,7 +12,7 @@ const Catalog=preload("res://scripts/ui/grimoire_catalog.gd")
 const RouteRun=preload("res://scripts/core/courtyard_route_run.gd")
 const RoomDressing=preload("res://scripts/presentation/courtyard_room_dressing.gd")
 const EnemyVisual=preload("res://scripts/presentation/route_enemy_visual.gd")
-const OUTPUT="res://build/qa/combat-presentation-20261025"
+const OUTPUT="res://build/qa/battle-hud-preview-20261026"
 var checks:int=0
 var failures:Array=[]
 var account
@@ -66,7 +66,7 @@ func execute():
 	if is_instance_valid(ui):ui.free()
 	if is_instance_valid(controller):controller.free()
 	if not account_path.is_empty() and FileAccess.file_exists(account_path):DirAccess.remove_absolute(ProjectSettings.globalize_path(account_path))
-	var report={"checks":checks,"failures":failures.size(),"details":failures,"scope":"Headless construction and text/rect reads of reachable menu screens, the current battle render environment, six room-dressing templates, and a real route snapshot refreshed into the combat HUD. Includes material checks for Lina and route enemies. No screenshot, pixel readability, gameplay, natural route or performance evidence."}
+	var report={"checks":checks,"failures":failures.size(),"details":failures,"scope":"Headless construction and text/rect reads of reachable menu screens, the current battle render environment, six room-dressing templates, and a real route snapshot refreshed into the combat HUD. Includes transparent spell-label backing checks plus material checks for Lina and route enemies. No screenshot, pixel readability, gameplay, natural route or performance evidence."}
 	FileAccess.open(OUTPUT+"/results.json",FileAccess.WRITE).store_string(JSON.stringify(report,"\t"))
 	print("PREPARE UI SMOKE checks=%d failures=%d"%[checks,failures.size()])
 	quit(0 if failures.is_empty() else 1)
@@ -219,6 +219,8 @@ func combat_hud_baseline():
 		check(name_label.visible and name_label.text == str(fixture.spells[index].name), "equipped spell name stays visible: " + str(index))
 		check(is_equal_approx(name_label.size.x, 84) and name_label.size.y >= 20 and name_label.size.y <= 24 and is_equal_approx(name_label.position.y, slot.size.y), "name owns the row immediately below its slot: " + str(index))
 		check(not name_label.clip_text and name_label.horizontal_alignment == HORIZONTAL_ALIGNMENT_CENTER, "name row is centered without clipping: " + str(index))
+		check(name_label.get_theme_stylebox("normal") is StyleBoxEmpty and level_label.get_theme_stylebox("normal") is StyleBoxEmpty, "name and level use transparent backings: " + str(index))
+		check(name_label.get_theme_color("font_outline_color").a >= 0.8 and level_label.get_theme_color("font_outline_color").a >= 0.8 and name_label.get_theme_constant("outline_size") >= 2 and level_label.get_theme_constant("outline_size") >= 2, "name and level retain glyph-only contrast: " + str(index))
 		check(str(name_label.text).length() == 4, "four-character name remains text-complete: " + str(index))
 		var name_width: float = name_label.get_theme_font("font").get_string_size(name_label.text, HORIZONTAL_ALIGNMENT_LEFT, -1, 14).x
 		check(name_width <= name_label.size.x, "four-character name fits the 84px row: " + str(index))
