@@ -7,6 +7,7 @@ const ENEMY_CORE = Color("ffb5ba")
 const FRIENDLY = Color("efbf73")
 const FIRE = Color("f09b58")
 const WARNING_FADE_SECONDS := 0.08
+const WARNING_OUTLINE := Color(0.035, 0.008, 0.02)
 
 
 static func draw(view, state: Dictionary):
@@ -217,17 +218,17 @@ static func _danger(view, danger: Dictionary):
 		# Active danger is a solid boundary with only a restrained interior wash.
 		fill = Color(ENEMY, 0.13 * fade_alpha)
 		line = Color(ENEMY_CORE, 0.98 * fade_alpha)
-		line_width = 2.4
+		line_width = 2.55
 	elif dashed:
 		# Most of the warning window communicates the true boundary without fill.
 		fill = Color.TRANSPARENT
-		line = Color(ENEMY, 0.48 * fade_alpha)
-		line_width = 1.1
+		line = Color(ENEMY, 0.58 * fade_alpha)
+		line_width = 1.3
 	else:
 		# Fill appears only in the final 30%, ramping gently to preserve overlap.
 		fill = Color(ENEMY, (0.025 + 0.075 * late) * fade_alpha)
-		line = Color(ENEMY, (0.58 + 0.28 * late) * fade_alpha)
-		line_width = 1.3 + 0.8 * late
+		line = Color(ENEMY, (0.66 + 0.24 * late) * fade_alpha)
+		line_width = 1.45 + 0.75 * late
 	var spread_fill := Color(fill, fill.a * (0.55 if active else 0.45))
 	if kind == "circle":
 		var center: Vector2 = danger.get("pos", end)
@@ -257,8 +258,7 @@ static func _danger(view, danger: Dictionary):
 		var a: Vector2 = start + axis.rotated(-half_gap) * 2.1
 		var b: Vector2 = start + axis * 2.8
 		var c: Vector2 = start + axis.rotated(half_gap) * 2.1
-		_line(view, view.screen_position(a, 0.05), view.screen_position(b, 0.05), Color(ENEMY_CORE, 0.85 * fade_alpha), 1.6 * _scale(view))
-		_line(view, view.screen_position(b, 0.05), view.screen_position(c, 0.05), Color(ENEMY_CORE, 0.85 * fade_alpha), 1.6 * _scale(view))
+		_outlined_path(view, PackedVector2Array([view.screen_position(a, 0.05), view.screen_position(b, 0.05), view.screen_position(c, 0.05)]), Color(ENEMY_CORE, 0.85 * fade_alpha), 1.6 * _scale(view))
 	elif kind == "sweep":
 		var direction: Vector2 = end - start
 		var angles: Array = danger.get("spread_degrees", [])
@@ -270,7 +270,7 @@ static func _danger(view, danger: Dictionary):
 		var arc := PackedVector2Array()
 		for degrees in angles:
 			arc.append(view.screen_position(start + direction.normalized().rotated(deg_to_rad(float(degrees))) * 2.4, 0.05))
-		_path(view, arc, Color(ENEMY_CORE, 0.75 * fade_alpha), 1.6 * _scale(view))
+		_outlined_path(view, arc, Color(ENEMY_CORE, 0.75 * fade_alpha), 1.6 * _scale(view))
 		if angles.size() >= 2:
 			var tip: Vector2 = start + direction.normalized().rotated(deg_to_rad(float(angles[-1]))) * 2.4
 			_diamond(view, tip, 0.15, ENEMY_CORE)
@@ -294,30 +294,56 @@ static func _lane(view, start: Vector2, end: Vector2, radius: float, fill: Color
 	if not _front(view, start, 0.05) and not _front(view, end, 0.05):
 		return
 	var direction = (end - start).normalized()
+	var sf := _scale(view)
+	var line_pixel_width := line_width * sf
+	var outline_color := _outline_color(line)
+	var outline_width := _outline_width(view, line_pixel_width)
+	var ring_width := line_width * 0.8
 	if direction.length_squared() < 0.000001:
 		if dashed:
+			_ground_dashed(view, end, radius, outline_color, line_width + 1.0, 12)
 			_ground_dashed(view, end, radius, line, line_width)
 		else:
-			_ground(view, end, radius, fill, line, line_width)
+			_ground(view, end, radius, fill, outline_color, line_width + 1.0)
+			_ground(view, end, radius, Color.TRANSPARENT, line, line_width)
 		return
 	var normal = Vector2(-direction.y, direction.x) * radius
 	var polygon = PackedVector2Array([view.screen_position(start - normal, 0.05), view.screen_position(end - normal, 0.05), view.screen_position(end + normal, 0.05), view.screen_position(start + normal, 0.05)])
 	if fill.a > 0.0:
 		_polygon(view, polygon, fill)
 	if dashed:
-		_dashed_line(view, polygon[0], polygon[1], line, line_width * _scale(view), 6)
-		_dashed_line(view, polygon[3], polygon[2], line, line_width * _scale(view), 6)
+		_dashed_line(view, polygon[0], polygon[1], outline_color, outline_width, 6)
+		_dashed_line(view, polygon[3], polygon[2], outline_color, outline_width, 6)
+		_dashed_line(view, polygon[0], polygon[1], line, line_pixel_width, 6)
+		_dashed_line(view, polygon[3], polygon[2], line, line_pixel_width, 6)
+		_ground_dashed(view, end, radius, outline_color, line_width + 1.0, 8)
 		_ground_dashed(view, end, radius, line, line_width, 8)
 	else:
-		_line(view, polygon[0], polygon[1], line, line_width * _scale(view))
-		_line(view, polygon[3], polygon[2], line, line_width * _scale(view))
-		_ground(view, end, radius, Color.TRANSPARENT, line, line_width * 0.8)
+		_line(view, polygon[0], polygon[1], outline_color, outline_width)
+		_line(view, polygon[3], polygon[2], outline_color, outline_width)
+		_line(view, polygon[0], polygon[1], line, line_pixel_width)
+		_line(view, polygon[3], polygon[2], line, line_pixel_width)
+		_ground(view, end, radius, Color.TRANSPARENT, outline_color, ring_width + 1.0)
+		_ground(view, end, radius, Color.TRANSPARENT, line, ring_width)
 	if _visible(view, end, 0.05, 0):
 		var point: Vector2 = view.screen_position(end, 0.05)
 		var axis = (point - view.screen_position(start, 0.05)).normalized()
 		var normal_pixel = Vector2(-axis.y, axis.x)
-		var sf = _scale(view)
-		_path(view, PackedVector2Array([point - axis * 9 * sf + normal_pixel * 4 * sf, point, point - axis * 9 * sf - normal_pixel * 4 * sf]), line, maxf(1.0 * sf, line_width * 0.8 * sf))
+		_outlined_path(view, PackedVector2Array([point - axis * 9 * sf + normal_pixel * 4 * sf, point, point - axis * 9 * sf - normal_pixel * 4 * sf]), line, maxf(1.0 * sf, line_width * 0.8 * sf))
+
+
+static func _outline_color(color: Color) -> Color:
+	return Color(WARNING_OUTLINE, clampf(color.a * 0.86, 0.0, 0.90))
+
+
+static func _outline_width(view, pixel_width: float) -> float:
+	var sf := _scale(view)
+	return pixel_width + maxf(1.4 * sf, pixel_width * 0.60)
+
+
+static func _outlined_path(view, points: PackedVector2Array, color: Color, width: float):
+	_path(view, points, _outline_color(color), _outline_width(view, width))
+	_path(view, points, color, width)
 
 
 static func _closure_mark(view, start: Vector2, end: Vector2, radius: float, late: float, line: Color):
@@ -326,7 +352,10 @@ static func _closure_mark(view, start: Vector2, end: Vector2, radius: float, lat
 		return
 	var normal := Vector2(-direction.y, direction.x) * radius
 	var point := start.lerp(end, late)
-	_line(view, view.screen_position(point - normal, 0.052), view.screen_position(point + normal, 0.052), Color(line, line.a * 0.45), 1.2 * _scale(view))
+	var width := 1.2 * _scale(view)
+	var tint := Color(line, line.a * 0.45)
+	_line(view, view.screen_position(point - normal, 0.052), view.screen_position(point + normal, 0.052), _outline_color(tint), _outline_width(view, width))
+	_line(view, view.screen_position(point - normal, 0.052), view.screen_position(point + normal, 0.052), tint, width)
 
 
 static func _ground(view, pos: Vector2, radius: float, fill: Color, line: Color, width: float):

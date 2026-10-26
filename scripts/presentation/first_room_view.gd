@@ -28,6 +28,8 @@ const DAMAGE_MERGE_WINDOW := 0.22
 const DAMAGE_NUMBER_LIFETIME := 0.72
 const DAMAGE_NUMBER_LIMIT := 20
 const WARNING_FADE_SECONDS := 0.08
+const STAGE_Z_INDEX := 0
+const COMBAT_OVERLAY_Z_INDEX := 1
 
 var room_viewport: SubViewport
 var camera: Camera3D
@@ -99,11 +101,13 @@ func _ready() -> void:
 	_texture.texture = room_viewport.get_texture()
 	_texture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	_texture.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_texture.z_index = STAGE_Z_INDEX
 	_texture.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
 	add_child(_texture)
 	_overlay = Control.new()
 	_overlay.name = "CombatReadability"
 	_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_overlay.z_index = COMBAT_OVERLAY_Z_INDEX
 	_overlay.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
 	_overlay.draw.connect(_draw_overlay)
 	add_child(_overlay)
