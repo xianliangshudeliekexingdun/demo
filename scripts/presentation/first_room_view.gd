@@ -21,6 +21,13 @@ const ROOM_PATH := "res://data/first_room_runtime.json"
 const CAMERA_OFFSET := Vector3(0, 14.2, 16.8)
 const CAMERA_AHEAD := 1.8
 const CAMERA_RESPONSE := 7.0
+const PLAYER_HIT_FLASH := 0.14
+const ENEMY_BAR_HOLD := 3.0
+const ENEMY_BAR_FADE := 0.35
+const DAMAGE_MERGE_WINDOW := 0.22
+const DAMAGE_NUMBER_LIFETIME := 0.72
+const DAMAGE_NUMBER_LIMIT := 20
+const WARNING_FADE_SECONDS := 0.08
 
 var room_viewport: SubViewport
 var camera: Camera3D
@@ -41,8 +48,6 @@ var _actor_nodes: Dictionary = {}
 var _materials: Dictionary = {}
 var _lina_materials: Array[StandardMaterial3D] = []
 var _last_blocks := ""
-var _player_ring: MeshInstance3D
-var _shield_ring: MeshInstance3D
 var _readable_font: FontVariation
 var _block_meshes: Dictionary = {}
 var _blue_flames: Array[Node3D] = []
@@ -55,6 +60,17 @@ var _camera_initialized := false
 var _camera_frozen := false
 var _surroundings: Node3D
 var _room_revision := -1
+var _last_visual_seq := -1
+var _damage_numbers: Array = []
+var _damage_history: Dictionary = {}
+var _enemy_bar_state: Dictionary = {}
+var _player_hit_until := -1.0
+var _player_hit_health := false
+var _player_hit_pos := Vector2.ZERO
+var _danger_fades: Dictionary = {}
+var _spawn_warning_fades: Dictionary = {}
+var _active_danger_keys: Dictionary = {}
+var _active_spawn_warning_keys: Dictionary = {}
 
 
 func _ready() -> void:
@@ -105,6 +121,9 @@ func sync(snapshot: Dictionary, _delta: float = 0.0) -> void:
 	if snapshot.has("room_revision") and int(snapshot.room_revision) != _room_revision:
 		_rebuild_room(snapshot)
 	var player: Dictionary = _state.get("player", {})
+	var now := float(_state.get("time", 0.0))
+	_consume_visual_events(now)
+	_sync_warning_fades(now)
 	actor.position = _point(player.get("pos", Vector2.ZERO))
 	_sync_camera(snapshot, _delta)
 	var face: Vector2 = player.get("face", Vector2.DOWN)
@@ -112,12 +131,10 @@ func sync(snapshot: Dictionary, _delta: float = 0.0) -> void:
 		# The source model looks along local +X. Rotation changes facing only.
 		actor.rotation.y = atan2(face.y, face.x)
 	motion.sync(snapshot, _delta)
-	var hurt: bool = _state.get("phase", "") == "combat" and float(player.get("invulnerable", 0.0)) > 0.0
+	var flash := _player_hit_strength(now)
+	var hit_tint := Color("ff8f7c") if _player_hit_health else Color("7fd7e8")
 	for mat in _lina_materials:
-		mat.albedo_color = Color(1.0, 0.58, 0.54) if hurt else Color.WHITE
-	_player_ring.position = actor.position + Vector3(0, 0.025, 0)
-	_shield_ring.position = actor.position + Vector3(0, 0.03, 0)
-	_shield_ring.visible = float(player.get("shield", 0.0)) > 0.0
+		mat.albedo_color = Color.WHITE.lerp(hit_tint, 0.76 * flash) if flash > 0.0 else Color.WHITE
 	_sync_blocks(_state.get("blocks", []))
 	_sync_actors(_state.get("actors", []))
 	var portal_state: Dictionary = _state.get("portal", {})
@@ -261,6 +278,7 @@ func _point(pos: Vector2, height: float = 0.0) -> Vector3:
 
 func _rebuild_room(snapshot: Dictionary) -> void:
 	_room_revision = int(snapshot.room_revision)
+	_reset_combat_feedback()
 	for child in _stage.get_children():
 		_stage.remove_child(child)
 		child.queue_free()
@@ -354,8 +372,6 @@ func _build_world() -> void:
 	motion.scale = Vector3.ONE * 1.75
 	actor.add_child(motion)
 	_prepare_model(motion)
-	_player_ring = _ring(world, Vector3.ZERO, 0.34, 0.37, Color("ffd389"))
-	_shield_ring = _ring(world, Vector3.ZERO, 0.41, 0.43, Color("82d4e7"))
 	portal = Node3D.new()
 	portal.name = "ClearPortal"
 	world.add_child(portal)
@@ -620,6 +636,7 @@ func _sync_actors(actors: Array) -> void:
 	for data in actors:
 		var id: int = int(data.id)
 		live[id] = true
+		_track_enemy_health(data, float(_state.get("time", 0.0)))
 		if not _actor_nodes.has(id):
 			if data.has("type_id"):
 				_actor_nodes[id] = EnemyVisual.build(world, data)
@@ -652,6 +669,9 @@ func _sync_actors(actors: Array) -> void:
 		if not live.has(id):
 			_actor_nodes[id].queue_free()
 			_actor_nodes.erase(id)
+	for id in _enemy_bar_state.keys():
+		if not live.has(id):
+			_enemy_bar_state.erase(id)
 
 
 func _prepare_model(node: Node) -> void:
@@ -745,7 +765,13 @@ func _draw_overlay() -> void:
 		return
 	var scale_factor := size.x / LOGICAL_SIZE.x
 	var time: float = float(_state.get("time", 0.0))
-	CombatOverlay.draw(self, _state)
+	var player: Dictionary = _state.get("player", {})
+	# Fixed order: friendly ground/state, enemy ground warnings, health bars,
+	# damage numbers/feedback, world labels, then hostile projectiles. The HUD stays above.
+	CombatOverlay.draw_friendly_ground(self, _state)
+	_draw_player_status_arc(player)
+	for effect in _state.get("effects", []):
+		_draw_effect(effect)
 	# Directional warnings use the exact attack segment; visuals never predict hits.
 	for enemy in _state.get("actors", []):
 		if float(enemy.health) <= 0.0:
@@ -759,25 +785,11 @@ func _draw_overlay() -> void:
 			var direction := (arrow - screen_position(start, 0.055)).normalized()
 			var normal := Vector2(-direction.y, direction.x)
 			_overlay.draw_polyline(PackedVector2Array([arrow - direction * 13 * scale_factor + normal * 7 * scale_factor, arrow, arrow - direction * 13 * scale_factor - normal * 7 * scale_factor]), Color("ffe5bb"), 2 * scale_factor, true)
-		var health := clampf(float(enemy.health) / maxf(1.0, float(enemy.max_health)), 0, 1)
-		var elite := bool(enemy.get("elite", false))
-		var p := screen_position(enemy.pos, 2.2 if elite else 1.65)
-		_overlay.draw_line(p + Vector2(-24, 0) * scale_factor, p + Vector2(24, 0) * scale_factor, Color("102632"), 6 * scale_factor)
-		_overlay.draw_line(p + Vector2(-23, 0) * scale_factor, p + Vector2(-23 + 46 * health, 0) * scale_factor, Color("edbd72") if elite else Color("9ee3c5"), 3 * scale_factor)
-		if elite:
-			_center_text(str(enemy.get("name", "精英")), p - Vector2(0, 12 * scale_factor), 16, Color("f5cf86"))
-	for warning in _state.get("spawn_warnings", []):
-		var progress := 1.0 - float(warning.get("remaining", 0.0)) / maxf(0.01, float(warning.get("duration", 1.0)))
-		_ground_ring(warning.pos, float(warning.get("radius", 0.5)), Color(0.9, 0.69, 0.4, 0.1 + progress * 0.12), Color("e7bd7c"), 2.0)
-		_ground_ring(warning.pos, float(warning.get("radius", 0.5)) * (1.25 - progress * 0.25), Color.TRANSPARENT, Color(0.9, 0.69, 0.4, 0.45), 1.0)
-	var player: Dictionary = _state.get("player", {})
-	for spell in _state.get("spells", []):
-		if float(spell.get("cast_remaining", 0.0)) > 0:
-			var id: String = str(spell.get("id", ""))
-			var cast_tint := Color({"L":"c5b3ff", "I":"8bd9ed", "W":"a4e4cf", "R":"d7b580", "S":"e6b7e5"}.get(id.left(1), "f8cf8a"))
-			_ground_ring(player.get("pos", Vector2.ZERO), 0.64, Color(cast_tint, 0.07), cast_tint, 2.0)
-	for effect in _state.get("effects", []):
-		_draw_effect(effect)
+	CombatOverlay.draw_spawn_warnings(self, _state)
+	CombatOverlay.draw_enemy_warnings(self, _state)
+	_draw_enemy_health_bars(time)
+	_draw_damage_numbers(time)
+	_draw_player_hit_feedback(time)
 	_draw_reward_pickup()
 	var gate: Dictionary = _state.get("portal", {})
 	if bool(gate.get("visible", false)):
@@ -786,6 +798,354 @@ func _draw_overlay() -> void:
 		_ground_ring(gate_pos, 1.03 * pulse, Color.TRANSPARENT, Color(0.5, 0.95, 1, 0.35), 1.8)
 	for marker in get_navigation_markers():
 		_draw_navigation_marker(marker)
+	CombatOverlay.draw_enemy_projectiles(self, _state)
+
+
+func _draw_player_status_arc(player: Dictionary) -> void:
+	var pos: Vector2 = player.get("pos", Vector2.ZERO)
+	var cast := _primary_cast_visual()
+	if not cast.is_empty():
+		var progress := float(cast.get("progress", 0.0))
+		var tint: Color = cast.get("tint", Color("f8cf8a"))
+		_ground_arc(pos, 0.60, -PI * 0.5, TAU * maxf(0.025, progress), Color(tint, 0.82), 2.1)
+		return
+	var shield := float(player.get("shield", 0.0))
+	if shield > 0.0:
+		var ratio := clampf(shield / maxf(1.0, float(player.get("max_shield", 1.0))), 0.0, 1.0)
+		# One low-brightness segmented status arc replaces the old full shield ring.
+		_ground_arc(pos, 0.52, -PI * 0.5, TAU * (0.18 + ratio * 0.10), Color(0.50, 0.88, 1.0, 0.34), 1.35, 4)
+
+
+func _primary_cast_visual() -> Dictionary:
+	var result: Dictionary = {}
+	var best_progress := -1.0
+	for spell in _state.get("spells", []):
+		var remaining := float(spell.get("cast_remaining", 0.0))
+		if remaining <= 0.0:
+			continue
+		var windup := maxf(0.001, float(spell.get("windup", remaining)))
+		var progress := clampf(1.0 - remaining / windup, 0.0, 1.0)
+		if progress <= best_progress:
+			continue
+		best_progress = progress
+		var id := str(spell.get("id", ""))
+		result = {"progress": progress, "tint": Color({"L":"c5b3ff", "I":"8bd9ed", "W":"a4e4cf", "R":"d7b580", "S":"e6b7e5"}.get(id.left(1), "f8cf8a"))}
+	return result
+
+
+func _ground_arc(pos: Vector2, radius: float, start_angle: float, arc_length: float, color: Color, width: float, dashes: int = 0) -> void:
+	if radius <= 0.0 or arc_length <= 0.0001:
+		return
+	var sf := size.x / LOGICAL_SIZE.x
+	if dashes <= 0:
+		var points := PackedVector2Array()
+		var segments := maxi(4, int(ceil(absf(arc_length) / TAU * 48.0)))
+		for index in segments + 1:
+			var angle := start_angle + arc_length * float(index) / float(segments)
+			points.append(screen_position(pos + Vector2.from_angle(angle) * radius, 0.045))
+		_overlay.draw_polyline(points, color, width * sf, true)
+		return
+	var count := maxi(1, dashes)
+	for dash in count:
+		var dash_start := start_angle + arc_length * float(dash) / float(count)
+		var dash_end := start_angle + arc_length * (float(dash) + 0.55) / float(count)
+		var points := PackedVector2Array()
+		for index in 5:
+			var angle := lerpf(dash_start, dash_end, float(index) / 4.0)
+			points.append(screen_position(pos + Vector2.from_angle(angle) * radius, 0.045))
+		_overlay.draw_polyline(points, color, width * sf, true)
+
+
+func _player_hit_strength(time: float) -> float:
+	if time >= _player_hit_until:
+		return 0.0
+	var remaining := maxf(0.0, _player_hit_until - time)
+	var elapsed := PLAYER_HIT_FLASH - remaining
+	var fade := clampf(remaining / PLAYER_HIT_FLASH, 0.0, 1.0)
+	if bool(_visual_options.reduced_motion):
+		return 0.92 * fade
+	return (0.62 + 0.38 * (0.5 + 0.5 * cos(elapsed * TAU / 0.07))) * fade
+
+
+func _draw_player_hit_feedback(time: float) -> void:
+	var strength := _player_hit_strength(time)
+	if strength <= 0.0:
+		return
+	var sf := size.x / LOGICAL_SIZE.x
+	var player: Dictionary = _state.get("player", {})
+	var p := screen_position(player.get("pos", _player_hit_pos), 1.0)
+	var color := Color(1.0, 0.50, 0.43, strength) if _player_hit_health else Color(0.47, 0.86, 1.0, strength)
+	if _player_hit_health:
+		# Warm slashes read as life loss; they never form a persistent ground ring.
+		_overlay.draw_line(p + Vector2(-18, -18) * sf, p + Vector2(-7, -7) * sf, color, 2.4 * sf, true)
+		_overlay.draw_line(p + Vector2(18, -14) * sf, p + Vector2(8, -4) * sf, color, 2.0 * sf, true)
+		_overlay.draw_line(p + Vector2(1, 18) * sf, p + Vector2(7, 8) * sf, Color(color, color.a * 0.72), 1.8 * sf, true)
+	else:
+		# Cool shield shards distinguish absorbed damage from real health loss.
+		for offset in [Vector2(-21, -5), Vector2(20, -8), Vector2(-15, 11), Vector2(16, 12)]:
+			var center: Vector2 = p + offset * sf
+			_overlay.draw_polyline(PackedVector2Array([center + Vector2(0, -4) * sf, center + Vector2(4, 0) * sf, center + Vector2(0, 4) * sf, center + Vector2(-4, 0) * sf]), color, 1.7 * sf, true)
+
+
+func _consume_visual_events(time: float) -> void:
+	var effects: Array = _state.get("effects", [])
+	var max_seq := -1
+	for effect in effects:
+		max_seq = maxi(max_seq, int(effect.get("seq", -1)))
+	if max_seq < _last_visual_seq:
+		_last_visual_seq = -1
+	for effect in effects:
+		var seq := int(effect.get("seq", -1))
+		if seq <= _last_visual_seq:
+			continue
+		match str(effect.get("kind", "")):
+			"damage":
+				_collect_damage_number(effect, time)
+			"hurt":
+				_note_player_hit(effect, time)
+		_last_visual_seq = maxi(_last_visual_seq, seq)
+	_prune_damage_numbers(time)
+
+
+func _note_player_hit(effect: Dictionary, time: float) -> void:
+	_player_hit_until = time + PLAYER_HIT_FLASH
+	_player_hit_health = float(effect.get("health_damage", 0.0)) > 0.0
+	_player_hit_pos = effect.get("pos", _state.get("player", {}).get("pos", Vector2.ZERO))
+
+
+func _collect_damage_number(effect: Dictionary, time: float) -> void:
+	var amount := maxf(0.0, float(effect.get("amount", 0.0)))
+	if amount <= 0.0:
+		return
+	var target_key := _damage_target_key(effect)
+	var dot := _is_dot_source(str(effect.get("spell_id", "")))
+	var critical := _damage_is_critical(effect, target_key, amount, dot)
+	var group := ("dot:" if dot else "direct:") + target_key
+	var found := -1
+	for index in _damage_numbers.size():
+		var record: Dictionary = _damage_numbers[index]
+		if str(record.get("group", "")) == group and time - float(record.get("last_time", -INF)) <= DAMAGE_MERGE_WINDOW:
+			found = index
+			break
+	var actor_id := int(effect.get("actor_id", -1))
+	var pos: Vector2 = effect.get("pos", Vector2.ZERO)
+	if found >= 0:
+		var record: Dictionary = _damage_numbers[found]
+		record["amount"] = float(record.get("amount", 0.0)) + amount
+		record["last_time"] = time
+		record["pos"] = pos
+		record["critical"] = bool(record.get("critical", false)) or critical
+		_damage_numbers[found] = record
+	else:
+		_damage_numbers.append({"group": group, "actor_id": actor_id, "pos": pos, "amount": amount,
+			"first_time": time, "last_time": time, "critical": critical, "dot": dot})
+	while _damage_numbers.size() > DAMAGE_NUMBER_LIMIT:
+		var oldest := 0
+		for index in range(1, _damage_numbers.size()):
+			if float(_damage_numbers[index].get("last_time", INF)) < float(_damage_numbers[oldest].get("last_time", INF)):
+				oldest = index
+		_damage_numbers.remove_at(oldest)
+
+
+func _damage_target_key(effect: Dictionary) -> String:
+	if effect.has("actor_id"):
+		return "id:%d" % int(effect.get("actor_id", -1))
+	var pos: Vector2 = effect.get("pos", Vector2.ZERO)
+	return "pos:%d:%d" % [roundi(pos.x * 5.0), roundi(pos.y * 5.0)]
+
+
+func _damage_is_critical(effect: Dictionary, target_key: String, amount: float, dot: bool) -> bool:
+	if dot:
+		return false
+	for key in ["critical", "is_crit", "crit"]:
+		if effect.has(key):
+			return bool(effect.get(key, false))
+	# The current core event omits the critical bit. Keep a conservative visual
+	# fallback scoped to the same target and spell, without changing any damage.
+	var history_key := target_key + "|" + str(effect.get("spell_id", ""))
+	var history: Array = _damage_history.get(history_key, [])
+	var critical := false
+	if history.size() >= 2:
+		var ordered := history.duplicate()
+		ordered.sort()
+		var median := float(ordered[int(ordered.size() / 2)])
+		critical = amount > maxf(1.0, median * 1.45)
+	history.append(amount)
+	while history.size() > 6:
+		history.pop_front()
+	_damage_history[history_key] = history
+	return critical
+
+
+func _is_dot_source(spell_id: String) -> bool:
+	var source := spell_id.to_lower()
+	return source.contains("burn") or source.contains("dot") or source.contains("tick") or source.contains("inferno")
+
+
+func _prune_damage_numbers(time: float) -> void:
+	var live: Array = []
+	for record in _damage_numbers:
+		if time - float(record.get("last_time", -INF)) < DAMAGE_NUMBER_LIFETIME:
+			live.append(record)
+	_damage_numbers = live
+
+
+func _draw_damage_numbers(time: float) -> void:
+	if not bool(_visual_options.damage_numbers):
+		return
+	var sf := size.x / LOGICAL_SIZE.x
+	for record in _damage_numbers:
+		var age := time - float(record.get("last_time", time))
+		if age < 0.0 or age >= DAMAGE_NUMBER_LIFETIME:
+			continue
+		var alpha := clampf(1.0 - age / DAMAGE_NUMBER_LIFETIME, 0.0, 1.0)
+		var actor := _actor_by_id(int(record.get("actor_id", -1)))
+		var pos: Vector2 = actor.get("pos", record.get("pos", Vector2.ZERO))
+		var height := 1.72
+		if not actor.is_empty():
+			height = 2.35 if bool(actor.get("elite", false)) else (3.0 if bool(actor.get("boss", false)) or str(actor.get("type_id", "")).begins_with("BOSS") else 1.72)
+		var p := screen_position(pos, height)
+		var drift := (10.0 + 34.0 * clampf(age / DAMAGE_NUMBER_LIFETIME, 0.0, 1.0)) * sf
+		var text := "%d" % int(round(float(record.get("amount", 0.0))))
+		if bool(record.get("dot", false)):
+			_center_text(text, p + Vector2(17, -3) * sf - Vector2(0, drift), 13, Color(0.92, 0.69, 0.43, alpha * 0.86))
+		elif bool(record.get("critical", false)):
+			_center_text(text, p - Vector2(0, drift), 28, Color(1.0, 0.92, 0.65, alpha))
+			_overlay.draw_line(p + Vector2(-17, -5) * sf - Vector2(0, drift), p + Vector2(-11, -11) * sf - Vector2(0, drift), Color(1.0, 0.97, 0.78, alpha * 0.9), 1.6 * sf, true)
+		else:
+			_center_text(text, p - Vector2(0, drift), 20, Color(1.0, 0.94, 0.80, alpha))
+
+
+func _actor_by_id(actor_id: int) -> Dictionary:
+	if actor_id < 0:
+		return {}
+	for actor in _state.get("actors", []):
+		if int(actor.get("id", -1)) == actor_id and float(actor.get("health", 0.0)) > 0.0:
+			return actor
+	return {}
+
+
+func _track_enemy_health(enemy: Dictionary, time: float) -> void:
+	var id := int(enemy.get("id", -1))
+	if id < 0:
+		return
+	var health := float(enemy.get("health", 0.0))
+	var maximum := maxf(1.0, float(enemy.get("max_health", 1.0)))
+	var state: Dictionary = _enemy_bar_state.get(id, {})
+	var is_new := state.is_empty()
+	if is_new:
+		state = {"last_health": health, "show_until": -INF}
+	if health < float(state.get("last_health", health)) - 0.00001:
+		state["show_until"] = time + ENEMY_BAR_HOLD
+	elif is_new and health < maximum - 0.00001:
+		state["show_until"] = time + ENEMY_BAR_HOLD
+	state["last_health"] = health
+	_enemy_bar_state[id] = state
+
+
+func _draw_enemy_health_bars(time: float) -> void:
+	var sf := size.x / LOGICAL_SIZE.x
+	for enemy in _state.get("actors", []):
+		var health := float(enemy.get("health", 0.0))
+		if health <= 0.0:
+			continue
+		var type_id := str(enemy.get("type_id", ""))
+		if bool(enemy.get("boss", false)) or type_id.begins_with("BOSS"):
+			continue
+		var maximum := maxf(1.0, float(enemy.get("max_health", 1.0)))
+		var ratio := clampf(health / maximum, 0.0, 1.0)
+		var elite := bool(enemy.get("elite", false)) or type_id.begins_with("EL")
+		var alpha := 1.0
+		if not elite:
+			if ratio >= 0.99999:
+				continue
+			var state: Dictionary = _enemy_bar_state.get(int(enemy.get("id", -1)), {})
+			var show_until := float(state.get("show_until", -INF))
+			if time > show_until + ENEMY_BAR_FADE:
+				continue
+			if time > show_until:
+				alpha = clampf(1.0 - (time - show_until) / ENEMY_BAR_FADE, 0.0, 1.0)
+		var p := screen_position(enemy.get("pos", Vector2.ZERO), 2.18 if elite else 1.62)
+		_draw_enemy_health_bar(p, ratio, elite, alpha, str(enemy.get("name", "精英")), sf)
+
+
+func _draw_enemy_health_bar(p: Vector2, ratio: float, elite: bool, alpha: float, title: String, sf: float) -> void:
+	var bar_size := Vector2(52, 5) * sf
+	var rect := Rect2(p - bar_size * 0.5, bar_size)
+	_overlay.draw_rect(rect, Color(0.025, 0.040, 0.055, 0.94 * alpha), true)
+	var inner := rect.grow(-maxf(1.0, sf))
+	if ratio > 0.0 and inner.size.x > 0.0:
+		_overlay.draw_rect(Rect2(inner.position, Vector2(inner.size.x * ratio, inner.size.y)), Color("edbd72") if elite else Color("9ee3c5"), true)
+	_overlay.draw_rect(rect, Color(0.76, 0.84, 0.86, 0.42 * alpha), false, maxf(1.0, sf), true)
+	if elite:
+		_center_text(title, p - Vector2(0, 12 * sf), 15, Color(0.96, 0.82, 0.53, alpha))
+
+
+func _sync_warning_fades(time: float) -> void:
+	var current_danger: Dictionary = {}
+	for actor in _state.get("actors", []):
+		if not actor.has("type_id") or float(actor.get("health", 0.0)) <= 0.0:
+			continue
+		var danger: Dictionary = actor.get("danger", {})
+		if not danger.is_empty():
+			current_danger[_danger_key(actor, danger, "single")] = danger.duplicate(true)
+		var dangers: Array = actor.get("dangers", [])
+		for index in dangers.size():
+			current_danger[_danger_key(actor, dangers[index], str(index))] = dangers[index].duplicate(true)
+	for key in _active_danger_keys.keys():
+		if not current_danger.has(key):
+			_danger_fades[key] = {"danger": _active_danger_keys[key].duplicate(true), "until": time + WARNING_FADE_SECONDS}
+	_active_danger_keys = current_danger
+	for key in current_danger.keys():
+		_danger_fades.erase(key)
+	for key in _danger_fades.keys():
+		var entry: Dictionary = _danger_fades[key]
+		var remaining := float(entry.get("until", time)) - time
+		if remaining <= 0.0:
+			_danger_fades.erase(key)
+		else:
+			entry["remaining"] = remaining
+			_danger_fades[key] = entry
+
+	var current_spawn: Dictionary = {}
+	for warning in _state.get("spawn_warnings", []):
+		current_spawn[_spawn_warning_key(warning)] = warning.duplicate(true)
+	for key in _active_spawn_warning_keys.keys():
+		if not current_spawn.has(key):
+			_spawn_warning_fades[key] = {"warning": _active_spawn_warning_keys[key].duplicate(true), "until": time + WARNING_FADE_SECONDS}
+	_active_spawn_warning_keys = current_spawn
+	for key in current_spawn.keys():
+		_spawn_warning_fades.erase(key)
+	for key in _spawn_warning_fades.keys():
+		var entry: Dictionary = _spawn_warning_fades[key]
+		var remaining := float(entry.get("until", time)) - time
+		if remaining <= 0.0:
+			_spawn_warning_fades.erase(key)
+		else:
+			entry["remaining"] = remaining
+			_spawn_warning_fades[key] = entry
+
+
+func _danger_key(actor: Dictionary, danger: Dictionary, suffix: String) -> String:
+	return "%s|%s|%s|%s|%s|%s|%s|%s" % [str(actor.get("id", -1)), suffix, str(danger.get("kind", "")), str(danger.get("pos", Vector2.ZERO)), str(danger.get("from", Vector2.ZERO)), str(danger.get("to", Vector2.ZERO)), str(danger.get("spread_degrees", [])), str(danger.get("shot_index", 0))]
+
+
+func _spawn_warning_key(warning: Dictionary) -> String:
+	return "spawn|%s|%s" % [str(warning.get("pos", Vector2.ZERO)), str(warning.get("radius", 0.0))]
+
+
+func _reset_combat_feedback() -> void:
+	_last_visual_seq = -1
+	_damage_numbers.clear()
+	_damage_history.clear()
+	_enemy_bar_state.clear()
+	_player_hit_until = -1.0
+	_player_hit_health = false
+	_player_hit_pos = Vector2.ZERO
+	_danger_fades.clear()
+	_spawn_warning_fades.clear()
+	_active_danger_keys.clear()
+	_active_spawn_warning_keys.clear()
 
 
 func _draw_navigation_marker(marker: Dictionary) -> void:
@@ -831,6 +1191,10 @@ func _draw_effect(effect: Dictionary) -> void:
 		return
 	if is_instance_valid(spell_vfx) and spell_vfx.handles_effect(str(effect.get("kind", ""))):
 		return
+	if str(effect.get("kind", "")) in ["hurt", "damage"]:
+		# Player hit feedback and aggregated damage numbers are presentation-only
+		# layers owned by _draw_overlay.
+		return
 	# Choice screens freeze the simulation. Old attack events may still exist in
 	# the snapshot, but must not appear as an active attack after the room clears.
 	if _state.get("scope", "") == "early_route_map_trial" and _state.get("phase", "") != "combat" and effect.get("kind", "") not in ["clear", "reward", "artifact_acquired"]:
@@ -857,18 +1221,7 @@ func _draw_effect(effect: Dictionary) -> void:
 			_ground_ring(pos, radius * (0.65 + progress * 0.35), Color(1, 0.44, 0.12, alpha * 0.14), Color(1, 0.75, 0.4, alpha), 2.5)
 			_glow(p, (13 + progress * 13) * scale_factor, Color(1, 0.59, 0.24, alpha))
 		"cast":
-			_ground_ring(pos, 0.5 + progress * 0.24, Color.TRANSPARENT, Color(1, 0.79, 0.47, alpha * 0.8), 2)
-		"hurt", "damage":
-			var amount: float = float(effect.get("amount", 0.0))
-			var color := Color("ffbca0") if effect.kind == "hurt" else Color("fff0cd")
-			if effect.kind == "hurt":
-				# Shield loss and real health loss are already separate fields;
-				# the ring only reports which one the hit actually consumed.
-				var health_loss: float = float(effect.get("health_damage", 0.0))
-				var hurt_tint := Color("ff8f7c") if health_loss > 0.0 else Color("7fd7e8")
-				_ground_ring(pos, 0.42 + progress * 0.28, Color.TRANSPARENT, Color(hurt_tint, alpha * 0.72), 2)
-			if amount > 0 and bool(_visual_options.damage_numbers):
-				_center_text("%d" % int(round(amount)), p - Vector2(0, (45 + progress * 22) * scale_factor), 20, Color(color, alpha))
+			_ground_arc(pos, 0.52 + progress * 0.20, -PI * 0.5, TAU * clampf(progress, 0.0, 1.0), Color(1.0, 0.79, 0.47, alpha * 0.8), 2.0)
 		"death":
 			var slime := true
 			for enemy in _state.get("actors", []):

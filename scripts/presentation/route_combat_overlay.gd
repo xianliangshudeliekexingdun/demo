@@ -6,38 +6,19 @@ const ENEMY = Color("ff776f")
 const ENEMY_CORE = Color("ffb5ba")
 const FRIENDLY = Color("efbf73")
 const FIRE = Color("f09b58")
+const WARNING_FADE_SECONDS := 0.08
 
 
 static func draw(view, state: Dictionary):
-	for actor in state.get("actors", []):
-		if not actor.has("type_id") or float(actor.get("health", 0.0)) <= 0.0:
-			continue
-		if bool(actor.get("body_contact_enabled", false)):
-			_ground(view, actor.pos, float(actor.radius), Color.TRANSPARENT, Color(ENEMY, 0.54), 1.1)
-		var danger: Dictionary = actor.get("danger", {})
-		if not danger.is_empty():
-			_danger(view, danger)
-		for boss_danger in actor.get("dangers", []):
-			_danger(view, boss_danger)
-	for projectile in state.get("enemy_projectiles", []):
-		var pos: Vector2 = projectile.get("pos", Vector2.ZERO)
-		if not _visible(view, pos, 0.55, 20.0):
-			continue
-		var p: Vector2 = view.screen_position(pos, 0.55)
-		var direction: Vector2 = projectile.get("direction", Vector2(0, -1))
-		var back: Vector2 = view.screen_position(pos - direction, 0.55)
-		var axis = (p - back).normalized()
-		var sf = _scale(view)
-		var physical_radius: float = maxf(2.6 * sf, p.distance_to(view.screen_position(pos + Vector2(float(projectile.get("radius", 0.18)), 0), 0.55)))
-		# A dark separation halo keeps the hostile shot readable over fire, gold
-		# trim and bright spell impacts without enlarging its real footprint.
-		_disc(view, p, physical_radius * 2.35, Color(0.05, 0.015, 0.035, 0.55))
-		_line(view, p - axis * 17.0 * sf, p, Color(ENEMY, 0.64), physical_radius * 1.5)
-		_disc(view, p, physical_radius * 1.8, Color(0.9, 0.2, 0.42, 0.14))
-		_disc(view, p, physical_radius, Color("e75d91"))
-		_disc(view, p, physical_radius * 0.40, ENEMY_CORE)
-	# Friendly magic is rendered by the cached 3D shader batches. Keep hostile
-	# footprints above it so flame art cannot hide a live attack's safe gaps.
+	# Compatibility entry point. The live view calls the split layers explicitly
+	# so hostile projectiles can stay above friendly effects and health bars.
+	draw_friendly_ground(view, state)
+	draw_enemy_warnings(view, state)
+	draw_enemy_projectiles(view, state)
+
+
+static func draw_friendly_ground(view, state: Dictionary):
+	# Friendly magic is rendered by the cached 3D shader batches.
 	if view.get("spell_vfx") != null:
 		return
 	for zone in state.get("spell_zones", []):
@@ -88,13 +69,80 @@ static func draw(view, state: Dictionary):
 		_ground(view, patch.get("pos", Vector2.ZERO), float(patch.get("radius", 0.0)), Color(0.92, 0.42, 0.2, 0.045), Color(0.94, 0.5, 0.31, 0.5), 1.2)
 
 
+static func draw_enemy_warnings(view, state: Dictionary):
+	var player: Dictionary = state.get("player", {})
+	var player_pos: Vector2 = player.get("pos", Vector2.ZERO)
+	var player_radius: float = float(player.get("radius", 0.0))
+	for actor in state.get("actors", []):
+		if not actor.has("type_id") or float(actor.get("health", 0.0)) <= 0.0:
+			continue
+		var actor_pos: Vector2 = actor.get("pos", Vector2.ZERO)
+		var contact_distance: float = float(actor.get("radius", 0.0)) + player_radius + 0.55
+		if bool(actor.get("body_contact_enabled", false)) and float(player.get("invulnerable", 0.0)) <= 0.0 and actor_pos.distance_squared_to(player_pos) <= contact_distance * contact_distance:
+			_ground(view, actor_pos, float(actor.radius), Color.TRANSPARENT, Color(ENEMY, 0.42), 1.0)
+		var danger: Dictionary = actor.get("danger", {})
+		if not danger.is_empty():
+			_danger(view, danger)
+		for boss_danger in actor.get("dangers", []):
+			_danger(view, boss_danger)
+	var fades = view.get("_danger_fades")
+	if fades is Dictionary:
+		for key in fades:
+			var entry = fades[key]
+			if entry is Dictionary and float(entry.get("remaining", 0.0)) > 0.0:
+				var faded: Dictionary = entry.get("danger", {}).duplicate(true)
+				if not faded.is_empty():
+					faded["_fade_alpha"] = clampf(float(entry.remaining) / WARNING_FADE_SECONDS, 0.0, 1.0)
+					_danger(view, faded)
+
+
+static func draw_spawn_warnings(view, state: Dictionary):
+	for warning in state.get("spawn_warnings", []):
+		_spawn_warning(view, warning, 1.0)
+	var fades = view.get("_spawn_warning_fades")
+	if fades is Dictionary:
+		for key in fades:
+			var entry = fades[key]
+			if entry is Dictionary and float(entry.get("remaining", 0.0)) > 0.0:
+				var warning: Dictionary = entry.get("warning", {}).duplicate(true)
+				if not warning.is_empty():
+					_spawn_warning(view, warning, clampf(float(entry.remaining) / WARNING_FADE_SECONDS, 0.0, 1.0))
+
+
+static func draw_enemy_projectiles(view, state: Dictionary):
+	var sf = _scale(view)
+	for projectile in state.get("enemy_projectiles", []):
+		var pos: Vector2 = projectile.get("pos", Vector2.ZERO)
+		if not _visible(view, pos, 0.55, 20.0):
+			continue
+		var p: Vector2 = view.screen_position(pos, 0.55)
+		var direction: Vector2 = projectile.get("direction", Vector2(0, -1))
+		if direction.length_squared() < 0.000001:
+			direction = Vector2(0, -1)
+		direction = direction.normalized()
+		var back: Vector2 = view.screen_position(pos - direction, 0.55)
+		var axis = (p - back).normalized()
+		if axis.length_squared() < 0.000001:
+			axis = Vector2.UP
+		var physical_radius: float = maxf(2.6 * sf, p.distance_to(view.screen_position(pos + Vector2(float(projectile.get("radius", 0.18)), 0), 0.55)))
+		var outline_radius: float = physical_radius + maxf(1.0 * sf, physical_radius * 0.12)
+		var trail: float = clampf(10.0 * sf, 8.0 * sf, 14.0 * sf)
+		# The hostile shot keeps its true footprint. A one-pixel dark rim and a
+		# short direction-aligned trail carry contrast without implying a radius.
+		_line(view, p - axis * trail, p - axis * 2.0 * sf, Color(0.035, 0.012, 0.028, 0.78), maxf(1.8 * sf, physical_radius * 0.86))
+		_line(view, p - axis * trail * 0.78, p - axis * 2.0 * sf, Color(ENEMY, 0.72), maxf(1.0 * sf, physical_radius * 0.48))
+		_disc(view, p, outline_radius, Color(0.055, 0.018, 0.035, 0.92))
+		_disc(view, p, physical_radius, Color("e75d91"))
+		_disc(view, p, physical_radius * 0.40, ENEMY_CORE)
+
+
 static func draw_effect(view, effect: Dictionary) -> bool:
 	var kind = str(effect.get("kind", ""))
 	if kind not in ["rain_impact", "bomb_flight", "bomb_impact", "aftershock", "wave", "shield_restore", "summon", "enemy_warning", "enemy_mark", "enemy_shot", "artifact_patch", "artifact_explosion", "artifact_speed", "artifact_cooldown", "artifact_acquired"]:
 		return false
-	# enemy_warning is drawn exclusively from the actor's present danger dictionary.
-	# The emitted historical event must not leave a stale footprint after an interrupt.
-	if kind == "enemy_warning":
+	# Warning and mark events are drawn from the actor's present danger dictionary.
+	# Historical events must not duplicate or outlive an interrupted footprint.
+	if kind in ["enemy_warning", "enemy_mark"]:
 		return true
 	var alpha = clampf(float(effect.get("life", 0.0)) / maxf(0.0001, float(effect.get("max_life", 0.1))), 0.0, 1.0)
 	var progress = 1.0 - alpha
@@ -130,8 +178,6 @@ static func draw_effect(view, effect: Dictionary) -> bool:
 				_path(view, shield, Color(1.0, 0.84, 0.48, alpha), 2.0 * sf)
 		"summon":
 			_ground(view, pos, 0.28 + progress * 0.22, Color.TRANSPARENT, Color(FRIENDLY, alpha * 0.8), 1.8)
-		"enemy_mark":
-			_ground(view, pos, radius, Color(ENEMY, alpha * 0.18), Color(ENEMY_CORE, alpha), 2.2)
 		"enemy_shot":
 			if _visible(view, pos, 0.55, 20):
 				_disc(view, view.screen_position(pos, 0.55), (6 + progress * 7) * sf, Color(ENEMY, alpha * 0.45))
@@ -161,66 +207,126 @@ static func _danger(view, danger: Dictionary):
 	var radius = float(danger.get("radius", 0.0))
 	var progress = clampf(1.0 - float(danger.get("remaining", 0.0)) / maxf(0.001, float(danger.get("duration", 1.0))), 0.0, 1.0)
 	var active = bool(danger.get("active", false))
-	var fill = Color(ENEMY, 0.16 if active else 0.055 + progress * 0.055)
-	var line = Color(ENEMY_CORE if active else ENEMY, 0.95)
+	var fade_alpha = clampf(float(danger.get("_fade_alpha", 1.0)), 0.0, 1.0)
+	var late = clampf((progress - 0.70) / 0.30, 0.0, 1.0)
+	var dashed = not active and late <= 0.001
+	var fill: Color
+	var line: Color
+	var line_width: float
+	if active:
+		# Active danger is a solid boundary with only a restrained interior wash.
+		fill = Color(ENEMY, 0.13 * fade_alpha)
+		line = Color(ENEMY_CORE, 0.98 * fade_alpha)
+		line_width = 2.4
+	elif dashed:
+		# Most of the warning window communicates the true boundary without fill.
+		fill = Color.TRANSPARENT
+		line = Color(ENEMY, 0.48 * fade_alpha)
+		line_width = 1.1
+	else:
+		# Fill appears only in the final 30%, ramping gently to preserve overlap.
+		fill = Color(ENEMY, (0.025 + 0.075 * late) * fade_alpha)
+		line = Color(ENEMY, (0.58 + 0.28 * late) * fade_alpha)
+		line_width = 1.3 + 0.8 * late
+	var spread_fill := Color(fill, fill.a * (0.55 if active else 0.45))
 	if kind == "circle":
-		_ground(view, danger.get("pos", end), radius, fill, line, 2.0)
-		if not active:
-			_ground(view, danger.get("pos", end), radius * (1.0 - progress), Color.TRANSPARENT, Color(ENEMY, 0.3), 1.0)
+		var center: Vector2 = danger.get("pos", end)
+		if dashed:
+			_ground_dashed(view, center, radius, line, line_width)
+		else:
+			_ground(view, center, radius, fill, line, line_width)
+		if not active and late > 0.0:
+			# A closing timing ring moves inward while the true boundary stays visible.
+			_ground(view, center, radius * (1.0 - 0.18 * late), Color.TRANSPARENT, Color(ENEMY, 0.22 * late * fade_alpha), 1.0)
 	elif kind == "lane":
-		_lane(view, start, end, radius, fill, line)
+		_lane(view, start, end, radius, fill, line, line_width, dashed)
+		if not active and late > 0.0:
+			_closure_mark(view, start, end, radius, late, line)
 	elif kind in ["ray", "fan"]:
 		var direction = end - start
 		for degrees in danger.get("spread_degrees", [0.0]):
 			var ray_end = start + direction.rotated(deg_to_rad(float(degrees)))
-			_lane(view, start, ray_end, radius, Color(ENEMY, 0.025 + progress * 0.035), Color(ENEMY, 0.65))
+			_lane(view, start, ray_end, radius, spread_fill, line, line_width, dashed)
 	elif kind == "ring":
 		var direction: Vector2 = end - start
 		for degrees in danger.get("spread_degrees", []):
-			_lane(view, start, start + direction.rotated(deg_to_rad(float(degrees))), radius, Color(ENEMY, 0.018), Color(ENEMY, 0.52))
+			_lane(view, start, start + direction.rotated(deg_to_rad(float(degrees))), radius, spread_fill, line, line_width, dashed)
 		# A short open chevron marks the actual omitted spokes, never a safe disk.
 		var axis: Vector2 = direction.normalized()
 		var half_gap: float = TAU / maxf(1.0, float(danger.get("nominal_count", 1))) * 1.5
 		var a: Vector2 = start + axis.rotated(-half_gap) * 2.1
 		var b: Vector2 = start + axis * 2.8
 		var c: Vector2 = start + axis.rotated(half_gap) * 2.1
-		_line(view, view.screen_position(a, 0.05), view.screen_position(b, 0.05), Color(ENEMY_CORE, 0.85), 1.6 * _scale(view))
-		_line(view, view.screen_position(b, 0.05), view.screen_position(c, 0.05), Color(ENEMY_CORE, 0.85), 1.6 * _scale(view))
+		_line(view, view.screen_position(a, 0.05), view.screen_position(b, 0.05), Color(ENEMY_CORE, 0.85 * fade_alpha), 1.6 * _scale(view))
+		_line(view, view.screen_position(b, 0.05), view.screen_position(c, 0.05), Color(ENEMY_CORE, 0.85 * fade_alpha), 1.6 * _scale(view))
 	elif kind == "sweep":
 		var direction: Vector2 = end - start
 		var angles: Array = danger.get("spread_degrees", [])
 		var first: int = int(danger.get("shot_index", 0)) if active else 0
 		for index in range(first, angles.size()):
-			_lane(view, start, start + direction.rotated(deg_to_rad(float(angles[index]))), radius, Color(ENEMY, 0.018), Color(ENEMY, 0.48 if index != first else 0.85))
+			var sweep_line := Color(line, line.a if index == first else line.a * 0.72)
+			_lane(view, start, start + direction.rotated(deg_to_rad(float(angles[index]))), radius, spread_fill, sweep_line, line_width, dashed)
 		# Ordered points show the fixed sweep direction; aim never follows art.
 		var arc := PackedVector2Array()
 		for degrees in angles:
 			arc.append(view.screen_position(start + direction.normalized().rotated(deg_to_rad(float(degrees))) * 2.4, 0.05))
-		_path(view, arc, Color(ENEMY_CORE, 0.75), 1.6 * _scale(view))
+		_path(view, arc, Color(ENEMY_CORE, 0.75 * fade_alpha), 1.6 * _scale(view))
 		if angles.size() >= 2:
 			var tip: Vector2 = start + direction.normalized().rotated(deg_to_rad(float(angles[-1]))) * 2.4
 			_diamond(view, tip, 0.15, ENEMY_CORE)
 
 
-static func _lane(view, start: Vector2, end: Vector2, radius: float, fill: Color, line: Color):
+static func _spawn_warning(view, warning: Dictionary, fade_alpha: float):
+	var pos: Vector2 = warning.get("pos", Vector2.ZERO)
+	var radius := float(warning.get("radius", 0.5))
+	var progress := clampf(1.0 - float(warning.get("remaining", 0.0)) / maxf(0.01, float(warning.get("duration", 1.0))), 0.0, 1.0)
+	var late := clampf((progress - 0.70) / 0.30, 0.0, 1.0)
+	if late <= 0.001:
+		_ground_dashed(view, pos, radius, Color(0.9, 0.69, 0.4, 0.42 * fade_alpha), 1.1)
+		return
+	var fill := Color(0.9, 0.69, 0.4, (0.025 + 0.075 * late) * fade_alpha)
+	var line := Color(0.93, 0.76, 0.48, (0.60 + 0.28 * late) * fade_alpha)
+	_ground(view, pos, radius, fill, line, 1.3 + 0.7 * late)
+	_ground(view, pos, radius * (1.0 - 0.18 * late), Color.TRANSPARENT, Color(0.9, 0.69, 0.4, 0.20 * late * fade_alpha), 1.0)
+
+
+static func _lane(view, start: Vector2, end: Vector2, radius: float, fill: Color, line: Color, line_width: float = 1.5, dashed: bool = false):
 	if not _front(view, start, 0.05) and not _front(view, end, 0.05):
 		return
 	var direction = (end - start).normalized()
 	if direction.length_squared() < 0.000001:
-		_ground(view, end, radius, fill, line, 1.5)
+		if dashed:
+			_ground_dashed(view, end, radius, line, line_width)
+		else:
+			_ground(view, end, radius, fill, line, line_width)
 		return
 	var normal = Vector2(-direction.y, direction.x) * radius
 	var polygon = PackedVector2Array([view.screen_position(start - normal, 0.05), view.screen_position(end - normal, 0.05), view.screen_position(end + normal, 0.05), view.screen_position(start + normal, 0.05)])
-	_polygon(view, polygon, fill)
-	_line(view, polygon[0], polygon[1], line, 1.5 * _scale(view))
-	_line(view, polygon[3], polygon[2], line, 1.5 * _scale(view))
-	_ground(view, end, radius, Color.TRANSPARENT, line, 1.2)
+	if fill.a > 0.0:
+		_polygon(view, polygon, fill)
+	if dashed:
+		_dashed_line(view, polygon[0], polygon[1], line, line_width * _scale(view), 6)
+		_dashed_line(view, polygon[3], polygon[2], line, line_width * _scale(view), 6)
+		_ground_dashed(view, end, radius, line, line_width, 8)
+	else:
+		_line(view, polygon[0], polygon[1], line, line_width * _scale(view))
+		_line(view, polygon[3], polygon[2], line, line_width * _scale(view))
+		_ground(view, end, radius, Color.TRANSPARENT, line, line_width * 0.8)
 	if _visible(view, end, 0.05, 0):
 		var point: Vector2 = view.screen_position(end, 0.05)
 		var axis = (point - view.screen_position(start, 0.05)).normalized()
 		var normal_pixel = Vector2(-axis.y, axis.x)
 		var sf = _scale(view)
-		_path(view, PackedVector2Array([point - axis * 9 * sf + normal_pixel * 4 * sf, point, point - axis * 9 * sf - normal_pixel * 4 * sf]), line, 1.6 * sf)
+		_path(view, PackedVector2Array([point - axis * 9 * sf + normal_pixel * 4 * sf, point, point - axis * 9 * sf - normal_pixel * 4 * sf]), line, maxf(1.0 * sf, line_width * 0.8 * sf))
+
+
+static func _closure_mark(view, start: Vector2, end: Vector2, radius: float, late: float, line: Color):
+	var direction := (end - start).normalized()
+	if direction.length_squared() < 0.000001:
+		return
+	var normal := Vector2(-direction.y, direction.x) * radius
+	var point := start.lerp(end, late)
+	_line(view, view.screen_position(point - normal, 0.052), view.screen_position(point + normal, 0.052), Color(line, line.a * 0.45), 1.2 * _scale(view))
 
 
 static func _ground(view, pos: Vector2, radius: float, fill: Color, line: Color, width: float):
@@ -232,6 +338,26 @@ static func _ground(view, pos: Vector2, radius: float, fill: Color, line: Color,
 	if fill.a > 0.0:
 		_polygon(view, points, fill)
 	_path(view, points, line, width * _scale(view))
+
+
+static func _ground_dashed(view, pos: Vector2, radius: float, line: Color, width: float, dashes: int = 12):
+	if radius <= 0.0 or not _front(view, pos, 0.045):
+		return
+	var count := maxi(4, dashes)
+	var step := TAU / float(count)
+	for index in count:
+		var from_angle := float(index) * step
+		var to_angle := from_angle + step * 0.52
+		_line(view, view.screen_position(pos + Vector2.from_angle(from_angle) * radius, 0.045), view.screen_position(pos + Vector2.from_angle(to_angle) * radius, 0.045), line, width * _scale(view))
+
+
+static func _dashed_line(view, from: Vector2, to: Vector2, color: Color, width: float, dashes: int = 6):
+	var delta := to - from
+	var count := maxi(1, dashes)
+	for index in count:
+		var start_fraction := float(index) / float(count)
+		var end_fraction := start_fraction + 0.52 / float(count)
+		_line(view, from + delta * start_fraction, from + delta * minf(1.0, end_fraction), color, width)
 
 
 static func _diamond(view, pos: Vector2, radius: float, color: Color):

@@ -34,8 +34,11 @@ var spell_labels:Array=[]
 var cooldown_labels:Array=[]
 var slot_bars:Array=[]
 var slot_icons:Array=[]
+var slot_highlights:Array=[]
 var hint_nodes:Array=[]
 var preferences:Dictionary={}
+var _seen_tutorial_encounters:Dictionary={}
+const ARTIFACT_VISIBLE_LIMIT=9
 var last_modal=""
 var _finished=false
 var _choice_buttons:Array=[]
@@ -77,7 +80,8 @@ func btn(parent:Node,text:String,rect:Rect2,action:String,payload:Variant="",pri
 	return T.button(parent,text,rect,func():emit(action,payload),primary,disabled)
 func set_visual_options(options:Dictionary):
 	preferences=options.duplicate(true)
-	for node in hint_nodes:node.visible=bool(preferences.get("view_hints",true))
+	if not bool(preferences.get("view_hints",true)):
+		for node in hint_nodes:node.visible=false
 	if bool(preferences.get("reduced_motion",false)):
 		for card in _choice_cards:
 			if not card.reveal_complete:card.reveal_immediately()
@@ -96,11 +100,11 @@ func make_bar(parent:Node,rect:Rect2,color:Color)->ProgressBar:
 	b.size=rect.size
 	return b
 func _build_hud():
-	var vitals=T.panel(root,Rect2(32,22,430,78))
+	var vitals=T.panel(root,Rect2(32,22,430,90))
 	_vitals=vitals
 	_vitals.name="PlayerAttributes"
 	_vitals.mouse_filter=Control.MOUSE_FILTER_PASS
-	var portrait_frame=T.panel(vitals,Rect2(8,9,60,60))
+	var portrait_frame=T.panel(vitals,Rect2(8,15,60,60))
 	portrait_frame.name="LinaPortraitFrame"
 	portrait_frame.add_theme_stylebox_override("panel",T.box(Color("111a2b"),T.GOLD.darkened(.12),1,6))
 	portrait_frame.clip_contents=true
@@ -114,10 +118,10 @@ func _build_hud():
 	portrait_frame.add_child(portrait)
 	# Assign after expand mode: the default texture minimum would retain 512px.
 	portrait.size=Vector2(58,58)
-	health_label=T.label(vitals,"",Rect2(82,1,318,28),19)
-	health_bar=make_bar(vitals,Rect2(82,32,316,12),Color("dc6178"))
-	shield_bar=make_bar(vitals,Rect2(82,50,316,8),Color("6acbe0"))
-	shield_label=T.label(vitals,"",Rect2(82,56,316,22),15,T.CYAN)
+	health_label=T.label(vitals,"",Rect2(82,1,318,27),20)
+	health_bar=make_bar(vitals,Rect2(82,29,316,16),Color("dc6178"))
+	shield_bar=make_bar(vitals,Rect2(82,49,316,10),Color("6acbe0"))
+	shield_label=T.label(vitals,"",Rect2(82,60,316,22),16,T.CYAN)
 	route_title_backdrop=T.panel(root,Rect2(594,16,412,82))
 	route_title_backdrop.add_theme_stylebox_override("panel",T.box(Color(0.035,0.055,0.09,0.92),Color(0.38,0.5,0.64,0.28),1,6))
 	route_title_backdrop.visible=false
@@ -168,17 +172,28 @@ func _build_hud():
 		slot.add_child(socket)
 		socket.size=slot.size
 		slots.append(slot)
-		var icon=T.icon(slot,"empty",Rect2(17,8,50,43),T.LINE)
+		var icon=T.icon(slot,"empty",Rect2(15,7,54,46),T.LINE)
 		slot_icons.append(icon)
-		spell_labels.append(T.label(slot,"◇",Rect2(6,49,72,22),14,T.MUTED))
+		spell_labels.append(T.label(slot,"◇",Rect2(5,49,74,22),15,T.TEXT))
 		spell_labels[i].horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
-		cooldown_labels.append(T.label(slot,"",Rect2(45,5,28,20),13,T.GOLD))
-		cooldown_labels[i].add_theme_stylebox_override("normal",T.box(Color(.035,.05,.08,.94),Color.TRANSPARENT,0,2))
+		spell_labels[i].add_theme_stylebox_override("normal",T.box(Color(.035,.05,.08,.92),Color(T.CYAN,.32),1,3))
+		spell_labels[i].visible=false
+		cooldown_labels.append(T.label(slot,"",Rect2(39,4,40,22),15,T.GOLD))
+		cooldown_labels[i].add_theme_stylebox_override("normal",T.box(Color(.035,.05,.08,.94),Color.TRANSPARENT,0,3))
 		cooldown_labels[i].horizontal_alignment=HORIZONTAL_ALIGNMENT_RIGHT
 		cooldown_labels[i].visible=false
-		slot_bars.append(make_bar(slot,Rect2(10,69,64,3),T.GOLD))
+		slot_bars.append(make_bar(slot,Rect2(9,70,66,4),T.GOLD))
+		slot_bars[i].visible=false
+		var highlight=Panel.new()
+		highlight.name="ChantHighlight"
+		highlight.size=slot.size
+		highlight.mouse_filter=Control.MOUSE_FILTER_IGNORE
+		highlight.add_theme_stylebox_override("panel",StyleBoxEmpty.new())
+		slot.add_child(highlight)
+		slot_highlights.append(highlight)
 	artifact_bar=T.panel(root,Rect2(432,711,742,48))
 	artifact_bar.name="RunArtifacts"
+	artifact_bar.mouse_filter=Control.MOUSE_FILTER_PASS
 	artifact_bar.visible=false
 	_generic_status=T.label(root,"",Rect2(432,682,742,24),15,T.CYAN)
 	_generic_status.name="GenericItemStatus"
@@ -264,21 +279,25 @@ func refresh(s:Dictionary):
 		if actor.health>0:alive+=1
 	var phase:String=s.phase
 	var route=s.get("scope","")=="early_route_map_trial"
+	if route and phase=="choosing":_seen_tutorial_encounters.clear()
 	route_title_backdrop.visible=route
 	objective.visible=not route
-	enemies_label.visible=not route
+	enemies_label.visible=false
 	_sync_artifact_bar(s.get("artifacts",[]))
 	var objectives={"choosing":"选择起始法术", "combat":"击败所有敌人", "pickup":"领取门前奖励", "reward":"清场 · 选择成长", "exit":"走进传送门", "complete":"旅途完成", "dead":"旅途结束"}
 	objective.text=objectives.get(phase,"")
-	enemies_label.text="剩余敌人  %d"%alive if phase=="combat" else "地下城入口"
-	# Route mode keeps the room header; the alive count returns below it unless
-	# the boss strip already occupies that row.
-	if route:
-		enemies_label.position=Vector2(558,104)
-		enemies_label.visible=phase=="combat" and not _boss_bar.visible
-	else:
-		enemies_label.position=Vector2(558,62)
-		enemies_label.visible=true
+	# Combat uses one objective line. The route header already owns the center
+	# column, so its combined line sits directly below the room progress strip.
+	if phase=="combat":
+		var combat_text="击败所有敌人 · 剩余 %d"%alive
+		objective.text=combat_text
+		if route:
+			enemies_label.position=Vector2(558,104)
+			enemies_label.text=combat_text
+			enemies_label.visible=not _boss_bar.visible
+		else:
+			enemies_label.position=Vector2(558,62)
+			enemies_label.text=""
 	if route:
 		var difficulty_band:Dictionary=s.get("difficulty_band",{})
 		var band_name=str(difficulty_band.get("name",""))
@@ -294,14 +313,26 @@ func refresh(s:Dictionary):
 		timer_label.tooltip_text="战斗、房内行进和选择奖励均计入总时间；暂停不计时。\n战斗用时 %02d:%02d"%[int(s.get("combat_time",0))/60,int(s.get("combat_time",0))%60]
 	else:
 		timer_label.tooltip_text="当前独立首房计时仅累计战斗阶段。"
-	detail.text=("走近宝物箱领取\n领完开启传送门" if s.get("reward_pickup",{}).get("kind","")=="artifact" else "走近法术书领取\n领完开启传送门") if phase=="pickup" else ("护盾已补满\n生命保留当前值" if phase in ["reward","exit"] else "留意红色预警\n石墙会挡住直射")
-	detail.visible=bool(preferences.get("view_hints",true)) and phase in ["combat","pickup"]
-	if phase=="pickup" and not s.get("boss_rewards",{}).is_empty():
-		detail.text="先取法术书，再开金色宝箱\n两份领完开启传送门" if not bool(s.boss_rewards.book_resolved) else "走近金色宝箱\n必得一件金色宝物"
-	if phase=="shop":
+	var hints_enabled=bool(preferences.get("view_hints",true))
+	var tutorial_room=not route or int(s.get("room_index",1))<=3
+	var first_encounter=false
+	if route and phase=="combat":
+		var encounter_key=str(s.get("encounter_kind","normal"))
+		first_encounter=not _seen_tutorial_encounters.has(encounter_key)
+		_seen_tutorial_encounters[encounter_key]=true
+	detail.visible=false
+	if phase=="combat":
+		detail.text="留意红色预警\n石墙会挡住直射"
+		detail.visible=hints_enabled and (tutorial_room or first_encounter)
+	elif phase=="pickup":
+		detail.text="走近宝物箱领取\n领完开启传送门" if s.get("reward_pickup",{}).get("kind","")=="artifact" else "走近法术书领取\n领完开启传送门"
+		detail.visible=hints_enabled
+		if not s.get("boss_rewards",{}).is_empty():
+			detail.text="先取法术书，再开金色宝箱\n两份领完开启传送门" if not bool(s.boss_rewards.book_resolved) else "走近金色宝箱\n必得一件金色宝物"
+	elif phase=="shop":
 		detail.text="左侧柜台领取补给\n上方传送门继续"
-		detail.visible=bool(preferences.get("view_hints",true))
-	for hint in hint_nodes:hint.visible=bool(preferences.get("view_hints",true)) and phase=="combat"
+		detail.visible=hints_enabled
+	for hint in hint_nodes:hint.visible=hints_enabled and phase=="combat" and tutorial_room
 	for i in range(8):
 		if i>=s.spells.size():
 			if slot_icons[i].spell_id!="empty":
@@ -309,9 +340,13 @@ func refresh(s:Dictionary):
 				slot_icons[i].tint=T.LINE
 				slot_icons[i].queue_redraw()
 			spell_labels[i].text="空槽"
+			spell_labels[i].visible=false
 			cooldown_labels[i].text=""
 			cooldown_labels[i].visible=false
 			slot_bars[i].value=0
+			slot_bars[i].visible=false
+			slot_icons[i].modulate=Color.WHITE
+			slot_highlights[i].add_theme_stylebox_override("panel",StyleBoxEmpty.new())
 			slots[i].tooltip_text="空槽。清场后可以选择新法术。"
 			continue
 		var spell:Dictionary=s.spells[i]
@@ -324,12 +359,20 @@ func refresh(s:Dictionary):
 		var remaining=float(spell.get("remaining",0))
 		var chant=float(spell.get("cast_remaining",0))
 		var passive=str(Catalog.SPELL_ROLES.get(str(spell.id),"")).begins_with("被动")
+		var chanting=chant>0 and phase=="combat"
+		var cooling=remaining>0 and phase=="combat" and not passive and not chanting
 		var status="被动" if passive else ("战后" if phase!="combat" else ("吟唱中" if chant>0 else ("冷却 %.1f秒"%remaining if remaining>0 else "就绪")))
-		spell_labels[i].add_theme_color_override("font_color",T.GOLD if passive else T.CYAN if chant>0 else T.MUTED if remaining>0 else T.TEXT)
+		# The icon owns readiness, the bar owns cooldown progress, and the border
+		# owns chant. The name appears only while that slot is actively chanting.
+		spell_labels[i].visible=chanting
+		spell_labels[i].add_theme_color_override("font_color",T.TEXT)
 		cooldown_labels[i].text="%d 级"%spell.level
 		slots[i].tooltip_text="%s · %d 级\n%s\n%s"%[spell.name,spell.level,status,Catalog.SPELL_SUMMARIES.get(str(spell.id),"")]
+		slot_icons[i].modulate=Color(1,1,1,.38) if cooling else Color.WHITE
+		slot_bars[i].visible=cooling
 		slot_bars[i].value=1-clampf(remaining/maxf(.001,float(spell.get("cooldown",1))),0,1)
-		slot_bars[i].modulate=T.CYAN if chant>0 else Color.WHITE
+		slot_bars[i].modulate=Color.WHITE
+		slot_highlights[i].add_theme_stylebox_override("panel",T.box(Color(0,0,0,0),T.CYAN,2,6) if chanting else StyleBoxEmpty.new())
 	var modal_kind="pause" if s.paused else phase if phase in ["choosing","reward","artifact","shopping"] else ""
 	var pending:Dictionary=s.get("pending_replacement",{})
 	if not s.paused and phase=="reward" and not pending.is_empty():
@@ -350,30 +393,57 @@ func refresh(s:Dictionary):
 	elif modal_kind=="shopping" and is_instance_valid(_shop_ui):
 		_shop_ui.refresh(s)
 
+func _artifact_line(item:Dictionary)->String:
+	var description:Dictionary=Catalog.describe_artifact(str(item.id))
+	return "%s · %s\n%s"%[str(item.name),str(description.get("scope_name","宝物")),str(description.get("description",""))]
+
+func _artifact_names(items:Array)->String:
+	if items.is_empty():return "尚未获得宝物"
+	var names:Array=[]
+	for item in items:names.append(str(item.name))
+	return " · ".join(names)
+
 func _sync_artifact_bar(items:Array):
 	artifact_bar.visible=not items.is_empty()
 	var signature=""
 	for item in items:signature+=str(item.id)+";"
 	if signature==_artifact_signature:return
 	_artifact_signature=signature
-	artifact_bar.size.x=140+maxi(0,items.size()-1)*47
+	var visible_count=mini(items.size(),ARTIFACT_VISIBLE_LIMIT)
+	var overflow=maxi(0,items.size()-visible_count)
+	artifact_bar.size.x=140.0+maxf(0,float(visible_count-1))*47.0+(48.0 if overflow>0 else 0.0)
 	artifact_bar.position=Vector2(800.0-artifact_bar.size.x*0.5,711.0)
 	for child in artifact_bar.get_children():
 		artifact_bar.remove_child(child)
 		child.queue_free()
-	T.label(artifact_bar,"宝 物",Rect2(13,10,70,28),17,T.GOLD)
+	var full_lines:Array=[]
+	var hidden_lines:Array=[]
 	for i in range(items.size()):
+		var line=_artifact_line(items[i])
+		full_lines.append(line)
+		if i>=visible_count:hidden_lines.append(line)
+	artifact_bar.tooltip_text="本局宝物 · 共 %d 件\n\n%s"%[items.size(),"\n\n".join(full_lines)]
+	T.label(artifact_bar,"宝 物",Rect2(13,10,70,28),17,T.GOLD)
+	for i in range(visible_count):
 		var item:Dictionary=items[i]
 		var slot=Control.new()
 		slot.position=Vector2(88+i*47,4)
 		slot.size=Vector2(40,40)
-		var description:Dictionary=Catalog.describe_artifact(str(item.id))
-		slot.tooltip_text="%s · %s\n%s"%[str(item.name),str(description.get("scope_name","宝物")),str(description.get("description",""))]
+		slot.mouse_filter=Control.MOUSE_FILTER_PASS
+		slot.tooltip_text=_artifact_line(item)
 		artifact_bar.add_child(slot)
 		var icon=ArtifactIcon.new()
 		icon.size=Vector2(40,40)
 		icon.set_item(str(item.id),str(item.rarity))
 		slot.add_child(icon)
+	if overflow>0:
+		var badge=T.panel(artifact_bar,Rect2(88+visible_count*47,4,42,40))
+		badge.name="ArtifactOverflow"
+		badge.mouse_filter=Control.MOUSE_FILTER_PASS
+		badge.add_theme_stylebox_override("panel",T.box(Color(.12,.09,.05,.94),T.GOLD,1,5))
+		badge.tooltip_text="另有 %d 件宝物\n\n%s"%[overflow,"\n\n".join(hidden_lines)]
+		var overflow_label=T.label(badge,"+%d"%overflow,Rect2(0,0,42,40),15,T.GOLD)
+		overflow_label.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 
 func _artifact_modal(s:Dictionary):
 	_new_modal()
@@ -875,7 +945,16 @@ func _pause_modal(s:Dictionary,route:bool=false):
 	Loadout.effect_chips(p,Rect2(42,366,756,32),_loadout_effects(s),"未装备金色宝石")
 	btn(p,"继续",Rect2(42,414,362,56),"room_resume","",true)
 	btn(p,"结束本局",Rect2(436,414,362,56),"room_end")
-	T.label(p,"Esc 继续",Rect2(42,482,756,24),15,T.MUTED)
+	T.label(p,"本局宝物",Rect2(42,480,140,20),15,T.GOLD)
+	var artifact_items:Array=s.get("artifacts",[])
+	var artifact_text=T.paragraph(p,_artifact_names(artifact_items),Rect2(42,500,756,36),13,T.MUTED)
+	artifact_text.name="PausedArtifacts"
+	artifact_text.mouse_filter=Control.MOUSE_FILTER_PASS
+	if not artifact_items.is_empty():
+		var artifact_lines:Array=[]
+		for item in artifact_items:artifact_lines.append(_artifact_line(item))
+		artifact_text.tooltip_text="\n\n".join(artifact_lines)
+	T.label(p,"Esc 继续",Rect2(42,540,756,18),13,T.MUTED)
 	call_deferred("_focus_first")
 func show_result(summary:Dictionary,settlement:Dictionary,reason:String):
 	_finished=true

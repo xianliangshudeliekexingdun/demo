@@ -37,8 +37,6 @@ static func build(parent: Node3D, actor: Dictionary) -> Node3D:
 			_caster(shape, float(actor.radius))
 		_:
 			_slime(shape, float(actor.radius), elite)
-	if elite:
-		_elite_ring(root, float(actor.radius))
 	sync(root, actor, 0.0)
 	return root
 
@@ -80,9 +78,6 @@ static func _boss(parent: Node3D, type_id: String, radius: float):
 			for index in 2:
 				var ring = _piece(parent, "HeartOrbit", "ring", Vector3(0, radius * 1.4, 0), Vector3.ONE * radius * 1.0, gold if index == 0 else rune)
 				ring.rotation = Vector3(0.6 if index == 0 else -0.6, 0, 0.4)
-	_foot_ring(parent, radius, _material("boss_body_outline", Color("e09a82"), true))
-
-
 static func sync(node: Node3D, actor: Dictionary, time: float):
 	var previous_health = float(node.get_meta("last_health", actor.get("health", 0.0)))
 	var current_health = float(actor.get("health", 0.0))
@@ -127,9 +122,6 @@ static func _slime(parent: Node3D, radius: float, elite: bool):
 		_crown(parent, Vector3(0, 1.20 * size, 0), 0.28 * size)
 		for sign_value in [-1, 1]:
 			_gem(parent, "CrownSigil", Vector3(sign_value * radius * 0.52, radius * 1.1, -0.08), Vector3.ONE * radius * 0.16, _material("elite_rune", Color("ffdd80"), true))
-	_foot_ring(parent, radius, _material("slime_foot", Color("78bbc0"), true))
-
-
 static func _flower(parent: Node3D, radius: float, elite: bool, variant: String = ""):
 	var stem = _material("flower_stem", Color("324f45"))
 	var leaves = _material("flower_leaf", Color("568568"))
@@ -171,9 +163,6 @@ static func _flower(parent: Node3D, radius: float, elite: bool, variant: String 
 		for side in [-1, 1]:
 			var fin = _piece(parent, "SweepFin", "cone", Vector3(side * radius * 0.85, radius * 2.55, 0), Vector3(radius * 0.32, radius * 1.35, radius * 0.25), petal_alt)
 			fin.rotation.z = side * -0.72
-	_foot_ring(parent, radius, _material("flower_foot", Color("ad78a5"), true))
-
-
 static func _charger(parent: Node3D, radius: float):
 	var hide = _material("charger_hide", Color("444453"))
 	var stone = _material("charger_armor", Color("8e8b86"))
@@ -192,9 +181,6 @@ static func _charger(parent: Node3D, radius: float):
 		var spike = _piece(parent, "ForwardHorn", "cone", Vector3(side * radius * 0.34, radius * 1.28, radius * 1.45), Vector3(radius * 0.32, radius * 1.0, radius * 0.32), horn)
 		spike.rotation.x = 1.04
 		_piece(parent, "AmberEye", "sphere", Vector3(side * radius * 0.38, radius * 1.10, radius * 1.45), Vector3(radius * 0.15, radius * 0.12, radius * 0.10), _material("charger_eye", Color("ffb85c"), true))
-	_foot_ring(parent, radius, _material("charger_foot", Color("bba68a"), true))
-
-
 static func _caster(parent: Node3D, radius: float):
 	var robe = _material("caster_robe", Color("64507e"))
 	var cloth = _material("caster_cloth_dark", Color("3d344f"))
@@ -214,9 +200,6 @@ static func _caster(parent: Node3D, radius: float):
 	_gem(parent, "StaffOrb", Vector3(radius * 1.02, radius * 3.37, radius * 0.1), Vector3.ONE * radius * 0.50, blue)
 	var halo = _piece(parent, "OrbCradle", "ring", Vector3(radius * 1.02, radius * 3.37, radius * 0.1), Vector3.ONE * radius * 0.38, gold)
 	halo.rotation.x = PI * 0.5
-	_foot_ring(parent, radius, _material("caster_foot", Color("aa91cc"), true))
-
-
 static func _crown(parent: Node3D, pos: Vector3, radius: float):
 	var gold = _material("elite_gold", Color("dfbf72"))
 	var band = _piece(parent, "EliteCrownBand", "ring", pos, Vector3.ONE * radius, gold)
@@ -225,20 +208,6 @@ static func _crown(parent: Node3D, pos: Vector3, radius: float):
 		var angle = index * TAU / 5.0
 		_piece(parent, "EliteCrownPoint", "cone", pos + Vector3(sin(angle) * radius * 0.83, radius * 0.53, cos(angle) * radius * 0.83), Vector3(radius * 0.48, radius * 1.4, radius * 0.48), gold)
 	_gem(parent, "EliteCrownJewel", pos + Vector3(0, radius * 0.34, radius * 0.96), Vector3(radius * 0.33, radius * 0.53, radius * 0.2), _material("crown_jewel", Color("e39a68"), true))
-
-
-static func _elite_ring(parent: Node3D, radius: float):
-	var gold = _material("elite_rim", Color("e7bd6d"), true)
-	var ring = _piece(parent, "EliteThreatRing", "ring", Vector3(0, 0.028, 0), Vector3(radius * 1.18, 0.12, radius * 1.18), gold)
-	ring.set_meta("meaning", "elite_identity_only_not_damage_or_hitbox")
-	for index in 4:
-		var angle = index * PI * 0.5 + PI * 0.25
-		var marker = _piece(parent, "EliteGroundSigil", "gem", Vector3(sin(angle) * radius * 1.37, 0.035, cos(angle) * radius * 1.37), Vector3(radius * 0.16, 0.03, radius * 0.26), gold)
-		marker.rotation.y = angle
-
-
-static func _foot_ring(parent: Node3D, radius: float, material: Material):
-	_piece(parent, "TypeFootRing", "ring", Vector3(0, 0.018, 0), Vector3(radius * 0.94, 0.08, radius * 0.94), material)
 
 
 static func _gem(parent: Node3D, name: String, pos: Vector3, dimensions: Vector3, material: Material) -> MeshInstance3D:
