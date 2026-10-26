@@ -273,7 +273,7 @@ static func _danger(view, danger: Dictionary):
 		_outlined_path(view, arc, Color(ENEMY_CORE, 0.75 * fade_alpha), 1.6 * _scale(view))
 		if angles.size() >= 2:
 			var tip: Vector2 = start + direction.normalized().rotated(deg_to_rad(float(angles[-1]))) * 2.4
-			_diamond(view, tip, 0.15, ENEMY_CORE)
+			_outlined_diamond(view, tip, 0.15, ENEMY_CORE)
 
 
 static func _spawn_warning(view, warning: Dictionary, fade_alpha: float):
@@ -344,6 +344,15 @@ static func _outline_width(view, pixel_width: float) -> float:
 static func _outlined_path(view, points: PackedVector2Array, color: Color, width: float):
 	_path(view, points, _outline_color(color), _outline_width(view, width))
 	_path(view, points, color, width)
+
+
+static func _outlined_diamond(view, pos: Vector2, radius: float, color: Color):
+	if not _front(view, pos, 0.05):
+		return
+	var points := PackedVector2Array()
+	for offset in [Vector2(0, -radius), Vector2(radius, 0), Vector2(0, radius), Vector2(-radius, 0), Vector2(0, -radius)]:
+		points.append(view.screen_position(pos + offset, 0.05))
+	_outlined_path(view, points, color, 1.3 * _scale(view))
 
 
 static func _closure_mark(view, start: Vector2, end: Vector2, radius: float, late: float, line: Color):
