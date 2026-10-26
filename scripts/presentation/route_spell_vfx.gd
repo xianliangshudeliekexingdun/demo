@@ -27,6 +27,11 @@ var _revision: int = -1
 var _ice_vfx: Node3D
 var _lightning_vfx: Node3D
 var _remaining_vfx: Node3D
+var _fire_bolt_override := false
+
+
+func set_fire_bolt_override(enabled: bool) -> void:
+	_fire_bolt_override = enabled
 
 
 func _ready():
@@ -110,6 +115,7 @@ func sync_snapshot(snapshot: Dictionary, camera: Camera3D, options: Dictionary =
 		for unit in units:
 			_spirit(unit)
 		for patch in snapshot.get("artifact_patches", []):
+			if _fire_bolt_override and str(patch.get("context", {}).get("spell_id", "")) == "F01": continue
 			var center: Vector2 = patch.get("pos", Vector2.ZERO)
 			var radius = float(patch.get("radius", 0.0))
 			_ground(center, radius, 1, 0.65, 0.0, float(patch.get("cast_id", 0)))
@@ -148,6 +154,7 @@ func get_debug_state() -> Dictionary:
 
 
 func _bolt(projectile: Dictionary):
+	if _fire_bolt_override and str(projectile.get("spell_id", "")) == "F01": return
 	var pos: Vector2 = projectile.get("pos", Vector2.ZERO)
 	if not _in_view(pos, 1.2):
 		return
@@ -228,6 +235,7 @@ func _spirit(unit: Dictionary):
 	_note("F04_spirit")
 
 func _burning(actor: Dictionary, burn: Dictionary):
+	if _fire_bolt_override and str(burn.get("source", "")) == "F01": return
 	var pos: Vector2 = actor.get("pos", Vector2.ZERO)
 	var radius = maxf(0.25, float(actor.get("radius", 0.4)))
 	if not _in_view(pos, radius):
@@ -242,6 +250,7 @@ func _burning(actor: Dictionary, burn: Dictionary):
 
 func _effect(effect: Dictionary, snapshot: Dictionary):
 	var kind = str(effect.get("kind", ""))
+	if _fire_bolt_override and ((kind in ["cast", "bolt_hit", "artifact_patch"] and str(effect.get("spell_id", "")) == "F01") or (kind == "fire_ignited" and str(effect.get("source", "")) == "F01")): return
 	if (kind not in FRIENDLY_EFFECTS and kind not in GEM_EFFECTS) or (kind == "cast" and str(effect.get("spell_id", "")).left(1) in ["I", "L", "W", "R", "S"]):
 		return
 	var alpha = clampf(float(effect.get("life", 0.0)) / maxf(0.001, float(effect.get("max_life", 0.1))), 0.0, 1.0)

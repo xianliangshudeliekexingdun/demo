@@ -2342,5 +2342,239 @@
    2119864
   ],
   "approval": "自建原始几何，未使用第三方素材；接入主界面 3D 舞台，待用户验收"
+ },
+ {
+  "source": "Original project-local GDScript/Godot Shader Language/visual JSON authored for the user-approved magic missile v0.1 standard on 2026-10-26. No external image, model, font, generation service or bundled toolkit asset.",
+  "target": "scripts/presentation/route_magic_missile_vfx.gd",
+  "runtime_approved": true,
+  "sha256": "7c8e3d422a865553ddc06eede3f695092aaed2b3bcf05f7ddcdbd1e540e2698e",
+  "bytes": 17335,
+  "approval": "User: 可以，请你制作. Authorizes this magic missile implementation, not visual or performance acceptance.",
+  "purpose": "Directional translucent magic concentration, broad flowing bands, foreground aura, emissive premultiplied world-path trail, or confirmed-contact dissipation. No sphere-surface/specular model; no gameplay changes.",
+  "visual_status": "2026-10-26: user explicitly approved the current energy-v2 appearance (很好完美) with two supplied screenshots. Headless checks retain their original scope; no high-count performance, all-spell, full-route or exhaustive pixel acceptance.",
+  "evidence": "build/qa/magic-missile-energy-v2-20261026/results.json",
+  "previous_sha256": "9cd6091d11ba7f8d06ac72dbf7110c6ba8bbba903b8025c7cdd99da9de85f103",
+  "visual_revision": 2,
+  "revision_authorization": "2026-10-26 user: 我感觉是没有那种特效感，请你按照你的思路再优化一下。",
+  "previous_evidence": "build/qa/magic-missile-20261026/results.json",
+  "user_visual_approval": {
+   "date": "2026-10-26",
+   "statement": "很好完美",
+   "scope": "Current hostile ordinary magic missile energy-v2 presentation/play impression only.",
+   "record": "docs/历史决策/归档/34-战斗画面第一轮渲染与表现改造.md#11-2026-10-26-魔法飞弹-v2-观感认可与后续战斗视觉讨论",
+   "images": [
+    "docs/游戏设计/参考图/20261026-战斗特效/06-magic-missile-v2-approved-detail.png",
+    "docs/游戏设计/参考图/20261026-战斗特效/07-magic-missile-v2-approved-battle.png"
+   ]
+  }
+ },
+ {
+  "source": "Original project-local GDScript/Godot Shader Language/visual JSON authored for the user-approved magic missile v0.1 standard on 2026-10-26. No external image, model, font, generation service or bundled toolkit asset.",
+  "target": "scripts/presentation/magic_missile_head.gdshader",
+  "runtime_approved": true,
+  "sha256": "6f518ceb26dcd83d700cef77136d0835c6b2a738edf6daad4d623b3e612e6bd1",
+  "bytes": 2261,
+  "approval": "User: 可以，请你制作. Authorizes this magic missile implementation, not visual or performance acceptance.",
+  "purpose": "Directional translucent magic concentration, broad flowing bands, foreground aura, emissive premultiplied world-path trail, or confirmed-contact dissipation. No sphere-surface/specular model; no gameplay changes.",
+  "visual_status": "2026-10-26: user explicitly approved the current energy-v2 appearance (很好完美) with two supplied screenshots. Headless checks retain their original scope; no high-count performance, all-spell, full-route or exhaustive pixel acceptance.",
+  "evidence": "build/qa/magic-missile-energy-v2-20261026/results.json",
+  "previous_sha256": "339035543d0f5b4eeffa56a0945062db40134cd6321a29827916d312dcd1e388",
+  "visual_revision": 2,
+  "revision_authorization": "2026-10-26 user: 我感觉是没有那种特效感，请你按照你的思路再优化一下。",
+  "previous_evidence": "build/qa/magic-missile-20261026/results.json",
+  "user_visual_approval": {
+   "date": "2026-10-26",
+   "statement": "很好完美",
+   "scope": "Current hostile ordinary magic missile energy-v2 presentation/play impression only.",
+   "record": "docs/历史决策/归档/34-战斗画面第一轮渲染与表现改造.md#11-2026-10-26-魔法飞弹-v2-观感认可与后续战斗视觉讨论",
+   "images": [
+    "docs/游戏设计/参考图/20261026-战斗特效/06-magic-missile-v2-approved-detail.png",
+    "docs/游戏设计/参考图/20261026-战斗特效/07-magic-missile-v2-approved-battle.png"
+   ]
+  }
+ },
+ {
+  "source": "Original project-local GDScript/Godot Shader Language/visual JSON authored for the user-approved magic missile v0.1 standard on 2026-10-26. No external image, model, font, generation service or bundled toolkit asset.",
+  "target": "scripts/presentation/magic_missile_trail.gdshader",
+  "runtime_approved": true,
+  "sha256": "0fcf948b1e51980d314a20bbe2ee48b740b0e10a89d3c184a52075de30e6ec78",
+  "bytes": 1506,
+  "approval": "User: 可以，请你制作. Authorizes this magic missile implementation, not visual or performance acceptance.",
+  "purpose": "Directional translucent magic concentration, broad flowing bands, foreground aura, emissive premultiplied world-path trail, or confirmed-contact dissipation. No sphere-surface/specular model; no gameplay changes.",
+  "visual_status": "2026-10-26: user explicitly approved the current energy-v2 appearance (很好完美) with two supplied screenshots. Headless checks retain their original scope; no high-count performance, all-spell, full-route or exhaustive pixel acceptance.",
+  "evidence": "build/qa/magic-missile-energy-v2-20261026/results.json",
+  "previous_sha256": "f999a314999372da7874de231b48dfb5595f613c0aa2b675210b5e37130950fb",
+  "visual_revision": 2,
+  "revision_authorization": "2026-10-26 user: 我感觉是没有那种特效感，请你按照你的思路再优化一下。",
+  "previous_evidence": "build/qa/magic-missile-20261026/results.json",
+  "user_visual_approval": {
+   "date": "2026-10-26",
+   "statement": "很好完美",
+   "scope": "Current hostile ordinary magic missile energy-v2 presentation/play impression only.",
+   "record": "docs/历史决策/归档/34-战斗画面第一轮渲染与表现改造.md#11-2026-10-26-魔法飞弹-v2-观感认可与后续战斗视觉讨论",
+   "images": [
+    "docs/游戏设计/参考图/20261026-战斗特效/06-magic-missile-v2-approved-detail.png",
+    "docs/游戏设计/参考图/20261026-战斗特效/07-magic-missile-v2-approved-battle.png"
+   ]
+  }
+ },
+ {
+  "source": "Original project-local GDScript/Godot Shader Language/visual JSON authored for the user-approved magic missile v0.1 standard on 2026-10-26. No external image, model, font, generation service or bundled toolkit asset.",
+  "target": "scripts/presentation/magic_missile_energy.gdshader",
+  "runtime_approved": true,
+  "sha256": "cdd19904f3a040a9b763a28b254a2426afc5ebe63c2cf5f313eceb837e0bdbfc",
+  "bytes": 2914,
+  "approval": "User: 可以，请你制作. Authorizes this magic missile implementation, not visual or performance acceptance.",
+  "purpose": "Directional translucent magic concentration, broad flowing bands, foreground aura, emissive premultiplied world-path trail, or confirmed-contact dissipation. No sphere-surface/specular model; no gameplay changes.",
+  "visual_status": "2026-10-26: user explicitly approved the current energy-v2 appearance (很好完美) with two supplied screenshots. Headless checks retain their original scope; no high-count performance, all-spell, full-route or exhaustive pixel acceptance.",
+  "evidence": "build/qa/magic-missile-energy-v2-20261026/results.json",
+  "previous_sha256": "bc337ecc04a44af99e2896ea58103de85fb56af99bd379a94dde4e7b32895f45",
+  "visual_revision": 2,
+  "revision_authorization": "2026-10-26 user: 我感觉是没有那种特效感，请你按照你的思路再优化一下。",
+  "previous_evidence": "build/qa/magic-missile-20261026/results.json",
+  "user_visual_approval": {
+   "date": "2026-10-26",
+   "statement": "很好完美",
+   "scope": "Current hostile ordinary magic missile energy-v2 presentation/play impression only.",
+   "record": "docs/历史决策/归档/34-战斗画面第一轮渲染与表现改造.md#11-2026-10-26-魔法飞弹-v2-观感认可与后续战斗视觉讨论",
+   "images": [
+    "docs/游戏设计/参考图/20261026-战斗特效/06-magic-missile-v2-approved-detail.png",
+    "docs/游戏设计/参考图/20261026-战斗特效/07-magic-missile-v2-approved-battle.png"
+   ]
+  }
+ },
+ {
+  "source": "Original project-local GDScript/Godot Shader Language/visual JSON authored for the user-approved magic missile v0.1 standard on 2026-10-26. No external image, model, font, generation service or bundled toolkit asset.",
+  "target": "data/magic_missile_vfx.json",
+  "runtime_approved": true,
+  "sha256": "9991da3a9698fd460828a43868e1f9bce1b72587dd78f93bc5c655948aca8606",
+  "bytes": 1058,
+  "approval": "User: 可以，请你制作. Authorizes this magic missile implementation, not visual or performance acceptance.",
+  "purpose": "Directional translucent magic concentration, broad flowing bands, foreground aura, emissive premultiplied world-path trail, or confirmed-contact dissipation. No sphere-surface/specular model; no gameplay changes.",
+  "visual_status": "2026-10-26: user explicitly approved the current energy-v2 appearance (很好完美) with two supplied screenshots. Headless checks retain their original scope; no high-count performance, all-spell, full-route or exhaustive pixel acceptance.",
+  "evidence": "build/qa/magic-missile-energy-v2-20261026/results.json",
+  "previous_sha256": "1b72745c44845f359845a2e5ed4313fd4615687bdc8993ea994d1e5ffd29bb98",
+  "visual_revision": 2,
+  "revision_authorization": "2026-10-26 user: 我感觉是没有那种特效感，请你按照你的思路再优化一下。",
+  "previous_evidence": "build/qa/magic-missile-20261026/results.json",
+  "user_visual_approval": {
+   "date": "2026-10-26",
+   "statement": "很好完美",
+   "scope": "Current hostile ordinary magic missile energy-v2 presentation/play impression only.",
+   "record": "docs/历史决策/归档/34-战斗画面第一轮渲染与表现改造.md#11-2026-10-26-魔法飞弹-v2-观感认可与后续战斗视觉讨论",
+   "images": [
+    "docs/游戏设计/参考图/20261026-战斗特效/06-magic-missile-v2-approved-detail.png",
+    "docs/游戏设计/参考图/20261026-战斗特效/07-magic-missile-v2-approved-battle.png"
+   ]
+  }
+ },
+ {
+  "target": "scripts/presentation/route_fire_bolt_vfx.gd",
+  "source": "Original project-local GDScript/Godot Shader Language/visual JSON authored for the user-authorized F01 complete fire-bolt chain on 2026-10-26. No external image, model, font, generation service or bundled toolkit asset.",
+  "runtime_approved": true,
+  "sha256": "49181dcb4d6d829ae147d42431b9f486486af8d89ab75023923881709cd2e0cc",
+  "bytes": 25855,
+  "approval": "2026-10-26 user: 可以请你记录，然后我们先做焰弹术的完整链路。 Implementation authorization; appearance and performance acceptance pending.",
+  "purpose": "Released level scales the visible body and trail only; authoritative v2 curved flight and actual age reconstruct the matching world trail. Flame stretch follows real acceleration. Collision radius, direct coefficients and AoE growth remain separately owned by rules.",
+  "visual_revision": 2,
+  "visual_status": "2026-10-26: user explicitly accepted the current F01 fire-bolt v2 (很好，第一个法术通过). Keep as the approved fire-VFX reference. Existing technical evidence retains its original scope; no all-spell, full-route, final-balance, high-count performance or exhaustive pixel acceptance.",
+  "evidence": "build/qa/fire-bolt-curve-v2-20261026/results.json",
+  "authorization_record": "docs/历史决策/归档/35-火系法术特效优化.md",
+  "previous_sha256": "fba869e4b7800f657315a8cbea2237dccbf77e28f3fe5bf0743d08c3aa640bd7",
+  "previous_evidence": "build/qa/fire-bolt-vfx-20261026/results.json",
+  "revision_authorization": "2026-10-26 user confirmed larger level-scaled fire bodies and slow side-out / one curved turn / accelerating straight attack: 对的，请你实现。",
+  "user_visual_approval": {
+   "date": "2026-10-26",
+   "statement": "很好，第一个法术通过",
+   "visual_revision": 2,
+   "scope": "Current F01 fire-bolt v2 user acceptance and reference for subsequent fire spell VFX. No automatic game launch or other-spell implementation authorization.",
+   "record": "docs/历史决策/归档/35-火系法术特效优化.md#5-2026-10-26-焰弹术v2用户验收通过"
+  }
+ },
+ {
+  "target": "scripts/presentation/fire_bolt_body.gdshader",
+  "source": "Original project-local GDScript/Godot Shader Language/visual JSON authored for the user-authorized F01 complete fire-bolt chain on 2026-10-26. No external image, model, font, generation service or bundled toolkit asset.",
+  "runtime_approved": true,
+  "sha256": "00456ff3328fd402e9de4fc86ca2b4148ead8f72420cd87647809a8a77743658",
+  "bytes": 3185,
+  "approval": "2026-10-26 user: 可以请你记录，然后我们先做焰弹术的完整链路。 Implementation authorization; appearance and performance acceptance pending.",
+  "purpose": "Released level scales the visible body and trail only; authoritative v2 curved flight and actual age reconstruct the matching world trail. Flame stretch follows real acceleration. Collision radius, direct coefficients and AoE growth remain separately owned by rules.",
+  "visual_revision": 2,
+  "visual_status": "2026-10-26: user explicitly accepted the current F01 fire-bolt v2 (很好，第一个法术通过). Keep as the approved fire-VFX reference. Existing technical evidence retains its original scope; no all-spell, full-route, final-balance, high-count performance or exhaustive pixel acceptance.",
+  "evidence": "build/qa/fire-bolt-curve-v2-20261026/results.json",
+  "authorization_record": "docs/历史决策/归档/35-火系法术特效优化.md",
+  "previous_sha256": "e0c765ab393827f1cafd8f61c79b04d81d1e413e61a1f59fef401bc637750eeb",
+  "previous_evidence": "build/qa/fire-bolt-vfx-20261026/results.json",
+  "revision_authorization": "2026-10-26 user confirmed larger level-scaled fire bodies and slow side-out / one curved turn / accelerating straight attack: 对的，请你实现。",
+  "user_visual_approval": {
+   "date": "2026-10-26",
+   "statement": "很好，第一个法术通过",
+   "visual_revision": 2,
+   "scope": "Current F01 fire-bolt v2 user acceptance and reference for subsequent fire spell VFX. No automatic game launch or other-spell implementation authorization.",
+   "record": "docs/历史决策/归档/35-火系法术特效优化.md#5-2026-10-26-焰弹术v2用户验收通过"
+  }
+ },
+ {
+  "target": "scripts/presentation/fire_bolt_trail.gdshader",
+  "source": "Original project-local GDScript/Godot Shader Language/visual JSON authored for the user-authorized F01 complete fire-bolt chain on 2026-10-26. No external image, model, font, generation service or bundled toolkit asset.",
+  "runtime_approved": true,
+  "sha256": "d1a50d9f7804bdf636a0f91194ca9289efe1552d8a0c70c1308d0b17c3dd7b23",
+  "bytes": 1531,
+  "approval": "2026-10-26 user: 可以请你记录，然后我们先做焰弹术的完整链路。 Implementation authorization; appearance and performance acceptance pending.",
+  "purpose": "F01 chant/release, flowing flame body, continuous world-space fire trail, authoritative contact/expiry, F01-source burning and actual critical fire patches. Read-only presentation.",
+  "visual_revision": 1,
+  "visual_status": "2026-10-26: user explicitly accepted the current F01 fire-bolt v2 (很好，第一个法术通过). Keep as the approved fire-VFX reference. Existing technical evidence retains its original scope; no all-spell, full-route, final-balance, high-count performance or exhaustive pixel acceptance.",
+  "evidence": "build/qa/fire-bolt-vfx-20261026/results.json",
+  "authorization_record": "docs/历史决策/归档/35-火系法术特效优化.md",
+  "user_visual_approval": {
+   "date": "2026-10-26",
+   "statement": "很好，第一个法术通过",
+   "visual_revision": 2,
+   "scope": "Current F01 fire-bolt v2 user acceptance and reference for subsequent fire spell VFX. No automatic game launch or other-spell implementation authorization.",
+   "record": "docs/历史决策/归档/35-火系法术特效优化.md#5-2026-10-26-焰弹术v2用户验收通过"
+  }
+ },
+ {
+  "target": "scripts/presentation/fire_bolt_surface.gdshader",
+  "source": "Original project-local GDScript/Godot Shader Language/visual JSON authored for the user-authorized F01 complete fire-bolt chain on 2026-10-26. No external image, model, font, generation service or bundled toolkit asset.",
+  "runtime_approved": true,
+  "sha256": "19ad16903c48da22bad087c48f871dee69b0e25ea6f3d9081873310db38413d3",
+  "bytes": 4238,
+  "approval": "2026-10-26 user: 可以请你记录，然后我们先做焰弹术的完整链路。 Implementation authorization; appearance and performance acceptance pending.",
+  "purpose": "F01 chant/release, flowing flame body, continuous world-space fire trail, authoritative contact/expiry, F01-source burning and actual critical fire patches. Read-only presentation.",
+  "visual_revision": 1,
+  "visual_status": "2026-10-26: user explicitly accepted the current F01 fire-bolt v2 (很好，第一个法术通过). Keep as the approved fire-VFX reference. Existing technical evidence retains its original scope; no all-spell, full-route, final-balance, high-count performance or exhaustive pixel acceptance.",
+  "evidence": "build/qa/fire-bolt-vfx-20261026/results.json",
+  "authorization_record": "docs/历史决策/归档/35-火系法术特效优化.md",
+  "user_visual_approval": {
+   "date": "2026-10-26",
+   "statement": "很好，第一个法术通过",
+   "visual_revision": 2,
+   "scope": "Current F01 fire-bolt v2 user acceptance and reference for subsequent fire spell VFX. No automatic game launch or other-spell implementation authorization.",
+   "record": "docs/历史决策/归档/35-火系法术特效优化.md#5-2026-10-26-焰弹术v2用户验收通过"
+  }
+ },
+ {
+  "target": "data/fire_bolt_vfx.json",
+  "source": "Original project-local GDScript/Godot Shader Language/visual JSON authored for the user-authorized F01 complete fire-bolt chain on 2026-10-26. No external image, model, font, generation service or bundled toolkit asset.",
+  "runtime_approved": true,
+  "sha256": "7c43528eb3abf7e3226fa861499e2c8f4106ab77fde89daaed49493f6c7e6f9e",
+  "bytes": 1504,
+  "approval": "2026-10-26 user: 可以请你记录，然后我们先做焰弹术的完整链路。 Implementation authorization; appearance and performance acceptance pending.",
+  "purpose": "Released level scales the visible body and trail only; authoritative v2 curved flight and actual age reconstruct the matching world trail. Flame stretch follows real acceleration. Collision radius, direct coefficients and AoE growth remain separately owned by rules.",
+  "visual_revision": 2,
+  "visual_status": "2026-10-26: user explicitly accepted the current F01 fire-bolt v2 (很好，第一个法术通过). Keep as the approved fire-VFX reference. Existing technical evidence retains its original scope; no all-spell, full-route, final-balance, high-count performance or exhaustive pixel acceptance.",
+  "evidence": "build/qa/fire-bolt-curve-v2-20261026/results.json",
+  "authorization_record": "docs/历史决策/归档/35-火系法术特效优化.md",
+  "previous_sha256": "deab5d5c9e1180903497d6438f84e2c0a99524103517e5071f30f180e30b4ed1",
+  "previous_evidence": "build/qa/fire-bolt-vfx-20261026/results.json",
+  "revision_authorization": "2026-10-26 user confirmed larger level-scaled fire bodies and slow side-out / one curved turn / accelerating straight attack: 对的，请你实现。",
+  "user_visual_approval": {
+   "date": "2026-10-26",
+   "statement": "很好，第一个法术通过",
+   "visual_revision": 2,
+   "scope": "Current F01 fire-bolt v2 user acceptance and reference for subsequent fire spell VFX. No automatic game launch or other-spell implementation authorization.",
+   "record": "docs/历史决策/归档/35-火系法术特效优化.md#5-2026-10-26-焰弹术v2用户验收通过"
+  }
  }
 ]

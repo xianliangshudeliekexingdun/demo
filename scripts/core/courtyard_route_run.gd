@@ -192,6 +192,7 @@ func get_snapshot() -> Dictionary:
 	snapshot.merge(_route_metadata(), true)
 	if _enemy_combat != null:
 		snapshot["enemy_projectiles"] = _enemy_combat.get_projectiles()
+		snapshot["enemy_projectile_ends"] = _enemy_combat.get_projectile_ends()
 	if _spell_combat != null:
 		snapshot.merge(_spell_combat.get_snapshot(), true)
 	snapshot["artifacts"] = _artifact_combat.owned_snapshot() if _artifact_combat != null else []

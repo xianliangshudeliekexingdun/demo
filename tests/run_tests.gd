@@ -23,6 +23,7 @@ func run():
 	_run_suite(preload("res://tests/first_room_tests.gd"), "first_room")
 	_run_suite(preload("res://tests/courtyard_route_tests.gd"), "courtyard_route")
 	_run_suite(preload("res://tests/route_enemy_tests.gd"), "route_enemies")
+	_run_suite(preload("res://tests/magic_missile_contact_tests.gd"), "magic_missile_contacts")
 	_run_suite(preload("res://tests/route_enemy_pressure_tests.gd"), "route_enemy_pressure")
 	_run_suite(preload("res://tests/nonboss_difficulty_tests.gd"), "nonboss_difficulty")
 	_run_suite(preload("res://tests/enemy_damage_growth_tests.gd"), "enemy_damage_growth")

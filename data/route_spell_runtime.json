@@ -3,7 +3,21 @@
   "fire": {
     "spell_ids": ["F01", "F02", "F03", "F05", "F06", "F07", "F08", "F09", "F10", "F11"],
     "initial_ids": ["F01", "F03", "F08"],
-    "burning": {"duration": 4.0, "interval": 0.5, "coefficient": 0.25, "maximum_ticks": 8}
+    "burning": {"duration": 4.0, "interval": 0.5, "coefficient": 0.25, "maximum_ticks": 8},
+    "bolt_flight": {
+      "version": 2,
+      "curve_seconds": 0.18,
+      "curve_forward_m": 0.48,
+      "curve_side_m": 0.30,
+      "initial_angle_degrees": 55.0,
+      "start_speed_mps": 3.0,
+      "turn_speed_mps": 3.0,
+      "cruise_speed_mps": 32.0,
+      "acceleration_mps2": 220.0,
+      "curve_sweep_seconds": 0.004166666666666667,
+      "length_samples": 48,
+      "close_target_fraction": 0.35
+    }
   },
   "rain": {"impact_radius": 0.85, "scatter_radius_fraction": 0.6},
   "spirit": {"body_radius": 0.1, "additional_offset_x": -1.8},

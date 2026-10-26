@@ -10,6 +10,11 @@ const LightningCombat = preload("res://scripts/core/route_lightning_combat.gd")
 const WindCombat = preload("res://scripts/core/route_wind_combat.gd")
 const EarthCombat = preload("res://scripts/core/route_earth_combat.gd")
 const SpiritCombat = preload("res://scripts/core/route_spirit_combat.gd")
+const BoltMotion = preload("res://scripts/core/route_fire_bolt_motion.gd")
+const BOLT_END_LIMIT := 256 # Bounded read-only presentation journal, not gameplay effects.
+const BOLT_END_RETENTION := 1.0
+var _bolt_ends: Array = []
+var _bolt_end_seq := 0
 var zones: Array = []
 var pending: Array = []
 var spirits: Array = []
@@ -41,6 +46,8 @@ func configure(run) -> Dictionary:
 	var fire_error: String = validate_fire_source(run, parsed.fire)
 	if not fire_error.is_empty():
 		return {"ok": false, "error": fire_error}
+	if not BoltMotion.validate(parsed.fire.get("bolt_flight")):
+		return {"ok": false, "error": "焰弹飞行参数无效。"}
 	runtime = parsed
 	fire_status = FireStatus.new()
 	fire_status.configure(runtime.get("fire", {}).get("burning", {}))
@@ -96,6 +103,8 @@ func validate_fire_source(run, fire: Variant) -> String:
 
 
 func stop_room():
+	_bolt_ends.clear()
+	_bolt_end_seq = 0
 	zones.clear()
 	growth.clear()
 	pending.clear()
@@ -121,6 +130,7 @@ func stop_room():
 func get_snapshot() -> Dictionary:
 	var run = _run_ref.get_ref() if _run_ref != null else null
 	var result: Dictionary = {"spell_zones": zones.duplicate(true), "spell_pending": pending.duplicate(true), "spirits": spirits.duplicate(true), "field_attack_bonus": field_attack_bonus(),
+		"fire_bolt_ends": _bolt_ends.duplicate(true),
 		"spell_burns": fire_status.snapshot(run) if fire_status != null else [],
 		"fire_reignite_pending": fire_status.reignite_pending.duplicate(true) if fire_status != null else []}
 	if ice != null:
@@ -514,16 +524,26 @@ func _update_pending(run):
 
 
 func _spawn_bolt(run, spell: Dictionary, stats: Dictionary, target: Dictionary, coefficient: float, context: Dictionary):
-	var direction: Vector2 = (target.pos - run.player.pos).normalized()
-	var speed = maxf(run.player.pos.distance_to(target.pos), float(run.player.radius)) / float(stats.travel_delay)
+	var id := int(run._next_projectile_id)
+	var flight := BoltMotion.build(run.player.pos, target.pos, 1.0 if id % 2 == 1 else -1.0, runtime.fire.bolt_flight)
+	var velocity := BoltMotion.velocity_at(flight, 0.0)
 	var length = float(spell.range)
-	run.projectiles.append({"id": run._next_projectile_id, "spell_id": "F01", "from": run.player.pos, "to": run._clip_motion(run.player.pos, direction * length, 0.0), "pos": run.player.pos, "direction": direction, "speed": speed, "travelled": 0.0, "range": length, "duration": length / speed, "remaining": length / speed, "radius": float(run._runtime.bolt_collision_radius), "blast_radius": float(stats.level.radius), "coefficient": coefficient, "context": context.duplicate(true)})
+	var duration := BoltMotion.lifetime(flight, length)
+	run.projectiles.append({"id": id, "spell_id": "F01", "from": run.player.pos, "to": BoltMotion.position_at(flight, duration),
+		"pos": run.player.pos, "direction": velocity.normalized(), "speed": velocity.length(), "travelled": 0.0, "range": length,
+		"duration": duration, "remaining": duration, "radius": float(run._runtime.bolt_collision_radius), "blast_radius": float(stats.level.radius),
+		"coefficient": coefficient, "context": context.duplicate(true), "flight": flight, "age": 0.0, "born_at": float(run.time)})
 	run._next_projectile_id += 1
 
 
 func _update_projectiles(run, dt: float):
+	while not _bolt_ends.is_empty() and float(run.time) - float(_bolt_ends[0].time) > BOLT_END_RETENTION:
+		_bolt_ends.pop_front()
 	var retained: Array = []
 	for projectile in run.projectiles:
+		if projectile.has("flight"):
+			if _advance_curved_bolt(run, projectile, dt): retained.append(projectile)
+			continue
 		var from: Vector2 = projectile.pos
 		var distance = minf(float(projectile.speed) * dt, float(projectile.range) - float(projectile.travelled))
 		var to: Vector2 = from + projectile.direction * distance
@@ -541,13 +561,113 @@ func _update_projectiles(run, dt: float):
 			if not hit.is_empty():
 				_area_hit(run, impact, float(projectile.blast_radius), float(projectile.coefficient), projectile.context, true)
 			run._emit("bolt_hit", {"pos": impact, "radius": projectile.blast_radius, "spell_id": "F01", "blocked": hit.is_empty()}, float(runtime.effects.impact_lifetime))
+			_note_bolt_end(run, projectile, from, to, clampf(earliest, 0.0, 1.0), dt, "wall" if hit.is_empty() else "enemy", hit)
 			continue
 		projectile.pos = to
 		projectile.travelled += distance
 		projectile.remaining = maxf(0.0, float(projectile.remaining) - dt)
 		if projectile.travelled < projectile.range - 0.000001 and run._inside_floor(projectile.pos, float(projectile.radius)):
 			retained.append(projectile)
+		else:
+			_note_bolt_end(run, projectile, from, to, 1.0, dt, "expired", {}, true)
 	run.projectiles = retained
+
+
+func _advance_curved_bolt(run, projectile: Dictionary, dt: float) -> bool:
+	var flight: Dictionary = projectile.flight
+	# A secondary created by this tick's pending queue starts at its real
+	# release time. A primary from the prior tick gets the whole next step.
+	var available := minf(dt, maxf(0.0, float(run.time) - float(projectile.born_at) - float(projectile.age)))
+	var elapsed := dt - available
+	while available > 0.000000001:
+		var age := float(projectile.age)
+		var step := minf(available, float(flight.sweep_seconds))
+		if age < float(flight.curve_seconds): step = minf(step, float(flight.curve_seconds) - age)
+		var from: Vector2 = projectile.pos
+		var next_age := age + step
+		var to := BoltMotion.position_at(flight, next_age)
+		var length := from.distance_to(to)
+		var left := maxf(0.0, float(projectile.range) - float(projectile.travelled))
+		if length > left:
+			next_age = BoltMotion.age_at_segment_distance(flight, age, next_age, left)
+			to = from + (to - from).normalized() * left
+			step = next_age - age
+			length = left
+		var earliest: float = run._first_block_contact(from, to, float(projectile.radius))
+		var hit: Dictionary = {}
+		var a := clampf(elapsed / dt, 0.0, 1.0)
+		var b := clampf((elapsed + step) / dt, 0.0, 1.0)
+		for actor: Dictionary in run.actors:
+			if actor.health <= 0.0: continue
+			var actor_from: Vector2 = actor.previous.lerp(actor.pos, a)
+			var actor_to: Vector2 = actor.previous.lerp(actor.pos, b)
+			var contact: float = run.segment_circle_time(from - actor_from, to - actor_to, Vector2.ZERO, float(actor.radius) + float(projectile.radius))
+			if contact < earliest - 0.000001 or (absf(contact - earliest) < 0.000001 and contact != INF and not hit.is_empty() and actor.id < hit.id):
+				earliest = contact
+				hit = actor
+		if earliest != INF:
+			var fraction := clampf(earliest, 0.0, 1.0)
+			var impact := from.lerp(to, fraction)
+			projectile.age = age + step * fraction
+			var velocity := BoltMotion.velocity_at(flight, float(projectile.age))
+			projectile.direction = velocity.normalized()
+			projectile.speed = velocity.length()
+			if not hit.is_empty(): _area_hit(run, impact, float(projectile.blast_radius), float(projectile.coefficient), projectile.context, true)
+			run._emit("bolt_hit", {"pos": impact, "radius": projectile.blast_radius, "spell_id": "F01", "blocked": hit.is_empty()}, float(runtime.effects.impact_lifetime))
+			_note_bolt_end(run, projectile, from, to, fraction, dt, "wall" if hit.is_empty() else "enemy", hit, false, elapsed, step)
+			return false
+		projectile.pos = to
+		projectile.age = next_age
+		projectile.travelled = float(projectile.travelled) + length
+		projectile.remaining = maxf(0.0, float(projectile.duration) - next_age)
+		var velocity := BoltMotion.velocity_at(flight, next_age)
+		projectile.direction = velocity.normalized()
+		projectile.speed = velocity.length()
+		if float(projectile.travelled) >= float(projectile.range) - 0.000001 or not run._inside_floor(to, float(projectile.radius)):
+			_note_bolt_end(run, projectile, from, to, 1.0, dt, "expired", {}, true, elapsed, step)
+			return false
+		elapsed += step
+		available -= step
+	return true
+
+
+func _note_bolt_end(run, projectile: Dictionary, from: Vector2, to: Vector2, fraction: float, dt: float, reason: String, actor: Dictionary = {}, moved: bool = false, step_offset: float = 0.0, step_seconds: float = -1.0) -> void:
+	# The existing hit/expiry decision above is unchanged. Never emit gameplay
+	# events here, roll RNG, resolve another hit, or let visuals own collision.
+	var pos := from.lerp(to, fraction)
+	var normal := -Vector2(projectile.direction)
+	if normal.length_squared() < 0.00000001:
+		normal = -Vector2(projectile.get("flight", {}).get("direction", Vector2.UP))
+	var contact := pos
+	if not actor.is_empty():
+		var whole_fraction := fraction if step_seconds < 0.0 else clampf((step_offset + step_seconds * fraction) / dt, 0.0, 1.0)
+		var center: Vector2 = actor.previous.lerp(actor.pos, whole_fraction)
+		if pos.distance_squared_to(center) > 0.00000001:
+			normal = (pos - center).normalized()
+		contact = pos - normal * float(projectile.radius)
+	elif reason == "wall":
+		for block: Dictionary in run.blocks:
+			var half: Vector2 = block.size * 0.5
+			var inflated := half + Vector2.ONE * float(projectile.radius)
+			if absf(run.segment_rectangle_time(from, to, block.center - inflated, block.center + inflated) - fraction) < 0.000001:
+				contact = pos.clamp(block.center - half, block.center + half)
+				if pos.distance_squared_to(contact) > 0.00000001:
+					normal = (pos - contact).normalized()
+				break
+	var motion_seconds := from.distance_to(to) / maxf(0.000001, float(projectile.speed))
+	var distance := from.distance_to(pos)
+	_bolt_end_seq += 1
+	_bolt_ends.append({"seq": _bolt_end_seq, "projectile_id": int(projectile.id), "spell_id": "F01",
+		"reason": reason, "pos": pos, "contact_pos": contact, "normal": normal, "from": from,
+		"origin": projectile.from, "direction": projectile.direction, "radius": float(projectile.radius),
+		"blast_radius": float(projectile.blast_radius), "speed": float(projectile.speed),
+		"travelled": float(projectile.travelled) + (0.0 if moved else distance),
+		"time": float(run.time) - dt + (motion_seconds * fraction if step_seconds < 0.0 else step_offset + step_seconds * fraction),
+		"from_time": float(run.time) - dt + step_offset, "actor_id": int(actor.get("id", -1)),
+		"flight": projectile.get("flight", {}).duplicate(true), "age": float(projectile.get("age", 0.0)),
+		"born_at": float(projectile.get("born_at", float(run.time) - dt)), "spell_level": int(projectile.get("context", {}).get("spell_level", 1))})
+	if _bolt_ends.size() > BOLT_END_LIMIT:
+		_bolt_ends.pop_front()
 
 
 func _fill_spirits(run, stats: Dictionary, context: Dictionary):

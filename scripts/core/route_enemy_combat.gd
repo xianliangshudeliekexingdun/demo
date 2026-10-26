@@ -6,6 +6,9 @@ const DATA_PATH := "res://data/route_enemy_runtime.json"
 const NonbossRules = preload("res://scripts/core/route_enemy_nonboss.gd")
 const Barrage = preload("res://scripts/core/route_enemy_barrage.gd")
 const BossCombat = preload("res://scripts/core/route_boss_combat.gd")
+# Bounded delivery journal only. These limits never participate in combat rules.
+const PROJECTILE_END_RETENTION := 0.5
+const PROJECTILE_END_LIMIT := 1024
 var bosses = BossCombat.new()
 
 var error: String = ""
@@ -21,6 +24,8 @@ var _combat_clock: float = 0.0
 var _contact_ready_at: float = 0.0
 var _last_curtain_warning: float = -INF
 var _last_fast_warning: float = -INF
+var _projectile_ends: Array = []
+var _projectile_end_seq: int = 0
 
 
 func configure(base: Dictionary, first_room_runtime: Dictionary, runtime_override: Dictionary = {}, required_room_count: int = 0) -> Dictionary:
@@ -146,6 +151,8 @@ func configure(base: Dictionary, first_room_runtime: Dictionary, runtime_overrid
 func clear() -> void:
 	bosses.clear()
 	enemy_projectiles.clear()
+	_projectile_ends.clear()
+	_projectile_end_seq = 0
 	_next_projectile = 1
 	_last_heavy_warning = -INF
 	_last_curtain_warning = -INF
@@ -164,6 +171,10 @@ func get_runtime() -> Dictionary:
 
 func get_projectiles() -> Array:
 	return enemy_projectiles.duplicate(true)
+
+
+func get_projectile_ends() -> Array:
+	return _projectile_ends.duplicate(true)
 
 
 func make_actor(run, type_id: String, pos: Vector2, actor_id: int, room_index: int = -1) -> Dictionary:
@@ -449,6 +460,8 @@ func _update_body_contact(run) -> void:
 
 
 func _update_projectiles(run, dt: float) -> void:
+	while not _projectile_ends.is_empty() and float(run.time) - float(_projectile_ends[0].time) > PROJECTILE_END_RETENTION:
+		_projectile_ends.pop_front()
 	var retained: Array = []
 	for projectile in enemy_projectiles:
 		if run.phase != "combat":
@@ -460,9 +473,11 @@ func _update_projectiles(run, dt: float) -> void:
 		var wall_time: float = run._first_block_contact(from, to, float(projectile.radius))
 		var hit_time: float = run.segment_circle_time(from - run.player.previous, to - run.player.pos, Vector2.ZERO, float(projectile.radius) + float(run.player.radius))
 		if hit_time != INF and hit_time < wall_time - 0.000001:
-			run.damage_player(float(projectile.damage), "projectile")
+			var applied: bool = run.damage_player(float(projectile.damage), "projectile")
+			_note_projectile_end(run, projectile, from, to, hit_time, dt, "player", applied)
 			continue
 		if wall_time != INF:
+			_note_projectile_end(run, projectile, from, to, wall_time, dt, "wall", false)
 			continue
 		projectile.previous = from
 		projectile.pos = to
@@ -470,7 +485,40 @@ func _update_projectiles(run, dt: float) -> void:
 		projectile.range_remaining -= distance
 		if projectile.remaining > 0.000001 and projectile.range_remaining > 0.000001 and run._inside_floor(to, float(projectile.radius)):
 			retained.append(projectile)
+		else:
+			_note_projectile_end(run, projectile, from, to, 1.0, dt, "expired", false)
 	enemy_projectiles = retained
+
+
+func _note_projectile_end(run, projectile: Dictionary, from: Vector2, to: Vector2, fraction: float, dt: float, reason: String, applied: bool) -> void:
+	# Record a result AFTER the original collision branch has decided it. Do not
+	# emit into gameplay effects/event_seq, consume RNG, or invoke a second hit.
+	var pos := from.lerp(to, fraction)
+	var normal: Vector2 = -Vector2(projectile.direction)
+	var contact_pos := pos
+	if reason == "player":
+		var center: Vector2 = run.player.previous.lerp(run.player.pos, fraction)
+		if pos.distance_squared_to(center) > 0.00000001:
+			normal = (pos - center).normalized()
+		contact_pos = pos - normal * float(projectile.radius)
+	elif reason == "wall":
+		for block: Dictionary in run.blocks:
+			var half: Vector2 = block.size * 0.5
+			var inflated := half + Vector2.ONE * float(projectile.radius)
+			var contact: float = run.segment_rectangle_time(from, to, block.center - inflated, block.center + inflated)
+			if absf(contact - fraction) <= 0.000001:
+				contact_pos = pos.clamp(block.center - half, block.center + half)
+				if pos.distance_squared_to(contact_pos) > 0.00000001:
+					normal = (pos - contact_pos).normalized()
+				break
+	_projectile_end_seq += 1
+	_projectile_ends.append({"seq": _projectile_end_seq, "projectile_id": int(projectile.id),
+		"reason": reason, "pos": pos, "contact_pos": contact_pos, "normal": normal, "from": from,
+		"direction": projectile.direction, "radius": float(projectile.radius),
+		"time": float(run.time) - dt * (1.0 - fraction), "from_time": float(run.time) - dt,
+		"damage_applied": applied})
+	if _projectile_ends.size() > PROJECTILE_END_LIMIT:
+		_projectile_ends.pop_front()
 
 
 func _fail(message: String) -> Dictionary:

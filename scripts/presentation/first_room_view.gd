@@ -15,6 +15,8 @@ const CombatOverlay := preload("res://scripts/presentation/route_combat_overlay.
 const RewardVisual := preload("res://scripts/presentation/route_reward_visual.gd")
 const SpellVFX := preload("res://scripts/presentation/route_spell_vfx.gd")
 const GemVFX := preload("res://scripts/presentation/route_gem_vfx.gd")
+const MagicMissileVFX := preload("res://scripts/presentation/route_magic_missile_vfx.gd")
+const FireBoltVFX := preload("res://scripts/presentation/route_fire_bolt_vfx.gd")
 const CYAN_FLAME := preload("res://assets/environment/courtyard_v2/cyan_flame.png")
 const PORTAL_ENERGY := preload("res://assets/environment/courtyard_v2/portal_energy_soft.png")
 const ROOM_PATH := "res://data/first_room_runtime.json"
@@ -41,6 +43,8 @@ var reward_visual: Node3D
 var _boss_chest_visual: Node3D
 var spell_vfx: Node3D
 var gem_vfx: Node3D
+var magic_missile_vfx: Node2D
+var fire_bolt_vfx: Node2D
 var _stage: Node3D
 var _overlay: Control
 var _texture: TextureRect
@@ -113,6 +117,14 @@ func _ready() -> void:
 	resized.connect(_layout_stage)
 	_layout_stage()
 	_build_world()
+	fire_bolt_vfx = FireBoltVFX.new()
+	# Same z as the stage, later sibling: above the stage image, below all
+	# authoritative warnings and hostile missiles. No new global Glow.
+	fire_bolt_vfx.z_index = STAGE_Z_INDEX
+	add_child(fire_bolt_vfx)
+	magic_missile_vfx = MagicMissileVFX.new()
+	magic_missile_vfx.z_index = COMBAT_OVERLAY_Z_INDEX + 1
+	add_child(magic_missile_vfx)
 	if not _state.is_empty():
 		sync(_state)
 
@@ -150,8 +162,11 @@ func sync(snapshot: Dictionary, _delta: float = 0.0) -> void:
 	var pickups: Array = _state.get("reward_pickups", [])
 	reward_visual.sync_pickup(pickups[0] if pickups.size() == 2 else _state.get("reward_pickup", {}))
 	_boss_chest_visual.sync_pickup(pickups[1] if pickups.size() == 2 else {})
+	spell_vfx.set_fire_bolt_override(fire_bolt_vfx.is_available() and snapshot.has("fire_bolt_ends"))
 	spell_vfx.sync_snapshot(snapshot, camera, _visual_options)
+	fire_bolt_vfx.sync_snapshot(snapshot, self, _visual_options)
 	gem_vfx.sync_snapshot(snapshot, camera, _visual_options)
+	magic_missile_vfx.sync_snapshot(snapshot, self, _visual_options)
 	_overlay.queue_redraw()
 
 
@@ -167,6 +182,10 @@ func set_visual_options(options: Dictionary) -> void:
 		spell_vfx.sync_snapshot(_state, camera, _visual_options)
 	if is_instance_valid(gem_vfx) and not _state.is_empty():
 		gem_vfx.sync_snapshot(_state, camera, _visual_options)
+	if is_instance_valid(fire_bolt_vfx) and not _state.is_empty():
+		fire_bolt_vfx.sync_snapshot(_state, self, _visual_options)
+	if is_instance_valid(magic_missile_vfx) and not _state.is_empty():
+		magic_missile_vfx.sync_snapshot(_state, self, _visual_options)
 
 
 func _sync_ambient_visuals(time: float) -> void:
@@ -184,10 +203,25 @@ func get_room_viewport() -> SubViewport:
 
 
 func get_vfx_debug_state() -> Dictionary:
-	return spell_vfx.get_debug_state() if is_instance_valid(spell_vfx) else {}
+	var result: Dictionary = spell_vfx.get_debug_state() if is_instance_valid(spell_vfx) else {}
+	var fire := get_fire_bolt_debug_state()
+	result["fire_bolt"] = fire
+	if not result.has("coverage"): result["coverage"] = {}
+	if not result.has("footprints"): result["footprints"] = []
+	for key in fire.get("coverage", {}): result.coverage[key] = int(result.coverage.get(key, 0)) + int(fire.coverage[key])
+	result.footprints.append_array(fire.get("footprints", []))
+	return result
+
+
+func get_fire_bolt_debug_state() -> Dictionary:
+	return fire_bolt_vfx.get_debug_state() if is_instance_valid(fire_bolt_vfx) else {}
 
 func get_gem_vfx_debug_state() -> Dictionary:
 	return gem_vfx.get_debug_state() if is_instance_valid(gem_vfx) else {}
+
+
+func get_magic_missile_debug_state() -> Dictionary:
+	return magic_missile_vfx.get_debug_state() if is_instance_valid(magic_missile_vfx) else {}
 
 
 func get_damage_number_debug_state() -> Dictionary:
@@ -204,6 +238,10 @@ func _layout_stage() -> void:
 		_overlay.position = Vector2.ZERO
 		_overlay.size = size
 		_overlay.queue_redraw()
+	if is_instance_valid(magic_missile_vfx) and not _state.is_empty():
+		magic_missile_vfx.sync_snapshot(_state, self, _visual_options)
+	if is_instance_valid(fire_bolt_vfx) and not _state.is_empty():
+		fire_bolt_vfx.sync_snapshot(_state, self, _visual_options)
 
 
 func screen_position(pos: Vector2, height: float = 0.0) -> Vector2:

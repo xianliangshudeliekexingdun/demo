@@ -109,6 +109,9 @@ static func draw_spawn_warnings(view, state: Dictionary):
 					_spawn_warning(view, warning, clampf(float(entry.remaining) / WARNING_FADE_SECONDS, 0.0, 1.0))
 
 static func draw_enemy_projectiles(view, state: Dictionary):
+	var missiles = view.get("magic_missile_vfx")
+	if is_instance_valid(missiles) and missiles.is_available():
+		return # The bounded shader/ribbon layer draws above this overlay.
 	var sf = _scale(view)
 	for projectile in state.get("enemy_projectiles", []):
 		var pos: Vector2 = projectile.get("pos", Vector2.ZERO)
