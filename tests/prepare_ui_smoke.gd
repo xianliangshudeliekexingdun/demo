@@ -8,6 +8,7 @@ const Meta=preload("res://scripts/core/meta_progression.gd")
 const Controller=preload("res://scripts/main.gd")
 const RoomView=preload("res://scripts/presentation/first_room_view.gd")
 const RoomUI=preload("res://scripts/ui/first_room_ui.gd")
+const Catalog=preload("res://scripts/ui/grimoire_catalog.gd")
 const RouteRun=preload("res://scripts/core/courtyard_route_run.gd")
 const RoomDressing=preload("res://scripts/presentation/courtyard_room_dressing.gd")
 const EnemyVisual=preload("res://scripts/presentation/route_enemy_visual.gd")
@@ -189,4 +190,51 @@ func combat_hud_baseline():
 	check(hud.enemies_label.position.y>=100.0,"route HUD places the alive count below the room header")
 	check(not hud.artifact_bar.visible,"empty artifact strip stays hidden")
 	check(hud._loadout_line.visible==bool(hud.preferences.get("view_hints",true)) or hud._loadout_line.text.is_empty(),"low-frequency loadout summary follows the hint setting")
+	# Read-only eight-slot fixture verifies confirmed geometry and persistent names.
+	var fixture: Dictionary = snapshot.duplicate(true)
+	fixture.phase = "combat"
+	fixture.spells = []
+	var ids: Array = Catalog.load_catalog().base.spells.keys().filter(func(id): return Catalog.spell_name(str(id)).length() == 4).slice(0, 8)
+	for index in range(8):
+		var description: Dictionary = Catalog.describe_spell(str(ids[index]), 1)
+		var spell: Dictionary = description.values.duplicate(true)
+		spell.id = str(ids[index])
+		spell.name = str(description.name)
+		spell.level = int(description.level)
+		spell.remaining = float(spell.get("cooldown", 1.0)) * (0.5 if index % 2 == 0 else 0.0)
+		spell.cast_remaining = float(spell.get("windup", 0.5)) if index == 1 else 0.0
+		fixture.spells.append(spell)
+	hud.refresh(fixture)
+	var legacy_titles: Array = hud.root.find_children("*", "Label", true, false).filter(func(node): return str(node.text).replace(" ", "").begins_with("法术构筑"))
+	check(legacy_titles.is_empty(), "spell-construction heading and count are absent")
+	for index in range(8):
+		var slot: Control = hud.slots[index]
+		var icon: Control = hud.slot_icons[index]
+		var name_label: Label = hud.spell_labels[index]
+		var level_label: Label = hud.cooldown_labels[index]
+		check(slot.size == Vector2(84, 84), "spell slot is 84x84: " + str(index))
+		check(slot.position == Vector2(432 + index * 94, 788), "spell slots keep one row at 94px pitch: " + str(index))
+		check(icon.position == Vector2(15, 15) and icon.size == Vector2(54, 54), "spell icon uses confirmed inset and size: " + str(index))
+		check((icon.position + icon.size * 0.5).distance_to(slot.size * 0.5) <= 2.0, "spell icon stays centered within 2px: " + str(index))
+		check(name_label.visible and name_label.text == str(fixture.spells[index].name), "equipped spell name stays visible: " + str(index))
+		check(is_equal_approx(name_label.size.x, 84) and name_label.size.y >= 20 and name_label.size.y <= 24 and is_equal_approx(name_label.position.y, slot.size.y), "name owns the row immediately below its slot: " + str(index))
+		check(not name_label.clip_text and name_label.horizontal_alignment == HORIZONTAL_ALIGNMENT_CENTER, "name row is centered without clipping: " + str(index))
+		check(str(name_label.text).length() == 4, "four-character name remains text-complete: " + str(index))
+		var name_width: float = name_label.get_theme_font("font").get_string_size(name_label.text, HORIZONTAL_ALIGNMENT_LEFT, -1, 14).x
+		check(name_width <= name_label.size.x, "four-character name fits the 84px row: " + str(index))
+		check(not Rect2(icon.position, icon.size).intersects(Rect2(level_label.position, level_label.size)), "level badge clears the icon body: " + str(index))
+		check(level_label.visible and level_label.text == "%d级" % int(fixture.spells[index].level), "level badge remains visible and accurate: " + str(index))
+		check(slot.get_global_rect().position.y + name_label.position.y + name_label.size.y <= 896.0, "slot and name row stay within the 900px logical canvas: " + str(index))
+		var level_global := Rect2(slot.get_global_rect().position + level_label.position, level_label.size)
+		check(not slot.get_global_rect().intersects(hud.artifact_bar.get_global_rect()) and not level_global.intersects(hud.artifact_bar.get_global_rect()), "spell slot and badge clear the artifact strip: " + str(index))
+	var four_character_names: Array = Catalog.load_catalog().base.spells.keys().map(func(id): return Catalog.spell_name(str(id))).filter(func(name): return str(name).length() == 4)
+	var name_font: Font = hud.spell_labels[0].get_theme_font("font")
+	var widest_name: float = 0.0
+	for display_name in four_character_names:
+		widest_name = maxf(widest_name, name_font.get_string_size(str(display_name), HORIZONTAL_ALIGNMENT_LEFT, -1, 14).x)
+	check(not four_character_names.is_empty() and widest_name <= 84.0, "all existing four-character spell names fit an 84px row")
+	fixture.spells = []
+	hud.refresh(fixture)
+	for index in range(8):
+		check(hud.spell_labels[index].text.is_empty() and not hud.spell_labels[index].visible, "empty slot leaves no spell name behind: " + str(index))
 	hud.free()

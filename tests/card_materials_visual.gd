@@ -124,13 +124,31 @@ func check_card_materials(label: String):
 
 
 func check_slot_materials(label: String):
+	var legacy_titles: Array = game.room_ui.root.find_children("*", "Label", true, false).filter(func(node):
+		return str(node.text).replace(" ", "").begins_with("法术构筑"))
+	check(legacy_titles.is_empty(), "legacy spell-construction heading and count are absent")
 	for index in game.room_ui.slots.size():
 		var slot: Control = game.room_ui.slots[index]
+		var icon: Control = game.room_ui.slot_icons[index]
+		var name_label: Label = game.room_ui.spell_labels[index]
+		var level_label: Label = game.room_ui.cooldown_labels[index]
 		check_texture(slot.get_node_or_null("SpellSlotBackground"), "spell_slot", slot.size, label + " slot " + str(index + 1))
 		check(slot.get_theme_stylebox("panel") is StyleBoxEmpty, "slot panel exposes generated socket: " + str(index + 1))
-		check(slot.size.is_equal_approx(Vector2(84, 78)), "generated socket retains eight-slot HUD footprint: " + str(index + 1))
-		check(game.room_ui.spell_labels[index].get_theme_font_size("font_size") == 14 and game.room_ui.cooldown_labels[index].get_theme_font_size("font_size") == 13, "generated slot retains readable name and level font sizes: " + str(index + 1))
-		var badge: StyleBox = game.room_ui.cooldown_labels[index].get_theme_stylebox("normal")
+		check(slot.size.is_equal_approx(Vector2(84, 84)), "generated socket is square 84x84: " + str(index + 1))
+		check(slot.position.is_equal_approx(Vector2(432 + index * 94, 788)), "eight slots retain the confirmed one-row layout: " + str(index + 1))
+		check(icon.position.is_equal_approx(Vector2(15, 15)) and icon.size.is_equal_approx(Vector2(54, 54)), "spell icon uses the confirmed 54x54 at (15,15): " + str(index + 1))
+		var icon_center: Vector2 = icon.position + icon.size * 0.5
+		check(icon_center.distance_to(slot.size * 0.5) <= 2.0, "spell icon center matches slot center within 2px: " + str(index + 1))
+		check(is_equal_approx(name_label.size.x, 84) and name_label.size.y >= 20 and name_label.size.y <= 24 and is_equal_approx(name_label.position.y, slot.size.y), "spell name owns one full-width row directly below its slot: " + str(index + 1))
+		check(name_label.horizontal_alignment == HORIZONTAL_ALIGNMENT_CENTER and not name_label.clip_text, "spell name is centered without text clipping: " + str(index + 1))
+		var name_backing: StyleBox = name_label.get_theme_stylebox("normal")
+		check(name_backing is StyleBoxFlat and name_backing.bg_color.a >= 0.8, "spell name owns a dark readable backing: " + str(index + 1))
+		var icon_rect := Rect2(icon.position, icon.size)
+		var level_rect := Rect2(level_label.position, level_label.size)
+		check(not icon_rect.intersects(level_rect), "level badge does not cover the spell icon body: " + str(index + 1))
+		check(slot.position.y + name_label.position.y + name_label.size.y <= 896, "slot and name row retain a bottom safe margin at 1280x720: " + str(index + 1))
+		check(name_label.get_theme_font_size("font_size") == 14 and level_label.get_theme_font_size("font_size") == 13, "generated slot retains readable name and level font sizes: " + str(index + 1))
+		var badge: StyleBox = level_label.get_theme_stylebox("normal")
 		check(badge is StyleBoxFlat and badge.bg_color.a > 0.9 and badge.bg_color.r < 0.1 and badge.border_width_left == 0, "level has its own dark contrast badge: " + str(index + 1))
 
 
@@ -247,11 +265,11 @@ func slot_fixture_matrix():
 	check(game.room_ui.slots.size() == 8, "HUD retains exactly eight spell slots")
 	check_slot_materials("empty")
 	for index in range(8):
-		check(game.room_ui.spell_labels[index].text == "空槽", "empty slot label retained: " + str(index))
+		check(game.room_ui.spell_labels[index].text.is_empty() and not game.room_ui.spell_labels[index].visible, "empty slot leaves no stale spell name: " + str(index))
 		check(game.room_ui.cooldown_labels[index].text.is_empty() and is_zero_approx(game.room_ui.slot_bars[index].value), "empty slot has no level or cooldown bar: " + str(index))
 		check(not game.room_ui.cooldown_labels[index].visible, "empty slot hides its level badge: " + str(index))
 	await snap("fixture-slots-eight-empty", true)
-	var ids: Array = Catalog.load_catalog().base.spells.keys().slice(0, 8)
+	var ids: Array = Catalog.load_catalog().base.spells.keys().filter(func(id): return Catalog.spell_name(str(id)).length() == 4).slice(0, 8)
 	for index in range(8):
 		var description: Dictionary = Catalog.describe_spell(str(ids[index]), 1 + index % 3)
 		var spell: Dictionary = description["values"].duplicate(true)
@@ -267,10 +285,20 @@ func slot_fixture_matrix():
 		var spell: Dictionary = state.spells[index]
 		check(game.room_ui.slot_icons[index].spell_id == str(spell.id), "equipped slot icon retains actual ID: " + str(index))
 		check(game.room_ui.spell_labels[index].text == spell.name and game.room_ui.cooldown_labels[index].text == "%d级" % spell.level, "equipped slot retains name and level: " + str(index))
+		check(game.room_ui.spell_labels[index].visible, "equipped slot keeps its name visible: " + str(index))
+		check(str(spell.name).length() == 4, "four-character spell name remains complete: " + str(index))
+		var name_font: Font = game.room_ui.spell_labels[index].get_theme_font("font")
+		var name_width: float = name_font.get_string_size(str(spell.name), HORIZONTAL_ALIGNMENT_LEFT, -1, 14).x
+		check(name_width <= game.room_ui.spell_labels[index].size.x, "four-character spell name fits its full-width row: " + str(index))
 		check(game.room_ui.cooldown_labels[index].visible, "equipped slot shows its contrast level badge: " + str(index))
 		var expected_bar: float = 1.0 - clampf(float(spell.remaining) / maxf(0.001, float(spell.get("cooldown", 1.0))), 0.0, 1.0)
 		check(absf(game.room_ui.slot_bars[index].value - expected_bar) < 0.002, "material leaves cooldown display value unchanged: " + str(index))
-		check(game.room_ui.slot_bars[index].modulate == (T.CYAN if float(spell.cast_remaining) > 0.0 else Color.WHITE), "material preserves casting indicator color: " + str(index))
+		check(game.room_ui.slot_bars[index].modulate == Color.WHITE, "cooldown bar keeps its neutral material color: " + str(index))
+		var chant_style: StyleBox = game.room_ui.slot_highlights[index].get_theme_stylebox("panel")
+		if float(spell.cast_remaining) > 0.0:
+			check(chant_style is StyleBoxFlat and chant_style.border_color.is_equal_approx(T.CYAN) and chant_style.border_width_left >= 2, "chant is owned by the cyan slot border: " + str(index))
+		else:
+			check(chant_style is StyleBoxEmpty, "non-chant slot has no false chant border: " + str(index))
 		var passive: bool = str(Catalog.SPELL_ROLES.get(str(spell.id), "")).begins_with("被动")
 		var expected_status: String = "被动" if passive else "吟唱中" if float(spell.cast_remaining) > 0.0 else "冷却 %.1f秒" % spell.remaining if float(spell.remaining) > 0.0 else "就绪"
 		check(expected_status in game.room_ui.slots[index].tooltip_text, "slot tooltip preserves exact cooldown or casting value: " + str(index))
@@ -285,7 +313,7 @@ func slot_fixture_matrix():
 	state.spells = []
 	await fixture(state, "slots-cleared")
 	for index in range(8):
-		check(game.room_ui.spell_labels[index].text == "空槽" and game.room_ui.cooldown_labels[index].text.is_empty(), "cleared slot restores empty label and no level: " + str(index))
+		check(game.room_ui.spell_labels[index].text.is_empty() and not game.room_ui.spell_labels[index].visible and game.room_ui.cooldown_labels[index].text.is_empty(), "cleared slot restores no name and no level: " + str(index))
 		check(not game.room_ui.cooldown_labels[index].visible, "cleared slot hides stale level badge: " + str(index))
 		check(game.room_ui.slot_icons[index].spell_id == "empty", "cleared slot restores empty glyph instead of stale spell art: " + str(index))
 	await snap("fixture-slots-cleared-no-stale-icons", true)

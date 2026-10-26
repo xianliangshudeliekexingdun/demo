@@ -24,7 +24,6 @@ const CAMERA_RESPONSE := 7.0
 const PLAYER_HIT_FLASH := 0.14
 const ENEMY_BAR_HOLD := 3.0
 const ENEMY_BAR_FADE := 0.35
-const DAMAGE_MERGE_WINDOW := 0.22
 const DAMAGE_NUMBER_LIFETIME := 0.72
 const DAMAGE_NUMBER_LIMIT := 20
 const WARNING_FADE_SECONDS := 0.08
@@ -189,6 +188,11 @@ func get_vfx_debug_state() -> Dictionary:
 
 func get_gem_vfx_debug_state() -> Dictionary:
 	return gem_vfx.get_debug_state() if is_instance_valid(gem_vfx) else {}
+
+
+func get_damage_number_debug_state() -> Dictionary:
+	return {"enabled": bool(_visual_options.damage_numbers), "count": _damage_numbers.size(),
+		"records": _damage_numbers.duplicate(true), "lifetime": DAMAGE_NUMBER_LIFETIME, "limit": DAMAGE_NUMBER_LIMIT}
 
 
 func _layout_stage() -> void:
@@ -924,25 +928,12 @@ func _collect_damage_number(effect: Dictionary, time: float) -> void:
 	var target_key := _damage_target_key(effect)
 	var dot := _is_dot_source(str(effect.get("spell_id", "")))
 	var critical := _damage_is_critical(effect, target_key, amount, dot)
-	var group := ("dot:" if dot else "direct:") + target_key
-	var found := -1
-	for index in _damage_numbers.size():
-		var record: Dictionary = _damage_numbers[index]
-		if str(record.get("group", "")) == group and time - float(record.get("last_time", -INF)) <= DAMAGE_MERGE_WINDOW:
-			found = index
-			break
 	var actor_id := int(effect.get("actor_id", -1))
 	var pos: Vector2 = effect.get("pos", Vector2.ZERO)
-	if found >= 0:
-		var record: Dictionary = _damage_numbers[found]
-		record["amount"] = float(record.get("amount", 0.0)) + amount
-		record["last_time"] = time
-		record["pos"] = pos
-		record["critical"] = bool(record.get("critical", false)) or critical
-		_damage_numbers[found] = record
-	else:
-		_damage_numbers.append({"group": group, "actor_id": actor_id, "pos": pos, "amount": amount,
-			"first_time": time, "last_time": time, "critical": critical, "dot": dot})
+	# Each core damage event owns one visible number. Never aggregate by target:
+	# two real hits may legitimately land close together and must stay distinct.
+	_damage_numbers.append({"seq": int(effect.get("seq", -1)), "actor_id": actor_id, "pos": pos,
+		"amount": amount, "first_time": time, "last_time": time, "critical": critical, "dot": dot})
 	while _damage_numbers.size() > DAMAGE_NUMBER_LIMIT:
 		var oldest := 0
 		for index in range(1, _damage_numbers.size()):

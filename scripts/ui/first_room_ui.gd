@@ -156,9 +156,8 @@ func _build_hud():
 	var hint=T.paragraph(root,"WASD / 方向键移动\n移动中自动吟唱\nEsc 暂停 · F11 全屏",Rect2(38,757,290,94),18,T.MUTED)
 	hint_nodes.append(hint)
 	detail=T.paragraph(root,"",Rect2(1280,770,282,76),18,T.CYAN)
-	T.label(root,"法 术 构 筑",Rect2(432,771,740,24),15,T.GOLD)
 	for i in range(8):
-		var slot=T.panel(root,Rect2(432+i*94,804,84,78))
+		var slot=T.panel(root,Rect2(432+i*94,788,84,84))
 		slot.name="SpellSlot%d"%(i+1)
 		slot.mouse_filter=Control.MOUSE_FILTER_PASS
 		slot.add_theme_stylebox_override("panel",StyleBoxEmpty.new())
@@ -172,17 +171,22 @@ func _build_hud():
 		slot.add_child(socket)
 		socket.size=slot.size
 		slots.append(slot)
-		var icon=T.icon(slot,"empty",Rect2(15,7,54,46),T.LINE)
+		var icon=T.icon(slot,"empty",Rect2(15,15,54,54),T.LINE)
+		icon.name="SpellIcon%d"%(i+1)
 		slot_icons.append(icon)
-		spell_labels.append(T.label(slot,"◇",Rect2(5,49,74,22),15,T.TEXT))
+		spell_labels.append(T.label(slot,"",Rect2(0,84,84,20),14,T.TEXT))
+		spell_labels[i].name="SpellName%d"%(i+1)
 		spell_labels[i].horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
-		spell_labels[i].add_theme_stylebox_override("normal",T.box(Color(.035,.05,.08,.92),Color(T.CYAN,.32),1,3))
+		spell_labels[i].autowrap_mode=TextServer.AUTOWRAP_OFF
+		spell_labels[i].clip_text=false
+		spell_labels[i].add_theme_stylebox_override("normal",T.box(Color(.035,.05,.08,.92),Color(T.CYAN,.20),1,3))
 		spell_labels[i].visible=false
-		cooldown_labels.append(T.label(slot,"",Rect2(39,4,40,22),15,T.GOLD))
+		cooldown_labels.append(T.label(slot,"",Rect2(50,-19,34,18),13,T.GOLD))
+		cooldown_labels[i].name="SpellLevel%d"%(i+1)
 		cooldown_labels[i].add_theme_stylebox_override("normal",T.box(Color(.035,.05,.08,.94),Color.TRANSPARENT,0,3))
 		cooldown_labels[i].horizontal_alignment=HORIZONTAL_ALIGNMENT_RIGHT
 		cooldown_labels[i].visible=false
-		slot_bars.append(make_bar(slot,Rect2(9,70,66,4),T.GOLD))
+		slot_bars.append(make_bar(slot,Rect2(9,76,66,4),T.GOLD))
 		slot_bars[i].visible=false
 		var highlight=Panel.new()
 		highlight.name="ChantHighlight"
@@ -339,7 +343,7 @@ func refresh(s:Dictionary):
 				slot_icons[i].spell_id="empty"
 				slot_icons[i].tint=T.LINE
 				slot_icons[i].queue_redraw()
-			spell_labels[i].text="空槽"
+			spell_labels[i].text=""
 			spell_labels[i].visible=false
 			cooldown_labels[i].text=""
 			cooldown_labels[i].visible=false
@@ -362,11 +366,11 @@ func refresh(s:Dictionary):
 		var chanting=chant>0 and phase=="combat"
 		var cooling=remaining>0 and phase=="combat" and not passive and not chanting
 		var status="被动" if passive else ("战后" if phase!="combat" else ("吟唱中" if chant>0 else ("冷却 %.1f秒"%remaining if remaining>0 else "就绪")))
-		# The icon owns readiness, the bar owns cooldown progress, and the border
-		# owns chant. The name appears only while that slot is actively chanting.
-		spell_labels[i].visible=chanting
+		# Names stay visible for every equipped slot. Readiness lives on the icon,
+		# cooldown progress on the bar, and chant exclusively on the border.
+		spell_labels[i].visible=true
 		spell_labels[i].add_theme_color_override("font_color",T.TEXT)
-		cooldown_labels[i].text="%d 级"%spell.level
+		cooldown_labels[i].text="%d级"%spell.level
 		slots[i].tooltip_text="%s · %d 级\n%s\n%s"%[spell.name,spell.level,status,Catalog.SPELL_SUMMARIES.get(str(spell.id),"")]
 		slot_icons[i].modulate=Color(1,1,1,.38) if cooling else Color.WHITE
 		slot_bars[i].visible=cooling
