@@ -20,6 +20,11 @@ const FireBoltVFX := preload("res://scripts/presentation/route_fire_bolt_vfx.gd"
 const FireRainVFX := preload("res://scripts/presentation/route_fire_rain_vfx.gd")
 const FireBeamVFX := preload("res://scripts/presentation/route_fire_beam_vfx.gd")
 const FireBombVFX := preload("res://scripts/presentation/route_fire_bomb_vfx.gd")
+const FireWaveVFX := preload("res://scripts/presentation/route_fire_wave_vfx.gd")
+const FireVortexVFX := preload("res://scripts/presentation/route_fire_vortex_vfx.gd")
+const FireSupportVFX := preload("res://scripts/presentation/route_fire_support_vfx.gd")
+const FireBrandVFX := preload("res://scripts/presentation/route_fire_brand_vfx.gd")
+const FireFieldVFX := preload("res://scripts/presentation/route_fire_field_vfx.gd")
 const CYAN_FLAME := preload("res://assets/environment/courtyard_v2/cyan_flame.png")
 const PORTAL_ENERGY := preload("res://assets/environment/courtyard_v2/portal_energy_soft.png")
 const ROOM_PATH := "res://data/first_room_runtime.json"
@@ -51,6 +56,11 @@ var fire_bolt_vfx: Node2D
 var fire_rain_vfx: Node2D
 var fire_beam_vfx: Node2D
 var fire_bomb_vfx: Node2D
+var fire_wave_vfx: Node2D
+var fire_vortex_vfx: Node2D
+var fire_support_vfx: Node2D
+var fire_brand_vfx: Node2D
+var fire_field_vfx: Node2D
 var _stage: Node3D
 var _overlay: Control
 var _texture: TextureRect
@@ -123,6 +133,9 @@ func _ready() -> void:
 	resized.connect(_layout_stage)
 	_layout_stage()
 	_build_world()
+	fire_field_vfx = FireFieldVFX.new()
+	fire_field_vfx.z_index = STAGE_Z_INDEX
+	add_child(fire_field_vfx)
 	fire_bolt_vfx = FireBoltVFX.new()
 	# Same z as the stage, later sibling: above the stage image, below all
 	# authoritative warnings and hostile missiles. No new global Glow.
@@ -137,6 +150,18 @@ func _ready() -> void:
 	fire_bomb_vfx = FireBombVFX.new()
 	fire_bomb_vfx.z_index = STAGE_Z_INDEX
 	add_child(fire_bomb_vfx)
+	fire_wave_vfx = FireWaveVFX.new()
+	fire_wave_vfx.z_index = STAGE_Z_INDEX
+	add_child(fire_wave_vfx)
+	fire_vortex_vfx = FireVortexVFX.new()
+	fire_vortex_vfx.z_index = STAGE_Z_INDEX
+	add_child(fire_vortex_vfx)
+	fire_brand_vfx = FireBrandVFX.new()
+	fire_brand_vfx.z_index = STAGE_Z_INDEX
+	add_child(fire_brand_vfx)
+	fire_support_vfx = FireSupportVFX.new()
+	fire_support_vfx.z_index = STAGE_Z_INDEX
+	add_child(fire_support_vfx)
 	magic_missile_vfx = MagicMissileVFX.new()
 	magic_missile_vfx.z_index = COMBAT_OVERLAY_Z_INDEX + 1
 	add_child(magic_missile_vfx)
@@ -181,11 +206,21 @@ func sync(snapshot: Dictionary, _delta: float = 0.0) -> void:
 	spell_vfx.set_fire_rain_override(fire_rain_vfx.is_available() and snapshot.has("fire_rain_impacts"))
 	spell_vfx.set_fire_beam_override(fire_beam_vfx.is_available() and snapshot.has("fire_beam_facts"))
 	spell_vfx.set_fire_bomb_override(fire_bomb_vfx.is_available() and snapshot.has_all(["fire_bomb_facts", "fire_bomb_status_facts"]))
+	spell_vfx.set_fire_wave_override(fire_wave_vfx.is_available() and snapshot.has_all(["fire_wave_facts", "fire_wave_speed"]))
+	spell_vfx.set_fire_vortex_override(fire_vortex_vfx.is_available() and snapshot.has_all(["fire_vortex_facts", "fire_vortex_paths"]))
+	spell_vfx.set_fire_field_override(fire_field_vfx.is_available() and snapshot.has_all(["fire_field_facts", "fire_field_state"]))
+	spell_vfx.set_fire_brand_override(fire_brand_vfx.is_available() and snapshot.has("fire_brand_facts"))
+	spell_vfx.set_fire_support_override(fire_support_vfx.supports_snapshot(snapshot))
 	spell_vfx.sync_snapshot(snapshot, camera, _visual_options)
 	fire_bolt_vfx.sync_snapshot(snapshot, self, _visual_options)
 	fire_rain_vfx.sync_snapshot(snapshot, self, _visual_options)
 	fire_beam_vfx.sync_snapshot(snapshot, self, _visual_options)
 	fire_bomb_vfx.sync_snapshot(snapshot, self, _visual_options)
+	fire_wave_vfx.sync_snapshot(snapshot, self, _visual_options)
+	fire_vortex_vfx.sync_snapshot(snapshot, self, _visual_options)
+	fire_field_vfx.sync_snapshot(snapshot, self, _visual_options)
+	fire_brand_vfx.sync_snapshot(snapshot, self, _visual_options)
+	fire_support_vfx.sync_snapshot(snapshot, self, _visual_options)
 	gem_vfx.sync_snapshot(snapshot, camera, _visual_options)
 	magic_missile_vfx.sync_snapshot(snapshot, self, _visual_options)
 	_overlay.queue_redraw()
@@ -211,6 +246,16 @@ func set_visual_options(options: Dictionary) -> void:
 		fire_beam_vfx.sync_snapshot(_state, self, _visual_options)
 	if is_instance_valid(fire_bomb_vfx) and not _state.is_empty():
 		fire_bomb_vfx.sync_snapshot(_state, self, _visual_options)
+	if is_instance_valid(fire_wave_vfx) and not _state.is_empty():
+		fire_wave_vfx.sync_snapshot(_state, self, _visual_options)
+	if is_instance_valid(fire_vortex_vfx) and not _state.is_empty():
+		fire_vortex_vfx.sync_snapshot(_state, self, _visual_options)
+	if is_instance_valid(fire_field_vfx) and not _state.is_empty():
+		fire_field_vfx.sync_snapshot(_state, self, _visual_options)
+	if is_instance_valid(fire_brand_vfx) and not _state.is_empty():
+		fire_brand_vfx.sync_snapshot(_state, self, _visual_options)
+	if is_instance_valid(fire_support_vfx) and not _state.is_empty():
+		fire_support_vfx.sync_snapshot(_state, self, _visual_options)
 	if is_instance_valid(magic_missile_vfx) and not _state.is_empty():
 		magic_missile_vfx.sync_snapshot(_state, self, _visual_options)
 
@@ -249,6 +294,26 @@ func get_vfx_debug_state() -> Dictionary:
 	result["fire_bomb"] = bomb
 	for key in bomb.get("coverage", {}): result.coverage[key] = int(result.coverage.get(key, 0)) + int(bomb.coverage[key])
 	result.footprints.append_array(bomb.get("footprints", []))
+	var wave := get_fire_wave_debug_state()
+	result["fire_wave"] = wave
+	for key in wave.get("coverage", {}): result.coverage[key] = int(result.coverage.get(key, 0)) + int(wave.coverage[key])
+	result.footprints.append_array(wave.get("footprints", []))
+	var vortex := get_fire_vortex_debug_state()
+	result["fire_vortex"] = vortex
+	for key in vortex.get("coverage", {}): result.coverage[key] = int(result.coverage.get(key, 0)) + int(vortex.coverage[key])
+	result.footprints.append_array(vortex.get("footprints", []))
+	var field := get_fire_field_debug_state()
+	result["fire_field"] = field
+	for key in field.get("coverage", {}): result.coverage[key] = int(result.coverage.get(key, 0)) + int(field.coverage[key])
+	result.footprints.append_array(field.get("footprints", []))
+	var brand := get_fire_brand_debug_state()
+	result["fire_brand"] = brand
+	for key in brand.get("coverage", {}): result.coverage[key] = int(result.coverage.get(key, 0)) + int(brand.coverage[key])
+	result.footprints.append_array(brand.get("footprints", []))
+	var support := get_fire_support_debug_state()
+	result["fire_support"] = support
+	for key in support.get("coverage", {}): result.coverage[key] = int(result.coverage.get(key, 0)) + int(support.coverage[key])
+	result.footprints.append_array(support.get("footprints", []))
 	return result
 
 
@@ -266,6 +331,26 @@ func get_fire_beam_debug_state() -> Dictionary:
 
 func get_fire_bomb_debug_state() -> Dictionary:
 	return fire_bomb_vfx.get_debug_state() if is_instance_valid(fire_bomb_vfx) else {}
+
+
+func get_fire_wave_debug_state() -> Dictionary:
+	return fire_wave_vfx.get_debug_state() if is_instance_valid(fire_wave_vfx) else {}
+
+
+func get_fire_vortex_debug_state() -> Dictionary:
+	return fire_vortex_vfx.get_debug_state() if is_instance_valid(fire_vortex_vfx) else {}
+
+func get_fire_field_debug_state() -> Dictionary:
+	return fire_field_vfx.get_debug_state() if is_instance_valid(fire_field_vfx) else {}
+
+
+func get_fire_brand_debug_state() -> Dictionary:
+	return fire_brand_vfx.get_debug_state() if is_instance_valid(fire_brand_vfx) else {}
+
+
+func get_fire_support_debug_state() -> Dictionary:
+	return fire_support_vfx.get_debug_state() if is_instance_valid(fire_support_vfx) else {}
+
 
 func get_gem_vfx_debug_state() -> Dictionary:
 	return gem_vfx.get_debug_state() if is_instance_valid(gem_vfx) else {}
@@ -299,12 +384,26 @@ func _layout_stage() -> void:
 		fire_beam_vfx.sync_snapshot(_state, self, _visual_options)
 	if is_instance_valid(fire_bomb_vfx) and not _state.is_empty():
 		fire_bomb_vfx.sync_snapshot(_state, self, _visual_options)
+	if is_instance_valid(fire_wave_vfx) and not _state.is_empty():
+		fire_wave_vfx.sync_snapshot(_state, self, _visual_options)
+	if is_instance_valid(fire_vortex_vfx) and not _state.is_empty():
+		fire_vortex_vfx.sync_snapshot(_state, self, _visual_options)
+	if is_instance_valid(fire_field_vfx) and not _state.is_empty():
+		fire_field_vfx.sync_snapshot(_state, self, _visual_options)
+	if is_instance_valid(fire_brand_vfx) and not _state.is_empty():
+		fire_brand_vfx.sync_snapshot(_state, self, _visual_options)
+	if is_instance_valid(fire_support_vfx) and not _state.is_empty():
+		fire_support_vfx.sync_snapshot(_state, self, _visual_options)
 
 
 func screen_position(pos: Vector2, height: float = 0.0) -> Vector2:
 	if not is_instance_valid(camera):
 		return Vector2.ZERO
 	return camera.unproject_position(_point(pos, height)) * size / LOGICAL_SIZE
+
+
+func screen_depth(pos: Vector2, height: float = 0.0) -> float:
+	return -camera.to_local(_point(pos, height)).z if is_instance_valid(camera) else 0.0
 
 
 func get_camera_debug_state() -> Dictionary:

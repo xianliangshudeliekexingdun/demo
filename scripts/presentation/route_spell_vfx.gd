@@ -31,6 +31,11 @@ var _fire_bolt_override := false
 var _fire_rain_override := false
 var _fire_beam_override := false
 var _fire_bomb_override := false
+var _fire_wave_override := false
+var _fire_vortex_override := false
+var _fire_support_override := false
+var _fire_brand_override := false
+var _fire_field_override := false
 var _bomb_detonations: Dictionary = {}
 
 
@@ -48,6 +53,26 @@ func set_fire_beam_override(enabled: bool) -> void:
 
 func set_fire_bomb_override(enabled: bool) -> void:
 	_fire_bomb_override = enabled
+
+
+func set_fire_wave_override(enabled: bool) -> void:
+	_fire_wave_override = enabled
+
+
+func set_fire_vortex_override(enabled: bool) -> void:
+	_fire_vortex_override = enabled
+
+
+func set_fire_support_override(enabled: bool) -> void:
+	_fire_support_override = enabled
+
+
+func set_fire_brand_override(enabled: bool) -> void:
+	_fire_brand_override = enabled
+
+
+func set_fire_field_override(enabled: bool) -> void:
+	_fire_field_override = enabled
 
 
 func _ready():
@@ -142,7 +167,7 @@ func sync_snapshot(snapshot: Dictionary, camera: Camera3D, options: Dictionary =
 			_flame_scatter(center, radius * 0.83, 4, 0.35, 0.6, float(patch.get("cast_id", 0)))
 			_footprints.append({"kind": "artifact_patch", "pos": center, "radius": radius})
 		for spell in snapshot.get("spells", []):
-			if spell.id == "F02":
+			if spell.id == "F02" and not _fire_support_override:
 				_ground(snapshot.player.pos, 0.39, 7, 0.23, 0.0, 2.0)
 				_note("F02_passive")
 	for effect in snapshot.get("effects", []):
@@ -194,6 +219,8 @@ func _bolt(projectile: Dictionary):
 
 
 func _zone(zone: Dictionary):
+	if _fire_field_override and str(zone.get("spell_id", "")) == "F06": return
+	if _fire_vortex_override and str(zone.get("spell_id", "")) == "F05": return
 	if _fire_rain_override and str(zone.get("spell_id", "")) == "F03" and str(zone.get("kind", "")) in ["rain", "rain_ground"]: return
 	var pos: Vector2 = zone.get("pos", Vector2.ZERO)
 	var radius = float(zone.get("radius", 0.0))
@@ -257,10 +284,14 @@ func _spirit(unit: Dictionary):
 	_note("F04_spirit")
 
 func _burning(actor: Dictionary, burn: Dictionary):
+	if _fire_brand_override and str(burn.get("source", "")) == "F11": return
+	if _fire_field_override and str(burn.get("source", "")) == "F06": return
 	if _fire_bolt_override and str(burn.get("source", "")) == "F01": return
 	if _fire_rain_override and str(burn.get("source", "")) == "F03": return
 	if _fire_beam_override and str(burn.get("source", "")) == "F08": return
 	if _fire_bomb_override and str(burn.get("source", "")) == "F07": return
+	if _fire_wave_override and str(burn.get("source", "")) == "F09": return
+	if _fire_vortex_override and str(burn.get("source", "")) == "F05": return
 	var pos: Vector2 = actor.get("pos", Vector2.ZERO)
 	var radius = maxf(0.25, float(actor.get("radius", 0.4)))
 	if not _in_view(pos, radius):
@@ -275,9 +306,14 @@ func _burning(actor: Dictionary, burn: Dictionary):
 
 func _effect(effect: Dictionary, snapshot: Dictionary):
 	var kind = str(effect.get("kind", ""))
+	if _fire_support_override and kind in ["cast", "shield_restore"] and str(effect.get("spell_id", "")) == "F10": return
+	if _fire_brand_override and ((kind in ["cast", "fire_brand", "fire_spread"] and str(effect.get("spell_id", "")) == "F11") or (kind == "fire_ignited" and str(effect.get("source", "")) == "F11")): return
+	if _fire_field_override and ((kind in ["cast", "artifact_explosion"] and str(effect.get("spell_id", "")) == "F06") or (kind == "fire_ignited" and str(effect.get("source", "")) == "F06")): return
 	if _fire_bolt_override and ((kind in ["cast", "bolt_hit", "artifact_patch"] and str(effect.get("spell_id", "")) == "F01") or (kind == "fire_ignited" and str(effect.get("source", "")) == "F01")): return
 	if _fire_rain_override and ((kind in ["cast", "rain_impact"] and str(effect.get("spell_id", "")) == "F03") or (kind == "fire_ignited" and str(effect.get("source", "")) == "F03")): return
 	if _fire_beam_override and ((kind in ["cast", "beam"] and str(effect.get("spell_id", "")) == "F08") or (kind == "fire_ignited" and str(effect.get("source", "")) == "F08")): return
+	if _fire_wave_override and ((kind in ["cast", "wave"] and str(effect.get("spell_id", "")) == "F09") or (kind == "fire_ignited" and str(effect.get("source", "")) == "F09")): return
+	if _fire_vortex_override and ((kind == "cast" and str(effect.get("spell_id", "")) == "F05") or (kind == "fire_ignited" and str(effect.get("source", "")) == "F05")): return
 	if _fire_bomb_override:
 		if kind in ["cast", "bomb_flight", "bomb_impact", "aftershock", "fire_reignited"] and str(effect.get("spell_id", "")) == "F07": return
 		if kind == "fire_ignited" and str(effect.get("source", "")) == "F07": return

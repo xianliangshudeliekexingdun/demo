@@ -29,6 +29,26 @@ const BOMB_FACT_LIMIT := 512 # Bounded display facts; no gameplay events.
 const BOMB_FACT_RETENTION := 1.0
 var _bomb_facts: Array = []
 var _bomb_fact_seq := 0
+const WAVE_FACT_LIMIT := 256 # Read-only releases, never gameplay effects.
+const WAVE_FACT_RETENTION := 1.0
+var _wave_facts: Array = []
+var _wave_fact_seq := 0
+const VORTEX_FACT_LIMIT := 512 # Observations only, not gameplay effects.
+const VORTEX_PATH_LIMIT := 256
+const VORTEX_PATH_POINTS := 64
+const VORTEX_FACT_RETENTION := 1.0
+const VORTEX_PATH_RETENTION := 0.3
+var _vortex_facts: Array = []
+var _vortex_fact_seq := 0
+var _vortex_paths: Dictionary = {}
+const FIELD_FACT_LIMIT := 512 # Bounded observations, never gameplay events.
+const FIELD_FACT_RETENTION := 1.0
+var _field_facts: Array = []
+var _field_fact_seq := 0
+const BRAND_FACT_LIMIT := 256 # Completed primary contacts, never gameplay events.
+const BRAND_FACT_RETENTION := 1.0
+var _brand_facts: Array = []
+var _brand_fact_seq := 0
 var zones: Array = []
 var pending: Array = []
 var spirits: Array = []
@@ -127,6 +147,15 @@ func stop_room():
 	_next_beam_echo_parent = -1
 	_bomb_facts.clear()
 	_bomb_fact_seq = 0
+	_wave_facts.clear()
+	_wave_fact_seq = 0
+	_vortex_facts.clear()
+	_vortex_fact_seq = 0
+	_vortex_paths.clear()
+	_field_facts.clear()
+	_field_fact_seq = 0
+	_brand_facts.clear()
+	_brand_fact_seq = 0
 	zones.clear()
 	growth.clear()
 	pending.clear()
@@ -156,6 +185,13 @@ func get_snapshot() -> Dictionary:
 		"fire_rain_impacts": _rain_impacts.duplicate(true),
 		"fire_beam_facts": _beam_facts.duplicate(true),
 		"fire_bomb_facts": _bomb_facts.duplicate(true),
+		"fire_wave_facts": _wave_facts.duplicate(true),
+		"fire_vortex_facts": _vortex_facts.duplicate(true),
+		"fire_vortex_paths": _vortex_paths.duplicate(true),
+		"fire_field_facts": _field_facts.duplicate(true),
+		"fire_brand_facts": _brand_facts.duplicate(true),
+		"fire_field_state": _field_visual_state(run) if run != null else {},
+		"fire_wave_speed": growth.wave_speed_snapshot(run) if run != null and growth.has_method("wave_speed_snapshot") else {},
 		"fire_bomb_status_facts": fire_status.get_bomb_visual_facts() if fire_status != null and fire_status.has_method("get_bomb_visual_facts") else [],
 		"spell_burns": fire_status.snapshot(run) if fire_status != null else [],
 		"fire_reignite_pending": fire_status.reignite_pending.duplicate(true) if fire_status != null else []}
@@ -271,6 +307,14 @@ func update(run, dt: float):
 		if float(_beam_visual_sources[id].expires) < float(run.time): _beam_visual_sources.erase(id)
 	for index in range(_bomb_facts.size() - 1, -1, -1):
 		if float(_bomb_facts[index].retain_until) < float(run.time): _bomb_facts.remove_at(index)
+	while not _wave_facts.is_empty() and float(run.time) - float(_wave_facts[0].time) > WAVE_FACT_RETENTION:
+		_wave_facts.pop_front()
+	while not _vortex_facts.is_empty() and float(run.time) - float(_vortex_facts[0].time) > VORTEX_FACT_RETENTION:
+		_vortex_facts.pop_front()
+	while not _field_facts.is_empty() and float(run.time) - float(_field_facts[0].time) > FIELD_FACT_RETENTION:
+		_field_facts.pop_front()
+	while not _brand_facts.is_empty() and float(run.time) - float(_brand_facts[0].time) > BRAND_FACT_RETENTION:
+		_brand_facts.pop_front()
 	before_damage_tick(run, dt)
 	growth.update(run, dt)
 	_update_pending(run)
@@ -446,18 +490,23 @@ func _cast(run, spell: Dictionary, stats: Dictionary, target: Dictionary, natura
 			var zone = _zone("vortex", spell.id, run.player.pos, float(level.radius), float(stats.duration) + float(level.end_duration), float(stats.interval), float(level.coefficient), context)
 			zone.merge({"direction": (target.pos - run.player.pos).normalized(), "speed": float(stats.speed), "travel_remaining": float(stats.duration), "first_hits": {}}, true)
 			zones.append(zone)
+			_observe_vortex_position(run, zone)
+			_note_vortex_fact(run, "release", zone)
 		"field":
 			context["ignite"] = true
 			context["ignite_once_per_target"] = true
 			for index in range(zones.size() - 1, -1, -1):
 				if zones[index].kind == "field":
+					var replaced_field: Dictionary = zones[index]
 					zones.remove_at(index)
+					_note_field_fact(run, "replace", replaced_field)
 			field_grace = 0.0
 			var zone = _zone("field", spell.id, run.player.pos, float(level.radius), float(level.duration), float(stats.interval), float(level.coefficient), context)
 			zone.merge({"attack_bonus": float(stats.attack_bonus), "grace": float(level.grace)}, true)
 			# F06 never recursively amplifies its own persistent-area snapshot.
 			zone.context.field_bonus = 0.0
 			zones.append(zone)
+			_note_field_fact(run, "release", zone)
 		"bomb":
 			var center: Vector2 = spell.get("locked_pos", target.pos)
 			_queue(run, float(stats.travel_delay), "bomb", {"pos": center, "radius": float(stats.radius), "stats": stats, "context": context})
@@ -467,10 +516,13 @@ func _cast(run, spell: Dictionary, stats: Dictionary, target: Dictionary, natura
 			context["ignite"] = true
 			if run.has_method("gem_record_shape"): run.gem_record_shape({"kind": "area", "pos": run.player.pos, "radius": float(level.radius)}, float(level.coefficient), context)
 			var hit_count = 0
+			var wave_hits: Array = []
 			for actor in run.actors:
 				if actor.health <= 0.0 or run.player.pos.distance_to(actor.pos) > float(level.radius) + float(actor.radius):
 					continue
-				if _hit(run, actor, float(level.coefficient), context) > 0.0:
+				var wave_from: Vector2 = actor.pos
+				var wave_actual := _hit(run, actor, float(level.coefficient), context)
+				if wave_actual > 0.0:
 					hit_count += 1
 				var direction: Vector2 = (actor.pos - run.player.pos).normalized()
 				if direction.length_squared() < 0.000001:
@@ -481,15 +533,19 @@ func _cast(run, spell: Dictionary, stats: Dictionary, target: Dictionary, natura
 					run.interrupt_enemy_by_push(actor, actor.pos)
 				if float(level.slow) > 0.0:
 					apply_slow(run, actor, float(level.slow), float(level.slow_duration), "F09")
+				wave_hits.append({"actor_id": int(actor.id), "from": wave_from, "to": actor.pos, "radius": float(actor.radius), "damage": wave_actual, "alive_after": float(actor.health) > 0.0})
 			run._emit("wave", {"pos": run.player.pos, "radius": float(level.radius), "spell_id": spell.id}, float(runtime.effects.impact_lifetime))
 			context["hit_count"] = hit_count
+			_note_wave_fact(run, context, float(level.radius), wave_hits)
 		"brand":
 			context["ignite"] = true
 			if run.has_method("gem_record_shape"): run.gem_record_shape({"kind": "area", "pos": target.pos, "radius": 0.0, "target_cap": 1}, float(level.coefficient), context)
+			var brand_contact := {"actor_id": int(target.id), "pos": target.pos, "radius": float(target.radius)}
 			var actual: float = _hit(run, target, float(level.coefficient), context)
 			if actual > 0.0:
 				fire_status.spread(run, target, float(level.spread_radius), int(level.spread_targets), str(spell.id))
 			run._emit("fire_brand", {"pos": target.pos, "spell_id": spell.id, "actor_id": target.id, "radius": float(level.spread_radius)}, float(runtime.effects.impact_lifetime))
+			_note_brand_fact(run, context, brand_contact, actual, float(target.health) > 0.0)
 		"shield":
 			var amount: float
 			if run.has_method("restore_player_shield"):
@@ -501,6 +557,16 @@ func _cast(run, spell: Dictionary, stats: Dictionary, target: Dictionary, natura
 	if natural and run.has_method("on_spell_cast"):
 		run.on_spell_cast(spell, target, context)
 	_sync_spirit(run)
+
+
+func _note_brand_fact(run, context: Dictionary, contact: Dictionary, actual: float, alive: bool) -> void:
+	_brand_fact_seq += 1
+	var observed := contact.duplicate(true)
+	observed["damage"] = actual
+	observed["alive_after"] = alive
+	_brand_facts.append({"seq": _brand_fact_seq, "time": float(run.time), "cast_id": context.cast_id,
+		"natural": bool(context.natural), "spell_level": int(context.spell_level), "contact": observed})
+	if _brand_facts.size() > BRAND_FACT_LIMIT: _brand_facts.pop_front()
 
 
 func _queue(run, delay: float, kind: String, payload: Dictionary):
@@ -564,6 +630,87 @@ func _update_pending(run):
 				_area_hit(run, item.pos, float(item.radius), float(item.coefficient), item.context)
 				run._emit("aftershock", {"pos": item.pos, "radius": item.radius, "spell_id": "F07"}, float(runtime.effects.impact_lifetime))
 				_note_bomb_fact(run, "aftershock", item)
+
+
+func _observe_vortex_position(run, zone: Dictionary) -> void:
+	if str(zone.spell_id) != "F05": return
+	var id := int(zone.id)
+	if not _vortex_paths.has(id) and _vortex_paths.size() >= VORTEX_PATH_LIMIT: return
+	var points: Array = _vortex_paths.get(id, [])
+	if points.is_empty() or not Vector2(points[-1].pos).is_equal_approx(zone.pos):
+		points.append({"pos": zone.pos, "time": float(run.time)})
+	while not points.is_empty() and float(run.time) - float(points[0].time) > VORTEX_PATH_RETENTION: points.pop_front()
+	while points.size() > VORTEX_PATH_POINTS: points.pop_front()
+	_vortex_paths[id] = points
+
+
+func _field_visual_state(run) -> Dictionary:
+	if run.phase != "combat": return {}
+	var inside := false
+	var zone_id := -1
+	for zone in zones:
+		if zone.kind == "field" and run.player.pos.distance_to(zone.pos) <= float(zone.radius) + 0.000001:
+			inside = true
+			zone_id = int(zone.id)
+			break
+	var vulnerable: Array = []
+	for actor in run.actors:
+		if float(actor.health) <= 0.0: continue
+		var bonus: float = growth.fire_vulnerability(run, actor)
+		if bonus > 0.0:
+			vulnerable.append({"actor_id": int(actor.id), "pos": actor.pos, "radius": float(actor.radius), "bonus": bonus})
+	return {"attack_bonus": field_attack_bonus(), "inside": inside, "zone_id": zone_id,
+		"grace_remaining": field_grace, "grace_bonus": _field_grace_bonus,
+		"matured_casts": growth._matured.keys().duplicate(), "vulnerable": vulnerable}
+
+
+func _note_field_fact(run, phase: String, zone: Dictionary, contact: Dictionary = {}) -> void:
+	if str(zone.spell_id) != "F06": return
+	_field_fact_seq += 1
+	var fact := {"seq": _field_fact_seq, "phase": phase, "zone_id": int(zone.id), "cast_id": int(zone.context.cast_id),
+		"time": float(run.time), "pos": zone.pos, "radius": float(zone.radius),
+		"spell_level": int(zone.context.get("spell_level", 1)), "natural": bool(zone.context.get("natural", false))}
+	if not contact.is_empty(): fact["contact"] = contact.duplicate(true)
+	_field_facts.append(fact)
+	if _field_facts.size() > FIELD_FACT_LIMIT: _field_facts.pop_front()
+
+
+func note_field_matured(run, context: Dictionary, pos: Vector2, radius: float) -> void:
+	# Called only after the original successful maturity hit/event branch.
+	_field_fact_seq += 1
+	_field_facts.append({"seq": _field_fact_seq, "phase": "mature", "cast_id": int(context.cast_id),
+		"time": float(run.time), "pos": pos, "radius": radius,
+		"spell_level": int(context.get("spell_level", 1)), "natural": bool(context.get("natural", false))})
+	if _field_facts.size() > FIELD_FACT_LIMIT: _field_facts.pop_front()
+
+
+func _note_vortex_fact(run, phase: String, zone: Dictionary, contact: Dictionary = {}) -> void:
+	if str(zone.spell_id) != "F05": return
+	_vortex_fact_seq += 1
+	var fact := {"seq": _vortex_fact_seq, "phase": phase, "zone_id": int(zone.id), "cast_id": int(zone.context.cast_id),
+		"time": float(run.time), "pos": zone.pos, "radius": float(zone.radius), "direction": zone.direction,
+		"spell_level": int(zone.context.get("spell_level", 1)), "natural": bool(zone.context.get("natural", false))}
+	if phase == "end": fact["path"] = _vortex_paths.get(int(zone.id), []).duplicate(true)
+	if not contact.is_empty(): fact["contact"] = contact.duplicate(true)
+	_vortex_facts.append(fact)
+	if _vortex_facts.size() > VORTEX_FACT_LIMIT: _vortex_facts.pop_front()
+
+
+func _retain_vortex_paths() -> void:
+	var live: Dictionary = {}
+	for zone in zones:
+		if str(zone.spell_id) == "F05": live[int(zone.id)] = true
+	for id in _vortex_paths.keys():
+		if not live.has(id): _vortex_paths.erase(id)
+
+
+func _note_wave_fact(run, context: Dictionary, radius: float, hits: Array) -> void:
+	# Observe original results after all area hits, pushes, slows and the event.
+	_wave_fact_seq += 1
+	_wave_facts.append({"seq": _wave_fact_seq, "cast_id": int(context.cast_id), "time": float(run.time),
+		"pos": run.player.pos, "radius": radius, "spell_level": int(context.spell_level),
+		"natural": bool(context.natural), "hits": hits.duplicate(true)})
+	if _wave_facts.size() > WAVE_FACT_LIMIT: _wave_facts.pop_front()
 
 
 func _note_bomb_fact(run, phase: String, item: Dictionary, hits: Array = []) -> void:
@@ -834,6 +981,7 @@ func _update_zones(run, dt: float):
 			zone.pos = run._clip_motion(zone.pos, zone.direction * float(zone.speed) * move_time, 0.0)
 			zone.travel_remaining = maxf(0.0, float(zone.travel_remaining) - move_time)
 		zone.remaining = maxf(0.0, float(zone.remaining) - elapsed)
+		if zone.kind == "vortex": _observe_vortex_position(run, zone)
 		if float(zone.interval) > 0.0 and run.has_method("on_spell_area_matured"):
 			run.on_spell_area_matured(zone.context, zone.pos, float(zone.age))
 		if zone.kind == "field" and run.player.pos.distance_to(zone.pos) <= float(zone.radius) + 0.000001:
@@ -861,7 +1009,12 @@ func _update_zones(run, dt: float):
 		_area_last_hit[key] = float(run.time)
 		var context: Dictionary = value.zone.context.duplicate(true)
 		context["kind"] = "area"
-		_hit(run, value.actor, float(value.zone.coefficient), context)
+		var vortex_first: bool = value.zone.kind == "vortex" and not value.zone.first_hits.has(value.actor.id)
+		var vortex_hit_pos: Vector2 = value.actor.pos
+		var field_hit_pos: Vector2 = value.actor.pos
+		var area_actual := _hit(run, value.actor, float(value.zone.coefficient), context)
+		if value.zone.kind == "field":
+			_note_field_fact(run, "hit", value.zone, {"actor_id": int(value.actor.id), "pos": field_hit_pos, "radius": float(value.actor.radius), "damage": area_actual, "alive_after": float(value.actor.health) > 0.0})
 		if value.zone.kind == "vortex" and not value.zone.first_hits.has(value.actor.id):
 			value.zone.first_hits[value.actor.id] = true
 			var level: Dictionary = context.get("growth_level", {})
@@ -871,10 +1024,15 @@ func _update_zones(run, dt: float):
 				var legacy: Dictionary = stats_for(run._owned_spell("F05"))
 				if legacy.has("first_hit_slow"):
 					apply_slow(run, value.actor, float(legacy.first_hit_slow), float(legacy.first_hit_slow_duration), "B05:%s" % value.zone.id)
+		if value.zone.kind == "vortex":
+			_note_vortex_fact(run, "hit", value.zone, {"actor_id": int(value.actor.id), "pos": vortex_hit_pos, "radius": float(value.actor.radius), "damage": area_actual, "first": vortex_first, "alive_after": float(value.actor.health) > 0.0})
 	zones = retained
 	for zone in expired:
 		if run.has_method("on_spell_area_expired"):
 			run.on_spell_area_expired(zone.context, zone.pos)
+		if zone.kind == "vortex": _note_vortex_fact(run, "end", zone)
+		if zone.kind == "field": _note_field_fact(run, "end", zone)
+	_retain_vortex_paths()
 
 
 func overlapping_spell_kinds(pos: Vector2, actor_radius: float = 0.0) -> Array:

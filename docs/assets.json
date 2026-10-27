@@ -2742,10 +2742,17 @@
   "approval": "2026-10-27 user: 好，请你自行确定方案，制作。 In context this authorizes the recommended F07, preserving rules/numbers and user-run manual testing.",
   "purpose": "Read-only F07 chant/release, analytic world throw/tail within original delay, actual inner/outer blast and L3 aftershock, explicit target-local fuel detonation/successful reapply and source-owned burn/cooling.",
   "visual_revision": 1,
-  "visual_status": "Implemented; user visual review pending. No interactive preview, pixels, GPU composition, performance, natural route or visual approval claimed.",
+  "visual_status": "2026-10-27: user accepted the current F07 preview (熔核爆弹通过). Scope is this spell preview impression only; no exhaustive per-mode, pixel/readability, full-route, final-balance or high-count performance acceptance inferred.",
   "evidence": "build/qa/fire-bomb-vfx-20261027/results.json",
   "authorization_record": "docs/历史决策/归档/35-火系法术特效优化.md",
-  "reused_unchanged_shader": "scripts/presentation/fire_bolt_trail.gdshader"
+  "reused_unchanged_shader": "scripts/presentation/fire_bolt_trail.gdshader",
+  "user_visual_approval": {
+   "date": "2026-10-27",
+   "statement": "我们继续然后的工作，熔核爆弹通过",
+   "scope": "Current F07 preview acceptance. No claim that all nine controlled modes or exhaustive pixel/performance/full-route checks passed; no automatic launch, ongoing Git publishing or next-spell visual acceptance inferred.",
+   "record": "docs/历史决策/归档/35-火系法术特效优化.md#16-2026-10-27-熔核爆弹用户预览认可通过"
+  },
+  "acceptance_evidence": "build/qa/fire-bomb-user-acceptance-20261027/results.json"
  },
  {
   "target": "scripts/presentation/fire_bomb_body.gdshader",
@@ -2756,10 +2763,17 @@
   "approval": "2026-10-27 user: 好，请你自行确定方案，制作。 In context this authorizes the recommended F07, preserving rules/numbers and user-run manual testing.",
   "purpose": "Read-only F07 chant/release, analytic world throw/tail within original delay, actual inner/outer blast and L3 aftershock, explicit target-local fuel detonation/successful reapply and source-owned burn/cooling.",
   "visual_revision": 1,
-  "visual_status": "Implemented; user visual review pending. No interactive preview, pixels, GPU composition, performance, natural route or visual approval claimed.",
+  "visual_status": "2026-10-27: user accepted the current F07 preview (熔核爆弹通过). Scope is this spell preview impression only; no exhaustive per-mode, pixel/readability, full-route, final-balance or high-count performance acceptance inferred.",
   "evidence": "build/qa/fire-bomb-vfx-20261027/results.json",
   "authorization_record": "docs/历史决策/归档/35-火系法术特效优化.md",
-  "reused_unchanged_shader": "scripts/presentation/fire_bolt_trail.gdshader"
+  "reused_unchanged_shader": "scripts/presentation/fire_bolt_trail.gdshader",
+  "user_visual_approval": {
+   "date": "2026-10-27",
+   "statement": "我们继续然后的工作，熔核爆弹通过",
+   "scope": "Current F07 preview acceptance. No claim that all nine controlled modes or exhaustive pixel/performance/full-route checks passed; no automatic launch, ongoing Git publishing or next-spell visual acceptance inferred.",
+   "record": "docs/历史决策/归档/35-火系法术特效优化.md#16-2026-10-27-熔核爆弹用户预览认可通过"
+  },
+  "acceptance_evidence": "build/qa/fire-bomb-user-acceptance-20261027/results.json"
  },
  {
   "target": "scripts/presentation/fire_bomb_surface.gdshader",
@@ -2770,10 +2784,17 @@
   "approval": "2026-10-27 user: 好，请你自行确定方案，制作。 In context this authorizes the recommended F07, preserving rules/numbers and user-run manual testing.",
   "purpose": "Read-only F07 chant/release, analytic world throw/tail within original delay, actual inner/outer blast and L3 aftershock, explicit target-local fuel detonation/successful reapply and source-owned burn/cooling.",
   "visual_revision": 1,
-  "visual_status": "Implemented; user visual review pending. No interactive preview, pixels, GPU composition, performance, natural route or visual approval claimed.",
+  "visual_status": "2026-10-27: user accepted the current F07 preview (熔核爆弹通过). Scope is this spell preview impression only; no exhaustive per-mode, pixel/readability, full-route, final-balance or high-count performance acceptance inferred.",
   "evidence": "build/qa/fire-bomb-vfx-20261027/results.json",
   "authorization_record": "docs/历史决策/归档/35-火系法术特效优化.md",
-  "reused_unchanged_shader": "scripts/presentation/fire_bolt_trail.gdshader"
+  "reused_unchanged_shader": "scripts/presentation/fire_bolt_trail.gdshader",
+  "user_visual_approval": {
+   "date": "2026-10-27",
+   "statement": "我们继续然后的工作，熔核爆弹通过",
+   "scope": "Current F07 preview acceptance. No claim that all nine controlled modes or exhaustive pixel/performance/full-route checks passed; no automatic launch, ongoing Git publishing or next-spell visual acceptance inferred.",
+   "record": "docs/历史决策/归档/35-火系法术特效优化.md#16-2026-10-27-熔核爆弹用户预览认可通过"
+  },
+  "acceptance_evidence": "build/qa/fire-bomb-user-acceptance-20261027/results.json"
  },
  {
   "target": "data/fire_bomb_vfx.json",
@@ -2784,9 +2805,984 @@
   "approval": "2026-10-27 user: 好，请你自行确定方案，制作。 In context this authorizes the recommended F07, preserving rules/numbers and user-run manual testing.",
   "purpose": "Read-only F07 chant/release, analytic world throw/tail within original delay, actual inner/outer blast and L3 aftershock, explicit target-local fuel detonation/successful reapply and source-owned burn/cooling.",
   "visual_revision": 1,
-  "visual_status": "Implemented; user visual review pending. No interactive preview, pixels, GPU composition, performance, natural route or visual approval claimed.",
+  "visual_status": "2026-10-27: user accepted the current F07 preview (熔核爆弹通过). Scope is this spell preview impression only; no exhaustive per-mode, pixel/readability, full-route, final-balance or high-count performance acceptance inferred.",
   "evidence": "build/qa/fire-bomb-vfx-20261027/results.json",
   "authorization_record": "docs/历史决策/归档/35-火系法术特效优化.md",
-  "reused_unchanged_shader": "scripts/presentation/fire_bolt_trail.gdshader"
+  "reused_unchanged_shader": "scripts/presentation/fire_bolt_trail.gdshader",
+  "user_visual_approval": {
+   "date": "2026-10-27",
+   "statement": "我们继续然后的工作，熔核爆弹通过",
+   "scope": "Current F07 preview acceptance. No claim that all nine controlled modes or exhaustive pixel/performance/full-route checks passed; no automatic launch, ongoing Git publishing or next-spell visual acceptance inferred.",
+   "record": "docs/历史决策/归档/35-火系法术特效优化.md#16-2026-10-27-熔核爆弹用户预览认可通过"
+  },
+  "acceptance_evidence": "build/qa/fire-bomb-user-acceptance-20261027/results.json"
+ },
+ {
+  "target": "scripts/presentation/route_fire_wave_vfx.gd",
+  "source": "Original project-local GDScript/Godot Shader Language/visual JSON authored for the approved F09 full VFX chain on 2026-10-27. No external bitmap, model, font or toolkit asset.",
+  "runtime_approved": true,
+  "sha256": "b788b860f506e859e539a562aef27f78bc92d23069bac674dd3c8de22383b8c5",
+  "bytes": 18796,
+  "approval": "2026-10-27 user: 可以，就按这个方案实现灼浪冲击的完整特效链路，保持现有规则和数值不变，实机测试我来做。",
+  "purpose": "Read-only F09 short chant, instant real whole-area release with decorative low outward fire, actual damage flashes/push endpoints, existing source-specific natural-hit speed/slow/burn and finite cooling.",
+  "visual_revision": 1,
+  "visual_status": "2026-10-27: user accepted the current F09 preview (很好，灼浪冲击通过). Scope is this spell preview impression only; no exhaustive per-mode, pixel/readability, full-route, final-balance or high-count performance acceptance inferred.",
+  "evidence": "build/qa/fire-wave-vfx-20261027/results.json",
+  "authorization_record": "docs/历史决策/归档/35-火系法术特效优化.md",
+  "reused_unchanged_shaders": [
+   "scripts/presentation/fire_bolt_body.gdshader",
+   "scripts/presentation/fire_bolt_trail.gdshader"
+  ],
+  "user_visual_approval": {
+   "date": "2026-10-27",
+   "statement": "很好，灼浪冲击通过，下一个做什么？",
+   "scope": "Current F09 preview acceptance only. No all-nine-mode, exhaustive pixel/performance/full-route acceptance or automatic launch/publishing/next-spell implementation inferred.",
+   "record": "docs/历史决策/归档/35-火系法术特效优化.md#19-2026-10-27-灼浪冲击用户预览认可通过"
+  },
+  "acceptance_evidence": "build/qa/fire-wave-user-acceptance-20261027/results.json"
+ },
+ {
+  "target": "scripts/presentation/fire_wave_surface.gdshader",
+  "source": "Original project-local GDScript/Godot Shader Language/visual JSON authored for the approved F09 full VFX chain on 2026-10-27. No external bitmap, model, font or toolkit asset.",
+  "runtime_approved": true,
+  "sha256": "ff79fbfd9366d6865e6d3e2bb315ab42dfcf633d00c93c512116aca864919ac4",
+  "bytes": 4310,
+  "approval": "2026-10-27 user: 可以，就按这个方案实现灼浪冲击的完整特效链路，保持现有规则和数值不变，实机测试我来做。",
+  "purpose": "Read-only F09 short chant, instant real whole-area release with decorative low outward fire, actual damage flashes/push endpoints, existing source-specific natural-hit speed/slow/burn and finite cooling.",
+  "visual_revision": 1,
+  "visual_status": "2026-10-27: user accepted the current F09 preview (很好，灼浪冲击通过). Scope is this spell preview impression only; no exhaustive per-mode, pixel/readability, full-route, final-balance or high-count performance acceptance inferred.",
+  "evidence": "build/qa/fire-wave-vfx-20261027/results.json",
+  "authorization_record": "docs/历史决策/归档/35-火系法术特效优化.md",
+  "reused_unchanged_shaders": [
+   "scripts/presentation/fire_bolt_body.gdshader",
+   "scripts/presentation/fire_bolt_trail.gdshader"
+  ],
+  "user_visual_approval": {
+   "date": "2026-10-27",
+   "statement": "很好，灼浪冲击通过，下一个做什么？",
+   "scope": "Current F09 preview acceptance only. No all-nine-mode, exhaustive pixel/performance/full-route acceptance or automatic launch/publishing/next-spell implementation inferred.",
+   "record": "docs/历史决策/归档/35-火系法术特效优化.md#19-2026-10-27-灼浪冲击用户预览认可通过"
+  },
+  "acceptance_evidence": "build/qa/fire-wave-user-acceptance-20261027/results.json"
+ },
+ {
+  "target": "data/fire_wave_vfx.json",
+  "source": "Original project-local GDScript/Godot Shader Language/visual JSON authored for the approved F09 full VFX chain on 2026-10-27. No external bitmap, model, font or toolkit asset.",
+  "runtime_approved": true,
+  "sha256": "0ddfb4111fa77e78925eb5648a2f46dfd2fb6081d0c83ac290264c44ec49e6ce",
+  "bytes": 1356,
+  "approval": "2026-10-27 user: 可以，就按这个方案实现灼浪冲击的完整特效链路，保持现有规则和数值不变，实机测试我来做。",
+  "purpose": "Read-only F09 short chant, instant real whole-area release with decorative low outward fire, actual damage flashes/push endpoints, existing source-specific natural-hit speed/slow/burn and finite cooling.",
+  "visual_revision": 1,
+  "visual_status": "2026-10-27: user accepted the current F09 preview (很好，灼浪冲击通过). Scope is this spell preview impression only; no exhaustive per-mode, pixel/readability, full-route, final-balance or high-count performance acceptance inferred.",
+  "evidence": "build/qa/fire-wave-vfx-20261027/results.json",
+  "authorization_record": "docs/历史决策/归档/35-火系法术特效优化.md",
+  "reused_unchanged_shaders": [
+   "scripts/presentation/fire_bolt_body.gdshader",
+   "scripts/presentation/fire_bolt_trail.gdshader"
+  ],
+  "user_visual_approval": {
+   "date": "2026-10-27",
+   "statement": "很好，灼浪冲击通过，下一个做什么？",
+   "scope": "Current F09 preview acceptance only. No all-nine-mode, exhaustive pixel/performance/full-route acceptance or automatic launch/publishing/next-spell implementation inferred.",
+   "record": "docs/历史决策/归档/35-火系法术特效优化.md#19-2026-10-27-灼浪冲击用户预览认可通过"
+  },
+  "acceptance_evidence": "build/qa/fire-wave-user-acceptance-20261027/results.json"
+ },
+ {
+  "target": "scripts/presentation/route_fire_vortex_vfx.gd",
+  "source": "Original project-local GDScript/Godot Shader Language/visual JSON authored for F05 on 2026-10-27 under user authority to determine and make the full effect. No external image, model, font or toolkit asset.",
+  "runtime_approved": true,
+  "sha256": "c0c0fe99fcead6983a273338d6d8b1d2aacb2ab619bd26e42c87abf882383890",
+  "bytes": 33771,
+  "approval": "2026-10-27 user: 可以焰流旋涡请你自行设计，制作。 In context, preserve current rules/numbers; user runs manual visual testing.",
+  "purpose": "F05 v5 preserves accepted v3 wall/silhouette and adds sparse irregular interior flame quads, seeded independently of gameplay RNG, orbiting/rising on staggered fade cycles and depth-sorted with the walls. Original movement/status/timing unchanged.",
+  "visual_revision": 5,
+  "visual_status": "User accepted the current F05 v5 preview on 2026-10-27 and requested discussing the next spell. Keep current version; approval does not establish all nine scenarios, pixel/occlusion metrics, full-route, performance or final balance.",
+  "evidence": "build/qa/fire-vortex-visibility-v5-20261027/results.json",
+  "authorization_record": "docs/历史决策/归档/35-火系法术特效优化.md",
+  "reused_unchanged_shaders": [
+   "scripts/presentation/fire_bolt_body.gdshader",
+   "scripts/presentation/fire_bolt_trail.gdshader"
+  ],
+  "previous_visual_revisions": [
+   {
+    "target": "scripts/presentation/route_fire_vortex_vfx.gd",
+    "source": "Original project-local GDScript/Godot Shader Language/visual JSON authored for F05 on 2026-10-27 under user authority to determine and make the full effect. No external image, model, font or toolkit asset.",
+    "runtime_approved": true,
+    "sha256": "fafe4377d7177282a3b3b6315913ffc31dcdc1b3e8202ae0a01f69d230795644",
+    "bytes": 22685,
+    "approval": "2026-10-27 user: 可以焰流旋涡请你自行设计，制作。 In context, preserve current rules/numbers; user runs manual visual testing.",
+    "purpose": "Read-only F05 chant/release, actual live-zone footprint and low world spirals, observed world wake, selected shared-interval contacts, real first-contact slow/once-per-cast burn, original L3 hold and true natural-end cooling.",
+    "visual_revision": 1,
+    "visual_status": "Implemented; user visual review pending. Headless checks do not establish pixels/GPU composition, readability, performance or full-route acceptance.",
+    "evidence": "build/qa/fire-vortex-vfx-20261027/results.json",
+    "authorization_record": "docs/历史决策/归档/35-火系法术特效优化.md",
+    "reused_unchanged_shaders": [
+     "scripts/presentation/fire_bolt_body.gdshader",
+     "scripts/presentation/fire_bolt_trail.gdshader"
+    ],
+    "subsequent_user_feedback": "2026-10-27: 这个感觉不太好，就是没有那种火龙卷风的感觉。 First version was not visually accepted."
+   },
+   {
+    "target": "scripts/presentation/route_fire_vortex_vfx.gd",
+    "source": "Original project-local GDScript/Godot Shader Language/visual JSON authored for F05 on 2026-10-27 under user authority to determine and make the full effect. No external image, model, font or toolkit asset.",
+    "runtime_approved": true,
+    "sha256": "e623487d1842cb6397140cee300ae3a57eace52ed287e026521f11f0afc3d062",
+    "bytes": 29323,
+    "approval": "2026-10-27 user: 可以焰流旋涡请你自行设计，制作。 In context, preserve current rules/numbers; user runs manual visual testing.",
+    "purpose": "Read-only F05 v2 tall narrow-foot/broad-mouth layered fire tornado, thick world helices/crown flames, actual wake/contacts/status/original hold, finite natural-end collapse. No core or gameplay data changes.",
+    "visual_revision": 2,
+    "visual_status": "Revised after user rejected the first flat-looking spiral. v2 implemented; user visual retest pending. Headless checks establish no pixel/GPU/readability/performance acceptance.",
+    "evidence": "build/qa/fire-vortex-tornado-v2-20261027/results.json",
+    "authorization_record": "docs/历史决策/归档/35-火系法术特效优化.md",
+    "reused_unchanged_shaders": [
+     "scripts/presentation/fire_bolt_body.gdshader",
+     "scripts/presentation/fire_bolt_trail.gdshader"
+    ],
+    "revision_request": "2026-10-27 user: 这个感觉不太好，就是没有那种火龙卷风的感觉。",
+    "revision_reference": {
+     "path": "D:\\demo 精简\\20261026-项目精简\\art\\vfx\\fire_vortex_v2\\user_feedback_20261027.png",
+     "sha256": "9ce9c2d21a202d1e54799f822ecec65afd93115ba09e83edfedeea188b56fdc3",
+     "use": "User-provided v1 critique/reference only; external production source, never a runtime asset or v2 screenshot."
+    },
+    "subsequent_user_feedback": "2026-10-27 user: 这个龙卷风感觉有一点诡异。 v2 not visually accepted; user supplied two screenshots."
+   },
+   {
+    "target": "scripts/presentation/route_fire_vortex_vfx.gd",
+    "source": "Original project-local GDScript/Godot Shader Language/visual JSON authored for F05 on 2026-10-27 under user authority to determine and make the full effect. No external image, model, font or toolkit asset.",
+    "runtime_approved": true,
+    "sha256": "2e76cf621f91c5928807fe578f634ba2bf71e9cc3890f9cb13ffa4c55f973e6f",
+    "bytes": 28626,
+    "approval": "2026-10-27 user: 可以焰流旋涡请你自行设计，制作。 In context, preserve current rules/numbers; user runs manual visual testing.",
+    "purpose": "F05 v3 read-only irregular connected flame column: integrated swirl and uneven crest, no detached crown flames or luminous helix lattice, real wake/contacts/status/original hold and finite natural-end collapse. No core/gameplay data/view changes.",
+    "visual_revision": 3,
+    "visual_status": "Revised after v2 uncanny-appearance feedback. v3 implemented, user visual retest pending. Headless tests establish no pixel/GPU/readability/performance acceptance.",
+    "evidence": "build/qa/fire-vortex-organic-v3-20261027/results.json",
+    "authorization_record": "docs/历史决策/归档/35-火系法术特效优化.md",
+    "reused_unchanged_shaders": [
+     "scripts/presentation/fire_bolt_body.gdshader",
+     "scripts/presentation/fire_bolt_trail.gdshader"
+    ],
+    "revision_request": "2026-10-27 user: 这个龙卷风感觉有一点诡异。",
+    "revision_references": [
+     {
+      "source": "C:\\Users\\naife\\AppData\\Local\\Temp\\codex-clipboard-84d4b575-a45b-4542-acb2-7dec24d484c8.png",
+      "path": "D:\\demo 精简\\20261026-项目精简\\art\\vfx\\fire_vortex_v3\\user_feedback_20261027_01.png",
+      "sha256": "adc41ce750418f3461069cee3257bbdbf176744b7133c114005e7f51f45731a1",
+      "bytes": 229405
+     },
+     {
+      "source": "C:\\Users\\naife\\AppData\\Local\\Temp\\codex-clipboard-fb70a1d6-bed6-42d5-8753-aea44b2cb095.png",
+      "path": "D:\\demo 精简\\20261026-项目精简\\art\\vfx\\fire_vortex_v3\\user_feedback_20261027_02.png",
+      "sha256": "b2078c1a453a52a05739514f75de3f094426ca2c85893b633f27a1af0c212070",
+      "bytes": 430549
+     }
+    ],
+    "reference_scope": "Two original user-provided v2 screenshots, critique only; stored externally, never runtime art or proof of v3 visuals.",
+    "subsequent_user_feedback": "可以，但是我们需要一点装饰，请你把小火苗加到火龙卷里，一起旋转\n小火苗要不规则， Limited v3 body acceptance; additional v4 decoration requested."
+   },
+   {
+    "target": "scripts/presentation/route_fire_vortex_vfx.gd",
+    "source": "Original project-local GDScript/Godot Shader Language/visual JSON authored for F05 on 2026-10-27 under user authority to determine and make the full effect. No external image, model, font or toolkit asset.",
+    "runtime_approved": true,
+    "sha256": "97aa8a804165b3ce7e162f3e37be9707646705e5a633b953a8fd75eeba1ad4e1",
+    "bytes": 33741,
+    "approval": "2026-10-27 user: 可以焰流旋涡请你自行设计，制作。 In context, preserve current rules/numbers; user runs manual visual testing.",
+    "purpose": "F05 v4 preserves accepted v3 wall/silhouette and adds sparse irregular interior flame quads, seeded independently of gameplay RNG, orbiting/rising on staggered fade cycles and depth-sorted with the walls. Original movement/status/timing unchanged.",
+    "visual_revision": 4,
+    "visual_status": "User gave limited acceptance of v3 body and requested irregular orbiting flames inside it. v4 implemented; user manual visual retest pending. No pixel/GPU/performance or whole-route acceptance.",
+    "evidence": "build/qa/fire-vortex-interior-v4-20261027/results.json",
+    "authorization_record": "docs/历史决策/归档/35-火系法术特效优化.md",
+    "reused_unchanged_shaders": [
+     "scripts/presentation/fire_bolt_body.gdshader",
+     "scripts/presentation/fire_bolt_trail.gdshader"
+    ],
+    "revision_request": "可以，但是我们需要一点装饰，请你把小火苗加到火龙卷里，一起旋转\n小火苗要不规则，",
+    "reference_scope": "Unmodified user v3 reference only, external production source; never runtime art or v4 pixel evidence.",
+    "revision_reference": {
+     "source": "C:\\Users\\naife\\AppData\\Local\\Temp\\codex-clipboard-1935ce6e-7176-4eab-8e36-8d134f62c699.png",
+     "path": "D:\\demo 精简\\20261026-项目精简\\art\\vfx\\fire_vortex_v4\\user_feedback_20261027.png",
+     "sha256": "58c5f65356b69d3341b8678b69ac881f8945433c80ef9e33129c664fe73d09be",
+     "bytes": 237945
+    },
+    "acceptance_scope": "Limited acceptance of current v3 body as the basis for an additional irregular orbiting interior-flame decoration; no v4 visual or whole-route/performance acceptance.",
+    "subsequent_user_feedback": "好像没有区别，是我开错了吗; correct preview launch verified, decoration visibility insufficient."
+   }
+  ],
+  "revision_request": "好像没有区别，是我开错了吗",
+  "reference_scope": "Unmodified user v4 reference only; never runtime art or v5 pixel evidence.",
+  "revision_reference": {
+   "source": "C:\\Users\\naife\\AppData\\Local\\Temp\\codex-clipboard-97eb8a31-6ed6-4d64-b1f8-b0a6766e30fa.png",
+   "path": "D:\\demo 精简\\20261026-项目精简\\art\\vfx\\fire_vortex_v5\\user_feedback_20261027.png",
+   "sha256": "1daba3ac0e2365b4ad9a0ee39a79a27168985c43bcc9ed90ad32dc40b6444de8",
+   "bytes": 123393
+  },
+  "acceptance_scope": "Current F05 v5 manual preview accepted; no blanket scenario/full-route/performance acceptance or automatic launch/Git permission.",
+  "visibility_adjustment": "Decoration size/alpha/light gain increased and centers moved nearer the inside of the outer wall; existing v3 wall and F01 helper formula retained.",
+  "opening_verification": "build/qa/fire-vortex-visibility-v5-20261027/opening-evidence.json",
+  "user_preview_approval": {
+   "date": "2026-10-27",
+   "user_message": "可以\n我们讨论下一个",
+   "version": 5,
+   "scope": "This F05 preview only; keep current effect.",
+   "record": "docs/历史决策/归档/35-火系法术特效优化.md#30-2026-10-27-焰流旋涡v5用户预览认可与下一术讨论"
+  }
+ },
+ {
+  "target": "scripts/presentation/fire_vortex_surface.gdshader",
+  "source": "Original project-local GDScript/Godot Shader Language/visual JSON authored for F05 on 2026-10-27 under user authority to determine and make the full effect. No external image, model, font or toolkit asset.",
+  "runtime_approved": true,
+  "sha256": "8314fd7e382096af297688a80ba6c2219ca528e65a97d9adcd3b17017132daeb",
+  "bytes": 3916,
+  "approval": "2026-10-27 user: 可以焰流旋涡请你自行设计，制作。 In context, preserve current rules/numbers; user runs manual visual testing.",
+  "purpose": "Unchanged F05 ground/release/contact/status/cooling surface, retained beneath the accepted v3 body plus the v4 interior decoration.",
+  "visual_revision": 5,
+  "visual_status": "User accepted the current F05 v5 preview on 2026-10-27 and requested discussing the next spell. Keep current version; approval does not establish all nine scenarios, pixel/occlusion metrics, full-route, performance or final balance.",
+  "evidence": "build/qa/fire-vortex-visibility-v5-20261027/results.json",
+  "authorization_record": "docs/历史决策/归档/35-火系法术特效优化.md",
+  "reused_unchanged_shaders": [
+   "scripts/presentation/fire_bolt_body.gdshader",
+   "scripts/presentation/fire_bolt_trail.gdshader"
+  ],
+  "previous_visual_revisions": [
+   {
+    "target": "scripts/presentation/fire_vortex_surface.gdshader",
+    "source": "Original project-local GDScript/Godot Shader Language/visual JSON authored for F05 on 2026-10-27 under user authority to determine and make the full effect. No external image, model, font or toolkit asset.",
+    "runtime_approved": true,
+    "sha256": "dab70e3f7948ca671fdd15ee11025e62838bda9b95b8b51088813096b5daf4e3",
+    "bytes": 3917,
+    "approval": "2026-10-27 user: 可以焰流旋涡请你自行设计，制作。 In context, preserve current rules/numbers; user runs manual visual testing.",
+    "purpose": "Read-only F05 chant/release, actual live-zone footprint and low world spirals, observed world wake, selected shared-interval contacts, real first-contact slow/once-per-cast burn, original L3 hold and true natural-end cooling.",
+    "visual_revision": 1,
+    "visual_status": "Implemented; user visual review pending. Headless checks do not establish pixels/GPU composition, readability, performance or full-route acceptance.",
+    "evidence": "build/qa/fire-vortex-vfx-20261027/results.json",
+    "authorization_record": "docs/历史决策/归档/35-火系法术特效优化.md",
+    "reused_unchanged_shaders": [
+     "scripts/presentation/fire_bolt_body.gdshader",
+     "scripts/presentation/fire_bolt_trail.gdshader"
+    ],
+    "subsequent_user_feedback": "2026-10-27: 这个感觉不太好，就是没有那种火龙卷风的感觉。 First version was not visually accepted."
+   },
+   {
+    "target": "scripts/presentation/fire_vortex_surface.gdshader",
+    "source": "Original project-local GDScript/Godot Shader Language/visual JSON authored for F05 on 2026-10-27 under user authority to determine and make the full effect. No external image, model, font or toolkit asset.",
+    "runtime_approved": true,
+    "sha256": "8314fd7e382096af297688a80ba6c2219ca528e65a97d9adcd3b17017132daeb",
+    "bytes": 3916,
+    "approval": "2026-10-27 user: 可以焰流旋涡请你自行设计，制作。 In context, preserve current rules/numbers; user runs manual visual testing.",
+    "purpose": "F05 ground/first-slow/release/contact/end surfaces; v2 subordinates the ground spiral to the vertical flame tornado. No new rules.",
+    "visual_revision": 2,
+    "visual_status": "Revised after user rejected the first flat-looking spiral. v2 implemented; user visual retest pending. Headless checks establish no pixel/GPU/readability/performance acceptance.",
+    "evidence": "build/qa/fire-vortex-tornado-v2-20261027/results.json",
+    "authorization_record": "docs/历史决策/归档/35-火系法术特效优化.md",
+    "reused_unchanged_shaders": [
+     "scripts/presentation/fire_bolt_body.gdshader",
+     "scripts/presentation/fire_bolt_trail.gdshader"
+    ],
+    "revision_request": "2026-10-27 user: 这个感觉不太好，就是没有那种火龙卷风的感觉。",
+    "revision_reference": {
+     "path": "D:\\demo 精简\\20261026-项目精简\\art\\vfx\\fire_vortex_v2\\user_feedback_20261027.png",
+     "sha256": "9ce9c2d21a202d1e54799f822ecec65afd93115ba09e83edfedeea188b56fdc3",
+     "use": "User-provided v1 critique/reference only; external production source, never a runtime asset or v2 screenshot."
+    },
+    "subsequent_user_feedback": "2026-10-27 user: 这个龙卷风感觉有一点诡异。 v2 not visually accepted; user supplied two screenshots."
+   },
+   {
+    "target": "scripts/presentation/fire_vortex_surface.gdshader",
+    "source": "Original project-local GDScript/Godot Shader Language/visual JSON authored for F05 on 2026-10-27 under user authority to determine and make the full effect. No external image, model, font or toolkit asset.",
+    "runtime_approved": true,
+    "sha256": "8314fd7e382096af297688a80ba6c2219ca528e65a97d9adcd3b17017132daeb",
+    "bytes": 3916,
+    "approval": "2026-10-27 user: 可以焰流旋涡请你自行设计，制作。 In context, preserve current rules/numbers; user runs manual visual testing.",
+    "purpose": "Unchanged F05 v2 ground/release/contact/status/cooling surface retained beneath the v3 continuous organic flame column. No gameplay rules.",
+    "visual_revision": 3,
+    "visual_status": "Revised after v2 uncanny-appearance feedback. v3 implemented, user visual retest pending. Headless tests establish no pixel/GPU/readability/performance acceptance.",
+    "evidence": "build/qa/fire-vortex-organic-v3-20261027/results.json",
+    "authorization_record": "docs/历史决策/归档/35-火系法术特效优化.md",
+    "reused_unchanged_shaders": [
+     "scripts/presentation/fire_bolt_body.gdshader",
+     "scripts/presentation/fire_bolt_trail.gdshader"
+    ],
+    "revision_request": "2026-10-27 user: 这个龙卷风感觉有一点诡异。",
+    "revision_references": [
+     {
+      "source": "C:\\Users\\naife\\AppData\\Local\\Temp\\codex-clipboard-84d4b575-a45b-4542-acb2-7dec24d484c8.png",
+      "path": "D:\\demo 精简\\20261026-项目精简\\art\\vfx\\fire_vortex_v3\\user_feedback_20261027_01.png",
+      "sha256": "adc41ce750418f3461069cee3257bbdbf176744b7133c114005e7f51f45731a1",
+      "bytes": 229405
+     },
+     {
+      "source": "C:\\Users\\naife\\AppData\\Local\\Temp\\codex-clipboard-fb70a1d6-bed6-42d5-8753-aea44b2cb095.png",
+      "path": "D:\\demo 精简\\20261026-项目精简\\art\\vfx\\fire_vortex_v3\\user_feedback_20261027_02.png",
+      "sha256": "b2078c1a453a52a05739514f75de3f094426ca2c85893b633f27a1af0c212070",
+      "bytes": 430549
+     }
+    ],
+    "reference_scope": "Two original user-provided v2 screenshots, critique only; stored externally, never runtime art or proof of v3 visuals.",
+    "subsequent_user_feedback": "可以，但是我们需要一点装饰，请你把小火苗加到火龙卷里，一起旋转\n小火苗要不规则， Limited v3 body acceptance; additional v4 decoration requested."
+   },
+   {
+    "target": "scripts/presentation/fire_vortex_surface.gdshader",
+    "source": "Original project-local GDScript/Godot Shader Language/visual JSON authored for F05 on 2026-10-27 under user authority to determine and make the full effect. No external image, model, font or toolkit asset.",
+    "runtime_approved": true,
+    "sha256": "8314fd7e382096af297688a80ba6c2219ca528e65a97d9adcd3b17017132daeb",
+    "bytes": 3916,
+    "approval": "2026-10-27 user: 可以焰流旋涡请你自行设计，制作。 In context, preserve current rules/numbers; user runs manual visual testing.",
+    "purpose": "Unchanged F05 ground/release/contact/status/cooling surface, retained beneath the accepted v3 body plus the v4 interior decoration.",
+    "visual_revision": 4,
+    "visual_status": "User gave limited acceptance of v3 body and requested irregular orbiting flames inside it. v4 implemented; user manual visual retest pending. No pixel/GPU/performance or whole-route acceptance.",
+    "evidence": "build/qa/fire-vortex-interior-v4-20261027/results.json",
+    "authorization_record": "docs/历史决策/归档/35-火系法术特效优化.md",
+    "reused_unchanged_shaders": [
+     "scripts/presentation/fire_bolt_body.gdshader",
+     "scripts/presentation/fire_bolt_trail.gdshader"
+    ],
+    "revision_request": "可以，但是我们需要一点装饰，请你把小火苗加到火龙卷里，一起旋转\n小火苗要不规则，",
+    "reference_scope": "Unmodified user v3 reference only, external production source; never runtime art or v4 pixel evidence.",
+    "revision_reference": {
+     "source": "C:\\Users\\naife\\AppData\\Local\\Temp\\codex-clipboard-1935ce6e-7176-4eab-8e36-8d134f62c699.png",
+     "path": "D:\\demo 精简\\20261026-项目精简\\art\\vfx\\fire_vortex_v4\\user_feedback_20261027.png",
+     "sha256": "58c5f65356b69d3341b8678b69ac881f8945433c80ef9e33129c664fe73d09be",
+     "bytes": 237945
+    },
+    "acceptance_scope": "Limited acceptance of current v3 body as the basis for an additional irregular orbiting interior-flame decoration; no v4 visual or whole-route/performance acceptance.",
+    "subsequent_user_feedback": "好像没有区别，是我开错了吗; correct preview launch verified, decoration visibility insufficient."
+   }
+  ],
+  "revision_request": "好像没有区别，是我开错了吗",
+  "reference_scope": "Unmodified user v4 reference only; never runtime art or v5 pixel evidence.",
+  "revision_reference": {
+   "source": "C:\\Users\\naife\\AppData\\Local\\Temp\\codex-clipboard-97eb8a31-6ed6-4d64-b1f8-b0a6766e30fa.png",
+   "path": "D:\\demo 精简\\20261026-项目精简\\art\\vfx\\fire_vortex_v5\\user_feedback_20261027.png",
+   "sha256": "1daba3ac0e2365b4ad9a0ee39a79a27168985c43bcc9ed90ad32dc40b6444de8",
+   "bytes": 123393
+  },
+  "acceptance_scope": "Current F05 v5 manual preview accepted; no blanket scenario/full-route/performance acceptance or automatic launch/Git permission.",
+  "visibility_adjustment": "Decoration size/alpha/light gain increased and centers moved nearer the inside of the outer wall; existing v3 wall and F01 helper formula retained.",
+  "opening_verification": "build/qa/fire-vortex-visibility-v5-20261027/opening-evidence.json",
+  "user_preview_approval": {
+   "date": "2026-10-27",
+   "user_message": "可以\n我们讨论下一个",
+   "version": 5,
+   "scope": "This F05 preview only; keep current effect.",
+   "record": "docs/历史决策/归档/35-火系法术特效优化.md#30-2026-10-27-焰流旋涡v5用户预览认可与下一术讨论"
+  }
+ },
+ {
+  "target": "data/fire_vortex_vfx.json",
+  "source": "Original project-local GDScript/Godot Shader Language/visual JSON authored for F05 on 2026-10-27 under user authority to determine and make the full effect. No external image, model, font or toolkit asset.",
+  "runtime_approved": true,
+  "sha256": "6426251616cd9c74373b379bff11c3121d92476f155b12461f342382204abc9f",
+  "bytes": 2776,
+  "approval": "2026-10-27 user: 可以焰流旋涡请你自行设计，制作。 In context, preserve current rules/numbers; user runs manual visual testing.",
+  "purpose": "F05 v5 visual-only interior flame density/size/lift/orbit/fade settings; all existing v3 appearance settings retained, original gameplay defaults remain in their original data.",
+  "visual_revision": 5,
+  "visual_status": "User accepted the current F05 v5 preview on 2026-10-27 and requested discussing the next spell. Keep current version; approval does not establish all nine scenarios, pixel/occlusion metrics, full-route, performance or final balance.",
+  "evidence": "build/qa/fire-vortex-visibility-v5-20261027/results.json",
+  "authorization_record": "docs/历史决策/归档/35-火系法术特效优化.md",
+  "reused_unchanged_shaders": [
+   "scripts/presentation/fire_bolt_body.gdshader",
+   "scripts/presentation/fire_bolt_trail.gdshader"
+  ],
+  "previous_visual_revisions": [
+   {
+    "target": "data/fire_vortex_vfx.json",
+    "source": "Original project-local GDScript/Godot Shader Language/visual JSON authored for F05 on 2026-10-27 under user authority to determine and make the full effect. No external image, model, font or toolkit asset.",
+    "runtime_approved": true,
+    "sha256": "5f8df0fb26c46ba72fc92f0fcd6663b78d585d2bd239a41b594bd0df10d5c5d5",
+    "bytes": 1719,
+    "approval": "2026-10-27 user: 可以焰流旋涡请你自行设计，制作。 In context, preserve current rules/numbers; user runs manual visual testing.",
+    "purpose": "Read-only F05 chant/release, actual live-zone footprint and low world spirals, observed world wake, selected shared-interval contacts, real first-contact slow/once-per-cast burn, original L3 hold and true natural-end cooling.",
+    "visual_revision": 1,
+    "visual_status": "Implemented; user visual review pending. Headless checks do not establish pixels/GPU composition, readability, performance or full-route acceptance.",
+    "evidence": "build/qa/fire-vortex-vfx-20261027/results.json",
+    "authorization_record": "docs/历史决策/归档/35-火系法术特效优化.md",
+    "reused_unchanged_shaders": [
+     "scripts/presentation/fire_bolt_body.gdshader",
+     "scripts/presentation/fire_bolt_trail.gdshader"
+    ],
+    "subsequent_user_feedback": "2026-10-27: 这个感觉不太好，就是没有那种火龙卷风的感觉。 First version was not visually accepted."
+   },
+   {
+    "target": "data/fire_vortex_vfx.json",
+    "source": "Original project-local GDScript/Godot Shader Language/visual JSON authored for F05 on 2026-10-27 under user authority to determine and make the full effect. No external image, model, font or toolkit asset.",
+    "runtime_approved": true,
+    "sha256": "d74a379d16db942c7c86075b4bfba636bd55c19788fb53f57a643d6a00f33540",
+    "bytes": 2380,
+    "approval": "2026-10-27 user: 可以焰流旋涡请你自行设计，制作。 In context, preserve current rules/numbers; user runs manual visual testing.",
+    "purpose": "F05 presentation-only v2 dimensions, layered flame-wall profile/density/turbulence, thick helices/crown flames and lifecycle colors. Actual world center/radius/ticks/damage/duration still come from core.",
+    "visual_revision": 2,
+    "visual_status": "Revised after user rejected the first flat-looking spiral. v2 implemented; user visual retest pending. Headless checks establish no pixel/GPU/readability/performance acceptance.",
+    "evidence": "build/qa/fire-vortex-tornado-v2-20261027/results.json",
+    "authorization_record": "docs/历史决策/归档/35-火系法术特效优化.md",
+    "reused_unchanged_shaders": [
+     "scripts/presentation/fire_bolt_body.gdshader",
+     "scripts/presentation/fire_bolt_trail.gdshader"
+    ],
+    "revision_request": "2026-10-27 user: 这个感觉不太好，就是没有那种火龙卷风的感觉。",
+    "revision_reference": {
+     "path": "D:\\demo 精简\\20261026-项目精简\\art\\vfx\\fire_vortex_v2\\user_feedback_20261027.png",
+     "sha256": "9ce9c2d21a202d1e54799f822ecec65afd93115ba09e83edfedeea188b56fdc3",
+     "use": "User-provided v1 critique/reference only; external production source, never a runtime asset or v2 screenshot."
+    },
+    "subsequent_user_feedback": "2026-10-27 user: 这个龙卷风感觉有一点诡异。 v2 not visually accepted; user supplied two screenshots."
+   },
+   {
+    "target": "data/fire_vortex_vfx.json",
+    "source": "Original project-local GDScript/Godot Shader Language/visual JSON authored for F05 on 2026-10-27 under user authority to determine and make the full effect. No external image, model, font or toolkit asset.",
+    "runtime_approved": true,
+    "sha256": "7eb18fe203aac0e710f691c3c1a7596b30a0f605f07f2201dd8915ff544605d5",
+    "bytes": 2288,
+    "approval": "2026-10-27 user: 可以焰流旋涡请你自行设计，制作。 In context, preserve current rules/numbers; user runs manual visual testing.",
+    "purpose": "F05 presentation-only v3 width/height ripple, softened flare, denser integrated wall and torn upper silhouette. Obsolete separate-helix/crown settings removed; original gameplay center/radius/ticks/timers unchanged.",
+    "visual_revision": 3,
+    "visual_status": "Revised after v2 uncanny-appearance feedback. v3 implemented, user visual retest pending. Headless tests establish no pixel/GPU/readability/performance acceptance.",
+    "evidence": "build/qa/fire-vortex-organic-v3-20261027/results.json",
+    "authorization_record": "docs/历史决策/归档/35-火系法术特效优化.md",
+    "reused_unchanged_shaders": [
+     "scripts/presentation/fire_bolt_body.gdshader",
+     "scripts/presentation/fire_bolt_trail.gdshader"
+    ],
+    "revision_request": "2026-10-27 user: 这个龙卷风感觉有一点诡异。",
+    "revision_references": [
+     {
+      "source": "C:\\Users\\naife\\AppData\\Local\\Temp\\codex-clipboard-84d4b575-a45b-4542-acb2-7dec24d484c8.png",
+      "path": "D:\\demo 精简\\20261026-项目精简\\art\\vfx\\fire_vortex_v3\\user_feedback_20261027_01.png",
+      "sha256": "adc41ce750418f3461069cee3257bbdbf176744b7133c114005e7f51f45731a1",
+      "bytes": 229405
+     },
+     {
+      "source": "C:\\Users\\naife\\AppData\\Local\\Temp\\codex-clipboard-fb70a1d6-bed6-42d5-8753-aea44b2cb095.png",
+      "path": "D:\\demo 精简\\20261026-项目精简\\art\\vfx\\fire_vortex_v3\\user_feedback_20261027_02.png",
+      "sha256": "b2078c1a453a52a05739514f75de3f094426ca2c85893b633f27a1af0c212070",
+      "bytes": 430549
+     }
+    ],
+    "reference_scope": "Two original user-provided v2 screenshots, critique only; stored externally, never runtime art or proof of v3 visuals.",
+    "subsequent_user_feedback": "可以，但是我们需要一点装饰，请你把小火苗加到火龙卷里，一起旋转\n小火苗要不规则， Limited v3 body acceptance; additional v4 decoration requested."
+   },
+   {
+    "target": "data/fire_vortex_vfx.json",
+    "source": "Original project-local GDScript/Godot Shader Language/visual JSON authored for F05 on 2026-10-27 under user authority to determine and make the full effect. No external image, model, font or toolkit asset.",
+    "runtime_approved": true,
+    "sha256": "b9a01c34ad3a52c06e7e45620048635112929cd7f8add1dae35ca31966e71486",
+    "bytes": 2734,
+    "approval": "2026-10-27 user: 可以焰流旋涡请你自行设计，制作。 In context, preserve current rules/numbers; user runs manual visual testing.",
+    "purpose": "F05 v4 visual-only interior flame density/size/lift/orbit/fade settings; all existing v3 appearance settings retained, original gameplay defaults remain in their original data.",
+    "visual_revision": 4,
+    "visual_status": "User gave limited acceptance of v3 body and requested irregular orbiting flames inside it. v4 implemented; user manual visual retest pending. No pixel/GPU/performance or whole-route acceptance.",
+    "evidence": "build/qa/fire-vortex-interior-v4-20261027/results.json",
+    "authorization_record": "docs/历史决策/归档/35-火系法术特效优化.md",
+    "reused_unchanged_shaders": [
+     "scripts/presentation/fire_bolt_body.gdshader",
+     "scripts/presentation/fire_bolt_trail.gdshader"
+    ],
+    "revision_request": "可以，但是我们需要一点装饰，请你把小火苗加到火龙卷里，一起旋转\n小火苗要不规则，",
+    "reference_scope": "Unmodified user v3 reference only, external production source; never runtime art or v4 pixel evidence.",
+    "revision_reference": {
+     "source": "C:\\Users\\naife\\AppData\\Local\\Temp\\codex-clipboard-1935ce6e-7176-4eab-8e36-8d134f62c699.png",
+     "path": "D:\\demo 精简\\20261026-项目精简\\art\\vfx\\fire_vortex_v4\\user_feedback_20261027.png",
+     "sha256": "58c5f65356b69d3341b8678b69ac881f8945433c80ef9e33129c664fe73d09be",
+     "bytes": 237945
+    },
+    "acceptance_scope": "Limited acceptance of current v3 body as the basis for an additional irregular orbiting interior-flame decoration; no v4 visual or whole-route/performance acceptance.",
+    "subsequent_user_feedback": "好像没有区别，是我开错了吗; correct preview launch verified, decoration visibility insufficient."
+   }
+  ],
+  "revision_request": "好像没有区别，是我开错了吗",
+  "reference_scope": "Unmodified user v4 reference only; never runtime art or v5 pixel evidence.",
+  "revision_reference": {
+   "source": "C:\\Users\\naife\\AppData\\Local\\Temp\\codex-clipboard-97eb8a31-6ed6-4d64-b1f8-b0a6766e30fa.png",
+   "path": "D:\\demo 精简\\20261026-项目精简\\art\\vfx\\fire_vortex_v5\\user_feedback_20261027.png",
+   "sha256": "1daba3ac0e2365b4ad9a0ee39a79a27168985c43bcc9ed90ad32dc40b6444de8",
+   "bytes": 123393
+  },
+  "acceptance_scope": "Current F05 v5 manual preview accepted; no blanket scenario/full-route/performance acceptance or automatic launch/Git permission.",
+  "visibility_adjustment": "Decoration size/alpha/light gain increased and centers moved nearer the inside of the outer wall; existing v3 wall and F01 helper formula retained.",
+  "opening_verification": "build/qa/fire-vortex-visibility-v5-20261027/opening-evidence.json",
+  "user_preview_approval": {
+   "date": "2026-10-27",
+   "user_message": "可以\n我们讨论下一个",
+   "version": 5,
+   "scope": "This F05 preview only; keep current effect.",
+   "record": "docs/历史决策/归档/35-火系法术特效优化.md#30-2026-10-27-焰流旋涡v5用户预览认可与下一术讨论"
+  }
+ },
+ {
+  "target": "scripts/presentation/fire_vortex_column.gdshader",
+  "source": "Original project-local Godot Shader Language authored on 2026-10-27 for the user-requested F05 fire-tornado revision. Procedural periodic angular noise and flame walls; no external bitmap/model/font.",
+  "runtime_approved": true,
+  "sha256": "33204889684c6c227df5b5c040c406200414295737a3c63447d44e671b78c110",
+  "bytes": 5299,
+  "approval": "2026-10-27 user: 可以焰流旋涡请你自行设计，制作。 In context, preserve current rules/numbers; user runs manual visual testing.",
+  "purpose": "Original v3 wall fragment unchanged inside its existing path; new interior-flame path derives the approved F01 flame composition and reads per-quad mesh color metadata. No additional material, image or global glow.",
+  "visual_revision": 5,
+  "visual_status": "User accepted the current F05 v5 preview on 2026-10-27 and requested discussing the next spell. Keep current version; approval does not establish all nine scenarios, pixel/occlusion metrics, full-route, performance or final balance.",
+  "evidence": "build/qa/fire-vortex-visibility-v5-20261027/results.json",
+  "authorization_record": "docs/历史决策/归档/35-火系法术特效优化.md",
+  "revision_request": "好像没有区别，是我开错了吗",
+  "previous_visual_revisions": [
+   {
+    "target": "scripts/presentation/fire_vortex_column.gdshader",
+    "source": "Original project-local Godot Shader Language authored on 2026-10-27 for the user-requested F05 fire-tornado revision. Procedural periodic angular noise and flame walls; no external bitmap/model/font.",
+    "runtime_approved": true,
+    "sha256": "f79d71b67d59cafbdba098d2a974a24d3fd699f343da7de4339766d2c886d3c7",
+    "bytes": 2381,
+    "approval": "2026-10-27 user: 可以焰流旋涡请你自行设计，制作。 In context, preserve current rules/numbers; user runs manual visual testing.",
+    "purpose": "Continuous inner/outer translucent flame walls for the tall F05 funnel, periodic seamless circumference, broad helical rolls, sparse heat veins and torn flame crown; driven only by the frozen core clock.",
+    "visual_revision": 2,
+    "visual_status": "Revised after user rejected the first flat-looking spiral. v2 implemented; user visual retest pending. Headless checks establish no pixel/GPU/readability/performance acceptance.",
+    "evidence": "build/qa/fire-vortex-tornado-v2-20261027/results.json",
+    "authorization_record": "docs/历史决策/归档/35-火系法术特效优化.md",
+    "revision_request": "2026-10-27 user: 这个感觉不太好，就是没有那种火龙卷风的感觉。",
+    "revision_reference": {
+     "path": "D:\\demo 精简\\20261026-项目精简\\art\\vfx\\fire_vortex_v2\\user_feedback_20261027.png",
+     "sha256": "9ce9c2d21a202d1e54799f822ecec65afd93115ba09e83edfedeea188b56fdc3",
+     "use": "User-provided v1 critique/reference only; external production source, never a runtime asset or v2 screenshot."
+    },
+    "subsequent_user_feedback": "2026-10-27 user: 这个龙卷风感觉有一点诡异。 v2 not visually accepted; user supplied two screenshots."
+   },
+   {
+    "target": "scripts/presentation/fire_vortex_column.gdshader",
+    "source": "Original project-local Godot Shader Language authored on 2026-10-27 for the user-requested F05 fire-tornado revision. Procedural periodic angular noise and flame walls; no external bitmap/model/font.",
+    "runtime_approved": true,
+    "sha256": "56871ed8a4fff39d84a2f72b8af7feb745d465d6505835b29fd903260482a2e6",
+    "bytes": 2456,
+    "approval": "2026-10-27 user: 可以焰流旋涡请你自行设计，制作。 In context, preserve current rules/numbers; user runs manual visual testing.",
+    "purpose": "F05 v3 continuous flame walls with broad advected plumes and diffuse thermal patches, periodic angular noise, torn upper silhouette; replaces fine bright vein outlines and separate ornament layers. Core clock only.",
+    "visual_revision": 3,
+    "visual_status": "Revised after v2 uncanny-appearance feedback. v3 implemented, user visual retest pending. Headless tests establish no pixel/GPU/readability/performance acceptance.",
+    "evidence": "build/qa/fire-vortex-organic-v3-20261027/results.json",
+    "authorization_record": "docs/历史决策/归档/35-火系法术特效优化.md",
+    "revision_request": "2026-10-27 user: 这个龙卷风感觉有一点诡异。",
+    "revision_references": [
+     {
+      "source": "C:\\Users\\naife\\AppData\\Local\\Temp\\codex-clipboard-84d4b575-a45b-4542-acb2-7dec24d484c8.png",
+      "path": "D:\\demo 精简\\20261026-项目精简\\art\\vfx\\fire_vortex_v3\\user_feedback_20261027_01.png",
+      "sha256": "adc41ce750418f3461069cee3257bbdbf176744b7133c114005e7f51f45731a1",
+      "bytes": 229405
+     },
+     {
+      "source": "C:\\Users\\naife\\AppData\\Local\\Temp\\codex-clipboard-fb70a1d6-bed6-42d5-8753-aea44b2cb095.png",
+      "path": "D:\\demo 精简\\20261026-项目精简\\art\\vfx\\fire_vortex_v3\\user_feedback_20261027_02.png",
+      "sha256": "b2078c1a453a52a05739514f75de3f094426ca2c85893b633f27a1af0c212070",
+      "bytes": 430549
+     }
+    ],
+    "reference_scope": "Two original user-provided v2 screenshots, critique only; stored externally, never runtime art or proof of v3 visuals.",
+    "subsequent_user_feedback": "可以，但是我们需要一点装饰，请你把小火苗加到火龙卷里，一起旋转\n小火苗要不规则， Limited v3 body acceptance; additional v4 decoration requested."
+   },
+   {
+    "target": "scripts/presentation/fire_vortex_column.gdshader",
+    "source": "Original project-local Godot Shader Language authored on 2026-10-27 for the user-requested F05 fire-tornado revision. Procedural periodic angular noise and flame walls; no external bitmap/model/font.",
+    "runtime_approved": true,
+    "sha256": "63d9c2e8bdc718d031493a76e0350483569f3234254e661df6a240581e66d1ee",
+    "bytes": 5185,
+    "approval": "2026-10-27 user: 可以焰流旋涡请你自行设计，制作。 In context, preserve current rules/numbers; user runs manual visual testing.",
+    "purpose": "Original v3 wall fragment unchanged inside its existing path; new interior-flame path derives the approved F01 flame composition and reads per-quad mesh color metadata. No additional material, image or global glow.",
+    "visual_revision": 4,
+    "visual_status": "User gave limited acceptance of v3 body and requested irregular orbiting flames inside it. v4 implemented; user manual visual retest pending. No pixel/GPU/performance or whole-route acceptance.",
+    "evidence": "build/qa/fire-vortex-interior-v4-20261027/results.json",
+    "authorization_record": "docs/历史决策/归档/35-火系法术特效优化.md",
+    "revision_request": "可以，但是我们需要一点装饰，请你把小火苗加到火龙卷里，一起旋转\n小火苗要不规则，",
+    "reference_scope": "Unmodified user v3 reference only, external production source; never runtime art or v4 pixel evidence.",
+    "revision_reference": {
+     "source": "C:\\Users\\naife\\AppData\\Local\\Temp\\codex-clipboard-1935ce6e-7176-4eab-8e36-8d134f62c699.png",
+     "path": "D:\\demo 精简\\20261026-项目精简\\art\\vfx\\fire_vortex_v4\\user_feedback_20261027.png",
+     "sha256": "58c5f65356b69d3341b8678b69ac881f8945433c80ef9e33129c664fe73d09be",
+     "bytes": 237945
+    },
+    "acceptance_scope": "Limited acceptance of current v3 body as the basis for an additional irregular orbiting interior-flame decoration; no v4 visual or whole-route/performance acceptance.",
+    "interior_flame_derivation": {
+     "path": "scripts/presentation/fire_bolt_body.gdshader",
+     "sha256": "00456ff3328fd402e9de4fc86ca2b4148ead8f72420cd87647809a8a77743658",
+     "changes": "Reuse the approved fragment composition with UV/function-argument and return-value adaptation. Original F01 shader source remains byte-identical."
+    },
+    "subsequent_user_feedback": "好像没有区别，是我开错了吗; correct preview launch verified, decoration visibility insufficient."
+   }
+  ],
+  "reference_scope": "Unmodified user v4 reference only; never runtime art or v5 pixel evidence.",
+  "revision_reference": {
+   "source": "C:\\Users\\naife\\AppData\\Local\\Temp\\codex-clipboard-97eb8a31-6ed6-4d64-b1f8-b0a6766e30fa.png",
+   "path": "D:\\demo 精简\\20261026-项目精简\\art\\vfx\\fire_vortex_v5\\user_feedback_20261027.png",
+   "sha256": "1daba3ac0e2365b4ad9a0ee39a79a27168985c43bcc9ed90ad32dc40b6444de8",
+   "bytes": 123393
+  },
+  "acceptance_scope": "Current F05 v5 manual preview accepted; no blanket scenario/full-route/performance acceptance or automatic launch/Git permission.",
+  "interior_flame_derivation": {
+   "path": "scripts/presentation/fire_bolt_body.gdshader",
+   "sha256": "00456ff3328fd402e9de4fc86ca2b4148ead8f72420cd87647809a8a77743658",
+   "changes": "Reuse the approved fragment composition with UV/function-argument and return-value adaptation. Original F01 shader source remains byte-identical."
+  },
+  "visibility_adjustment": "Decoration size/alpha/light gain increased and centers moved nearer the inside of the outer wall; existing v3 wall and F01 helper formula retained.",
+  "opening_verification": "build/qa/fire-vortex-visibility-v5-20261027/opening-evidence.json",
+  "user_preview_approval": {
+   "date": "2026-10-27",
+   "user_message": "可以\n我们讨论下一个",
+   "version": 5,
+   "scope": "This F05 preview only; keep current effect.",
+   "record": "docs/历史决策/归档/35-火系法术特效优化.md#30-2026-10-27-焰流旋涡v5用户预览认可与下一术讨论"
+  }
+ },
+ {
+  "target": "scripts/presentation/route_fire_field_vfx.gd",
+  "source": "Original project-local Godot GDScript/Shader Language/visual JSON authored on 2026-10-27 for the user-confirmed F06 complete effect plan. No external bitmap, font, model or toolkit asset.",
+  "runtime_approved": true,
+  "sha256": "15d82eb0b4ed1c87cde37cd5c7b1e52a9efd07cf7efbffa2a8086f9a80c9fc80",
+  "bytes": 23454,
+  "approval": "2026-10-27 user: 可以，请你实施。 Confirms the discussed F06 v2 amber-gold glyphs, travelling light, irregular low flame clusters/rising embers and complete-stage polish; preserve rules/numbers and manual testing by user.",
+  "purpose": "F06 v2 fixed six flame glyphs and central seal, thin true outer boundary, independent amber/gold line palette and local glow, deterministic staggered low flames/curved rising embers, true one-shot maturity and finite cooling. Existing real bonus/grace/overlap/source statuses retained.",
+  "visual_revision": 2,
+  "visual_status": "User accepted the current F06 v2 preview on 2026-10-27 and requested the next spell. Keep the current version. Acceptance does not establish all nine scenarios, pixel/occlusion metrics, full-route, performance or final balance.",
+  "evidence": "build/qa/fire-field-runes-v2-20261027/results.json",
+  "authorization_record": "docs/历史决策/37-火系法术特效后续优化.md#3-2026-10-27-炽焰法阵v2方案确认与实施授权",
+  "reused_unchanged_shaders": [
+   "scripts/presentation/fire_bolt_body.gdshader"
+  ],
+  "source_burn_helper_origin": "Source-owned burn/cooling and generic projected batches reuse the approved F05 implementation locally; original F05 sources remain byte-identical.",
+  "previous_visual_revisions": [
+   {
+    "target": "scripts/presentation/route_fire_field_vfx.gd",
+    "source": "Original project-local Godot GDScript/Shader Language/visual JSON authored on 2026-10-27 for the user-confirmed F06 complete effect plan. No external bitmap, font, model or toolkit asset.",
+    "runtime_approved": true,
+    "sha256": "134d91e56fd6137b9349b10a27447eef228d7f90a0d935c64f4d2f011ab69086",
+    "bytes": 18210,
+    "approval": "2026-10-27 user: 可以，请你执行。 Refers to the complete F06 field/runes/bonus/grace/natural overlap/one maturity/end plan; preserve gameplay rules/numbers, manual testing by user.",
+    "purpose": "F06 read-only fixed rune field/low flames, actual contacts/source burns, real bonus and grace, natural distinct-kind vulnerability, true one-shot maturity with its independent radius, replacement/expiry/cooling.",
+    "visual_revision": 1,
+    "visual_status": "Implemented; manual user visual review pending. Headless rules/geometry checks do not establish pixel/GPU composition, readability, performance or full-route acceptance.",
+    "evidence": "build/qa/fire-field-vfx-20261027/results.json",
+    "authorization_record": "docs/历史决策/归档/35-火系法术特效优化.md#31-2026-10-27-炽焰法阵完整方案确认与实施授权",
+    "reused_unchanged_shaders": [
+     "scripts/presentation/fire_bolt_body.gdshader"
+    ],
+    "source_burn_helper_origin": "Source-owned burn/cooling and generic projected batches reuse the approved F05 implementation locally; original F05 sources remain byte-identical."
+   }
+  ],
+  "revision_request": "整体不太还看，颜色怪怪的。我们是否可以加一下例子特效，纹路样式可以优化一下吗？我想到的只有这些，你有什么优化方案吗",
+  "revision_reference": {
+   "path": "D:\\demo 精简\\20261026-项目精简\\art\\vfx\\fire_field_v2\\user_feedback_20261027.png",
+   "sha256": "1790cd1d6ab818d5c1445cf42e14c46dc8526e91b9dd32d34ed9f16faf9242d9",
+   "scope": "Unmodified user-provided v1 feedback only; never runtime art or v2 pixel evidence."
+  },
+  "draw_structure": {
+   "nodes": 3,
+   "materials": 2,
+   "scope": "Existing fixed batches; decorative embers use the F06 surface material. No new bitmap/font/model/action/global Glow or physics emitter."
+  },
+  "user_preview_approval": {
+   "date": "2026-10-27",
+   "user_message": "可以，炽焰法阵通过，下一个做什么？",
+   "version": 2,
+   "scope": "This F06 v2 preview only; preserve the current effect. No automatic launch, Git or next-spell implementation authorization.",
+   "record": "docs/历史决策/37-火系法术特效后续优化.md#5-2026-10-27-炽焰法阵v2用户预览认可与下一术讨论"
+  }
+ },
+ {
+  "target": "scripts/presentation/fire_field_surface.gdshader",
+  "source": "Original project-local Godot GDScript/Shader Language/visual JSON authored on 2026-10-27 for the user-confirmed F06 complete effect plan. No external bitmap, font, model or toolkit asset.",
+  "runtime_approved": true,
+  "sha256": "9dffdd69e9f6528e0daeef12c95a50ec7d769edafa42c0e0687bdaabce9ffd71",
+  "bytes": 7444,
+  "approval": "2026-10-27 user: 可以，请你实施。 Confirms the discussed F06 v2 amber-gold glyphs, travelling light, irregular low flame clusters/rising embers and complete-stage polish; preserve rules/numbers and manual testing by user.",
+  "purpose": "F06 v2 fixed six flame glyphs and central seal, thin true outer boundary, independent amber/gold line palette and local glow, deterministic staggered low flames/curved rising embers, true one-shot maturity and finite cooling. Existing real bonus/grace/overlap/source statuses retained.",
+  "visual_revision": 2,
+  "visual_status": "User accepted the current F06 v2 preview on 2026-10-27 and requested the next spell. Keep the current version. Acceptance does not establish all nine scenarios, pixel/occlusion metrics, full-route, performance or final balance.",
+  "evidence": "build/qa/fire-field-runes-v2-20261027/results.json",
+  "authorization_record": "docs/历史决策/37-火系法术特效后续优化.md#3-2026-10-27-炽焰法阵v2方案确认与实施授权",
+  "reused_unchanged_shaders": [
+   "scripts/presentation/fire_bolt_body.gdshader"
+  ],
+  "source_burn_helper_origin": "Source-owned burn/cooling and generic projected batches reuse the approved F05 implementation locally; original F05 sources remain byte-identical.",
+  "previous_visual_revisions": [
+   {
+    "target": "scripts/presentation/fire_field_surface.gdshader",
+    "source": "Original project-local Godot GDScript/Shader Language/visual JSON authored on 2026-10-27 for the user-confirmed F06 complete effect plan. No external bitmap, font, model or toolkit asset.",
+    "runtime_approved": true,
+    "sha256": "46a6bcb795ec2172ea00c5fac5724e59a15545f2eee133329bf09282eb96d94a",
+    "bytes": 3534,
+    "approval": "2026-10-27 user: 可以，请你执行。 Refers to the complete F06 field/runes/bonus/grace/natural overlap/one maturity/end plan; preserve gameplay rules/numbers, manual testing by user.",
+    "purpose": "F06 read-only fixed rune field/low flames, actual contacts/source burns, real bonus and grace, natural distinct-kind vulnerability, true one-shot maturity with its independent radius, replacement/expiry/cooling.",
+    "visual_revision": 1,
+    "visual_status": "Implemented; manual user visual review pending. Headless rules/geometry checks do not establish pixel/GPU composition, readability, performance or full-route acceptance.",
+    "evidence": "build/qa/fire-field-vfx-20261027/results.json",
+    "authorization_record": "docs/历史决策/归档/35-火系法术特效优化.md#31-2026-10-27-炽焰法阵完整方案确认与实施授权",
+    "reused_unchanged_shaders": [
+     "scripts/presentation/fire_bolt_body.gdshader"
+    ],
+    "source_burn_helper_origin": "Source-owned burn/cooling and generic projected batches reuse the approved F05 implementation locally; original F05 sources remain byte-identical."
+   }
+  ],
+  "revision_request": "整体不太还看，颜色怪怪的。我们是否可以加一下例子特效，纹路样式可以优化一下吗？我想到的只有这些，你有什么优化方案吗",
+  "revision_reference": {
+   "path": "D:\\demo 精简\\20261026-项目精简\\art\\vfx\\fire_field_v2\\user_feedback_20261027.png",
+   "sha256": "1790cd1d6ab818d5c1445cf42e14c46dc8526e91b9dd32d34ed9f16faf9242d9",
+   "scope": "Unmodified user-provided v1 feedback only; never runtime art or v2 pixel evidence."
+  },
+  "draw_structure": {
+   "nodes": 3,
+   "materials": 2,
+   "scope": "Existing fixed batches; decorative embers use the F06 surface material. No new bitmap/font/model/action/global Glow or physics emitter."
+  },
+  "user_preview_approval": {
+   "date": "2026-10-27",
+   "user_message": "可以，炽焰法阵通过，下一个做什么？",
+   "version": 2,
+   "scope": "This F06 v2 preview only; preserve the current effect. No automatic launch, Git or next-spell implementation authorization.",
+   "record": "docs/历史决策/37-火系法术特效后续优化.md#5-2026-10-27-炽焰法阵v2用户预览认可与下一术讨论"
+  }
+ },
+ {
+  "target": "data/fire_field_vfx.json",
+  "source": "Original project-local Godot GDScript/Shader Language/visual JSON authored on 2026-10-27 for the user-confirmed F06 complete effect plan. No external bitmap, font, model or toolkit asset.",
+  "runtime_approved": true,
+  "sha256": "afcab9cdbc6b3316c5c40bb0b3ebe71ddde16313b487937bfb36c2f687a84c09",
+  "bytes": 2181,
+  "approval": "2026-10-27 user: 可以，请你实施。 Confirms the discussed F06 v2 amber-gold glyphs, travelling light, irregular low flame clusters/rising embers and complete-stage polish; preserve rules/numbers and manual testing by user.",
+  "purpose": "F06 v2 fixed six flame glyphs and central seal, thin true outer boundary, independent amber/gold line palette and local glow, deterministic staggered low flames/curved rising embers, true one-shot maturity and finite cooling. Existing real bonus/grace/overlap/source statuses retained.",
+  "visual_revision": 2,
+  "visual_status": "User accepted the current F06 v2 preview on 2026-10-27 and requested the next spell. Keep the current version. Acceptance does not establish all nine scenarios, pixel/occlusion metrics, full-route, performance or final balance.",
+  "evidence": "build/qa/fire-field-runes-v2-20261027/results.json",
+  "authorization_record": "docs/历史决策/37-火系法术特效后续优化.md#3-2026-10-27-炽焰法阵v2方案确认与实施授权",
+  "reused_unchanged_shaders": [
+   "scripts/presentation/fire_bolt_body.gdshader"
+  ],
+  "source_burn_helper_origin": "Source-owned burn/cooling and generic projected batches reuse the approved F05 implementation locally; original F05 sources remain byte-identical.",
+  "previous_visual_revisions": [
+   {
+    "target": "data/fire_field_vfx.json",
+    "source": "Original project-local Godot GDScript/Shader Language/visual JSON authored on 2026-10-27 for the user-confirmed F06 complete effect plan. No external bitmap, font, model or toolkit asset.",
+    "runtime_approved": true,
+    "sha256": "90bb80d2a56f7e12622818a1f2791c77bfdfa6d9df9da309fdd368d83ec95eed",
+    "bytes": 1488,
+    "approval": "2026-10-27 user: 可以，请你执行。 Refers to the complete F06 field/runes/bonus/grace/natural overlap/one maturity/end plan; preserve gameplay rules/numbers, manual testing by user.",
+    "purpose": "F06 read-only fixed rune field/low flames, actual contacts/source burns, real bonus and grace, natural distinct-kind vulnerability, true one-shot maturity with its independent radius, replacement/expiry/cooling.",
+    "visual_revision": 1,
+    "visual_status": "Implemented; manual user visual review pending. Headless rules/geometry checks do not establish pixel/GPU composition, readability, performance or full-route acceptance.",
+    "evidence": "build/qa/fire-field-vfx-20261027/results.json",
+    "authorization_record": "docs/历史决策/归档/35-火系法术特效优化.md#31-2026-10-27-炽焰法阵完整方案确认与实施授权",
+    "reused_unchanged_shaders": [
+     "scripts/presentation/fire_bolt_body.gdshader"
+    ],
+    "source_burn_helper_origin": "Source-owned burn/cooling and generic projected batches reuse the approved F05 implementation locally; original F05 sources remain byte-identical."
+   }
+  ],
+  "revision_request": "整体不太还看，颜色怪怪的。我们是否可以加一下例子特效，纹路样式可以优化一下吗？我想到的只有这些，你有什么优化方案吗",
+  "revision_reference": {
+   "path": "D:\\demo 精简\\20261026-项目精简\\art\\vfx\\fire_field_v2\\user_feedback_20261027.png",
+   "sha256": "1790cd1d6ab818d5c1445cf42e14c46dc8526e91b9dd32d34ed9f16faf9242d9",
+   "scope": "Unmodified user-provided v1 feedback only; never runtime art or v2 pixel evidence."
+  },
+  "draw_structure": {
+   "nodes": 3,
+   "materials": 2,
+   "scope": "Existing fixed batches; decorative embers use the F06 surface material. No new bitmap/font/model/action/global Glow or physics emitter."
+  },
+  "user_preview_approval": {
+   "date": "2026-10-27",
+   "user_message": "可以，炽焰法阵通过，下一个做什么？",
+   "version": 2,
+   "scope": "This F06 v2 preview only; preserve the current effect. No automatic launch, Git or next-spell implementation authorization.",
+   "record": "docs/历史决策/37-火系法术特效后续优化.md#5-2026-10-27-炽焰法阵v2用户预览认可与下一术讨论"
+  }
+ },
+ {
+  "target": "scripts/presentation/route_fire_brand_vfx.gd",
+  "source": "Original project-local Godot GDScript/Shader Language/visual JSON authored on 2026-10-27 for the user-confirmed F11 complete chain. Procedural native visuals; no external bitmap/font/model/toolkit.",
+  "runtime_approved": true,
+  "sha256": "95ea529d24d6b00abac96f6d47152fe28e7b21b9223d7b99dc45bfcd42aab19a",
+  "bytes": 16750,
+  "approval": "2026-10-27 user: 可以，就按这个方案实现引燃之印的完整特效链路，保持现有规则和数值不变，实机测试我来做。",
+  "purpose": "Short cast gathering, actual primary flame seal, complete same-time curved links from original successful fire_spread effects, target ignition, real F11-owned burns and finite cooling. No recursive spread, new hit or duration.",
+  "visual_revision": 1,
+  "visual_status": "User accepted the current F11 v1 preview on 2026-10-27. Preserve the current effect. Acceptance does not establish all nine scenarios, pixel/occlusion metrics, full-route, performance or final balance.",
+  "evidence": "build/qa/fire-brand-vfx-20261027/results.json",
+  "authorization_record": "docs/历史决策/37-火系法术特效后续优化.md#6-2026-10-27-引燃之印完整方案确认与实施授权",
+  "reused_unchanged_shaders": [
+   "scripts/presentation/fire_bolt_body.gdshader"
+  ],
+  "source_burn_helper_origin": "Locally adapts the accepted F06 source-owned burn/cooling and projected batch helpers to F11; approved F06/F01 source bytes remain unchanged.",
+  "draw_structure": {
+   "nodes": 3,
+   "materials": 2,
+   "scope": "Fixed native batches; no particle physics, global Glow, new role action or gameplay RNG."
+  },
+  "user_preview_approval": {
+   "date": "2026-10-27",
+   "user_message": "可以，引燃之印通过，火系还剩最后一个了是吧",
+   "version": 1,
+   "scope": "Current F11 v1 preview only; no blanket scenario/performance/full-route acceptance or automatic launch/Git/next-spell implementation authorization.",
+   "record": "docs/历史决策/37-火系法术特效后续优化.md#8-2026-10-27-引燃之印用户预览认可与火系剩余范围"
+  }
+ },
+ {
+  "target": "scripts/presentation/fire_brand_surface.gdshader",
+  "source": "Original project-local Godot GDScript/Shader Language/visual JSON authored on 2026-10-27 for the user-confirmed F11 complete chain. Procedural native visuals; no external bitmap/font/model/toolkit.",
+  "runtime_approved": true,
+  "sha256": "efb61a4e4e6037ccf5fb296844ea78d75ceadd723119f4552107218427193a9d",
+  "bytes": 3425,
+  "approval": "2026-10-27 user: 可以，就按这个方案实现引燃之印的完整特效链路，保持现有规则和数值不变，实机测试我来做。",
+  "purpose": "Short cast gathering, actual primary flame seal, complete same-time curved links from original successful fire_spread effects, target ignition, real F11-owned burns and finite cooling. No recursive spread, new hit or duration.",
+  "visual_revision": 1,
+  "visual_status": "User accepted the current F11 v1 preview on 2026-10-27. Preserve the current effect. Acceptance does not establish all nine scenarios, pixel/occlusion metrics, full-route, performance or final balance.",
+  "evidence": "build/qa/fire-brand-vfx-20261027/results.json",
+  "authorization_record": "docs/历史决策/37-火系法术特效后续优化.md#6-2026-10-27-引燃之印完整方案确认与实施授权",
+  "reused_unchanged_shaders": [
+   "scripts/presentation/fire_bolt_body.gdshader"
+  ],
+  "source_burn_helper_origin": "Locally adapts the accepted F06 source-owned burn/cooling and projected batch helpers to F11; approved F06/F01 source bytes remain unchanged.",
+  "draw_structure": {
+   "nodes": 3,
+   "materials": 2,
+   "scope": "Fixed native batches; no particle physics, global Glow, new role action or gameplay RNG."
+  },
+  "user_preview_approval": {
+   "date": "2026-10-27",
+   "user_message": "可以，引燃之印通过，火系还剩最后一个了是吧",
+   "version": 1,
+   "scope": "Current F11 v1 preview only; no blanket scenario/performance/full-route acceptance or automatic launch/Git/next-spell implementation authorization.",
+   "record": "docs/历史决策/37-火系法术特效后续优化.md#8-2026-10-27-引燃之印用户预览认可与火系剩余范围"
+  }
+ },
+ {
+  "target": "data/fire_brand_vfx.json",
+  "source": "Original project-local Godot GDScript/Shader Language/visual JSON authored on 2026-10-27 for the user-confirmed F11 complete chain. Procedural native visuals; no external bitmap/font/model/toolkit.",
+  "runtime_approved": true,
+  "sha256": "3b9f1bd63c0a6f120cb60d11269ba40738c4e1819b0f196798bf70c6d75be14b",
+  "bytes": 1242,
+  "approval": "2026-10-27 user: 可以，就按这个方案实现引燃之印的完整特效链路，保持现有规则和数值不变，实机测试我来做。",
+  "purpose": "Short cast gathering, actual primary flame seal, complete same-time curved links from original successful fire_spread effects, target ignition, real F11-owned burns and finite cooling. No recursive spread, new hit or duration.",
+  "visual_revision": 1,
+  "visual_status": "User accepted the current F11 v1 preview on 2026-10-27. Preserve the current effect. Acceptance does not establish all nine scenarios, pixel/occlusion metrics, full-route, performance or final balance.",
+  "evidence": "build/qa/fire-brand-vfx-20261027/results.json",
+  "authorization_record": "docs/历史决策/37-火系法术特效后续优化.md#6-2026-10-27-引燃之印完整方案确认与实施授权",
+  "reused_unchanged_shaders": [
+   "scripts/presentation/fire_bolt_body.gdshader"
+  ],
+  "source_burn_helper_origin": "Locally adapts the accepted F06 source-owned burn/cooling and projected batch helpers to F11; approved F06/F01 source bytes remain unchanged.",
+  "draw_structure": {
+   "nodes": 3,
+   "materials": 2,
+   "scope": "Fixed native batches; no particle physics, global Glow, new role action or gameplay RNG."
+  },
+  "user_preview_approval": {
+   "date": "2026-10-27",
+   "user_message": "可以，引燃之印通过，火系还剩最后一个了是吧",
+   "version": 1,
+   "scope": "Current F11 v1 preview only; no blanket scenario/performance/full-route acceptance or automatic launch/Git/next-spell implementation authorization.",
+   "record": "docs/历史决策/37-火系法术特效后续优化.md#8-2026-10-27-引燃之印用户预览认可与火系剩余范围"
+  }
+ },
+ {
+  "target": "scripts/presentation/route_fire_support_vfx.gd",
+  "source": "Original project-local Godot GDScript/Shader Language/visual JSON authored on 2026-10-27 for the user-authorized F10/F02 design and implementation. Native procedural graphics; no external bitmap, font, model or toolkit asset.",
+  "runtime_approved": true,
+  "sha256": "82f72b0807d0e26abd2bd31dd25880de8eab6e552baca3bc80955fbaeff5bee3",
+  "bytes": 14623,
+  "spell_ids": [
+   "F10",
+   "F02"
+  ],
+  "approval": "2026-10-27 user: 暖焰护持，炎法精通。我们一起完成这两个，请你自行设计，实施。 Current-session rules/numbers unchanged; user handles manual testing.",
+  "purpose": "F10 actual positive shield restoration: short gathering, open warm-gold side arcs, inward sparks and finite fade. F02 real successful learning/upgrade reward: short level-aware seal/gather, quiet when merely owned. Existing effects only; no core, RNG, shield duration or passive-stat changes.",
+  "visual_revision": 1,
+  "visual_status": "User accepted current F10/F02 v1 feedback and declared this fire VFX round complete on 2026-10-27. Preserve the current ten-spell round; no blanket full-project, natural-route, GPU/performance or final-balance acceptance.",
+  "evidence": "build/qa/fire-support-vfx-20261027/results.json",
+  "authorization_record": "docs/历史决策/37-火系法术特效后续优化.md#9-2026-10-27-暖焰护持与炎法精通自行设计及实施授权",
+  "reused_unchanged_shaders": [
+   "scripts/presentation/fire_bolt_body.gdshader"
+  ],
+  "projection_helper_origin": "Locally reuses the accepted F11 generic fire-body/material/batch/projection helpers. Original approved source bytes remain unchanged.",
+  "draw_structure": {
+   "nodes": 3,
+   "materials": 2,
+   "scope": "Bounded shared support batches, no permanent shield ownership inference, persistent passive aura, particle physics, role action or global Glow."
+  },
+  "user_preview_approval": {
+   "date": "2026-10-27",
+   "user_message": "可以，暖焰护持和炎法精通通过，火系这一轮完成了，请你整理项目，把之前的预览删除，提交本地git",
+   "version": 1,
+   "spell_ids": [
+    "F10",
+    "F02"
+   ],
+   "scope": "Current F10/F02 effects and completion of this fire VFX round. Cleanup/local commits separately authorized; no remote push requested.",
+   "record": "docs/历史决策/37-火系法术特效后续优化.md#11-2026-10-27-火系本轮完成确认与项目整理授权"
+  }
+ },
+ {
+  "target": "scripts/presentation/fire_support_surface.gdshader",
+  "source": "Original project-local Godot GDScript/Shader Language/visual JSON authored on 2026-10-27 for the user-authorized F10/F02 design and implementation. Native procedural graphics; no external bitmap, font, model or toolkit asset.",
+  "runtime_approved": true,
+  "sha256": "19bcfe396e891e5d933b0a4cb7396f4c2b4bf6d5b0fba31690920c63b5785878",
+  "bytes": 2986,
+  "spell_ids": [
+   "F10",
+   "F02"
+  ],
+  "approval": "2026-10-27 user: 暖焰护持，炎法精通。我们一起完成这两个，请你自行设计，实施。 Current-session rules/numbers unchanged; user handles manual testing.",
+  "purpose": "F10 actual positive shield restoration: short gathering, open warm-gold side arcs, inward sparks and finite fade. F02 real successful learning/upgrade reward: short level-aware seal/gather, quiet when merely owned. Existing effects only; no core, RNG, shield duration or passive-stat changes.",
+  "visual_revision": 1,
+  "visual_status": "User accepted current F10/F02 v1 feedback and declared this fire VFX round complete on 2026-10-27. Preserve the current ten-spell round; no blanket full-project, natural-route, GPU/performance or final-balance acceptance.",
+  "evidence": "build/qa/fire-support-vfx-20261027/results.json",
+  "authorization_record": "docs/历史决策/37-火系法术特效后续优化.md#9-2026-10-27-暖焰护持与炎法精通自行设计及实施授权",
+  "reused_unchanged_shaders": [
+   "scripts/presentation/fire_bolt_body.gdshader"
+  ],
+  "projection_helper_origin": "Locally reuses the accepted F11 generic fire-body/material/batch/projection helpers. Original approved source bytes remain unchanged.",
+  "draw_structure": {
+   "nodes": 3,
+   "materials": 2,
+   "scope": "Bounded shared support batches, no permanent shield ownership inference, persistent passive aura, particle physics, role action or global Glow."
+  },
+  "user_preview_approval": {
+   "date": "2026-10-27",
+   "user_message": "可以，暖焰护持和炎法精通通过，火系这一轮完成了，请你整理项目，把之前的预览删除，提交本地git",
+   "version": 1,
+   "spell_ids": [
+    "F10",
+    "F02"
+   ],
+   "scope": "Current F10/F02 effects and completion of this fire VFX round. Cleanup/local commits separately authorized; no remote push requested.",
+   "record": "docs/历史决策/37-火系法术特效后续优化.md#11-2026-10-27-火系本轮完成确认与项目整理授权"
+  }
+ },
+ {
+  "target": "data/fire_support_vfx.json",
+  "source": "Original project-local Godot GDScript/Shader Language/visual JSON authored on 2026-10-27 for the user-authorized F10/F02 design and implementation. Native procedural graphics; no external bitmap, font, model or toolkit asset.",
+  "runtime_approved": true,
+  "sha256": "fb666c9cbbea4176b9a152160665ab29db14473163fd19fbc0354261bc00b329",
+  "bytes": 1084,
+  "spell_ids": [
+   "F10",
+   "F02"
+  ],
+  "approval": "2026-10-27 user: 暖焰护持，炎法精通。我们一起完成这两个，请你自行设计，实施。 Current-session rules/numbers unchanged; user handles manual testing.",
+  "purpose": "F10 actual positive shield restoration: short gathering, open warm-gold side arcs, inward sparks and finite fade. F02 real successful learning/upgrade reward: short level-aware seal/gather, quiet when merely owned. Existing effects only; no core, RNG, shield duration or passive-stat changes.",
+  "visual_revision": 1,
+  "visual_status": "User accepted current F10/F02 v1 feedback and declared this fire VFX round complete on 2026-10-27. Preserve the current ten-spell round; no blanket full-project, natural-route, GPU/performance or final-balance acceptance.",
+  "evidence": "build/qa/fire-support-vfx-20261027/results.json",
+  "authorization_record": "docs/历史决策/37-火系法术特效后续优化.md#9-2026-10-27-暖焰护持与炎法精通自行设计及实施授权",
+  "reused_unchanged_shaders": [
+   "scripts/presentation/fire_bolt_body.gdshader"
+  ],
+  "projection_helper_origin": "Locally reuses the accepted F11 generic fire-body/material/batch/projection helpers. Original approved source bytes remain unchanged.",
+  "draw_structure": {
+   "nodes": 3,
+   "materials": 2,
+   "scope": "Bounded shared support batches, no permanent shield ownership inference, persistent passive aura, particle physics, role action or global Glow."
+  },
+  "user_preview_approval": {
+   "date": "2026-10-27",
+   "user_message": "可以，暖焰护持和炎法精通通过，火系这一轮完成了，请你整理项目，把之前的预览删除，提交本地git",
+   "version": 1,
+   "spell_ids": [
+    "F10",
+    "F02"
+   ],
+   "scope": "Current F10/F02 effects and completion of this fire VFX round. Cleanup/local commits separately authorized; no remote push requested.",
+   "record": "docs/历史决策/37-火系法术特效后续优化.md#11-2026-10-27-火系本轮完成确认与项目整理授权"
+  }
  }
 ]

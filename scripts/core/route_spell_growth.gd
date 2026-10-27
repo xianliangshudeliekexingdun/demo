@@ -44,6 +44,12 @@ func move_speed_bonus(run) -> float:
 	return _speed_bonus if _active(run) and float(run.time) < _speed_until else 0.0
 
 
+func wave_speed_snapshot(run) -> Dictionary:
+	# This state is granted only by the existing F09 natural-hit branch.
+	if run.phase != "combat" or float(run.player.health) <= 0.0 or float(run.time) >= _speed_until or _speed_bonus <= 0.0: return {}
+	return {"bonus": _speed_bonus, "until": _speed_until, "remaining": _speed_until - float(run.time)}
+
+
 func burn_parameters(run, base: Dictionary) -> Dictionary:
 	var result: Dictionary = base.duplicate(true)
 	var brand: Dictionary = run._owned_spell("F11")
@@ -114,6 +120,8 @@ func on_area_matured(run, context: Dictionary, pos: Vector2, age: float) -> void
 	ctx.merge({"natural": false, "kind": "growth_burst", "ignite": false, "detonate": false, "gem_body_scale": 1.0, "field_bonus": 0.0}, true)
 	run._spell_combat._area_hit(run, pos, float(level.mature_radius), float(level.mature_coefficient), ctx)
 	run._emit("artifact_explosion", {"pos": pos, "radius": float(level.mature_radius), "spell_id": "F06"}, 0.5)
+	if run._spell_combat.has_method("note_field_matured"):
+		run._spell_combat.note_field_matured(run, context, pos, float(level.mature_radius))
 
 
 func update(run, dt: float) -> void:
