@@ -7,6 +7,10 @@ var _rules: Dictionary = {}
 var _reignite_ready: Dictionary = {}
 var _serial: int = 0
 var _clock: float = 0.0
+const BOMB_VISUAL_LIMIT := 512
+const BOMB_VISUAL_RETENTION := 1.0
+var _bomb_visual_facts: Array = []
+var _bomb_visual_seq := 0
 
 
 func configure(rules: Dictionary) -> void:
@@ -20,6 +24,8 @@ func clear() -> void:
 	_reignite_ready.clear()
 	_serial = 0
 	_clock = 0.0
+	_bomb_visual_facts.clear()
+	_bomb_visual_seq = 0
 
 
 func remove_actor(actor_id: int) -> void:
@@ -75,6 +81,8 @@ func update(run, dt: float) -> void:
 	_clock += maxf(0.0, dt)
 	var now: float = _clock
 	# Complete all due old ticks before any impact or delayed re-ignition.
+	while not _bomb_visual_facts.is_empty() and float(run.time) - float(_bomb_visual_facts[0].time) > BOMB_VISUAL_RETENTION:
+		_bomb_visual_facts.pop_front()
 	var keys: Array = burns.keys()
 	keys.sort()
 	for key in keys:
@@ -110,10 +118,11 @@ func flush_reignites(run) -> void:
 		var actor: Dictionary = _actor(run, int(item.actor_id))
 		if not actor.is_empty() and float(actor.health) > 0.0 and apply_burn(run, actor, str(item.get("source", "G04"))):
 			_emit(run, "fire_reignited", {"actor_id": actor.id, "pos": actor.pos, "spell_id": str(item.get("source", "G04"))})
+			if str(item.get("source", "G04")) == "F07": _note_bomb_visual(run, "reignite", actor, item.cast_id)
 	reignite_pending = retained
 
 
-func detonate_burn(run, actor: Dictionary, multiplier: float, natural: bool = false, cast_id: Variant = -1, required_token: int = -1, reapply: Dictionary = {}) -> float:
+func detonate_burn(run, actor: Dictionary, multiplier: float, natural: bool = false, cast_id: Variant = -1, required_token: int = -1, reapply: Dictionary = {}, visual_spell_id: String = "") -> float:
 	if not _active(run) or actor.is_empty() or float(actor.get("health", 0.0)) <= 0.0:
 		return 0.0
 	var key: int = int(actor.id)
@@ -133,10 +142,23 @@ func detonate_burn(run, actor: Dictionary, multiplier: float, natural: bool = fa
 	burns.erase(key)
 	var actual: float = _damage(run, actor, fuel * multiplier, "detonation", {"cast_id": cast_id, "future_ticks": count, "natural_bomb": natural})
 	_emit(run, "fire_detonation", {"actor_id": actor.id, "pos": actor.pos, "future_ticks": count, "multiplier": multiplier, "amount": actual, "cast_id": cast_id})
+	if visual_spell_id == "F07": _note_bomb_visual(run, "detonation", actor, cast_id, actual, count)
 	if not g04.is_empty() and float(actor.health) > 0.0 and _clock + 0.000001 >= float(_reignite_ready.get(key, -INF)):
 		_reignite_ready[key] = _clock + float(g04.reapply_shared_cooldown)
 		reignite_pending.append({"actor_id": key, "at": _clock + float(g04.reapply_delay), "cast_id": cast_id, "source": g04.get("source", "G04")})
 	return actual
+
+
+func _note_bomb_visual(run, phase: String, actor: Dictionary, cast_id: Variant, amount: float = 0.0, ticks: int = 0) -> void:
+	_bomb_visual_seq += 1
+	_bomb_visual_facts.append({"seq": _bomb_visual_seq, "phase": phase, "time": float(run.time),
+		"actor_id": int(actor.id), "cast_id": cast_id, "pos": actor.pos, "radius": float(actor.radius),
+		"amount": amount, "future_ticks": ticks, "alive_after": float(actor.health) > 0.0})
+	if _bomb_visual_facts.size() > BOMB_VISUAL_LIMIT: _bomb_visual_facts.pop_front()
+
+
+func get_bomb_visual_facts() -> Array:
+	return _bomb_visual_facts.duplicate(true)
 
 
 func spread(run, primary: Dictionary, radius: float, count: int, source: String = "F11") -> Array:

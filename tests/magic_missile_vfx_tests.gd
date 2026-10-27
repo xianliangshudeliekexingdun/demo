@@ -4,6 +4,7 @@ extends SceneTree
 const Missiles = preload("res://scripts/presentation/route_magic_missile_vfx.gd")
 const RoomView = preload("res://scripts/presentation/first_room_view.gd")
 const Route = preload("res://scripts/core/courtyard_route_run.gd")
+const Report = preload("res://tests/qa_report.gd")
 const OUTPUT := "res://build/qa/magic-missile-energy-v2-20261026/presentation-results.json"
 var checks := 0
 var failures: Array = []
@@ -73,9 +74,8 @@ func execute() -> void:
 	await process_frame
 	var report := {"checks": checks, "failures": failures.size(), "details": failures,
 		"scope": "Headless renderer construction, shader-language uniforms, snapshot isolation, world-space history, pause/reduced-motion, contact deduplication, lifecycle, 320-projectile capacity and real view integration. No actual GPU composition, pixels, screenshot, animation-appearance, performance, natural-route or user visual acceptance."}
-	var file := FileAccess.open(OUTPUT, FileAccess.WRITE)
-	if file != null:
-		file.store_string(JSON.stringify(report, "\t"))
+	if not Report.write_report(report, OUTPUT):
+		failures.append("QA report could not be written")
 	print("MAGIC MISSILE VFX checks=%d failures=%d" % [checks, failures.size()])
 	quit(0 if failures.is_empty() else 1)
 

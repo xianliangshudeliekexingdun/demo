@@ -99,7 +99,9 @@ func on_cast(run, spell: Dictionary, target: Dictionary, context: Dictionary) ->
 	if _echo_count >= int(level.echo_every):
 		_echo_count = 0
 		spell["growth_echo_count"] = 0
+		if run._spell_combat.has_method("begin_beam_echo_visual"): run._spell_combat.begin_beam_echo_visual(int(context.cast_id))
 		run.cast_extra_spell("F08", target, float(level.echo_scale))
+		if run._spell_combat.has_method("end_beam_echo_visual"): run._spell_combat.end_beam_echo_visual()
 
 
 func on_area_matured(run, context: Dictionary, pos: Vector2, age: float) -> void:

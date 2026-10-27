@@ -28,10 +28,26 @@ var _ice_vfx: Node3D
 var _lightning_vfx: Node3D
 var _remaining_vfx: Node3D
 var _fire_bolt_override := false
+var _fire_rain_override := false
+var _fire_beam_override := false
+var _fire_bomb_override := false
+var _bomb_detonations: Dictionary = {}
 
 
 func set_fire_bolt_override(enabled: bool) -> void:
 	_fire_bolt_override = enabled
+
+
+func set_fire_rain_override(enabled: bool) -> void:
+	_fire_rain_override = enabled
+
+
+func set_fire_beam_override(enabled: bool) -> void:
+	_fire_beam_override = enabled
+
+
+func set_fire_bomb_override(enabled: bool) -> void:
+	_fire_bomb_override = enabled
 
 
 func _ready():
@@ -91,6 +107,10 @@ func sync_snapshot(snapshot: Dictionary, camera: Camera3D, options: Dictionary =
 	_c = 0
 	_footprints.clear()
 	_coverage.clear()
+	_bomb_detonations.clear()
+	if _fire_bomb_override:
+		for fact: Dictionary in snapshot.get("fire_bomb_status_facts", []):
+			if str(fact.phase) == "detonation": _bomb_detonations["%s:%s" % [str(fact.cast_id), str(fact.actor_id)]] = true
 	_revision = int(snapshot.get("room_revision", -1))
 	_fire_material.set_shader_parameter("core_time", _clock)
 	_fire_material.set_shader_parameter("reduced_motion", _reduced)
@@ -174,6 +194,7 @@ func _bolt(projectile: Dictionary):
 
 
 func _zone(zone: Dictionary):
+	if _fire_rain_override and str(zone.get("spell_id", "")) == "F03" and str(zone.get("kind", "")) in ["rain", "rain_ground"]: return
 	var pos: Vector2 = zone.get("pos", Vector2.ZERO)
 	var radius = float(zone.get("radius", 0.0))
 	if not _in_view(pos, radius):
@@ -208,6 +229,7 @@ func _zone(zone: Dictionary):
 
 
 func _pending(pending: Dictionary, total_time: float):
+	if _fire_rain_override and str(pending.get("context", {}).get("spell_id", "")) == "F03": return
 	if pending.get("kind", "") != "rain_drop":
 		return
 	var pos: Vector2 = pending.get("pos", Vector2.ZERO)
@@ -236,6 +258,9 @@ func _spirit(unit: Dictionary):
 
 func _burning(actor: Dictionary, burn: Dictionary):
 	if _fire_bolt_override and str(burn.get("source", "")) == "F01": return
+	if _fire_rain_override and str(burn.get("source", "")) == "F03": return
+	if _fire_beam_override and str(burn.get("source", "")) == "F08": return
+	if _fire_bomb_override and str(burn.get("source", "")) == "F07": return
 	var pos: Vector2 = actor.get("pos", Vector2.ZERO)
 	var radius = maxf(0.25, float(actor.get("radius", 0.4)))
 	if not _in_view(pos, radius):
@@ -251,6 +276,12 @@ func _burning(actor: Dictionary, burn: Dictionary):
 func _effect(effect: Dictionary, snapshot: Dictionary):
 	var kind = str(effect.get("kind", ""))
 	if _fire_bolt_override and ((kind in ["cast", "bolt_hit", "artifact_patch"] and str(effect.get("spell_id", "")) == "F01") or (kind == "fire_ignited" and str(effect.get("source", "")) == "F01")): return
+	if _fire_rain_override and ((kind in ["cast", "rain_impact"] and str(effect.get("spell_id", "")) == "F03") or (kind == "fire_ignited" and str(effect.get("source", "")) == "F03")): return
+	if _fire_beam_override and ((kind in ["cast", "beam"] and str(effect.get("spell_id", "")) == "F08") or (kind == "fire_ignited" and str(effect.get("source", "")) == "F08")): return
+	if _fire_bomb_override:
+		if kind in ["cast", "bomb_flight", "bomb_impact", "aftershock", "fire_reignited"] and str(effect.get("spell_id", "")) == "F07": return
+		if kind == "fire_ignited" and str(effect.get("source", "")) == "F07": return
+		if kind == "fire_detonation" and _bomb_detonations.has("%s:%s" % [str(effect.get("cast_id", -1)), str(effect.get("actor_id", -1))]): return
 	if (kind not in FRIENDLY_EFFECTS and kind not in GEM_EFFECTS) or (kind == "cast" and str(effect.get("spell_id", "")).left(1) in ["I", "L", "W", "R", "S"]):
 		return
 	var alpha = clampf(float(effect.get("life", 0.0)) / maxf(0.001, float(effect.get("max_life", 0.1))), 0.0, 1.0)

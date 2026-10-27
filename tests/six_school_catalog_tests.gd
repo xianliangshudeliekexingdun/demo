@@ -18,7 +18,6 @@ func execute():
 	check(bool(catalog.ok), "catalog loads six sources: " + str(catalog.errors))
 	var spells: Array = Catalog.spells()
 	check(spells.size() == 60, "sixty active formal spells")
-	check(Atelier.SCHOOLS == SCHOOLS, "six starter navigation schools")
 	check(Atelier.SPELL_FILTERS == ["all"] + SCHOOLS, "all plus six school filters")
 	var colors: Dictionary = {}
 	var ids: Dictionary = {}

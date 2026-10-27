@@ -4,6 +4,7 @@ extends SceneTree
 const Fire = preload("res://scripts/presentation/route_fire_bolt_vfx.gd")
 const View = preload("res://scripts/presentation/first_room_view.gd")
 const Rules = preload("res://tests/formal_fire_tests.gd")
+const Report = preload("res://tests/qa_report.gd")
 const OUTPUT := "res://build/qa/fire-bolt-curve-v2-20261026/presentation-results.json"
 var checks := 0
 var failures: Array = []
@@ -115,7 +116,8 @@ func execute() -> void:
 	await process_frame
 	var report := {"checks": checks, "failures": failures.size(), "details": failures,
 		"scope": "Old-loop comparison ONLY for explicitly legacy-shaped shots; current curved native shots use the separate curve suite. Terminal facts, world trails, live burn/patch ownership, pause/reduced motion, finite batches and view/preview construction. Headless only; no pixels, GPU composition, performance, natural route or visual acceptance."}
-	FileAccess.open(OUTPUT, FileAccess.WRITE).store_string(JSON.stringify(report, "\t"))
+	if not Report.write_report(report, OUTPUT):
+		failures.append("QA report could not be written")
 	print("FIRE BOLT CHAIN checks=%d failures=%d" % [checks, failures.size()])
 	quit(0 if failures.is_empty() else 1)
 

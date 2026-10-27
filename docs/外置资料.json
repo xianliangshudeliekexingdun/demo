@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "archive_root": "../demo 精简/20261026-项目精简",
+  "manifest": "迁移清单.json",
+  "baseline_git": "0a162dac59fa3d1f6277cf4eb02ad4d715b98844",
+  "layout": "original_project_relative_paths",
+  "scope": "历史资料、过程产物、制作源和已退出原型；不作为正式运行依赖"
+}

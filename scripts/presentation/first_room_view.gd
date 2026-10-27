@@ -17,6 +17,9 @@ const SpellVFX := preload("res://scripts/presentation/route_spell_vfx.gd")
 const GemVFX := preload("res://scripts/presentation/route_gem_vfx.gd")
 const MagicMissileVFX := preload("res://scripts/presentation/route_magic_missile_vfx.gd")
 const FireBoltVFX := preload("res://scripts/presentation/route_fire_bolt_vfx.gd")
+const FireRainVFX := preload("res://scripts/presentation/route_fire_rain_vfx.gd")
+const FireBeamVFX := preload("res://scripts/presentation/route_fire_beam_vfx.gd")
+const FireBombVFX := preload("res://scripts/presentation/route_fire_bomb_vfx.gd")
 const CYAN_FLAME := preload("res://assets/environment/courtyard_v2/cyan_flame.png")
 const PORTAL_ENERGY := preload("res://assets/environment/courtyard_v2/portal_energy_soft.png")
 const ROOM_PATH := "res://data/first_room_runtime.json"
@@ -45,6 +48,9 @@ var spell_vfx: Node3D
 var gem_vfx: Node3D
 var magic_missile_vfx: Node2D
 var fire_bolt_vfx: Node2D
+var fire_rain_vfx: Node2D
+var fire_beam_vfx: Node2D
+var fire_bomb_vfx: Node2D
 var _stage: Node3D
 var _overlay: Control
 var _texture: TextureRect
@@ -122,6 +128,15 @@ func _ready() -> void:
 	# authoritative warnings and hostile missiles. No new global Glow.
 	fire_bolt_vfx.z_index = STAGE_Z_INDEX
 	add_child(fire_bolt_vfx)
+	fire_rain_vfx = FireRainVFX.new()
+	fire_rain_vfx.z_index = STAGE_Z_INDEX
+	add_child(fire_rain_vfx)
+	fire_beam_vfx = FireBeamVFX.new()
+	fire_beam_vfx.z_index = STAGE_Z_INDEX
+	add_child(fire_beam_vfx)
+	fire_bomb_vfx = FireBombVFX.new()
+	fire_bomb_vfx.z_index = STAGE_Z_INDEX
+	add_child(fire_bomb_vfx)
 	magic_missile_vfx = MagicMissileVFX.new()
 	magic_missile_vfx.z_index = COMBAT_OVERLAY_Z_INDEX + 1
 	add_child(magic_missile_vfx)
@@ -163,8 +178,14 @@ func sync(snapshot: Dictionary, _delta: float = 0.0) -> void:
 	reward_visual.sync_pickup(pickups[0] if pickups.size() == 2 else _state.get("reward_pickup", {}))
 	_boss_chest_visual.sync_pickup(pickups[1] if pickups.size() == 2 else {})
 	spell_vfx.set_fire_bolt_override(fire_bolt_vfx.is_available() and snapshot.has("fire_bolt_ends"))
+	spell_vfx.set_fire_rain_override(fire_rain_vfx.is_available() and snapshot.has("fire_rain_impacts"))
+	spell_vfx.set_fire_beam_override(fire_beam_vfx.is_available() and snapshot.has("fire_beam_facts"))
+	spell_vfx.set_fire_bomb_override(fire_bomb_vfx.is_available() and snapshot.has_all(["fire_bomb_facts", "fire_bomb_status_facts"]))
 	spell_vfx.sync_snapshot(snapshot, camera, _visual_options)
 	fire_bolt_vfx.sync_snapshot(snapshot, self, _visual_options)
+	fire_rain_vfx.sync_snapshot(snapshot, self, _visual_options)
+	fire_beam_vfx.sync_snapshot(snapshot, self, _visual_options)
+	fire_bomb_vfx.sync_snapshot(snapshot, self, _visual_options)
 	gem_vfx.sync_snapshot(snapshot, camera, _visual_options)
 	magic_missile_vfx.sync_snapshot(snapshot, self, _visual_options)
 	_overlay.queue_redraw()
@@ -184,6 +205,12 @@ func set_visual_options(options: Dictionary) -> void:
 		gem_vfx.sync_snapshot(_state, camera, _visual_options)
 	if is_instance_valid(fire_bolt_vfx) and not _state.is_empty():
 		fire_bolt_vfx.sync_snapshot(_state, self, _visual_options)
+	if is_instance_valid(fire_rain_vfx) and not _state.is_empty():
+		fire_rain_vfx.sync_snapshot(_state, self, _visual_options)
+	if is_instance_valid(fire_beam_vfx) and not _state.is_empty():
+		fire_beam_vfx.sync_snapshot(_state, self, _visual_options)
+	if is_instance_valid(fire_bomb_vfx) and not _state.is_empty():
+		fire_bomb_vfx.sync_snapshot(_state, self, _visual_options)
 	if is_instance_valid(magic_missile_vfx) and not _state.is_empty():
 		magic_missile_vfx.sync_snapshot(_state, self, _visual_options)
 
@@ -210,11 +237,35 @@ func get_vfx_debug_state() -> Dictionary:
 	if not result.has("footprints"): result["footprints"] = []
 	for key in fire.get("coverage", {}): result.coverage[key] = int(result.coverage.get(key, 0)) + int(fire.coverage[key])
 	result.footprints.append_array(fire.get("footprints", []))
+	var rain := get_fire_rain_debug_state()
+	result["fire_rain"] = rain
+	for key in rain.get("coverage", {}): result.coverage[key] = int(result.coverage.get(key, 0)) + int(rain.coverage[key])
+	result.footprints.append_array(rain.get("footprints", []))
+	var beam := get_fire_beam_debug_state()
+	result["fire_beam"] = beam
+	for key in beam.get("coverage", {}): result.coverage[key] = int(result.coverage.get(key, 0)) + int(beam.coverage[key])
+	result.footprints.append_array(beam.get("footprints", []))
+	var bomb := get_fire_bomb_debug_state()
+	result["fire_bomb"] = bomb
+	for key in bomb.get("coverage", {}): result.coverage[key] = int(result.coverage.get(key, 0)) + int(bomb.coverage[key])
+	result.footprints.append_array(bomb.get("footprints", []))
 	return result
 
 
 func get_fire_bolt_debug_state() -> Dictionary:
 	return fire_bolt_vfx.get_debug_state() if is_instance_valid(fire_bolt_vfx) else {}
+
+
+func get_fire_rain_debug_state() -> Dictionary:
+	return fire_rain_vfx.get_debug_state() if is_instance_valid(fire_rain_vfx) else {}
+
+
+func get_fire_beam_debug_state() -> Dictionary:
+	return fire_beam_vfx.get_debug_state() if is_instance_valid(fire_beam_vfx) else {}
+
+
+func get_fire_bomb_debug_state() -> Dictionary:
+	return fire_bomb_vfx.get_debug_state() if is_instance_valid(fire_bomb_vfx) else {}
 
 func get_gem_vfx_debug_state() -> Dictionary:
 	return gem_vfx.get_debug_state() if is_instance_valid(gem_vfx) else {}
@@ -242,6 +293,12 @@ func _layout_stage() -> void:
 		magic_missile_vfx.sync_snapshot(_state, self, _visual_options)
 	if is_instance_valid(fire_bolt_vfx) and not _state.is_empty():
 		fire_bolt_vfx.sync_snapshot(_state, self, _visual_options)
+	if is_instance_valid(fire_rain_vfx) and not _state.is_empty():
+		fire_rain_vfx.sync_snapshot(_state, self, _visual_options)
+	if is_instance_valid(fire_beam_vfx) and not _state.is_empty():
+		fire_beam_vfx.sync_snapshot(_state, self, _visual_options)
+	if is_instance_valid(fire_bomb_vfx) and not _state.is_empty():
+		fire_bomb_vfx.sync_snapshot(_state, self, _visual_options)
 
 
 func screen_position(pos: Vector2, height: float = 0.0) -> Vector2:

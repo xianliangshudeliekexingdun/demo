@@ -2576,5 +2576,217 @@
    "scope": "Current F01 fire-bolt v2 user acceptance and reference for subsequent fire spell VFX. No automatic game launch or other-spell implementation authorization.",
    "record": "docs/历史决策/归档/35-火系法术特效优化.md#5-2026-10-26-焰弹术v2用户验收通过"
   }
+ },
+ {
+  "target": "scripts/presentation/route_fire_rain_vfx.gd",
+  "source": "Original project-local GDScript/Godot Shader Language/visual JSON authored for the approved F03 full VFX chain on 2026-10-27; no external image, model, font, generated bitmap or bundled toolkit asset.",
+  "runtime_approved": true,
+  "sha256": "536208df4a166f6b28925be5059c523ef3cf9ef73f16930ea4b6351f42419456",
+  "bytes": 22725,
+  "approval": "2026-10-27 user: 可以，就按这个方案实现流火之雨的完整特效链路，保持现有规则和数值不变，实机测试之后再统一做。实机测试我来做",
+  "purpose": "F03 read-only chant/release, scheduled accelerating visual falls and world tails, confirmed landings/first-drop emphasis, source-owned burning, original-center level-three coals and finite cooling.",
+  "visual_revision": 1,
+  "visual_status": "2026-10-27: user accepted the current F03 preview (可以通过). Scope is this spell preview impression only; no assertion that every preview mode, exhaustive pixels, full-route balance, high-count performance or other spells passed.",
+  "evidence": "build/qa/fire-rain-vfx-20261027/results.json",
+  "authorization_record": "docs/历史决策/归档/35-火系法术特效优化.md",
+  "reused_unchanged_shaders": [
+   "scripts/presentation/fire_bolt_body.gdshader",
+   "scripts/presentation/fire_bolt_trail.gdshader"
+  ],
+  "user_visual_approval": {
+   "date": "2026-10-27",
+   "statement": "可以通过",
+   "scope": "Current F03 preview acceptance after the user requested manual preview launch instructions. No per-mode exhaustive test, performance/full-route acceptance or automatic launch authorization inferred.",
+   "record": "docs/历史决策/归档/35-火系法术特效优化.md#9-2026-10-27-流火之雨用户预览认可通过"
+  },
+  "acceptance_evidence": "build/qa/fire-rain-user-acceptance-20261027/results.json"
+ },
+ {
+  "target": "scripts/presentation/fire_rain_surface.gdshader",
+  "source": "Original project-local GDScript/Godot Shader Language/visual JSON authored for the approved F03 full VFX chain on 2026-10-27; no external image, model, font, generated bitmap or bundled toolkit asset.",
+  "runtime_approved": true,
+  "sha256": "69578515bb37115d20ac3f8326bf3d991736909a32ade9e26a2bb8b0cf9f1888",
+  "bytes": 4301,
+  "approval": "2026-10-27 user: 可以，就按这个方案实现流火之雨的完整特效链路，保持现有规则和数值不变，实机测试之后再统一做。实机测试我来做",
+  "purpose": "F03 read-only chant/release, scheduled accelerating visual falls and world tails, confirmed landings/first-drop emphasis, source-owned burning, original-center level-three coals and finite cooling.",
+  "visual_revision": 1,
+  "visual_status": "2026-10-27: user accepted the current F03 preview (可以通过). Scope is this spell preview impression only; no assertion that every preview mode, exhaustive pixels, full-route balance, high-count performance or other spells passed.",
+  "evidence": "build/qa/fire-rain-vfx-20261027/results.json",
+  "authorization_record": "docs/历史决策/归档/35-火系法术特效优化.md",
+  "reused_unchanged_shaders": [
+   "scripts/presentation/fire_bolt_body.gdshader",
+   "scripts/presentation/fire_bolt_trail.gdshader"
+  ],
+  "user_visual_approval": {
+   "date": "2026-10-27",
+   "statement": "可以通过",
+   "scope": "Current F03 preview acceptance after the user requested manual preview launch instructions. No per-mode exhaustive test, performance/full-route acceptance or automatic launch authorization inferred.",
+   "record": "docs/历史决策/归档/35-火系法术特效优化.md#9-2026-10-27-流火之雨用户预览认可通过"
+  },
+  "acceptance_evidence": "build/qa/fire-rain-user-acceptance-20261027/results.json"
+ },
+ {
+  "target": "data/fire_rain_vfx.json",
+  "source": "Original project-local GDScript/Godot Shader Language/visual JSON authored for the approved F03 full VFX chain on 2026-10-27; no external image, model, font, generated bitmap or bundled toolkit asset.",
+  "runtime_approved": true,
+  "sha256": "4f80a48d967199fb0e03c68fd0d3140800a35392bf3ea777f90a9d20363d678f",
+  "bytes": 1588,
+  "approval": "2026-10-27 user: 可以，就按这个方案实现流火之雨的完整特效链路，保持现有规则和数值不变，实机测试之后再统一做。实机测试我来做",
+  "purpose": "F03 read-only chant/release, scheduled accelerating visual falls and world tails, confirmed landings/first-drop emphasis, source-owned burning, original-center level-three coals and finite cooling.",
+  "visual_revision": 1,
+  "visual_status": "2026-10-27: user accepted the current F03 preview (可以通过). Scope is this spell preview impression only; no assertion that every preview mode, exhaustive pixels, full-route balance, high-count performance or other spells passed.",
+  "evidence": "build/qa/fire-rain-vfx-20261027/results.json",
+  "authorization_record": "docs/历史决策/归档/35-火系法术特效优化.md",
+  "reused_unchanged_shaders": [
+   "scripts/presentation/fire_bolt_body.gdshader",
+   "scripts/presentation/fire_bolt_trail.gdshader"
+  ],
+  "user_visual_approval": {
+   "date": "2026-10-27",
+   "statement": "可以通过",
+   "scope": "Current F03 preview acceptance after the user requested manual preview launch instructions. No per-mode exhaustive test, performance/full-route acceptance or automatic launch authorization inferred.",
+   "record": "docs/历史决策/归档/35-火系法术特效优化.md#9-2026-10-27-流火之雨用户预览认可通过"
+  },
+  "acceptance_evidence": "build/qa/fire-rain-user-acceptance-20261027/results.json"
+ },
+ {
+  "target": "scripts/presentation/route_fire_beam_vfx.gd",
+  "source": "Original project-local GDScript/Godot Shader Language/visual JSON authored for the approved F08 full VFX chain on 2026-10-27. No external bitmap, model, font, generation service or bundled toolkit asset.",
+  "runtime_approved": true,
+  "sha256": "981bafb9047ecb3044a40f7a41686e57114c05705d3bcfb238d5a586e4f1bc23",
+  "bytes": 17451,
+  "approval": "2026-10-27 user: 可以，就按这个方案实现贯焰光束的完整特效链路，保持现有规则和数值不变，实机测试我来做。",
+  "purpose": "Read-only F08 short chant/release, instantaneous exact-width whole beam, actual target-local feedback, native fixed-line pulse, explicit same-time echo/two-stream composition or real retargeted paths, own echo pulse, source-owned burning and finite contraction/cooling.",
+  "visual_revision": 1,
+  "visual_status": "2026-10-27: user accepted the current F08 preview (很好通过). Scope is this spell preview impression only; no exhaustive per-mode, pixel/readability, full-route, final-balance or high-count performance acceptance inferred.",
+  "evidence": "build/qa/fire-beam-vfx-20261027/results.json",
+  "authorization_record": "docs/历史决策/归档/35-火系法术特效优化.md",
+  "reused_unchanged_shader": "scripts/presentation/fire_bolt_body.gdshader",
+  "user_visual_approval": {
+   "date": "2026-10-27",
+   "statement": "很好通过",
+   "scope": "Current F08 preview acceptance. No claim that all seven controlled modes or exhaustive pixel/performance/full-route checks passed; no automatic launch or next-spell implementation authorization inferred.",
+   "record": "docs/历史决策/归档/35-火系法术特效优化.md#13-2026-10-27-贯焰光束用户预览认可通过"
+  },
+  "acceptance_evidence": "build/qa/fire-beam-user-acceptance-20261027/results.json"
+ },
+ {
+  "target": "scripts/presentation/fire_beam_line.gdshader",
+  "source": "Original project-local GDScript/Godot Shader Language/visual JSON authored for the approved F08 full VFX chain on 2026-10-27. No external bitmap, model, font, generation service or bundled toolkit asset.",
+  "runtime_approved": true,
+  "sha256": "90f1722f2c53be3ae54d9d6f1f1982dd64533c9282ab73a984a2a72d967874df",
+  "bytes": 2883,
+  "approval": "2026-10-27 user: 可以，就按这个方案实现贯焰光束的完整特效链路，保持现有规则和数值不变，实机测试我来做。",
+  "purpose": "Read-only F08 short chant/release, instantaneous exact-width whole beam, actual target-local feedback, native fixed-line pulse, explicit same-time echo/two-stream composition or real retargeted paths, own echo pulse, source-owned burning and finite contraction/cooling.",
+  "visual_revision": 1,
+  "visual_status": "2026-10-27: user accepted the current F08 preview (很好通过). Scope is this spell preview impression only; no exhaustive per-mode, pixel/readability, full-route, final-balance or high-count performance acceptance inferred.",
+  "evidence": "build/qa/fire-beam-vfx-20261027/results.json",
+  "authorization_record": "docs/历史决策/归档/35-火系法术特效优化.md",
+  "reused_unchanged_shader": "scripts/presentation/fire_bolt_body.gdshader",
+  "user_visual_approval": {
+   "date": "2026-10-27",
+   "statement": "很好通过",
+   "scope": "Current F08 preview acceptance. No claim that all seven controlled modes or exhaustive pixel/performance/full-route checks passed; no automatic launch or next-spell implementation authorization inferred.",
+   "record": "docs/历史决策/归档/35-火系法术特效优化.md#13-2026-10-27-贯焰光束用户预览认可通过"
+  },
+  "acceptance_evidence": "build/qa/fire-beam-user-acceptance-20261027/results.json"
+ },
+ {
+  "target": "scripts/presentation/fire_beam_surface.gdshader",
+  "source": "Original project-local GDScript/Godot Shader Language/visual JSON authored for the approved F08 full VFX chain on 2026-10-27. No external bitmap, model, font, generation service or bundled toolkit asset.",
+  "runtime_approved": true,
+  "sha256": "4f99349a0f8adc18dae7836af3f14580df1a231bc06c6b2e54910441e1a9f132",
+  "bytes": 2767,
+  "approval": "2026-10-27 user: 可以，就按这个方案实现贯焰光束的完整特效链路，保持现有规则和数值不变，实机测试我来做。",
+  "purpose": "Read-only F08 short chant/release, instantaneous exact-width whole beam, actual target-local feedback, native fixed-line pulse, explicit same-time echo/two-stream composition or real retargeted paths, own echo pulse, source-owned burning and finite contraction/cooling.",
+  "visual_revision": 1,
+  "visual_status": "2026-10-27: user accepted the current F08 preview (很好通过). Scope is this spell preview impression only; no exhaustive per-mode, pixel/readability, full-route, final-balance or high-count performance acceptance inferred.",
+  "evidence": "build/qa/fire-beam-vfx-20261027/results.json",
+  "authorization_record": "docs/历史决策/归档/35-火系法术特效优化.md",
+  "reused_unchanged_shader": "scripts/presentation/fire_bolt_body.gdshader",
+  "user_visual_approval": {
+   "date": "2026-10-27",
+   "statement": "很好通过",
+   "scope": "Current F08 preview acceptance. No claim that all seven controlled modes or exhaustive pixel/performance/full-route checks passed; no automatic launch or next-spell implementation authorization inferred.",
+   "record": "docs/历史决策/归档/35-火系法术特效优化.md#13-2026-10-27-贯焰光束用户预览认可通过"
+  },
+  "acceptance_evidence": "build/qa/fire-beam-user-acceptance-20261027/results.json"
+ },
+ {
+  "target": "data/fire_beam_vfx.json",
+  "source": "Original project-local GDScript/Godot Shader Language/visual JSON authored for the approved F08 full VFX chain on 2026-10-27. No external bitmap, model, font, generation service or bundled toolkit asset.",
+  "runtime_approved": true,
+  "sha256": "31b9606bb7a193045b005a105c56f7241070f2c038271dfd1b5b9034dfd2cdb4",
+  "bytes": 1219,
+  "approval": "2026-10-27 user: 可以，就按这个方案实现贯焰光束的完整特效链路，保持现有规则和数值不变，实机测试我来做。",
+  "purpose": "Read-only F08 short chant/release, instantaneous exact-width whole beam, actual target-local feedback, native fixed-line pulse, explicit same-time echo/two-stream composition or real retargeted paths, own echo pulse, source-owned burning and finite contraction/cooling.",
+  "visual_revision": 1,
+  "visual_status": "2026-10-27: user accepted the current F08 preview (很好通过). Scope is this spell preview impression only; no exhaustive per-mode, pixel/readability, full-route, final-balance or high-count performance acceptance inferred.",
+  "evidence": "build/qa/fire-beam-vfx-20261027/results.json",
+  "authorization_record": "docs/历史决策/归档/35-火系法术特效优化.md",
+  "reused_unchanged_shader": "scripts/presentation/fire_bolt_body.gdshader",
+  "user_visual_approval": {
+   "date": "2026-10-27",
+   "statement": "很好通过",
+   "scope": "Current F08 preview acceptance. No claim that all seven controlled modes or exhaustive pixel/performance/full-route checks passed; no automatic launch or next-spell implementation authorization inferred.",
+   "record": "docs/历史决策/归档/35-火系法术特效优化.md#13-2026-10-27-贯焰光束用户预览认可通过"
+  },
+  "acceptance_evidence": "build/qa/fire-beam-user-acceptance-20261027/results.json"
+ },
+ {
+  "target": "scripts/presentation/route_fire_bomb_vfx.gd",
+  "source": "Original project-local GDScript/Godot Shader Language/visual JSON authored for F07 on 2026-10-27 under user authority to determine and make the complete effect. No external raster, model, font or toolkit asset.",
+  "runtime_approved": true,
+  "sha256": "990b26f583f2b90929f7840fd69c352d5e29989ec9917aa5b50440c5942ed9c7",
+  "bytes": 21962,
+  "approval": "2026-10-27 user: 好，请你自行确定方案，制作。 In context this authorizes the recommended F07, preserving rules/numbers and user-run manual testing.",
+  "purpose": "Read-only F07 chant/release, analytic world throw/tail within original delay, actual inner/outer blast and L3 aftershock, explicit target-local fuel detonation/successful reapply and source-owned burn/cooling.",
+  "visual_revision": 1,
+  "visual_status": "Implemented; user visual review pending. No interactive preview, pixels, GPU composition, performance, natural route or visual approval claimed.",
+  "evidence": "build/qa/fire-bomb-vfx-20261027/results.json",
+  "authorization_record": "docs/历史决策/归档/35-火系法术特效优化.md",
+  "reused_unchanged_shader": "scripts/presentation/fire_bolt_trail.gdshader"
+ },
+ {
+  "target": "scripts/presentation/fire_bomb_body.gdshader",
+  "source": "Original project-local GDScript/Godot Shader Language/visual JSON authored for F07 on 2026-10-27 under user authority to determine and make the complete effect. No external raster, model, font or toolkit asset.",
+  "runtime_approved": true,
+  "sha256": "4ee615a14b376820b12bfe93b9890bdca447561d92ef729c31fdae08a590eba7",
+  "bytes": 2780,
+  "approval": "2026-10-27 user: 好，请你自行确定方案，制作。 In context this authorizes the recommended F07, preserving rules/numbers and user-run manual testing.",
+  "purpose": "Read-only F07 chant/release, analytic world throw/tail within original delay, actual inner/outer blast and L3 aftershock, explicit target-local fuel detonation/successful reapply and source-owned burn/cooling.",
+  "visual_revision": 1,
+  "visual_status": "Implemented; user visual review pending. No interactive preview, pixels, GPU composition, performance, natural route or visual approval claimed.",
+  "evidence": "build/qa/fire-bomb-vfx-20261027/results.json",
+  "authorization_record": "docs/历史决策/归档/35-火系法术特效优化.md",
+  "reused_unchanged_shader": "scripts/presentation/fire_bolt_trail.gdshader"
+ },
+ {
+  "target": "scripts/presentation/fire_bomb_surface.gdshader",
+  "source": "Original project-local GDScript/Godot Shader Language/visual JSON authored for F07 on 2026-10-27 under user authority to determine and make the complete effect. No external raster, model, font or toolkit asset.",
+  "runtime_approved": true,
+  "sha256": "7048d71a621f11313590c82f1386a64a39ea5eec6a671c3f670f025d2c87f656",
+  "bytes": 4170,
+  "approval": "2026-10-27 user: 好，请你自行确定方案，制作。 In context this authorizes the recommended F07, preserving rules/numbers and user-run manual testing.",
+  "purpose": "Read-only F07 chant/release, analytic world throw/tail within original delay, actual inner/outer blast and L3 aftershock, explicit target-local fuel detonation/successful reapply and source-owned burn/cooling.",
+  "visual_revision": 1,
+  "visual_status": "Implemented; user visual review pending. No interactive preview, pixels, GPU composition, performance, natural route or visual approval claimed.",
+  "evidence": "build/qa/fire-bomb-vfx-20261027/results.json",
+  "authorization_record": "docs/历史决策/归档/35-火系法术特效优化.md",
+  "reused_unchanged_shader": "scripts/presentation/fire_bolt_trail.gdshader"
+ },
+ {
+  "target": "data/fire_bomb_vfx.json",
+  "source": "Original project-local GDScript/Godot Shader Language/visual JSON authored for F07 on 2026-10-27 under user authority to determine and make the complete effect. No external raster, model, font or toolkit asset.",
+  "runtime_approved": true,
+  "sha256": "da59dccfac7a8b39e8578e02574963e1626e3a7dc43be9697971b5d1f75d2e7f",
+  "bytes": 1705,
+  "approval": "2026-10-27 user: 好，请你自行确定方案，制作。 In context this authorizes the recommended F07, preserving rules/numbers and user-run manual testing.",
+  "purpose": "Read-only F07 chant/release, analytic world throw/tail within original delay, actual inner/outer blast and L3 aftershock, explicit target-local fuel detonation/successful reapply and source-owned burn/cooling.",
+  "visual_revision": 1,
+  "visual_status": "Implemented; user visual review pending. No interactive preview, pixels, GPU composition, performance, natural route or visual approval claimed.",
+  "evidence": "build/qa/fire-bomb-vfx-20261027/results.json",
+  "authorization_record": "docs/历史决策/归档/35-火系法术特效优化.md",
+  "reused_unchanged_shader": "scripts/presentation/fire_bolt_trail.gdshader"
  }
 ]

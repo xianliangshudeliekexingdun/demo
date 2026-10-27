@@ -15,6 +15,20 @@ const BOLT_END_LIMIT := 256 # Bounded read-only presentation journal, not gamepl
 const BOLT_END_RETENTION := 1.0
 var _bolt_ends: Array = []
 var _bolt_end_seq := 0
+const RAIN_IMPACT_LIMIT := 256 # Read-only completed falls, never gameplay effects.
+const RAIN_IMPACT_RETENTION := 1.0
+var _rain_impacts: Array = []
+var _rain_impact_seq := 0
+const BEAM_FACT_LIMIT := 256 # Pure presentation facts; never gameplay events.
+const BEAM_FACT_RETENTION := 1.0
+var _beam_facts: Array = []
+var _beam_fact_seq := 0
+var _beam_visual_sources: Dictionary = {}
+var _next_beam_echo_parent := -1
+const BOMB_FACT_LIMIT := 512 # Bounded display facts; no gameplay events.
+const BOMB_FACT_RETENTION := 1.0
+var _bomb_facts: Array = []
+var _bomb_fact_seq := 0
 var zones: Array = []
 var pending: Array = []
 var spirits: Array = []
@@ -105,6 +119,14 @@ func validate_fire_source(run, fire: Variant) -> String:
 func stop_room():
 	_bolt_ends.clear()
 	_bolt_end_seq = 0
+	_rain_impacts.clear()
+	_rain_impact_seq = 0
+	_beam_facts.clear()
+	_beam_fact_seq = 0
+	_beam_visual_sources.clear()
+	_next_beam_echo_parent = -1
+	_bomb_facts.clear()
+	_bomb_fact_seq = 0
 	zones.clear()
 	growth.clear()
 	pending.clear()
@@ -131,6 +153,10 @@ func get_snapshot() -> Dictionary:
 	var run = _run_ref.get_ref() if _run_ref != null else null
 	var result: Dictionary = {"spell_zones": zones.duplicate(true), "spell_pending": pending.duplicate(true), "spirits": spirits.duplicate(true), "field_attack_bonus": field_attack_bonus(),
 		"fire_bolt_ends": _bolt_ends.duplicate(true),
+		"fire_rain_impacts": _rain_impacts.duplicate(true),
+		"fire_beam_facts": _beam_facts.duplicate(true),
+		"fire_bomb_facts": _bomb_facts.duplicate(true),
+		"fire_bomb_status_facts": fire_status.get_bomb_visual_facts() if fire_status != null and fire_status.has_method("get_bomb_visual_facts") else [],
 		"spell_burns": fire_status.snapshot(run) if fire_status != null else [],
 		"fire_reignite_pending": fire_status.reignite_pending.duplicate(true) if fire_status != null else []}
 	if ice != null:
@@ -237,6 +263,14 @@ func field_attack_bonus() -> float:
 func update(run, dt: float):
 	if run.phase != "combat" or run.paused or dt <= 0.0:
 		return
+	while not _rain_impacts.is_empty() and float(_rain_impacts[0].time) < float(run.time) - RAIN_IMPACT_RETENTION:
+		_rain_impacts.pop_front()
+	while not _beam_facts.is_empty() and float(_beam_facts[0].time) < float(run.time) - BEAM_FACT_RETENTION:
+		_beam_facts.pop_front()
+	for id in _beam_visual_sources.keys():
+		if float(_beam_visual_sources[id].expires) < float(run.time): _beam_visual_sources.erase(id)
+	for index in range(_bomb_facts.size() - 1, -1, -1):
+		if float(_bomb_facts[index].retain_until) < float(run.time): _bomb_facts.remove_at(index)
 	before_damage_tick(run, dt)
 	growth.update(run, dt)
 	_update_pending(run)
@@ -352,6 +386,7 @@ func _cast(run, spell: Dictionary, stats: Dictionary, target: Dictionary, natura
 	context["growth_level"] = level.duplicate(true)
 	context["spell_level"] = int(spell.level)
 	_next_cast += 1
+	if str(spell.id) == "F08": _capture_beam_visual_source(run, stats, context)
 	if natural:
 		spell.cast_remaining = 0.0
 		spell.remaining = float(spell.cooldown)
@@ -391,6 +426,7 @@ func _cast(run, spell: Dictionary, stats: Dictionary, target: Dictionary, natura
 			var drops = int(level.drops)
 			var last_delay = float(stats.impact_delay) + (drops - 1) * float(stats.interval)
 			var rain_zone = _zone("rain", spell.id, center, float(stats.radius), last_delay, 0.0, 0.0, context)
+			rain_zone["release_pos"] = run.player.pos # Presentation source; not used by rules.
 			rain_zone["terminal"] = false
 			rain_zone["active_delay"] = float(stats.impact_delay)
 			zones.append(rain_zone)
@@ -403,7 +439,7 @@ func _cast(run, spell: Dictionary, stats: Dictionary, target: Dictionary, natura
 					landing = center
 				if index == 0:
 					coefficient *= float(stats.get("first_drop_damage_multiplier", 1.0))
-				_queue(run, float(stats.impact_delay) + index * float(stats.interval), "rain_drop", {"pos": landing, "radius": float(runtime.rain.impact_radius), "coefficient": coefficient, "context": context, "last": index == drops - 1, "stats": stats, "center": center})
+				_queue(run, float(stats.impact_delay) + index * float(stats.interval), "rain_drop", {"pos": landing, "radius": float(runtime.rain.impact_radius), "coefficient": coefficient, "context": context, "last": index == drops - 1, "stats": stats, "center": center, "drop_index": index})
 		"vortex":
 			context["ignite"] = true
 			context["ignite_once_per_target"] = true
@@ -426,6 +462,7 @@ func _cast(run, spell: Dictionary, stats: Dictionary, target: Dictionary, natura
 			var center: Vector2 = spell.get("locked_pos", target.pos)
 			_queue(run, float(stats.travel_delay), "bomb", {"pos": center, "radius": float(stats.radius), "stats": stats, "context": context})
 			run._emit("bomb_flight", {"from": run.player.pos, "to": center, "pos": center, "radius": float(stats.radius), "spell_id": spell.id}, float(stats.travel_delay))
+			_note_bomb_fact(run, "flight", {"pos": center, "radius": stats.radius, "stats": stats, "context": context, "at": float(run.time) + float(stats.travel_delay), "from": run.player.pos})
 		"wave":
 			context["ignite"] = true
 			if run.has_method("gem_record_shape"): run.gem_record_shape({"kind": "area", "pos": run.player.pos, "radius": float(level.radius)}, float(level.coefficient), context)
@@ -490,10 +527,11 @@ func _update_pending(run):
 				if not target.is_empty():
 					_spawn_bolt(run, item.spell, item.stats, target, float(item.coefficient), item.context)
 			"beam_pulse":
-				_beam(run, item.from, item.to, float(item.width), float(item.coefficient), item.context, true)
+				_beam(run, item.from, item.to, float(item.width), float(item.coefficient), item.context, true, "pulse")
 			"rain_drop":
 				_area_hit(run, item.pos, float(item.radius), float(item.coefficient), item.context)
 				run._emit("rain_impact", {"pos": item.pos, "radius": item.radius, "spell_id": "F03"}, float(runtime.effects.impact_lifetime))
+				_note_rain_impact(run, item)
 				if item.last and float(item.stats.level.ground_duration) > 0.0:
 					var ground_context: Dictionary = item.context.duplicate(true)
 					ground_context["ignite"] = false
@@ -502,6 +540,7 @@ func _update_pending(run):
 				if run.has_method("gem_record_shape"):
 					run.gem_record_shape({"kind": "area", "pos": item.pos, "radius": item.radius, "inner_radius": item.stats.level.center_radius,
 						"inner_scale": float(item.stats.level.coefficient) * float(item.stats.get("main_center_damage_multiplier", 1.0)), "outer_scale": float(item.stats.level.outer)}, 1.0, item.context)
+				var visual_hits: Array = []
 				for actor in run.actors:
 					if actor.health <= 0.0 or actor.pos.distance_to(item.pos) > float(item.radius) + float(actor.radius):
 						continue
@@ -514,13 +553,44 @@ func _update_pending(run):
 					if center_hit:
 						coefficient *= float(item.stats.get("main_center_damage_multiplier", 1.0))
 						ctx["crit_multiplier_bonus"] = float(item.stats.get("main_center_crit_multiplier_add", 0.0))
-					_hit(run, actor, coefficient, ctx)
+					var visual_pos: Vector2 = actor.pos
+					var actual := _hit(run, actor, coefficient, ctx)
+					if actual > 0.0: visual_hits.append({"actor_id": int(actor.id), "pos": visual_pos, "radius": float(actor.radius), "center": center_hit, "damage": actual, "alive_after": float(actor.health) > 0.0})
 				run._emit("bomb_impact", {"pos": item.pos, "radius": item.radius, "spell_id": "F07"}, float(runtime.effects.impact_lifetime))
+				_note_bomb_fact(run, "impact", item, visual_hits)
 				if float(item.stats.level.aftershock) > 0.0:
 					_queue(run, float(item.stats.aftershock_delay), "aftershock", {"pos": item.pos, "radius": item.radius, "coefficient": float(item.stats.level.aftershock), "context": item.context})
 			"aftershock":
 				_area_hit(run, item.pos, float(item.radius), float(item.coefficient), item.context)
 				run._emit("aftershock", {"pos": item.pos, "radius": item.radius, "spell_id": "F07"}, float(runtime.effects.impact_lifetime))
+				_note_bomb_fact(run, "aftershock", item)
+
+
+func _note_bomb_fact(run, phase: String, item: Dictionary, hits: Array = []) -> void:
+	# Observations after the original queue/hit/event, never another attack.
+	var level: Dictionary = item.context.get("growth_level", {})
+	var stats: Dictionary = item.get("stats", {})
+	var flight_seconds := float(stats.get("travel_delay", 0.0))
+	_bomb_fact_seq += 1
+	_bomb_facts.append({"seq": _bomb_fact_seq, "phase": phase, "cast_id": int(item.context.cast_id),
+		"spell_level": int(item.context.get("spell_level", 1)), "natural": bool(item.context.get("natural", false)),
+		"pos": item.pos, "from": item.get("from", item.pos), "radius": float(item.radius),
+		"center_radius": float(level.get("center_radius", 0.0)), "time": float(run.time),
+		"scheduled_at": float(item.at), "flight_seconds": flight_seconds, "hits": hits.duplicate(true),
+		"retain_until": float(run.time) + (flight_seconds if phase == "flight" else 0.0) + BOMB_FACT_RETENTION})
+	if _bomb_facts.size() > BOMB_FACT_LIMIT: _bomb_facts.pop_front()
+
+
+func _note_rain_impact(run, item: Dictionary) -> void:
+	# Called only after the original damage/event branch. No hits, RNG or
+	# gameplay events here; completed falls remain visible across skipped frames.
+	_rain_impact_seq += 1
+	_rain_impacts.append({"seq": _rain_impact_seq, "cast_id": int(item.context.cast_id),
+		"drop_index": int(item.get("drop_index", -1)), "spell_level": int(item.context.get("spell_level", 1)),
+		"pos": item.pos, "center": item.center, "radius": float(item.radius),
+		"time": float(run.time), "scheduled_at": float(item.at),
+		"fall_seconds": float(item.stats.impact_delay), "last": bool(item.last)})
+	if _rain_impacts.size() > RAIN_IMPACT_LIMIT: _rain_impacts.pop_front()
 
 
 func _spawn_bolt(run, spell: Dictionary, stats: Dictionary, target: Dictionary, coefficient: float, context: Dictionary):
@@ -824,7 +894,38 @@ func apply_slow(run, actor: Dictionary, amount: float, duration: float, source: 
 	actor["spell_slows"] = slows
 
 
-func _beam(run, from: Vector2, to: Vector2, width: float, coefficient: float, context: Dictionary, pierce: bool):
+func begin_beam_echo_visual(parent_cast_id: int) -> void:
+	# One-use annotation for the next actual F08 release, not release authority.
+	_next_beam_echo_parent = parent_cast_id
+
+
+func end_beam_echo_visual() -> void:
+	_next_beam_echo_parent = -1
+
+
+func _capture_beam_visual_source(run, stats: Dictionary, context: Dictionary) -> void:
+	var parent := _next_beam_echo_parent
+	_next_beam_echo_parent = -1
+	_beam_visual_sources[int(context.cast_id)] = {
+		"source": "natural" if bool(context.natural) else "echo" if parent >= 0 else "extra",
+		"parent_cast_id": parent if not bool(context.natural) else -1,
+		"expires": float(run.time) + maxf(float(stats.get("secondary_delay", 0.0)), float(runtime.effects.beam_lifetime)) + BEAM_FACT_RETENTION}
+	if _beam_visual_sources.size() > BEAM_FACT_LIMIT: _beam_visual_sources.erase(_beam_visual_sources.keys()[0])
+
+
+func _note_beam_fact(run, from: Vector2, to: Vector2, width: float, context: Dictionary, phase: String, hits: Array) -> void:
+	var source: Dictionary = _beam_visual_sources.get(int(context.cast_id), {})
+	_beam_fact_seq += 1
+	_beam_facts.append({"seq": _beam_fact_seq, "cast_id": int(context.cast_id),
+		"parent_cast_id": int(source.get("parent_cast_id", -1)),
+		"source": str(source.get("source", "natural" if bool(context.natural) else "extra")),
+		"phase": phase, "time": float(run.time), "lifetime": float(runtime.effects.beam_lifetime),
+		"from": from, "to": to, "half_width": width, "spell_level": int(context.get("spell_level", 1)),
+		"ignite": bool(context.get("ignite", false)), "hits": hits.duplicate(true)})
+	if _beam_facts.size() > BEAM_FACT_LIMIT: _beam_facts.pop_front()
+
+
+func _beam(run, from: Vector2, to: Vector2, width: float, coefficient: float, context: Dictionary, pierce: bool, visual_phase: String = "main"):
 	if run.has_method("gem_record_shape"): run.gem_record_shape({"kind": "segment", "from": from, "to": to, "width": width, "target_cap": run.actors.size() if pierce else 1}, coefficient, context)
 	var contacts: Array = []
 	for actor in run.actors:
@@ -834,12 +935,19 @@ func _beam(run, from: Vector2, to: Vector2, width: float, coefficient: float, co
 		if contact != INF:
 			contacts.append({"actor": actor, "at": contact})
 	contacts.sort_custom(func(a, b): return a.at < b.at if not is_equal_approx(a.at, b.at) else a.actor.id < b.actor.id)
+	var visual_hits: Array = []
 	for hit in contacts:
-		_hit(run, hit.actor, coefficient, context)
+		var visual_pos: Vector2 = hit.actor.pos
+		var visual_radius := float(hit.actor.radius)
+		var actual := _hit(run, hit.actor, coefficient, context)
+		if str(context.spell_id) == "F08" and actual > 0.0:
+			visual_hits.append({"actor_id": int(hit.actor.id), "pos": visual_pos, "radius": visual_radius,
+				"contact_pos": from.lerp(to, float(hit.at)), "damage": actual, "alive_after": float(hit.actor.health) > 0.0})
 		if not pierce:
 			to = hit.actor.pos
 			break
 	run._emit("spirit_bolt" if context.spell_id == "F04" else "beam", {"from": from, "to": to, "pos": to, "radius": width, "spell_id": context.spell_id}, float(runtime.effects.beam_lifetime))
+	if str(context.spell_id) == "F08": _note_beam_fact(run, from, to, width, context, visual_phase, visual_hits)
 
 
 func _area_hit(run, center: Vector2, radius: float, coefficient: float, context: Dictionary, block_blast: bool = false):
@@ -866,7 +974,7 @@ func _hit(run, actor: Dictionary, coefficient: float, context: Dictionary) -> fl
 		var reapply: Dictionary = {}
 		if bool(context.get("natural", false)) and float(level.get("reapply_delay", 0.0)) > 0.0:
 			reapply = {"detonation_multiplier_add": float(level.get("natural_detonation_multiplier_add", 0.0)), "reapply_delay": level.reapply_delay, "reapply_shared_cooldown": level.reapply_shared_cooldown, "source": "F07"}
-		fire_status.detonate_burn(run, actor, float(context.detonation_multiplier), bool(context.get("natural", false)), context.get("cast_id", -1), old_burn, reapply)
+		fire_status.detonate_burn(run, actor, float(context.detonation_multiplier), bool(context.get("natural", false)), context.get("cast_id", -1), old_burn, reapply, str(context.get("spell_id", "")))
 	if bool(context.get("ignite", false)) and is_fire_spell(str(context.get("spell_id", ""))):
 		var key: String = "%s:%s" % [str(context.get("cast_id", "")), str(actor.id)]
 		if not bool(context.get("ignite_once_per_target", false)) or not _ignited_cast_targets.has(key):

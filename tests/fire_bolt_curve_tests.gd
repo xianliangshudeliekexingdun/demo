@@ -5,6 +5,7 @@ const Motion = preload("res://scripts/core/route_fire_bolt_motion.gd")
 const Fire = preload("res://scripts/presentation/route_fire_bolt_vfx.gd")
 const Rules = preload("res://tests/formal_fire_tests.gd")
 const OUTPUT := "res://build/qa/fire-bolt-curve-v2-20261026/curve-results.json"
+const Report = preload("res://tests/qa_report.gd")
 var checks := 0
 var failures: Array = []
 var examples: Array = []
@@ -72,7 +73,8 @@ func execute() -> void:
 	await visual_integration()
 	var report := {"checks": checks, "failures": failures.size(), "details": failures, "examples": examples,
 		"scope": "User-authorized native F01 curved launch/acceleration, fixed target, continuous wall/enemy/relative-motion collision, real range/terminal time, level budgets and released visual grades, real world-trail reconstruction and pause/reduced motion. No pixels, GPU composition, performance, natural route, save or user visual acceptance."}
-	FileAccess.open(OUTPUT, FileAccess.WRITE).store_string(JSON.stringify(report, "\t"))
+	if not Report.write_report(report, OUTPUT):
+		failures.append("QA report could not be written")
 	print("FIRE BOLT CURVE checks=%d failures=%d" % [checks, failures.size()])
 	quit(0 if failures.is_empty() else 1)
 
