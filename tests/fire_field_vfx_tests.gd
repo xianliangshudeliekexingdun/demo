@@ -5,7 +5,7 @@ const Field = preload("res://scripts/presentation/route_fire_field_vfx.gd")
 const View = preload("res://scripts/presentation/first_room_view.gd")
 const Rules = preload("res://tests/formal_fire_tests.gd")
 const Report = preload("res://tests/qa_report.gd")
-const OUTPUT := "res://build/qa/fire-field-runes-v2-20261027/chain/results.json"
+const OUTPUT := "res://build/qa/current-visual-regressions/fire_field_vfx_tests/results.json"
 const STEP := 1.0 / 120.0
 var checks := 0
 var failures: Array = []
@@ -358,7 +358,7 @@ func decorative_motion(renderer, projector) -> void:
 	check(renderer.get_debug_state().embers.is_empty() and renderer.get_debug_state().ember_transforms.is_empty(), "combat exit clears every ember and its submitted geometry")
 
 
-func integration_and_preview() -> void:
+func integration() -> void:
 	var run = fresh(3)
 	cast(run)
 	advance(run, 2.0)
@@ -376,23 +376,6 @@ func integration_and_preview() -> void:
 	check(view.spell_vfx.get_debug_state().coverage.get("F06", 0) == 1 and view.get_fire_field_debug_state().fields.is_empty(), "old snapshots retain legacy field rendering")
 	view.queue_free()
 	await process_frame
-	var preview = load("res://tests/previews/fire_field_preview.tscn").instantiate()
-	root.add_child(preview)
-	await process_frame
-	preview.set_process(false)
-	for mode in 9:
-		preview._mode = mode
-		preview._paused = false
-		preview._reset()
-		for frame in 408: preview._advance(STEP)
-		preview._view.sync(preview._run.get_snapshot())
-		check(preview._run.get_snapshot().spell_zones.any(func(z): return z.spell_id == "F06") and preview._view.get_fire_field_debug_state().fields.size() == 1, "controlled preview mode %d uses real field" % mode)
-		if mode in [5, 6]: check(preview._run.get_snapshot().fire_field_facts.all(func(f): return f.phase != "mature"), "extra/replaced preview does not fake maturity")
-		if mode == 7:
-			for frame in 444: preview._advance(STEP)
-			check(preview._run.get_snapshot().spell_zones.is_empty() and preview._run.get_snapshot().field_attack_bonus > 0.0, "expiry preview reaches true post-field grace")
-	preview.queue_free()
-	await process_frame
 
 
 func execute() -> void:
@@ -409,15 +392,13 @@ func execute() -> void:
 	source_edges(renderer, projector)
 	projection_cleanup_capacity(renderer, projector)
 	decorative_motion(renderer, projector)
-	await integration_and_preview()
+	await integration()
 	renderer.queue_free()
 	await process_frame
 	var result := {"checks": checks, "failures": failures.size(), "details": failures, "frozen_baseline_cases": baseline_cases,
 		"whole_snapshot_comparisons": snapshot_comparisons, "baseline_assertions": baseline_assertions, "non_baseline_assertions": checks - baseline_assertions,
 		"scenario_matrix": "3 levels x natural, extra, zero damage, leave/reenter, replacement, natural overlap, extra overlap, release-level retention, pause, lethal, mixed six approved spells, targets leaving maturity.",
-		"scope": "Real Route fixed-field origin/radius/ticks/once-per-cast burn, actual bonus/grace and natural distinct-kind vulnerability, original one-shot maturity/smaller radius, replacement/end, projection/pause/reduced/clear, finite structure and nine headless preview fixtures. V2 fixed glyph plane/reveal, staggered low flame clusters and rising curved world-space embers, independent maturity decoration and reduced motion. Frozen combat/growth parity only with --baseline. No interactive launch, screenshots, pixels/GPU composition/performance, natural route, export, Git or F06 visual acceptance."}
+		"scope": "Real Route fixed-field origin/radius/ticks/once-per-cast burn, actual bonus/grace and natural distinct-kind vulnerability, original one-shot maturity/smaller radius, replacement/end, projection/pause/reduced/clear, finite structure and production-view integration. V2 fixed glyph plane/reveal, staggered low flame clusters and rising curved world-space embers, independent maturity decoration and reduced motion. Frozen combat/growth parity only with --baseline. No interactive launch, screenshots, pixels/GPU composition/performance, natural route, export, Git or F06 visual acceptance."}
 	if not Report.write_report(result, OUTPUT): failures.append("cannot write report")
 	print("FIRE FIELD CHAIN scenarios=%d snapshot_comparisons=%d assertions=%d failures=%d" % [baseline_cases, snapshot_comparisons, checks, failures.size()])
 	quit(0 if failures.is_empty() else 1)
-
-

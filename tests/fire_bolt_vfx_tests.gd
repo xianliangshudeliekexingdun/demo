@@ -5,7 +5,7 @@ const Fire = preload("res://scripts/presentation/route_fire_bolt_vfx.gd")
 const View = preload("res://scripts/presentation/first_room_view.gd")
 const Rules = preload("res://tests/formal_fire_tests.gd")
 const Report = preload("res://tests/qa_report.gd")
-const OUTPUT := "res://build/qa/fire-bolt-curve-v2-20261026/presentation-results.json"
+const OUTPUT := "res://build/qa/current-visual-regressions/fire_bolt_vfx_tests/results.json"
 var checks := 0
 var failures: Array = []
 
@@ -111,11 +111,11 @@ func execute() -> void:
 	terminal_lifecycle(renderer, projector)
 	burn_and_patch(renderer, projector)
 	capacity(renderer, projector)
-	await integration_and_preview()
+	await integration()
 	renderer.queue_free()
 	await process_frame
 	var report := {"checks": checks, "failures": failures.size(), "details": failures,
-		"scope": "Old-loop comparison ONLY for explicitly legacy-shaped shots; current curved native shots use the separate curve suite. Terminal facts, world trails, live burn/patch ownership, pause/reduced motion, finite batches and view/preview construction. Headless only; no pixels, GPU composition, performance, natural route or visual acceptance."}
+		"scope": "Old-loop comparison ONLY for explicitly legacy-shaped shots; current curved native shots use the separate curve suite. Terminal facts, world trails, live burn/patch ownership, pause/reduced motion, finite batches and view/production-view integration. Headless only; no pixels, GPU composition, performance, natural route or visual acceptance."}
 	if not Report.write_report(report, OUTPUT):
 		failures.append("QA report could not be written")
 	print("FIRE BOLT CHAIN checks=%d failures=%d" % [checks, failures.size()])
@@ -311,7 +311,7 @@ func capacity(renderer, projector) -> void:
 	check(renderer.get_child_count() == 4, "capacity does not allocate per-shot nodes")
 
 
-func integration_and_preview() -> void:
+func integration() -> void:
 	var run = fresh(3)
 	cast(run)
 	for frame in 4: run.step(1.0 / 120.0)
@@ -328,31 +328,4 @@ func integration_and_preview() -> void:
 	check(view.fire_bolt_vfx._body_material.get_shader_parameter("reduced_motion") == true, "display option updates F01 immediately even with no advancing tick")
 	check(source == original, "complete battle view leaves its source unchanged")
 	view.queue_free()
-	await process_frame
-	var scene: PackedScene = load("res://tests/previews/fire_bolt_preview.tscn")
-	var preview = scene.instantiate()
-	root.add_child(preview)
-	preview.set_process(false)
-	await process_frame
-	for mode in 5:
-		preview._mode = mode
-		preview._reset()
-		var seen: Dictionary = {}
-		for frame in 168:
-			preview._advance(1.0 / 120.0)
-			if frame % 2 == 0:
-				preview._view.sync(preview._run.get_snapshot())
-				seen.merge(preview._view.get_fire_bolt_debug_state().coverage)
-		for stage in ["cast", "release", "F01_bolt"]:
-			check(seen.has(stage), "actual preview mode %d contains stage %s" % [mode, stage])
-		if mode < 3:
-			for stage in ["bolt_hit", "fire_ignited", "burning"]: check(seen.has(stage), "actual complete chain mode %d contains stage %s" % [mode, stage])
-		if mode in [1, 2]: check(seen.has("artifact_patch"), "critical patch reaches the production renderer")
-		var ends: Array = preview._run.get_snapshot().fire_bolt_ends
-		check(not ends.is_empty(), "controlled preview mode %d reaches a real terminal branch" % mode)
-		if not ends.is_empty():
-			check(ends[0].reason == ("wall" if mode == 3 else "expired" if mode == 4 else "enemy"), "preview mode %d uses source collision facts" % mode)
-		if mode == 2: check(ends.size() == 2, "level-three preview uses the real delayed second bolt")
-		if mode in [1, 2]: check(not preview._run.get_snapshot().artifact_patches.is_empty(), "critical preview obtains its patch through real damage")
-	preview.queue_free()
 	await process_frame

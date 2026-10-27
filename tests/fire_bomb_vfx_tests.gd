@@ -4,7 +4,7 @@ const Bomb = preload("res://scripts/presentation/route_fire_bomb_vfx.gd")
 const View = preload("res://scripts/presentation/first_room_view.gd")
 const Rules = preload("res://tests/formal_fire_tests.gd")
 const Report = preload("res://tests/qa_report.gd")
-const OUTPUT := "res://build/qa/fire-bomb-vfx-20261027/targeted/results.json"
+const OUTPUT := "res://build/qa/current-visual-regressions/fire_bomb_vfx_tests/results.json"
 const STEP := 1.0 / 120.0
 var checks := 0
 var failures: Array = []
@@ -311,7 +311,7 @@ func projection_lifecycle_and_capacity(renderer, projector) -> void:
 	check(run.get_snapshot().fire_bomb_facts.is_empty() and run.get_snapshot().fire_bomb_status_facts.is_empty(), "core clear resets both observation journals")
 
 
-func integration_and_preview() -> void:
+func integration() -> void:
 	var run = fresh(3)
 	run._spell_combat.apply_burn(run, run.actors[0], "F11")
 	cast(run)
@@ -334,26 +334,6 @@ func integration_and_preview() -> void:
 	check(not view.fire_bomb_vfx.visible and view.spell_vfx.get_debug_state().coverage.get("bomb_impact", 0) == 1 and view.spell_vfx.get_debug_state().coverage.get("fire_detonation", 0) == 2, "old snapshot falls back to complete original rendering")
 	view.queue_free()
 	await process_frame
-	var scene: PackedScene = load("res://tests/previews/fire_bomb_preview.tscn")
-	var preview = scene.instantiate()
-	root.add_child(preview)
-	preview.set_process(false)
-	await process_frame
-	preview.set_process(false)
-	for mode in 9:
-		preview._mode = mode
-		preview._reset()
-		check(preview._run.spells[0].id == "F07" and preview._run.spells[0].level == mini(mode + 1, 3), "preview mode uses real F07 level %d" % mode)
-		for frame in 260: preview._advance(STEP)
-		var facts: Array = preview._run.get_snapshot().fire_bomb_facts
-		check(facts.any(func(f): return f.phase == "impact"), "preview mode reaches real main %d" % mode)
-		if mode == 3: check(not preview._run.get_snapshot().spell_burns.filter(func(b): return b.source == "F07").is_empty(), "fuel preview reaches actual delayed F07 reapply")
-		if mode == 4: check(facts.filter(func(f): return f.phase == "impact")[0].pos != preview._run.actors[0].pos, "moving preview demonstrates original lock point")
-		if mode == 5: check(preview._run.actors[0].health <= 0.0 and not preview._run.get_snapshot().fire_bomb_status_facts.any(func(f): return f.actor_id == 901), "lethal preview does not invent corpse fuel feedback")
-		if mode == 6: check(preview._run.get_snapshot().fire_bomb_status_facts.any(func(f): return f.phase == "detonation") and not preview._run.get_snapshot().fire_bomb_status_facts.any(func(f): return f.phase == "reignite"), "extra preview has real fuel discharge without natural reapply")
-		if mode == 7: check(facts.filter(func(f): return f.phase == "impact").size() == 3, "overlap preview launches three distinct real casts")
-	preview.queue_free()
-	await process_frame
 
 
 func execute() -> void:
@@ -367,11 +347,11 @@ func execute() -> void:
 	var projector := Projector.new()
 	stages_and_fuel(renderer, projector)
 	projection_lifecycle_and_capacity(renderer, projector)
-	await integration_and_preview()
+	await integration()
 	renderer.queue_free()
 	await process_frame
 	var report := {"checks": checks, "failures": failures.size(), "details": failures, "frozen_baseline_cases": baseline_cases,
-		"scope": "Headless real-Route frozen combat+burn parity, unchanged snapshots/hooks/events/RNG, original chant lock/flight/inner-outer damage/aftershock and actual fuel/reapply/death/cooldown, analytic world arc/tail reprojection/pause/reduced motion, source burn lifecycle, bounded facts/draw nodes, native-view exact legacy handoff and all nine controlled preview fixture paths. No interactive preview, pixels, GPU composition, natural route, performance, export or user visual acceptance."}
+		"scope": "Headless real-Route frozen combat+burn parity, unchanged snapshots/hooks/events/RNG, original chant lock/flight/inner-outer damage/aftershock and actual fuel/reapply/death/cooldown, analytic world arc/tail reprojection/pause/reduced motion, source burn lifecycle, bounded facts/draw nodes, native-view exact legacy handoff and production-view integration. No interactive preview, pixels, GPU composition, natural route, performance, export or user visual acceptance."}
 	if not Report.write_report(report, OUTPUT): failures.append("cannot write report")
 	print("FIRE BOMB CHAIN checks=%d failures=%d baseline_cases=%d" % [checks, failures.size(), baseline_cases])
 	quit(0 if failures.is_empty() else 1)

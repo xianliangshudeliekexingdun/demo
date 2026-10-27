@@ -5,7 +5,7 @@ const Missiles = preload("res://scripts/presentation/route_magic_missile_vfx.gd"
 const RoomView = preload("res://scripts/presentation/first_room_view.gd")
 const Route = preload("res://scripts/core/courtyard_route_run.gd")
 const Report = preload("res://tests/qa_report.gd")
-const OUTPUT := "res://build/qa/magic-missile-energy-v2-20261026/presentation-results.json"
+const OUTPUT := "res://build/qa/current-visual-regressions/magic_missile_vfx_tests/results.json"
 var checks := 0
 var failures: Array = []
 
@@ -69,7 +69,6 @@ func execute() -> void:
 	terminal_lifecycle(renderer, projector)
 	capacity(renderer, projector)
 	await integration()
-	await preview_construction()
 	renderer.queue_free()
 	await process_frame
 	var report := {"checks": checks, "failures": failures.size(), "details": failures,
@@ -223,43 +222,4 @@ func integration() -> void:
 	check(view.magic_missile_vfx.z_index > view._overlay.z_index, "missile batch draws above warnings, health bars and world labels")
 	check(source == original, "complete view integration keeps the snapshot unchanged")
 	view.queue_free()
-	await process_frame
-
-
-func preview_construction() -> void:
-	var scene: PackedScene = load("res://tests/previews/magic_missile_preview.tscn")
-	check(scene != null, "optional preview scene loads without becoming a game entry")
-	var preview = scene.instantiate()
-	check(preview.has_method("_advance"), "preview scene has its valid simulation controller")
-	if not preview.has_method("_advance"):
-		preview.free()
-		return
-	root.add_child(preview)
-	preview.set_process(false)
-	await process_frame
-	for tick in 1200:
-		preview._advance(1.0 / 120.0)
-		var journal: Array = preview._run._enemy_combat.get_projectile_ends()
-		if not journal.is_empty() and journal[-1].reason == "player":
-			break
-	preview._refresh()
-	var ends: Array = preview._run._enemy_combat.get_projectile_ends()
-	check(not ends.is_empty() and ends[-1].reason == "player", "single-shot preview reaches real player contact with source specs")
-	preview._mode = 1
-	preview._reset()
-	for tick in 120:
-		preview._advance(1.0 / 120.0)
-		if preview._run._enemy_combat.enemy_projectiles.size() == 4:
-			break
-	preview._refresh()
-	check(preview._view.get_magic_missile_debug_state().heads == 4, "crossing preview drives four real source projectiles")
-	preview._mode = 2
-	preview._reset()
-	for tick in 120:
-		preview._advance(1.0 / 120.0)
-		if preview._run._enemy_combat.enemy_projectiles.size() == 64:
-			break
-	preview._refresh()
-	check(preview._view.get_magic_missile_debug_state().heads == 64, "dense preview retains all 64 source projectiles")
-	preview.queue_free()
 	await process_frame

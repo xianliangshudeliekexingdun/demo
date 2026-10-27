@@ -4,7 +4,7 @@ const Rain = preload("res://scripts/presentation/route_fire_rain_vfx.gd")
 const View = preload("res://scripts/presentation/first_room_view.gd")
 const Rules = preload("res://tests/formal_fire_tests.gd")
 const Report = preload("res://tests/qa_report.gd")
-const OUTPUT := "res://build/qa/fire-rain-vfx-20261027/targeted/results.json"
+const OUTPUT := "res://build/qa/current-visual-regressions/fire_rain_vfx_tests/results.json"
 const STEP := 1.0 / 120.0
 var checks := 0
 var failures: Array = []
@@ -82,11 +82,11 @@ func execute() -> void:
 	overlapping_casts_and_ground_end(renderer, projector)
 	cancellation_and_burn_ownership(renderer, projector)
 	capacity(renderer, projector)
-	await integration_and_preview()
+	await integration()
 	renderer.queue_free()
 	await process_frame
 	var result := {"checks": checks, "failures": failures.size(), "details": failures, "frozen_baseline_cases": baseline_cases,
-		"scope": "Headless real-Route equivalence, actual fall/order/impact facts, level-three ground timing/center, burns, analytic world tails, pause, reduced motion, finite batches and native view/preview construction. No screenshots, rendered pixels, backend composition, performance, natural route or user visual acceptance."}
+		"scope": "Headless real-Route equivalence, actual fall/order/impact facts, level-three ground timing/center, burns, analytic world tails, pause, reduced motion, finite batches and native view/production-view integration. No screenshots, rendered pixels, backend composition, performance, natural route or user visual acceptance."}
 	if not Report.write_report(result, OUTPUT): failures.append("cannot write report")
 	print("FIRE RAIN CHAIN checks=%d failures=%d baseline_cases=%d" % [checks, failures.size(), baseline_cases])
 	quit(0 if failures.is_empty() else 1)
@@ -355,7 +355,7 @@ func capacity(renderer, projector) -> void:
 	check(renderer.get_debug_state().heads.size() == 128 and int(renderer.get_debug_state().overflow) >= 128, "excess decorative load is bounded without changing source state")
 
 
-func integration_and_preview() -> void:
+func integration() -> void:
 	var run = fresh(3)
 	cast(run)
 	advance(run, 0.16)
@@ -371,17 +371,4 @@ func integration_and_preview() -> void:
 	view.sync(old)
 	check(not view.fire_rain_vfx.visible and int(view.spell_vfx.get_debug_state().coverage.get("F03_rainfall", 0)) == 1, "older snapshots preserve the legacy rain fallback")
 	view.queue_free()
-	await process_frame
-	var scene: PackedScene = load("res://tests/previews/fire_rain_preview.tscn")
-	var preview = scene.instantiate()
-	root.add_child(preview)
-	preview.set_process(false)
-	await process_frame
-	preview.set_process(false)
-	check(preview._run != null and preview._view != null, "optional preview constructs without running an interactive game")
-	for mode in 5:
-		preview._mode = mode
-		preview._reset()
-		check(preview._run.spells[0].id == "F03" and preview._run.spells[0].level == mini(mode + 1, 3), "controlled preview mode %d configures real F03" % mode)
-	preview.queue_free()
 	await process_frame

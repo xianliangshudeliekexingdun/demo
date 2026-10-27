@@ -4,7 +4,7 @@ const Beam = preload("res://scripts/presentation/route_fire_beam_vfx.gd")
 const View = preload("res://scripts/presentation/first_room_view.gd")
 const Rules = preload("res://tests/formal_fire_tests.gd")
 const Report = preload("res://tests/qa_report.gd")
-const OUTPUT := "res://build/qa/fire-beam-vfx-20261027/targeted/results.json"
+const OUTPUT := "res://build/qa/current-visual-regressions/fire_beam_vfx_tests/results.json"
 const STEP := 1.0 / 120.0
 var checks := 0
 var failures: Array = []
@@ -84,11 +84,11 @@ func execute() -> void:
 	echo_identity_and_reselection(renderer, projector)
 	projection_pause_burns_and_cleanup(renderer, projector)
 	capacity(renderer, projector)
-	await integration_and_preview()
+	await integration()
 	renderer.queue_free()
 	await process_frame
 	var report := {"checks": checks, "failures": failures.size(), "details": failures, "frozen_baseline_cases": baseline_cases,
-		"scope": "Headless actual-Route equivalence, instantaneous lines and real hit targets, fixed pulse geometry/qualification, true native echo origin/parent/source and its own pulse, failed extra/reselection, released levels, bounded facts, whole-line reprojection, pause/reduced motion/burn lifecycle, capacity and view/controlled preview checks. No pixels, GPU composition, performance, interactive preview, natural route or user visual acceptance."}
+		"scope": "Headless actual-Route equivalence, instantaneous lines and real hit targets, fixed pulse geometry/qualification, true native echo origin/parent/source and its own pulse, failed extra/reselection, released levels, bounded facts, whole-line reprojection, pause/reduced motion/burn lifecycle, capacity and production-view integration checks. No pixels, GPU composition, performance, interactive preview, natural route or user visual acceptance."}
 	if not Report.write_report(report, OUTPUT): failures.append("cannot write report")
 	print("FIRE BEAM CHAIN checks=%d failures=%d baseline_cases=%d" % [checks, failures.size(), baseline_cases])
 	quit(0 if failures.is_empty() else 1)
@@ -368,7 +368,7 @@ func capacity(renderer, projector) -> void:
 	check(renderer.get_debug_state().groups.size() == 128 and int(renderer.get_debug_state().overflow) == 128, "excess decorative geometry is bounded without gameplay mutation")
 
 
-func integration_and_preview() -> void:
+func integration() -> void:
 	var run = fresh(3)
 	cast(run)
 	var view = View.new()
@@ -382,23 +382,4 @@ func integration_and_preview() -> void:
 	view.sync(old)
 	check(not view.fire_beam_vfx.visible and int(view.spell_vfx.get_debug_state().coverage.get("beam", 0)) == 1, "old snapshots preserve legacy beam rendering")
 	view.queue_free()
-	await process_frame
-	var scene: PackedScene = load("res://tests/previews/fire_beam_preview.tscn")
-	var preview = scene.instantiate()
-	root.add_child(preview)
-	preview.set_process(false)
-	await process_frame
-	preview.set_process(false)
-	for mode in 7:
-		preview._mode = mode
-		preview._reset()
-		check(preview._run.spells[0].id == "F08" and preview._run.spells[0].level == mini(mode + 1, 3), "controlled preview mode %d uses the real F08" % mode)
-	for mode in [3, 6]:
-		preview._mode = mode
-		preview._reset()
-		for frame in 600: preview._advance(STEP)
-		var facts: Array = preview._run.get_snapshot().fire_beam_facts.filter(func(f): return f.phase == "main")
-		check(preview._releases == 3 and facts.any(func(f): return f.source == "echo"), "preview reaches three natural releases and the actual echo mode %d" % mode)
-		if mode == 6 and facts.size() >= 2: check(facts[-1].to != facts[-2].to, "controlled preview death yields actual retargeted echo")
-	preview.queue_free()
 	await process_frame

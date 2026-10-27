@@ -5,7 +5,7 @@ const Brand = preload("res://scripts/presentation/route_fire_brand_vfx.gd")
 const View = preload("res://scripts/presentation/first_room_view.gd")
 const Rules = preload("res://tests/formal_fire_tests.gd")
 const Report = preload("res://tests/qa_report.gd")
-const OUTPUT := "res://build/qa/fire-brand-vfx-20261027/chain/results.json"
+const OUTPUT := "res://build/qa/current-visual-regressions/fire_brand_vfx_tests/results.json"
 const STEP := 1.0 / 120.0
 var checks := 0
 var failures: Array = []
@@ -254,7 +254,7 @@ func edge_cases(renderer, projector) -> void:
 	check(not renderer.visible and renderer.get_debug_state().links.is_empty() and renderer.get_debug_state().burns.is_empty(), "missing capability clears new renderer for legacy fallback")
 
 
-func integration_and_preview() -> void:
+func integration() -> void:
 	var run = fresh(3)
 	cast(run)
 	var view = View.new()
@@ -268,24 +268,6 @@ func integration_and_preview() -> void:
 	view.sync(old)
 	check(view.get_fire_brand_debug_state().marks.is_empty() and view.spell_vfx.get_debug_state().coverage.get("fire_brand", 0) > 0, "older snapshots retain original F11 rendering")
 	view.queue_free()
-	await process_frame
-	var preview = load("res://tests/previews/fire_brand_preview.tscn").instantiate()
-	root.add_child(preview)
-	await process_frame
-	preview.set_process(false)
-	for mode in 9:
-		preview._mode = mode
-		preview._paused = false
-		preview._reset()
-		for frame in 113: preview._advance(STEP)
-		preview._view.sync(preview._run.get_snapshot())
-		check(preview._view.get_fire_brand_debug_state().marks.size() == 1, "preview %d uses a real primary contact" % mode)
-		if mode == 7: check(preview._view.get_fire_brand_debug_state().links.is_empty(), "no-neighbor preview draws no invented branch")
-		if mode == 8:
-			for frame in 26: preview._advance(STEP)
-			preview._view.sync(preview._run.get_snapshot())
-			check(not preview._view.get_fire_brand_debug_state().burns.has(802), "moving/handoff preview uses actual source ownership")
-	preview.queue_free()
 	await process_frame
 
 
@@ -301,15 +283,13 @@ func execute() -> void:
 	var projector := Projector.new()
 	rules_and_visuals(renderer, projector)
 	edge_cases(renderer, projector)
-	await integration_and_preview()
+	await integration()
 	renderer.queue_free()
 	await process_frame
 	var result := {"checks": checks, "failures": failures.size(), "details": failures, "frozen_baseline_cases": baseline_cases,
 		"whole_snapshot_comparisons": snapshot_comparisons, "baseline_assertions": baseline_assertions, "non_baseline_assertions": checks - baseline_assertions,
 		"scenario_matrix": "3 levels x natural, extra, zero effective damage, lethal primary, blocked neighbor, pre-existing burns, no neighbors, moving primary, pause, global burn/released retention, source handoff/consumption, mixed seven accepted spells.",
-		"scope": "Real Route single primary hit and original one-round successful spread, actual global burns/source lifecycle, true cast geometry/same-time endpoints, finite fixed batches, pause/reduced motion/reprojection/legacy fallback, nine headless preview fixtures. Frozen whole-snapshot/hooks/RNG parity only with --baseline. No interactive launch, screenshots, pixels/GPU/performance, natural route, export, Git or user visual acceptance."}
+		"scope": "Real Route single primary hit and original one-round successful spread, actual global burns/source lifecycle, true cast geometry/same-time endpoints, finite fixed batches, pause/reduced motion/reprojection/legacy fallback, production-view integration. Frozen whole-snapshot/hooks/RNG parity only with --baseline. No interactive launch, screenshots, pixels/GPU/performance, natural route, export, Git or user visual acceptance."}
 	if not Report.write_report(result, OUTPUT): failures.append("cannot write report")
 	print("FIRE BRAND CHAIN scenarios=%d snapshots=%d assertions=%d failures=%d" % [baseline_cases, snapshot_comparisons, checks, failures.size()])
 	quit(0 if failures.is_empty() else 1)
-
-

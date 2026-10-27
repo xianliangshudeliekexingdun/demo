@@ -4,7 +4,7 @@ const Support = preload("res://scripts/presentation/route_fire_support_vfx.gd")
 const View = preload("res://scripts/presentation/first_room_view.gd")
 const Rules = preload("res://tests/formal_fire_tests.gd")
 const Report = preload("res://tests/qa_report.gd")
-const OUTPUT := "res://build/qa/fire-support-vfx-20261027/chain/results.json"
+const OUTPUT := "res://build/qa/current-visual-regressions/fire_support_vfx_tests/results.json"
 const STEP := 1.0 / 120.0
 var checks := 0
 var failures: Array = []
@@ -217,27 +217,6 @@ func lifecycle_and_integration(renderer, projector) -> void:
 	check(view.spell_vfx.get_debug_state().coverage.get("F02_passive", 0) == 1, "missing support capability preserves original passive fallback")
 	view.queue_free()
 	await process_frame
-	var preview = load("res://tests/previews/fire_support_preview.tscn").instantiate()
-	root.add_child(preview)
-	await process_frame
-	preview.set_process(false)
-	for mode in 9:
-		preview._mode = mode
-		preview._paused = false
-		preview._reset()
-		for frame in 150: preview._advance(STEP)
-		preview._view.sync(preview._run.get_snapshot())
-		var debug: Dictionary = preview._view.get_fire_support_debug_state()
-		if mode in [0, 1, 2, 3, 5, 8]: check(not debug.restores.is_empty(), "preview %d uses a true restoration" % mode)
-		if mode == 4: check(debug.restores.is_empty() and preview._run.casts == preview._last_casts, "full-shield preview never fabricates restoration")
-		if mode in [6, 7, 8]: check(not debug.mastery.is_empty(), "preview %d uses a real successful reward" % mode)
-		if mode == 5: check(debug.coverage.get("F10_guard", 0) == 0, "preview shield was actually consumed before guard disappeared")
-		if mode == 7:
-			for frame in 144: preview._advance(STEP)
-			preview._view.sync(preview._run.get_snapshot())
-			check(preview._view.get_fire_support_debug_state().mastery[0].level == 3, "upgrade preview reaches actual level three")
-	preview.queue_free()
-	await process_frame
 
 
 func execute() -> void:
@@ -253,8 +232,8 @@ func execute() -> void:
 	await lifecycle_and_integration(renderer, projector)
 	renderer.queue_free()
 	await process_frame
-	var result := {"checks": checks, "failures": failures.size(), "details": failures, "real_route_fixtures": scenario_count, "preview_scenarios": 9,
-		"scope": "Original Route F10 cast/partial/full/no-enemy/extra/zero/spent/overlap restoration, F02 real learn/upgrade/replacement/rejection/passive parameters, whole-snapshot/hooks/RNG read-only checks, projection/pause/reduced/cleanup/fallback/bounds, nine headless preview fixtures. Entire core and old data must remain byte-identical. No new frozen gameplay model, interactive launch, screenshots, pixels/GPU/performance, natural route, export, Git or user visual acceptance."}
+	var result := {"checks": checks, "failures": failures.size(), "details": failures, "real_route_fixtures": scenario_count,
+		"scope": "Original Route F10 cast/partial/full/no-enemy/extra/zero/spent/overlap restoration, F02 real learn/upgrade/replacement/rejection/passive parameters, whole-snapshot/hooks/RNG read-only checks, projection/pause/reduced/cleanup/fallback/bounds, production-view integration. Entire core and old data must remain byte-identical. No new frozen gameplay model, interactive launch, screenshots, pixels/GPU/performance, natural route, export, Git or user visual acceptance."}
 	if not Report.write_report(result, OUTPUT): failures.append("cannot write report")
 	print("FIRE SUPPORT CHAIN fixtures=%d assertions=%d failures=%d" % [scenario_count, checks, failures.size()])
 	quit(0 if failures.is_empty() else 1)

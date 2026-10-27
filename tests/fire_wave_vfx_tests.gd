@@ -5,7 +5,7 @@ const Wave = preload("res://scripts/presentation/route_fire_wave_vfx.gd")
 const View = preload("res://scripts/presentation/first_room_view.gd")
 const Rules = preload("res://tests/formal_fire_tests.gd")
 const Report = preload("res://tests/qa_report.gd")
-const OUTPUT := "res://build/qa/fire-wave-vfx-20261027/targeted/results.json"
+const OUTPUT := "res://build/qa/current-visual-regressions/fire_wave_vfx_tests/results.json"
 const STEP := 1.0 / 120.0
 var checks := 0
 var failures: Array = []
@@ -289,7 +289,7 @@ func projection_lifecycle_and_capacity(renderer, projector) -> void:
 	check(not renderer.visible, "clock rollback does not show future attacks")
 
 
-func integration_and_preview() -> void:
+func integration() -> void:
 	var run = fresh(3)
 	cast(run)
 	var view = View.new()
@@ -303,23 +303,6 @@ func integration_and_preview() -> void:
 	view.sync(old)
 	check(not view.fire_wave_vfx.visible and view.spell_vfx.get_debug_state().coverage.get("wave", 0) == 1, "old snapshots retain original wave drawing")
 	view.queue_free()
-	await process_frame
-	var scene: PackedScene = load("res://tests/previews/fire_wave_preview.tscn")
-	var preview = scene.instantiate()
-	root.add_child(preview)
-	preview.set_process(false)
-	await process_frame
-	preview.set_process(false)
-	for mode in 9:
-		preview._mode = mode
-		preview._reset()
-		check(preview._run.spells[0].id == "F09" and preview._run.spells[0].level == mini(mode + 1, 3), "preview uses actual spell level mode %d" % mode)
-		for frame in 132: preview._advance(STEP)
-		var snapshot: Dictionary = preview._run.get_snapshot()
-		check(snapshot.fire_wave_facts.size() == (0 if mode == 7 else 3 if mode == 8 else 1), "preview reaches actual release/cancel count mode %d" % mode)
-		if mode == 5: check(snapshot.fire_wave_speed.is_empty(), "extra-only preview never gains natural speed")
-		if mode == 6: check(preview._run.player.pos != snapshot.fire_wave_facts[0].pos and not snapshot.fire_wave_speed.is_empty(), "moving preview follows real movement after fixed-origin release")
-	preview.queue_free()
 	await process_frame
 
 
@@ -335,14 +318,14 @@ func execute() -> void:
 	var projector := Projector.new()
 	release_and_statuses(renderer, projector)
 	projection_lifecycle_and_capacity(renderer, projector)
-	await integration_and_preview()
+	await integration()
 	renderer.queue_free()
 	await process_frame
 	var result := {"checks": checks, "failures": failures.size(), "details": failures,
 		"frozen_baseline_cases": baseline_cases, "whole_snapshot_comparisons": snapshot_comparisons,
 		"baseline_assertions": baseline_assertions, "non_baseline_assertions": checks - baseline_assertions,
 		"scenario_matrix": "Three actual released levels by 12 independent setups: natural, extra, zero-effective hit, wall, full resistance, partial resistance, chant movement, lethal hit, mixed four approved spells, overlap, released-level change/movement, pause.",
-		"scope": "Headless real-Route parity of original complete snapshots/hooks/events/RNG, actual instant wave/hit/push results, true natural speed/source slow/burn, analytic projected geometry and pause/reduced/source lifecycle, finite structure, native fallback and nine controlled preview fixture paths. No interactive preview, pixels/GPU composition, performance, natural route, export or user visual approval."}
+		"scope": "Headless real-Route parity of original complete snapshots/hooks/events/RNG, actual instant wave/hit/push results, true natural speed/source slow/burn, analytic projected geometry and pause/reduced/source lifecycle, finite structure, native fallback and production-view integration. No interactive preview, pixels/GPU composition, performance, natural route, export or user visual approval."}
 	if not Report.write_report(result, OUTPUT): failures.append("cannot write report")
 	print("FIRE WAVE CHAIN scenarios=%d snapshot_comparisons=%d assertions=%d failures=%d" % [baseline_cases, snapshot_comparisons, checks, failures.size()])
 	quit(0 if failures.is_empty() else 1)

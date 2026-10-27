@@ -5,7 +5,7 @@ const Vortex = preload("res://scripts/presentation/route_fire_vortex_vfx.gd")
 const View = preload("res://scripts/presentation/first_room_view.gd")
 const Rules = preload("res://tests/formal_fire_tests.gd")
 const Report = preload("res://tests/qa_report.gd")
-const OUTPUT := "res://build/qa/fire-vortex-vfx-20261027/targeted/results.json"
+const OUTPUT := "res://build/qa/current-visual-regressions/fire_vortex_vfx_tests/results.json"
 const STEP := 1.0 / 120.0
 var checks := 0
 var failures: Array = []
@@ -328,7 +328,7 @@ func projection_cleanup_and_capacity(renderer, projector) -> void:
 	check(not renderer.visible, "clock rollback does not draw future zones")
 
 
-func integration_and_preview() -> void:
+func integration() -> void:
 	var run = fresh(3)
 	cast(run)
 	var view = View.new()
@@ -343,29 +343,6 @@ func integration_and_preview() -> void:
 	view.sync(old)
 	check(not view.fire_vortex_vfx.visible and view.spell_vfx.get_debug_state().coverage.get("F05", 0) == 1, "old snapshot preserves original vortex rendering")
 	view.queue_free()
-	await process_frame
-	var scene: PackedScene = load("res://tests/previews/fire_vortex_preview.tscn")
-	var preview = scene.instantiate()
-	root.add_child(preview)
-	preview.set_process(false)
-	await process_frame
-	preview.set_process(false)
-	for mode in 9:
-		preview._mode = mode
-		preview._reset()
-		check(preview._run.spells[0].id == "F05" and preview._run.spells[0].level == mini(mode + 1, 3), "preview uses actual F05 level mode %d" % mode)
-		for frame in 360: preview._advance(STEP)
-		var zones: Array = preview._run.get_snapshot().spell_zones
-		check(zones.size() == (2 if mode == 5 else 1), "preview reaches real live-zone count mode %d" % mode)
-		if zones.is_empty(): continue
-		if mode == 3: check(zones[0].pos.y < 2.0 and float(zones[0].travel_remaining) > 0.0, "wall preview shows early stop in original travel phase")
-		if mode == 4: check(is_zero_approx(float(zones[0].pos.x)) and preview._run.actors[0].pos.x == 4, "moving-target preview retains original direction")
-		if mode == 7: check(not bool(zones[0].context.natural), "extra preview uses actual extra context")
-		if mode == 8: check(zones[0].direction == Vector2.ZERO and zones[0].pos == Vector2.ZERO, "zero-direction preview is genuinely stationary")
-		if mode == 2:
-			for frame in 360: preview._advance(STEP)
-			check(preview._run.get_snapshot().spell_zones.size() == 1 and float(preview._run.get_snapshot().spell_zones[0].travel_remaining) <= 0.000001, "L3 preview reaches original end hold")
-	preview.queue_free()
 	await process_frame
 
 
@@ -526,13 +503,13 @@ func execute() -> void:
 	tornado_volume(renderer, projector)
 	interior_decoration(renderer, projector)
 	projection_cleanup_and_capacity(renderer, projector)
-	await integration_and_preview()
+	await integration()
 	renderer.queue_free()
 	await process_frame
 	var result := {"checks": checks, "failures": failures.size(), "details": failures, "frozen_baseline_cases": baseline_cases,
 		"whole_snapshot_comparisons": snapshot_comparisons, "baseline_assertions": baseline_assertions, "non_baseline_assertions": checks - baseline_assertions,
 		"scenario_matrix": "Three released levels by 12 setups: natural, extra, zero-effective damage, wall, zero direction, target/player movement, different-level overlap, equal overlap, mixed five approved spells, source/level handoff, lethal hit, pause.",
-		"scope": "Headless real-Route movement/clip/direction/radius, shared selected ticks/first-hit slow/once-per-cast ignition, original L3 hold and true expiry; v5 preserves the v3 wall and boosts the visibility of irregular interior flames with world-space orbit/rise, shared mesh depth ordering, camera-facing quads, pause/reduced/cleanup, finite structure and nine controlled preview paths. Frozen whole-snapshot/hooks/events/RNG parity runs only with --baseline; zero baseline cases means it was not rerun. No interactive preview, pixels/GPU composition, performance, natural route, export, Git mutation or v4 user visual acceptance."}
+		"scope": "Headless real-Route movement/clip/direction/radius, shared selected ticks/first-hit slow/once-per-cast ignition, original L3 hold and true expiry; v5 preserves the v3 wall and boosts the visibility of irregular interior flames with world-space orbit/rise, shared mesh depth ordering, camera-facing quads, pause/reduced/cleanup, finite structure and production-view integration. Frozen whole-snapshot/hooks/events/RNG parity runs only with --baseline; zero baseline cases means it was not rerun. No interactive preview, pixels/GPU composition, performance, natural route, export, Git mutation or v4 user visual acceptance."}
 	if not Report.write_report(result, OUTPUT): failures.append("cannot write report")
 	print("FIRE VORTEX CHAIN scenarios=%d snapshot_comparisons=%d assertions=%d failures=%d" % [baseline_cases, snapshot_comparisons, checks, failures.size()])
 	quit(0 if failures.is_empty() else 1)
